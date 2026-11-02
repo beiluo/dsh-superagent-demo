@@ -134,6 +134,7 @@ python3 scripts/build_data.py
 ├── docs/
 │   ├── design.md                      # 详细设计说明
 │   ├── agent.md                       # Agent 部署、密钥与安全边界
+│   ├── scale-assessment.md            # 节点规模评估与扩展路线
 │   ├── competency-questions.rq        # 10 条 SPARQL 能力问题
 │   └── evidence/                      # 浏览器前后对比截图
 ├── scripts/
@@ -224,6 +225,7 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 
 - **全文检索**：类、对象属性、数据属性、个体、SKOS 概念、规则、服务、政策；
 - **按层筛选**：RDF 实例 / RDFS·OWL / SKOS / SWRL / OWL-S / ODRL；
+- **整体本体图谱**：领域全景 / 决策链 / SKOS 分类三种模式，按领域簇着色，支持缩放、平移、图例筛选和节点详情，并可跳转到 Explorer 或概念树；
 - **实体详情**：定义、IRI、上下位类、OWL 限制、互不相交类、键、domain/range、属性特征、规则引用、实例事实；
 - **SKOS 概念树**：三套方案切换、概念搜索、上下位/关联概念跳转；
 - **SWRL 规则卡片**：严重程度筛选、IF/THEN、适用类、读取属性、SWRL 原子展开；
@@ -236,6 +238,14 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 - **浏览页面无外部依赖**：不依赖 CDN、图表库或前端框架；Agent 需要单独部署的服务端。
 
 页面数据由 `scripts/build_data.py` 从 Turtle 生成；本体的规范源始终是 `ontology/**/*.ttl`。
+
+### 规模定位
+
+当前可浏览实体为 336 个：72 个类、121 个属性、76 个个体、52 个 SKOS 概念、11 条规则、1 个服务、3 项政策；
+RDF 图共 4,290 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
+FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是生产级，建议沿公司行为、基金/ETF、衍生品、
+交易执行、组合风险、合规与披露等业务模块继续扩展，而不是为增加节点而堆叠孤立类。
+更完整的节点口径、缺口和扩展路线见 [规模评估](docs/scale-assessment.md)。
 
 ---
 
@@ -311,6 +321,7 @@ FIBO 资料：<https://spec.edmcouncil.org/fibo/> · <https://www.omg.org/spec/E
 
 - [详细设计说明](docs/design.md)
 - [Agent 部署与密钥配置](docs/agent.md)
+- [节点规模评估与扩展路线](docs/scale-assessment.md)
 - [10 条 SPARQL 能力问题](docs/competency-questions.rq)
 - [聚合入口 ontology/a-share.ttl](ontology/a-share.ttl)
 - [浏览器页面 index.html](index.html)
