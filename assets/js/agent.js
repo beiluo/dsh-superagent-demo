@@ -40,10 +40,10 @@
   if (!el.form || !el.input || !el.log) return;
 
   const SUGGESTIONS = [
+    "分析贵州茅台（600519）",
     "分析华辰智造",
     "哪些公司是价值候选？",
     "组合的集中度风险如何？",
-    "R02 是什么规则？",
   ];
 
   const KIND_LABELS = {
@@ -55,6 +55,7 @@
     rule: "规则",
     policy: "政策",
     service: "服务",
+    real: "真实数据",
   };
 
   const escapeHtml = (value) =>
@@ -157,18 +158,30 @@
   };
 
   const formatPct = (value) => {
+    const number = nullableNumber(value);
+    return number === null ? "—" : `${Math.round(number * 100)}%`;
+  };
+
+  const nullableNumber = (value) => {
+    if (value === null || value === undefined || value === "") return null;
     const number = Number(value);
-    return Number.isFinite(number) ? `${Math.round(number * 100)}%` : "—";
+    return Number.isFinite(number) ? number : null;
+  };
+
+  const formatPercent = (value) => {
+    const number = nullableNumber(value);
+    return number === null ? "—" : `${number.toFixed(1)}%`;
   };
 
   const formatPrice = (value) => {
-    const number = Number(value);
-    return Number.isFinite(number) ? `¥${number.toFixed(2)}` : "—";
+    const number = nullableNumber(value);
+    if (number === null) return "—";
+    return `¥${number.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const formatNumber = (value) => {
-    const number = Number(value);
-    return Number.isFinite(number) ? String(number) : "—";
+    const number = nullableNumber(value);
+    return number === null ? "—" : String(number);
   };
 
   function setStatus(kind, text, detail) {
@@ -223,6 +236,9 @@
 
   function citationHref(item) {
     if (!item.kind || !item.id) return "";
+    // Runtime real-data entities are not in the static page data, so they are
+    // rendered as plain evidence chips instead of dead links.
+    if (item.kind === "real" || !Object.prototype.hasOwnProperty.call(KIND_LABELS, item.kind)) return "";
     return `#entity=${encodeURIComponent(`${item.kind}:${item.id}`)}`;
   }
 
@@ -239,6 +255,12 @@
     modeBadge.dataset.mode = payload.mode === "llm" ? "llm" : "rules";
     modeBadge.textContent = mode;
     meta.appendChild(modeBadge);
+    if (payload.dataMode === "real") {
+      const dataBadge = document.createElement("span");
+      dataBadge.className = "agent-meta-text";
+      dataBadge.textContent = "真实数据";
+      meta.appendChild(dataBadge);
+    }
     if (payload.model) {
       const model = document.createElement("span");
       model.className = "agent-meta-text";
@@ -264,15 +286,27 @@
       const summary = payload.summary;
       const card = document.createElement("div");
       card.className = "agent-summary";
-      card.innerHTML = `
-        <div class="agent-summary-primary">
-          <span>本体示例结论</span>
-          <strong>${escapeHtml(summary.recommendation || "—")}</strong>
-          <small>置信度 ${formatPct(summary.confidence)}</small>
-        </div>
-        <div><span>目标价</span><strong>${formatPrice(summary.targetPrice)}</strong></div>
-        <div><span>止损价</span><strong>${formatPrice(summary.stopLoss)}</strong></div>
-        <div><span>风险</span><strong>${escapeHtml(summary.riskLevel || "—")} · ${formatNumber(summary.riskScore)}</strong></div>`;
+      if (summary.mode === "real") {
+        card.innerHTML = `
+          <div class="agent-summary-primary">
+            <span>真实数据</span>
+            <strong>${formatPrice(summary.price)}</strong>
+            <small>${escapeHtml(summary.source || "公开数据接口")} · ${escapeHtml(summary.asOf || "—")}</small>
+          </div>
+          <div><span>PE(TTM)</span><strong>${formatNumber(summary.peTtm)}</strong></div>
+          <div><span>ROE</span><strong>${formatPercent(summary.roe)}</strong></div>
+          <div><span>营收增速</span><strong>${formatPercent(summary.revenueGrowth)}</strong></div>`;
+      } else {
+        card.innerHTML = `
+          <div class="agent-summary-primary">
+            <span>本体示例结论</span>
+            <strong>${escapeHtml(summary.recommendation || "—")}</strong>
+            <small>置信度 ${formatPct(summary.confidence)}</small>
+          </div>
+          <div><span>目标价</span><strong>${formatPrice(summary.targetPrice)}</strong></div>
+          <div><span>止损价</span><strong>${formatPrice(summary.stopLoss)}</strong></div>
+          <div><span>风险</span><strong>${escapeHtml(summary.riskLevel || "—")} · ${formatNumber(summary.riskScore)}</strong></div>`;
+      }
       message.appendChild(card);
     }
 
@@ -300,7 +334,7 @@
       citations.className = "agent-citations";
       const label = document.createElement("span");
       label.className = "agent-citations-label";
-      label.textContent = "本体证据";
+      label.textContent = payload.dataMode === "real" ? "数据与本体证据" : "本体证据";
       citations.appendChild(label);
       for (const item of payload.citations) {
         const href = citationHref(item);
@@ -370,17 +404,22 @@
       const data = await response.json();
       state.mode = data.mode || "rules";
       state.companies = data.companies || [];
+      const marketNote =
+        data.marketData && data.marketData.enabled
+          ? " 真实 A 股查询已启用（公开行情/年报，可能延迟）。"
+          : " 真实 A 股查询未启用。";
       if (data.llm && data.llm.configured) {
         setStatus(
           "llm",
           `LLM 已配置 · ${data.llm.model || data.llm.provider || "server"}`,
-          "问答由服务端调用 LLM；密钥只在服务端环境变量中，浏览器不会收到。"
+          "问答由服务端调用 LLM；密钥只在服务端环境变量中，浏览器不会收到。" + marketNote
         );
       } else {
         setStatus(
           "rules",
           "规则模式 · 未启用 LLM",
-          "服务端没有可用的 LLM 配置（LLM_API_KEY 或 LLM_ENABLED），当前使用本体规则回答。配置密钥后刷新即可升级为 LLM 对话。"
+          "服务端没有可用的 LLM 配置（LLM_API_KEY 或 LLM_ENABLED），当前使用本体规则回答。配置密钥后刷新即可升级为 LLM 对话。" +
+            marketNote
         );
       }
     } catch (error) {

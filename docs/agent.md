@@ -95,6 +95,10 @@ LLM_MODEL=deepseek-chat
 | `DAILY_REQUEST_BUDGET` | 否 | `300` | 进程级每日总请求上限 |
 | `MAX_QUESTION_CHARS` | 否 | `500` | 单次问题最大长度 |
 | `AGENT_MAX_STEPS` | 否 | `4` | LLM 工具调用最大轮数 |
+| `MARKET_DATA_ENABLED` | 否 | `true` | 是否启用真实 A 股查询；关闭后只保留 4 家示例公司 |
+| `MARKET_DATA_TIMEOUT_SECONDS` | 否 | `8` | 真实行情请求超时 |
+| `MARKET_DATA_QUOTE_TTL_SECONDS` | 否 | `60` | 行情缓存秒数 |
+| `MARKET_DATA_FINANCIAL_TTL_SECONDS` | 否 | `21600` | 年报/财务指标缓存秒数 |
 
 ### 3.3 密钥轮换
 
@@ -181,8 +185,8 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | 工具 | 作用 |
 | --- | --- |
 | `list_companies` | 列出 4 家合成公司与示例决策 |
-| `get_company_analysis` | 企业、证券、财报、行情估值、风险、决策、证据、合规与规则信号 |
-| `screen_companies` | 对全部公司执行 SWRL 筛选 |
+| `get_company_analysis` | 企业、证券、财报、行情估值、风险、决策、证据、合规与规则信号；支持真实 A 股 |
+| `screen_companies` | 只对 4 家示例公司执行 SWRL 筛选，不做全市场筛选 |
 | `get_portfolio_analysis` | 组合持仓、R05 止损、R06 集中度 |
 | `get_rule` | 规则 IF/THEN、阈值、责任人、当前触发对象 |
 | `get_policies` | ODRL 权限/禁止/义务 |
@@ -190,6 +194,9 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 
 服务端从 `ontology/**/*.ttl` 读取规范源（rdflib），规则阈值与
 `ontology/swrl/rules.ttl` 中的示例常量保持同步，并由 `tests/test_rules.py` 校验。
+
+真实 A 股查询先用 `server/marketdata.py` 的公开数据适配器取数，再把快照映射成运行时
+RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所以工具、规则和引用链路不需要分叉。
 
 ### 6.2 两种模式
 
@@ -205,6 +212,7 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 {
   "requestId": "…",
   "mode": "llm",
+  "dataMode": "example",
   "model": "deepseek-chat",
   "answer": "Markdown…",
   "summary": {
@@ -226,6 +234,25 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 ```
 
 `citations` 的 `kind:id` 可以直接映射到浏览器的 `#entity=kind:id`，点击后跳转到 Explorer 详情。
+真实 A 股结果额外带 `dataMode: "real"`；其运行时实体标记为 `kind: "real"`，不在静态
+`data.js` 中，因此前端显示为不可点击的证据 chip，而规则、类和已有 SKOS 概念仍可跳转。
+
+### 6.4 真实 A 股数据
+
+默认启用，无需 API key。输入 `600519`、`贵州茅台` 或 `600519.SH` 时：
+
+1. `EastmoneyProvider` 解析证券并读取公开行情（价格、涨跌幅、换手率、市值、PE/PB）；
+2. 读取最近一期年报与主要财务指标（ROE、ROA、资产负债率、利息保障、经营现金流、增速）；
+3. `OntologyStore.register_real_company` 在内存中写入 `ash:ListedCompany`、`ash:AShare`、
+   `ash:AnnualReport`、`ash:MarketQuote`、`ash:Valuation` 和 SKOS 行业概念；
+4. 规则引擎与回答层沿用原有实现，返回 `dataMode="real"`。
+
+要点：
+
+- 运行时 IRI 位于 `.../a-share/real#`，不写回 Turtle 文件；
+- 行情缓存 60 秒、财报缓存 6 小时；`screen_companies` 不包含真实公司；
+- 数据来自东方财富公开网页接口，可能延迟、限流或改版；生产环境应替换为持牌数据源；
+- `MARKET_DATA_ENABLED=false` 可完全关闭真实数据查询；关闭后 Agent 只分析 4 家示例公司。
 
 ---
 
@@ -241,7 +268,8 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 - **静态白名单**：只挂载 `assets/`、`ontology/`、`docs/` 和 `index.html`，不会把 `.env`、
   `server/`、`.git` 或 `requirements.txt` 当静态文件发出去；
 - **错误脱敏**：上游 401/500 的原始 body 不返回浏览器；日志中的 key 会被替换为 `[redacted]`；
-- **输出边界**：系统提示要求不提供真实投资建议、不编造工具结果外的数字。
+- **输出边界**：系统提示要求不提供真实投资建议、不编造工具结果外的数字；真实数据模式必须标明
+  公开接口与数据日期，不生成评级、目标价、止损价或风险评分。
 
 仍然需要注意：
 

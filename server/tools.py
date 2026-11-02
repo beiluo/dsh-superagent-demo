@@ -9,12 +9,13 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .marketdata import MarketDataError
 from .ontology import CompanyKnowledge, OntologyStore, local_name
 from .rules import evaluate_company
 
 TOOL_LABELS = {
     "list_companies": "列出本体公司",
-    "get_company_analysis": "读取企业画像与决策链",
+    "get_company_analysis": "读取企业画像与规则信号",
     "screen_companies": "执行本体规则筛选",
     "get_portfolio_analysis": "检查组合与集中度",
     "get_rule": "解释 SWRL 规则",
@@ -27,7 +28,7 @@ TOOLS: list[dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "list_companies",
-            "description": "列出本体中的所有合成示例公司，以及每家公司当前的示例决策。适合回答“有哪些公司/标的”。",
+            "description": "列出本体中的 4 家合成示例公司，以及每家公司当前的示例决策。真实 A 股请改用 get_company_analysis。",
             "parameters": {"type": "object", "properties": {}, "additionalProperties": False},
         },
     },
@@ -35,13 +36,17 @@ TOOLS: list[dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "get_company_analysis",
-            "description": "读取一家公司的完整本体画像：证券、年报财务、行情估值、风险、示例决策、证据、合规检查与规则信号。分析具体公司时优先调用。",
+            "description": (
+                "读取一家公司的画像：证券、年报财务、行情估值、风险、决策、证据、合规检查与规则信号。"
+                "支持本体示例公司，也支持任意真实 A 股（6 位证券代码或证券简称，走公开行情与年报数据），"
+                "分析具体公司时优先调用。"
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
                     "company": {
                         "type": "string",
-                        "description": "公司名称、证券简称或代码，例如 华辰智造、宁源新能源、600000、300000。",
+                        "description": "公司名称、证券简称或代码，例如 华辰智造、贵州茅台、600000、600519。",
                     }
                 },
                 "required": ["company"],
@@ -53,7 +58,7 @@ TOOLS: list[dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "screen_companies",
-            "description": "对全部合成公司执行 SWRL 筛选，返回触发/未触发/无法评估的规则信号和关键指标。适合回答“哪些公司符合某条件/有哪些候选”。",
+            "description": "对本体中的 4 家合成示例公司执行 SWRL 筛选，返回触发/未触发/无法评估的规则信号和关键指标。只覆盖示例公司，不做全市场筛选；真实 A 股请用 get_company_analysis 逐只分析。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -141,16 +146,36 @@ def _summary(knowledge: CompanyKnowledge, signals: list[dict[str, Any]]) -> dict
     decision = knowledge.decision or {}
     risk = knowledge.risk or {}
     recommendation = decision.get("recommendation") or {}
+    subtitle = " · ".join(
+        part
+        for part in [
+            (knowledge.security or {}).get("code"),
+            (knowledge.company.get("industry") or {}).get("label"),
+        ]
+        if part
+    )
+    if knowledge.data_mode == "real":
+        quote = knowledge.quote or {}
+        financials = knowledge.financials or {}
+        valuation = knowledge.valuation or {}
+        return {
+            "mode": "real",
+            "title": knowledge.company.get("label"),
+            "subtitle": subtitle,
+            "price": quote.get("lastPrice"),
+            "changePct": quote.get("changePct"),
+            "asOf": quote.get("asOf"),
+            "source": quote.get("source"),
+            "peTtm": valuation.get("peTtm"),
+            "pb": valuation.get("pb"),
+            "roe": financials.get("roe"),
+            "revenueGrowth": financials.get("revenueGrowth"),
+            "triggeredRules": [item["ruleId"] for item in signals if item["status"] == "triggered"],
+        }
     return {
+        "mode": "example",
         "title": knowledge.company.get("label"),
-        "subtitle": " · ".join(
-            part
-            for part in [
-                (knowledge.security or {}).get("code"),
-                (knowledge.company.get("industry") or {}).get("label"),
-            ]
-            if part
-        ),
+        "subtitle": subtitle,
         "recommendation": recommendation.get("label") or "无示例决策",
         "confidence": decision.get("confidence"),
         "targetPrice": decision.get("targetPrice"),
@@ -162,17 +187,45 @@ def _summary(knowledge: CompanyKnowledge, signals: list[dict[str, Any]]) -> dict
 
 
 def _company_analysis(store: OntologyStore, query: str) -> dict[str, Any]:
+    names = store.company_names()
     subject = store.find_company(query)
-    if not subject:
-        names = store.company_names()
-        return _error(
-            "get_company_analysis",
-            "company_not_found",
-            f"本体中没有找到“{query}”。",
-            available=[item["label"] for item in names],
-        )
+    refresh_error: MarketDataError | None = None
+
+    if subject is not None and store.is_real_company(subject):
+        code = ((store.company_knowledge(subject).security or {}).get("code")) or ""
+        if code and store.market_data is not None:
+            try:
+                subject = store.real_company(code) or subject
+            except MarketDataError as exc:
+                refresh_error = exc
+
+    if subject is None:
+        try:
+            subject = store.real_company(query)
+        except MarketDataError as exc:
+            return _error(
+                "get_company_analysis",
+                exc.code,
+                f"{exc.message}本体中的示例公司仍可分析。",
+                available=[item["label"] for item in names],
+            )
+        if subject is None:
+            if store.market_data is None:
+                message = f"本体中没有找到“{query}”，当前未启用真实 A 股数据源。"
+            else:
+                message = f"没有找到与“{query}”匹配的本体公司或真实 A 股证券。"
+            return _error(
+                "get_company_analysis",
+                "company_not_found",
+                message,
+                available=[item["label"] for item in names],
+                hint="可输入 6 位证券代码或证券简称，例如 600519、贵州茅台。",
+            )
+
     knowledge = store.company_knowledge(subject)
     data = knowledge.to_dict()
+    if refresh_error is not None:
+        data["dataNote"] += f" 本次刷新失败（{refresh_error.message}），展示上次抓取结果。"
     signals = [
         {
             **store._enrich_signal(item),
@@ -326,12 +379,20 @@ def _list(store: OntologyStore) -> dict[str, Any]:
         "data": {
             "companies": companies,
             "exampleQuestions": [
+                "分析贵州茅台",
                 "分析华辰智造",
                 "哪些公司是价值候选？",
                 "组合的集中度风险如何？",
-                "R02 是什么规则？",
             ],
-            "dataNote": "本体只包含 4 家合成示例公司，不支持真实证券或实时行情。",
+            "realData": {
+                "enabled": store.market_data is not None,
+                "provider": getattr(store.market_data, "source_label", ""),
+                "note": "真实 A 股请在 get_company_analysis 中按 6 位代码或证券简称查询。",
+            },
+            "dataNote": (
+                "这里只列出本体中的 4 家合成示例公司；真实 A 股可按代码或简称单独查询，"
+                "数据来自公开行情与年报接口，可能延迟。"
+            ),
         },
         "citations": _dedupe(citations),
     }

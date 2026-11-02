@@ -7,6 +7,9 @@ from rdflib import Namespace
 ASH = Namespace("https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#")
 ASHD = Namespace("https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#")
 ASHS = Namespace("https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#")
+# Runtime-only namespace for real A-share snapshots mapped into the ontology.
+# Nothing here is written to the Turtle source files.
+ASHREAL = Namespace("https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/real#")
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
