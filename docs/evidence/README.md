@@ -23,6 +23,9 @@ These captures document the browser work for the A-share ontology tickets.
 | `agent-mobile.png` | Same merged branch head; 390 px viewport | 390 × 1289 | Responsive Agent layout with no horizontal overflow. |
 | `real-data-before.png` | Merged `main` at `07ad134`, before this ticket; served by `uvicorn`, rules mode | 1440 × 1000 | Baseline: asking “分析贵州茅台” returns “没有找到对应公司”, and the footnote says the Agent only covers 4 synthetic companies. |
 | `real-data-after.png` | This ticket branch; same rules-mode server and scenario | 1440 × 1000 | The same question returns a real-data answer: source and dates, 2025 annual metrics, PE/PB, real-data summary card and evidence chips. |
+| `trace-before.png` | Merged `main` at `852e52c`, before the execution-trace change; rules mode, question “分析华辰智造” | 1440 × 1000 | Baseline: the answer ends with tool chips and ontology citations; there is no execution trace. |
+| `trace-after.png` | This ticket branch, same rules-mode server, question and scroll position | 1440 × 1000 | The same answer now ends with the expanded “执行详情” panel: USER message, TOOL call with arguments, collapsed raw tool data and raw JSON. |
+| `trace-after-detail.png` | Same state as `trace-after.png` | 808 × 299 | Close-up of the new execution-trace panel. |
 
 The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
 not a mockup. The after captures use the actual FastAPI backend and the real `index.html`; no LLM
@@ -31,4 +34,8 @@ the tool loop are covered by `tests/test_llm.py` with a local OpenAI-compatible 
 
 The page was served by `uvicorn server.main:app`; screenshots were taken with Playwright/Chromium.
 All example content is synthetic; the `real-data-*` pair additionally shows a live public-data query
-against Eastmoney's anonymous JSON endpoints. See the repository README for the disclaimer.
+against Eastmoney's anonymous JSON endpoints. The `trace-*` pair uses the same rules-mode scenario
+(before/after the change) and the same 1440 × 1000 viewport; `trace-after-detail.png` is a close-up
+of the changed panel. LLM-mode trace rendering was checked in Chromium against a stubbed
+`/api/agent/analyze` response, because no provider key is configured here. See the repository README
+for the disclaimer.

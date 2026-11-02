@@ -350,8 +350,186 @@
       message.appendChild(citations);
     }
 
+    appendExecution(message, payload.execution);
+
     el.log.appendChild(message);
     scrollLog();
+  }
+
+  function prettyJson(value, fallback) {
+    if (value === undefined || value === null) return fallback || "";
+    if (typeof value === "string") {
+      if (!value.trim()) return "";
+      try {
+        return JSON.stringify(JSON.parse(value), null, 2);
+      } catch (error) {
+        return value;
+      }
+    }
+    try {
+      return JSON.stringify(value, null, 2);
+    } catch (error) {
+      return String(value);
+    }
+  }
+
+  function appendExecutionText(parent, content) {
+    const text = document.createElement("div");
+    text.className = "agent-execution-text";
+    text.textContent = content;
+    parent.appendChild(text);
+  }
+
+  function appendExecutionArguments(parent, argumentsValue) {
+    if (!argumentsValue || typeof argumentsValue !== "object" || !Object.keys(argumentsValue).length) return;
+    const pre = document.createElement("pre");
+    pre.className = "agent-execution-json";
+    pre.textContent = prettyJson(argumentsValue, "{}");
+    parent.appendChild(pre);
+  }
+
+  function renderExecutionItem(item) {
+    const isTool = item.role === "tool";
+    const toolCalls = Array.isArray(item.toolCalls) ? item.toolCalls : [];
+    const node = document.createElement("li");
+    node.className = "agent-execution-event";
+    node.dataset.role = item.role || "unknown";
+    if (isTool && item.ok === false) node.dataset.status = "error";
+
+    const head = document.createElement("div");
+    head.className = "agent-execution-head";
+    const role = document.createElement("span");
+    role.className = "agent-execution-role";
+    role.textContent = item.role === "user" ? "USER" : item.role === "assistant" ? "ASSISTANT" : "TOOL";
+    head.appendChild(role);
+
+    const title = document.createElement("span");
+    title.className = "agent-execution-name";
+    if (item.role === "user") {
+      title.textContent = item.auto ? "自动追问" : item.history ? "历史用户消息" : "用户消息";
+    } else if (isTool) {
+      title.textContent = item.name ? `${item.label || item.name} · ${item.name}` : item.label || "工具";
+    } else if (toolCalls.length) {
+      title.textContent = `Agent 工具决策${Number.isFinite(Number(item.round)) ? ` · 第 ${item.round} 轮` : ""}`;
+    } else {
+      title.textContent = "Agent 最终回答";
+    }
+    head.appendChild(title);
+
+    if (isTool) {
+      const status = document.createElement("span");
+      status.className = "agent-execution-status";
+      status.dataset.status = item.ok === false ? "error" : "ok";
+      status.textContent = item.ok === false ? "失败" : "成功";
+      head.appendChild(status);
+      if (Number.isFinite(Number(item.elapsedMs))) {
+        const elapsed = document.createElement("span");
+        elapsed.className = "agent-execution-time";
+        elapsed.textContent = `${Number(item.elapsedMs)}ms`;
+        head.appendChild(elapsed);
+      }
+    }
+    node.appendChild(head);
+
+    if (toolCalls.length) {
+      if (item.content) appendExecutionText(node, item.content);
+      for (const call of toolCalls) {
+        const callBlock = document.createElement("div");
+        callBlock.className = "agent-execution-call";
+        const callHead = document.createElement("div");
+        callHead.className = "agent-execution-call-head";
+        const name = document.createElement("span");
+        name.className = "agent-execution-tool";
+        name.textContent = call.name || "tool";
+        callHead.appendChild(name);
+        if (call.id) {
+          const id = document.createElement("span");
+          id.className = "agent-execution-call-id";
+          id.textContent = call.id;
+          callHead.appendChild(id);
+        }
+        callBlock.appendChild(callHead);
+        appendExecutionArguments(callBlock, call.arguments);
+        node.appendChild(callBlock);
+      }
+      return node;
+    }
+
+    if (isTool) {
+      appendExecutionArguments(node, item.arguments);
+      const result = document.createElement("details");
+      result.className = "agent-execution-result";
+      const resultSummary = document.createElement("summary");
+      resultSummary.textContent = "查看工具返回的原始数据";
+      result.appendChild(resultSummary);
+      const pre = document.createElement("pre");
+      pre.className = "agent-execution-json";
+      pre.textContent = prettyJson(item.content);
+      result.appendChild(pre);
+      node.appendChild(result);
+      return node;
+    }
+
+    if (item.content) appendExecutionText(node, item.content);
+    return node;
+  }
+
+  function appendExecution(message, execution) {
+    if (!execution || !Array.isArray(execution.messages) || !execution.messages.length) return;
+    const messages = execution.messages;
+    const toolCount = messages.filter((item) => item && item.role === "tool").length;
+    const rounds = messages.filter((item) => item && Array.isArray(item.toolCalls)).length;
+    const meta =
+      execution.mode === "llm"
+        ? `LLM ${rounds} 轮 · ${toolCount} 次工具调用`
+        : `规则模式 · ${toolCount} 次工具调用`;
+
+    const details = document.createElement("details");
+    details.className = "agent-execution";
+    const summary = document.createElement("summary");
+    summary.className = "agent-execution-summary";
+    summary.innerHTML = `
+      <span class="agent-execution-caret" aria-hidden="true">›</span>
+      <span class="agent-execution-title">执行详情</span>
+      <span class="agent-execution-meta">${escapeHtml(meta)}</span>`;
+    details.appendChild(summary);
+
+    const body = document.createElement("div");
+    body.className = "agent-execution-body";
+    const note = document.createElement("p");
+    note.className = "agent-execution-note";
+    note.textContent =
+      execution.mode === "llm"
+        ? "以下为 Agent 实际收发的消息（系统提示按安全边界不下发浏览器）。"
+        : "规则模式未调用 LLM；以下为确定性工具调用及返回。";
+    body.appendChild(note);
+
+    const list = document.createElement("ol");
+    list.className = "agent-execution-list";
+    for (const item of messages) {
+      if (!item || typeof item !== "object") continue;
+      list.appendChild(renderExecutionItem(item));
+    }
+    body.appendChild(list);
+
+    const raw = document.createElement("details");
+    raw.className = "agent-execution-raw";
+    const rawSummary = document.createElement("summary");
+    rawSummary.textContent = "查看原始 JSON";
+    raw.appendChild(rawSummary);
+    const rawJson = document.createElement("pre");
+    rawJson.className = "agent-execution-json";
+    rawJson.textContent = prettyJson(execution);
+    raw.appendChild(rawJson);
+    body.appendChild(raw);
+
+    details.appendChild(body);
+    details.addEventListener("toggle", () => {
+      if (details.open) {
+        window.requestAnimationFrame(() => details.scrollIntoView({ block: "nearest" }));
+      }
+    });
+    message.appendChild(details);
   }
 
   function appendError(message, question) {

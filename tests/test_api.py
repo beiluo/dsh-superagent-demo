@@ -52,6 +52,24 @@ def test_company_analysis_rules_mode(client_factory):
     assert any(item["kind"] == "rule" for item in data["citations"])
 
 
+def test_rules_execution_trace_records_tool_call(client_factory):
+    response = client_factory().post("/api/agent/analyze", json={"question": "分析华辰智造"})
+    assert response.status_code == 200
+    execution = response.json()["execution"]
+    assert execution["mode"] == "rules"
+    assert execution["systemPrompt"] is None
+    messages = execution["messages"]
+    assert messages[0] == {"role": "user", "content": "分析华辰智造"}
+    assert [item["role"] for item in messages] == ["user", "tool"]
+    tool = messages[1]
+    assert tool["name"] == "get_company_analysis"
+    assert tool["label"] == "读取企业画像与规则信号"
+    assert tool["arguments"] == {"company": "华辰智造"}
+    assert tool["ok"] is True
+    assert tool["elapsedMs"] >= 0
+    assert '"ok": true' in tool["content"]
+
+
 def test_unknown_company_lists_available(client_factory):
     response = client_factory().post("/api/agent/analyze", json={"question": "分析贵州茅台"})
     assert response.status_code == 200

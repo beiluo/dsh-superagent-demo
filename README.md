@@ -288,6 +288,12 @@ Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读�
 LLM 模式由服务端做工具循环；没有 key 或 LLM 调用失败时自动回退到确定性的规则模式。
 两种模式使用同一套本体事实和引用，回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。
 
+每次回答下方都有可展开的 **“执行详情”**：按顺序展示用户/历史消息、LLM 的工具决策（工具名与参数）、
+发给 LLM 的工具结果原文和最终回答，也可以查看原始 JSON。系统提示按安全边界不下发浏览器。
+规则模式同样展示确定性工具调用与返回，便于对照本体事实如何进入回答。
+
+[![Agent 执行详情](docs/evidence/trace-after-detail.png)](docs/evidence/trace-after.png)
+
 **密钥边界**：`LLM_API_KEY` 只存在于服务端环境变量；`assets/js/agent-config.js` 只保存公开
 的 `apiBase`。`scripts/check_no_secrets.py` 由 `make validate` 运行；CI 也可调用同一脚本。
 GitHub Pages 不能运行后端，因此在线 Agent 需要把静态页面接到单独部署的后端；完整步骤见

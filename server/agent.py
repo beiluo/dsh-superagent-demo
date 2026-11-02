@@ -6,6 +6,7 @@ import asyncio
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -64,6 +65,7 @@ class AgentResult:
     model: str | None = None
     data_mode: str = "example"
     tool_trace: list[dict[str, Any]] = field(default_factory=list)
+    execution: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -75,6 +77,7 @@ class AgentResult:
             "notice": self.notice,
             "model": self.model,
             "dataMode": self.data_mode,
+            "execution": self.execution,
         }
 
 
@@ -202,6 +205,10 @@ class AgentService:
             *history,
             {"role": "user", "content": question},
         ]
+        execution_messages: list[dict[str, Any]] = [
+            {**item, "history": True} for item in history
+        ]
+        execution_messages.append({"role": "user", "content": question})
         steps: list[dict[str, str]] = []
         citations: list[dict[str, Any]] = []
         summary: dict[str, Any] | None = None
@@ -227,9 +234,22 @@ class AgentService:
                     "tool_calls": [_tool_call_message(call) for call in calls],
                 }
             )
+            execution_messages.append(
+                {
+                    "role": "assistant",
+                    "content": response.content or "",
+                    "toolCalls": [
+                        {"id": call.id, "name": call.name, "arguments": call.arguments}
+                        for call in calls
+                    ],
+                    "round": step_index + 1,
+                }
+            )
             for call in calls:
                 async with self._tool_lock:
+                    started = time.perf_counter()
                     result = await asyncio.to_thread(call_tool, self.store, call.name, call.arguments)
+                    elapsed_ms = max(0, round((time.perf_counter() - started) * 1000))
                 if (result.get("data") or {}).get("dataMode") == "real" or (
                     result.get("summary") or {}
                 ).get("mode") == "real":
@@ -252,23 +272,34 @@ class AgentService:
                 citations.extend(result.get("citations") or [])
                 if result.get("summary"):
                     summary = result["summary"]
+                tool_content = _tool_prompt_payload(result)
                 messages.append(
                     {
                         "role": "tool",
                         "tool_call_id": call.id,
                         "name": call.name,
-                        "content": _tool_prompt_payload(result),
+                        "content": tool_content,
+                    }
+                )
+                execution_messages.append(
+                    {
+                        "role": "tool",
+                        "toolCallId": call.id,
+                        "name": call.name,
+                        "label": TOOL_LABELS.get(call.name, call.name),
+                        "arguments": call.arguments,
+                        "content": tool_content,
+                        "ok": bool(result.get("ok")),
+                        "elapsedMs": elapsed_ms,
+                        "round": step_index + 1,
                     }
                 )
 
         if not final_text:
             # Ask for a final answer without another tool call.
-            messages.append(
-                {
-                    "role": "user",
-                    "content": "请基于以上工具结果直接给出最终回答，不要再调用工具。",
-                }
-            )
+            auto_prompt = "请基于以上工具结果直接给出最终回答，不要再调用工具。"
+            messages.append({"role": "user", "content": auto_prompt})
+            execution_messages.append({"role": "user", "content": auto_prompt, "auto": True})
             response = await self.llm.chat(messages, TOOLS, tool_choice="none")
             final_model = response.model or final_model
             final_text = response.content.strip()
@@ -281,6 +312,7 @@ class AgentService:
         answer = _ensure_boundary(final_text, real_data=used_real)
         if len(answer) > 14_000:
             answer = answer[:14_000].rstrip() + "…"
+        execution_messages.append({"role": "assistant", "content": final_text})
         return AgentResult(
             answer=answer,
             mode="llm",
@@ -290,6 +322,12 @@ class AgentService:
             model=final_model,
             data_mode="real" if used_real else "example",
             tool_trace=used_tools,
+            execution={
+                "mode": "llm",
+                "model": final_model,
+                "systemPrompt": {"hidden": True, "chars": len(SYSTEM_PROMPT)},
+                "messages": execution_messages,
+            },
         )
 
     # ------------------------------------------------------------------
@@ -303,11 +341,14 @@ class AgentService:
         summary: dict[str, Any] | None = None
         used_real = False
         answer = ""
+        execution_messages: list[dict[str, Any]] = [{"role": "user", "content": question}]
 
         async def run(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
             nonlocal summary, used_real
             async with self._tool_lock:
+                started = time.perf_counter()
                 result = await asyncio.to_thread(call_tool, self.store, tool, arguments)
+                elapsed_ms = max(0, round((time.perf_counter() - started) * 1000))
             if (result.get("data") or {}).get("dataMode") == "real" or (
                 result.get("summary") or {}
             ).get("mode") == "real":
@@ -318,6 +359,17 @@ class AgentService:
                     "label": TOOL_LABELS.get(tool, tool),
                     "status": "ok" if result.get("ok") else "error",
                     "detail": "" if result.get("ok") else (result.get("error") or {}).get("message", ""),
+                }
+            )
+            execution_messages.append(
+                {
+                    "role": "tool",
+                    "name": tool,
+                    "label": TOOL_LABELS.get(tool, tool),
+                    "arguments": arguments,
+                    "content": _tool_prompt_payload(result),
+                    "ok": bool(result.get("ok")),
+                    "elapsedMs": elapsed_ms,
                 }
             )
             citations.extend(result.get("citations") or [])
@@ -376,6 +428,12 @@ class AgentService:
             notice=notice,
             model=None,
             data_mode="real" if used_real else "example",
+            execution={
+                "mode": "rules",
+                "model": None,
+                "systemPrompt": None,
+                "messages": execution_messages,
+            },
         )
 
     def _tool_error_answer(self, result: dict[str, Any]) -> str:
