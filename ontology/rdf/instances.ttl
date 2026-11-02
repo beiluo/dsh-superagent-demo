@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.0.0" .
+    owl:versionInfo "1.1.0" .
 
 # ===========================================================================
 # Market structure
@@ -718,3 +718,204 @@ ashd:evidence-jingkang-report a owl:NamedIndividual, ash:Evidence ;
     ash:dataSource "合成年度报告（示例）" ;
     ash:hasSource ashd:source-annual-report ;
     ash:isExample true .
+# ===========================================================================
+# Domain expansion 1.1 — example individuals
+# ===========================================================================
+
+ashd:fund-company-demo a owl:NamedIndividual, ash:FundCompany ;
+    rdfs:label "示例基金管理公司"@zh, "Sample Fund Company"@en ;
+    rdfs:comment "用于演示基金管理关系的合成机构。"@zh ;
+    ash:isExample true .
+
+ashd:fund-manager-demo a owl:NamedIndividual, ash:FundManager ;
+    rdfs:label "示例基金经理"@zh, "Sample Fund Manager"@en ;
+    rdfs:comment "用于演示基金经理职责的合成人员。"@zh ;
+    ash:isExample true .
+
+ashd:fund-fee-demo a owl:NamedIndividual, ash:FundFee ;
+    ash:managementFee 0.50 ;
+    rdfs:label "示例基金管理费"@zh ;
+    ash:isExample true .
+
+ashd:fund-flow-demo a owl:NamedIndividual, ash:FundFlow ;
+    ash:flowAmount -620000000 ;
+    ash:netFlowPct -6.2 ;
+    ash:flowPeriod "2026-10"^^xsd:gYearMonth ;
+    rdfs:label "示例基金 2026-10 资金流"@zh ;
+    ash:isExample true .
+
+ashd:fund-demo a owl:NamedIndividual, ash:Fund ;
+    ash:fundCode "F0001" ;
+    ash:fundType "ETF" ;
+    ash:managedBy ashd:fund-company-demo ;
+    ash:hasFundManager ashd:fund-manager-demo ;
+    ash:hasFundFee ashd:fund-fee-demo ;
+    ash:hasFundFlow ashd:fund-flow-demo ;
+    ash:hasFundShare ashd:fund-csi300etf ;
+    ash:netFlowPct -6.2 ;
+    rdfs:label "华辰沪深 300ETF 联接（示例）"@zh ;
+    ash:isExample true .
+
+ashd:fund-csi300etf a owl:NamedIndividual, ash:ETF ;
+    ash:securityName "华辰沪深 300ETF" ;
+    ash:securityCode "510300" ;
+    ash:listedOn ashd:exchange-sse ;
+    ash:tradesOn ashd:segment-main ;
+    ash:tracksIndex ashd:index-csi300 ;
+    ash:netAssetValue 12400000000 ;
+    ash:trackingError 2.8 ;
+    ash:premiumDiscount 0.12 ;
+    ash:tradingStatus "normal" ;
+    ash:isSuspended false ;
+    ash:isRestricted false ;
+    rdfs:label "华辰沪深 300ETF"@zh ;
+    ash:isExample true .
+
+ashd:fund-csi300etf-flow a owl:NamedIndividual, ash:FundFlow ;
+    ash:flowAmount -210000000 ;
+    ash:netFlowPct -1.7 ;
+    ash:flowPeriod "2026-10"^^xsd:gYearMonth ;
+    rdfs:label "华辰沪深 300ETF 2026-10 资金流"@zh ;
+    ash:isExample true .
+
+ashd:bond-rating-demo a owl:NamedIndividual, ash:BondRating ;
+    ash:creditRating "AAA" ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    rdfs:label "示例国债 AAA 评级"@zh ;
+    ash:isExample true .
+
+ashd:bond-demo a owl:NamedIndividual, ash:GovernmentBond ;
+    ash:securityName "示例 30 年国债" ;
+    ash:securityCode "019000" ;
+    ash:listedOn ashd:exchange-sse ;
+    ash:tradesOn ashd:segment-main ;
+    ash:bondCode "019000" ;
+    ash:couponRate 2.45 ;
+    ash:maturityDate "2052-06-30"^^xsd:date ;
+    ash:yieldToMaturity 2.62 ;
+    ash:tradingStatus "normal" ;
+    ash:hasBondRating ashd:bond-rating-demo ;
+    rdfs:label "示例 30 年国债"@zh ;
+    ash:isExample true .
+
+ashd:cb-demo a owl:NamedIndividual, ash:ConvertibleBond ;
+    ash:securityName "华辰转债" ;
+    ash:securityCode "110000" ;
+    ash:listedOn ashd:exchange-sse ;
+    ash:tradesOn ashd:segment-main ;
+    ash:bondCode "110000" ;
+    ash:couponRate 0.50 ;
+    ash:maturityDate "2031-06-30"^^xsd:date ;
+    ash:underlyingAsset ashd:sec-huachen-a ;
+    ash:conversionPremium 34.0 ;
+    ash:tradingStatus "normal" ;
+    ash:hasBondRating ashd:bond-rating-demo ;
+    rdfs:label "华辰转债（示例）"@zh ;
+    ash:isExample true .
+
+ashd:spec-if a owl:NamedIndividual, ash:ContractSpecification ;
+    rdfs:label "沪深 300 股指期货合约规格"@zh ;
+    rdfs:comment "合约乘数 300 元/点、现金交割的示例规格。"@zh ;
+    ash:isExample true .
+
+ashd:margin-if a owl:NamedIndividual, ash:MarginRequirement ;
+    ash:marginRatio 12.0 ;
+    rdfs:label "股指期货保证金要求"@zh ;
+    ash:isExample true .
+
+ashd:future-csi300 a owl:NamedIndividual, ash:IndexFuture ;
+    ash:contractCode "IF2612" ;
+    ash:underlyingAsset ashd:index-csi300 ;
+    ash:hasContractSpec ashd:spec-if ;
+    ash:hasMarginRequirement ashd:margin-if ;
+    ash:multiplier 300 ;
+    ash:expiryDate "2026-12-18"^^xsd:date ;
+    rdfs:label "沪深 300 股指期货 IF2612"@zh ;
+    ash:isExample true .
+
+ashd:shareholder-demo a owl:NamedIndividual, ash:ControllingShareholder ;
+    ash:ownershipRatio 0.32 ;
+    ash:controls ashd:company-huachen ;
+    rdfs:label "华辰控股集团（示例）"@zh ;
+    ash:isExample true .
+
+ashd:company-huachen ash:hasShareholder ashd:shareholder-demo .
+
+ashd:event-huachen-buyback a owl:NamedIndividual, ash:ShareRepurchase ;
+    ash:eventOf ashd:company-huachen ;
+    ash:repurchaseAmount 200000000 ;
+    ash:dataAsOf "2026-09-30"^^xsd:date ;
+    rdfs:label "华辰智造股份回购（示例）"@zh ;
+    ash:isExample true .
+
+ashd:estimate-huachen a owl:NamedIndividual, ash:AnalystEstimate ;
+    ash:estimateValue 2850000000 ;
+    ash:analystTargetPrice 46.00 ;
+    ash:estimateDate "2026-10-28"^^xsd:date ;
+    rdfs:label "华辰智造 2027 年净利润预测"@zh ;
+    ash:isExample true .
+
+ashd:company-huachen ash:hasAnalystEstimate ashd:estimate-huachen .
+
+ashd:factor-exposure-demo a owl:NamedIndividual, ash:FactorExposure ;
+    ash:exposedToFactor ashs:factor-quality ;
+    ash:factorValue 1.18 ;
+    rdfs:label "示例组合质量因子暴露"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:hasFactorExposure ashd:factor-exposure-demo .
+
+ashd:model-version-demo a owl:NamedIndividual, ash:ModelVersion ;
+    ash:modelVersionCode "RM-1.0" ;
+    rdfs:label "示例风险模型版本 1.0"@zh ;
+    ash:isExample true .
+
+ashd:risk-model-demo a owl:NamedIndividual, ash:RiskModel ;
+    ash:hasModelVersion ashd:model-version-demo ;
+    rdfs:label "示例多因子风险模型"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:usesRiskModel ashd:risk-model-demo .
+
+ashd:constraint-demo a owl:NamedIndividual, ash:PortfolioConstraint ;
+    ash:trackingErrorLimit 5.0 ;
+    rdfs:label "示例组合跟踪误差约束"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:hasConstraint ashd:constraint-demo .
+
+ashd:approval-demo a owl:NamedIndividual, ash:Approval ;
+    ash:approves ashd:decision-huachen-2026q4 ;
+    ash:approvedBy ashd:party-compliance ;
+    ash:approvalStatus "PENDING" ;
+    rdfs:label "华辰智造决策人工审批"@zh ;
+    ash:isExample true .
+
+ashd:order-demo a owl:NamedIndividual, ash:Order ;
+    ash:orderId "ORD-2026-001" ;
+    ash:orderSide "BUY" ;
+    ash:orderQuantity 10000 ;
+    ash:orderPrice 36.50 ;
+    ash:orderStatus "PENDING" ;
+    ash:orderFor ashd:sec-huachen-a ;
+    ash:placedBy ashd:investor-demo ;
+    ash:hasApproval ashd:approval-demo ;
+    rdfs:label "华辰智造买入订单意图（示例）"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:hasOrder ashd:order-demo .
+
+ashd:esg-huachen a owl:NamedIndividual, ash:ESGRating ;
+    ash:esgScore 72 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    rdfs:label "华辰智造 ESG 评分"@zh ;
+    ash:isExample true .
+
+ashd:company-huachen ash:hasESGRating ashd:esg-huachen .
+
+ashd:lineage-huachen-report a owl:NamedIndividual, ash:DataLineage ;
+    ash:dataVersion "2025.1" ;
+    rdfs:label "华辰 2025 年报数据血缘"@zh ;
+    ash:isExample true .
+
+ashd:report-huachen-2025 ash:hasDataLineage ashd:lineage-huachen-report .

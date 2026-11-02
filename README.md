@@ -3,7 +3,7 @@
 > 一套覆盖 **RDF、RDFS、OWL 2、SKOS、SWRL、OWL-S、ODRL** 的模块化语义模型，
 > 用来表达“从数据到投资决策”的可推理、可追溯、可治理链路。
 
-[![浏览器页面](docs/evidence/after.png)](docs/evidence/after.png)
+[![浏览器页面](docs/evidence/expansion-after.png)](docs/evidence/after.png)
 
 页面不是静态说明书：它由本体源文件生成，支持全文检索、按层筛选、类/属性/个体详情、SKOS 概念树、
 SWRL 规则卡片、OWL-S 流程和 ODRL 政策矩阵。
@@ -20,7 +20,7 @@ A 股投资决策涉及至少八类语义问题：
 | 词汇如何定义？ | RDFS | 类层次、属性 domain/range、双语标签与自然语言定义 |
 | 结构约束如何成立？ | OWL 2 | 基数、存在/全称限制、属性特征、键、类不相交 |
 | 分类如何组织？ | SKOS | 行业、主题、风格三套 ConceptScheme |
-| 决策如何推理？ | SWRL | 11 条无副作用 Horn 规则，覆盖筛选、风险、止损、集中度与合规 |
+| 决策如何推理？ | SWRL | 15 条无副作用 Horn 规则，覆盖筛选、风险、止损、集中度与合规 |
 | 服务如何调用？ | OWL-S | Profile / Process Model / Grounding 三视角的七步决策服务 |
 | 政策如何治理？ | ODRL | 权限、禁止、义务、约束、冲突策略与 profile 扩展 |
 | 如何把语义链变成可对话分析？ | Agent | 服务端只读工具 + 本体规则 + 可选 LLM，回答带可追溯证据 |
@@ -70,15 +70,15 @@ python3 scripts/validate.py
 ```text
 A-share ontology validation passed.
   modules: 7
-  triples: 4290
-  classes: 72
-  object properties: 46
-  data properties: 75
-  SKOS concepts: 52
-  SWRL rules: 11
+  triples: 6253
+  classes: 136
+  object properties: 90
+  data properties: 125
+  SKOS concepts: 93
+  SWRL rules: 15
   OWL-S services: 1
-  ODRL policies: 3
-  OWL RL closure: 2887 -> 7991 triples (5104 inferred)
+  ODRL policies: 4
+  OWL RL closure: 4598 -> 12503 triples (7905 inferred)
   warnings: 0
 ```
 
@@ -134,6 +134,7 @@ python3 scripts/build_data.py
 ├── docs/
 │   ├── design.md                      # 详细设计说明
 │   ├── agent.md                       # Agent 部署、密钥与安全边界
+│   ├── expansion-1.1.md               # 1.1 领域扩展清单
 │   ├── scale-assessment.md            # 节点规模评估与扩展路线
 │   ├── competency-questions.rq        # 10 条 SPARQL 能力问题
 │   └── evidence/                      # 浏览器前后对比截图
@@ -154,12 +155,12 @@ python3 scripts/build_data.py
 | 层 | W3C 规范 | 本仓库落地 | 关键文件 |
 | --- | --- | --- | --- |
 | RDF | [RDF 1.1 Concepts](https://www.w3.org/TR/rdf11-concepts/) / [Turtle 1.1](https://www.w3.org/TR/turtle/) | 公司、证券、财报、行情、估值、风险、决策、组合的实例图 | `ontology/rdf/instances.ttl` |
-| RDFS | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | 72 个类、121 个属性，含 `subClassOf`、`domain`、`range`、双语标签 | `ontology/rdfs/schema.ttl` |
-| OWL 2 | [OWL 2 Overview](https://www.w3.org/TR/owl2-overview/) / [Structural Specification](https://www.w3.org/TR/owl2-syntax/) / [RDF Mapping](https://www.w3.org/TR/owl2-mapping-to-rdf/) | 38 条类限制、7 个键、6 组类不相交、函数式/传递/对称/逆属性 | `ontology/owl/ontology.ttl` |
-| SKOS | [SKOS Reference](https://www.w3.org/TR/skos-reference/) | 3 个 ConceptScheme、52 个概念、层级/关联/多语言标签/定义 | `ontology/skos/taxonomy.ttl` |
-| SWRL | [SWRL W3C Member Submission](https://www.w3.org/Submission/SWRL/) | 11 条 `swrl:Imp` 规则，使用 RDF 具体语法与 `swrlb:` 内建 | `ontology/swrl/rules.ttl` |
+| RDFS | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | 136 个类、215 个属性，含 `subClassOf`、`domain`、`range`、双语标签 | `ontology/rdfs/schema.ttl` |
+| OWL 2 | [OWL 2 Overview](https://www.w3.org/TR/owl2-overview/) / [Structural Specification](https://www.w3.org/TR/owl2-syntax/) / [RDF Mapping](https://www.w3.org/TR/owl2-mapping-to-rdf/) | 72 条类限制、10 个键、9 组类不相交、函数式/传递/对称/逆属性 | `ontology/owl/ontology.ttl` |
+| SKOS | [SKOS Reference](https://www.w3.org/TR/skos-reference/) | 5 个 ConceptScheme、93 个概念、层级/关联/多语言标签/定义 | `ontology/skos/taxonomy.ttl` |
+| SWRL | [SWRL W3C Member Submission](https://www.w3.org/Submission/SWRL/) | 15 条 `swrl:Imp` 规则，使用 RDF 具体语法与 `swrlb:` 内建 | `ontology/swrl/rules.ttl` |
 | OWL-S | [OWL-S 1.2 W3C Member Submission](https://www.w3.org/Submission/OWL-S/) | 1 个 Service、1 个 Profile、1 个 CompositeProcess、7 个 AtomicProcess、7 个 WSDL Grounding | `ontology/owl-s/service.ttl` |
-| ODRL | [ODRL Information Model 2.2](https://www.w3.org/TR/odrl-model/) / [Vocabulary 2.2](https://www.w3.org/TR/odrl-vocab/) | 研究数据、决策报告、订单护栏三项政策；含 profile 扩展左操作数 | `ontology/odrl/policies.ttl` |
+| ODRL | [ODRL Information Model 2.2](https://www.w3.org/TR/odrl-model/) / [Vocabulary 2.2](https://www.w3.org/TR/odrl-vocab/) | 研究数据、决策报告、订单护栏、AI 分析四项政策；含 profile 扩展左操作数 | `ontology/odrl/policies.ttl` |
 
 ### 规范状态说明
 
@@ -241,11 +242,13 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 
 ### 规模定位
 
-当前可浏览实体为 336 个：72 个类、121 个属性、76 个个体、52 个 SKOS 概念、11 条规则、1 个服务、3 项政策；
-RDF 图共 4,290 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
+当前可浏览实体为 564 个：136 个类、215 个属性、100 个个体、93 个 SKOS 概念、15 条规则、1 个服务、4 项政策；
+RDF 图共 6,253 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
 FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是生产级，建议沿公司行为、基金/ETF、衍生品、
 交易执行、组合风险、合规与披露等业务模块继续扩展，而不是为增加节点而堆叠孤立类。
-更完整的节点口径、缺口和扩展路线见 [规模评估](docs/scale-assessment.md)。
+1.1 已实际新增 64 个类、94 个属性、41 个概念、4 条规则和 1 项政策；完整清单见
+[1.1 领域扩展说明](docs/expansion-1.1.md)。更完整的节点口径、缺口和后续路线见
+[规模评估](docs/scale-assessment.md)。
 
 ---
 

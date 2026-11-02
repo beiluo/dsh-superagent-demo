@@ -507,7 +507,13 @@ def parse_schemes_and_concepts(g: Graph, type_sources: dict[Any, str]) -> tuple[
                 "layer": "skos",
             }
         )
-    scheme_order = {"scheme-industry": 0, "scheme-theme": 1, "scheme-style": 2}
+    scheme_order = {
+        "scheme-industry": 0,
+        "scheme-theme": 1,
+        "scheme-style": 2,
+        "scheme-asset-class": 3,
+        "scheme-factor": 4,
+    }
     schemes.sort(key=lambda item: (scheme_order.get(item["id"], 99), item["label"]["zh"]))
     return schemes, sorted(concepts, key=lambda item: item["label"]["zh"])
 
@@ -870,7 +876,7 @@ def build() -> dict[str, Any]:
         "meta": {
             "title": "A 股投资决策本体",
             "titleEn": "A-Share Investment Decision Ontology",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "date": "2026-11",
             "namespace": str(ASH),
             "repo": "https://github.com/beiluo/dsh-superagent-demo",

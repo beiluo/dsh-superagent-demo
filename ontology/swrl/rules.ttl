@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.0.0" ;
+    owl:versionInfo "1.1.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================
@@ -403,4 +403,112 @@ ashd:rule-buy-high-risk-review
     ) ;
     swrl:head (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:RequiresSecondReview ; swrl:argument1 ashd:var-decision ]
+    ) .
+# ===========================================================================
+# Domain expansion 1.1 — fund, convertible and order rules
+# ===========================================================================
+
+ashd:var-fund a swrl:Variable ; rdfs:label "?fund" .
+ashd:var-fundshare a swrl:Variable ; rdfs:label "?fundShare" .
+ashd:var-tracking a swrl:Variable ; rdfs:label "?trackingError" .
+ashd:var-cb a swrl:Variable ; rdfs:label "?convertible" .
+ashd:var-premium a swrl:Variable ; rdfs:label "?conversionPremium" .
+ashd:var-order a swrl:Variable ; rdfs:label "?order" .
+ashd:var-orderstatus a swrl:Variable ; rdfs:label "?orderStatus" .
+ashd:var-fundflow a swrl:Variable ; rdfs:label "?netFlowPct" .
+
+ashd:rule-tracking-error
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R12" ;
+    rdfs:label "ETF 跟踪误差超限"@zh, "ETF tracking error breach"@en ;
+    rdfs:comment "基金份额跟踪误差高于 2% 时，推断为跟踪误差超限。"@zh ;
+    ash:ruleIf "基金份额 trackingError > 2.0"@zh ;
+    ash:ruleThen "基金份额被推断为 ash:TrackingErrorBreach"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 18 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.1.0" ;
+    ash:ruleOwner "指数与量化部" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:FundShare ;
+    ash:ruleUses ash:trackingError ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:FundShare ; swrl:argument1 ashd:var-fundshare ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:trackingError ; swrl:argument1 ashd:var-fundshare ; swrl:argument2 ashd:var-tracking ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-tracking "2.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TrackingErrorBreach ; swrl:argument1 ashd:var-fundshare ]
+    ) .
+
+ashd:rule-convertible-rich
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R13" ;
+    rdfs:label "可转债高溢价"@zh, "Convertible bond rich premium"@en ;
+    rdfs:comment "可转债转股溢价率高于 30% 时，推断为高溢价状态。"@zh ;
+    ash:ruleIf "可转债 conversionPremium > 30.0"@zh ;
+    ash:ruleThen "可转债被推断为 ash:ConvertibleRich"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 19 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.1.0" ;
+    ash:ruleOwner "固定收益部" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:ConvertibleBond ;
+    ash:ruleUses ash:conversionPremium ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ConvertibleBond ; swrl:argument1 ashd:var-cb ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:conversionPremium ; swrl:argument1 ashd:var-cb ; swrl:argument2 ashd:var-premium ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-premium "30.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ConvertibleRich ; swrl:argument1 ashd:var-cb ]
+    ) .
+
+ashd:rule-order-blocked
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R14" ;
+    rdfs:label "未审批订单阻断"@zh, "Unapproved order blocked"@en ;
+    rdfs:comment "订单状态仍为 PENDING 时，推断为交易阻断，不得执行。"@zh ;
+    ash:ruleIf "订单 orderStatus = PENDING"@zh ;
+    ash:ruleThen "订单被推断为 ash:TradeBlocked"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 4 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.1.0" ;
+    ash:ruleOwner "交易运营部" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Order ;
+    ash:ruleUses ash:orderStatus ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Order ; swrl:argument1 ashd:var-order ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:orderStatus ; swrl:argument1 ashd:var-order ; swrl:argument2 ashd:var-orderstatus ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-orderstatus "PENDING"^^xsd:string ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradeBlocked ; swrl:argument1 ashd:var-order ]
+    ) .
+
+ashd:rule-fund-outflow
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R15" ;
+    rdfs:label "基金净流出风险"@zh, "Fund outflow risk"@en ;
+    rdfs:comment "基金观察期净流入比例低于 -5% 时，推断为基金流出风险。"@zh ;
+    ash:ruleIf "基金 netFlowPct < -5.0"@zh ;
+    ash:ruleThen "基金被推断为 ash:FundOutflowRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 7 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.1.0" ;
+    ash:ruleOwner "组合管理部" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Fund ;
+    ash:ruleUses ash:netFlowPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Fund ; swrl:argument1 ashd:var-fund ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:netFlowPct ; swrl:argument1 ashd:var-fund ; swrl:argument2 ashd:var-fundflow ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-fundflow "-5.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:FundOutflowRisk ; swrl:argument1 ashd:var-fund ]
     ) .

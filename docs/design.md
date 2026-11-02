@@ -1,8 +1,9 @@
 # A 股投资决策本体 — 设计说明
 
-> 版本：1.0.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
+> 版本：1.1.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
 
 本文说明本体“为什么这样建模”、每层使用了哪些 W3C 构造、跨层链路如何工作，以及当前实现的边界。
+1.1 的领域清单见 [expansion-1.1.md](expansion-1.1.md)。
 自然语言标签与定义在 Turtle 中；本文是设计说明，不是本体的替代物。
 
 ---
@@ -165,7 +166,7 @@ FIBO 的官方扩展，也不受 FIBO 治理机构背书。
 
 ## 5. RDF 层：实例图
 
-文件：`ontology/rdf/instances.ttl`（709 条三元组）
+文件：`ontology/rdf/instances.ttl`（901 条三元组）
 
 ### 5.1 表达方式
 
@@ -216,7 +217,7 @@ ashd:decision-huachen-2026q4
 
 ## 6. RDFS 层：词汇与定义
 
-文件：`ontology/rdfs/schema.ttl`（1,099 条三元组）
+文件：`ontology/rdfs/schema.ttl`（2,047 条三元组）
 
 ### 6.1 类层次
 
@@ -268,8 +269,8 @@ ash:Entity
 
 ### 6.2 属性
 
-- 46 个对象属性；
-- 75 个数据属性；
+- 90 个对象属性；
+- 125 个数据属性；
 - 每个属性有 `rdfs:domain`、`rdfs:range` 和中英文标签；
 - 典型属性：
   - `ash:hasSecurity` / `ash:issuedBy`；
@@ -278,7 +279,9 @@ ash:Entity
   - `ash:aboutSecurity` / `ash:hasRecommendation` / `ash:hasRationale` / `ash:basedOn`；
   - `ash:hasRiskAssessment` / `ash:hasRiskFactor` / `ash:hasRiskLevel`；
   - `ash:holdsPosition` / `ash:positionIn` / `ash:positionWeight`；
-  - `ash:generatedBy` / `ash:governedBy` / `ash:hasComplianceCheck`。
+  - `ash:generatedBy` / `ash:governedBy` / `ash:hasComplianceCheck`；
+  - 1.1 扩展：`ash:tracksIndex` / `ash:underlyingAsset` / `ash:orderFor` / `ash:approvedBy` /
+    `ash:hasShareholder` / `ash:hasFactorExposure` / `ash:hasAnalystEstimate`。
 
 ### 6.3 RDFS 语义
 
@@ -300,11 +303,11 @@ RDFS 推断主要依赖：
 
 ## 7. OWL 2 层：公理与结构约束
 
-文件：`ontology/owl/ontology.ttl`（566 条三元组）
+文件：`ontology/owl/ontology.ttl`（794 条三元组）
 
 ### 7.1 类限制
 
-38 条 `owl:Restriction`，代表性约束：
+72 条 `owl:Restriction`，代表性约束：
 
 | 类 | 约束 |
 | --- | --- |
@@ -322,6 +325,11 @@ RDFS 推断主要依赖：
 | `InvestorProfile` | `riskTolerance exactly 1`；`maxSingleWeight exactly 1` |
 | `Recommendation` | `actionCode exactly 1` |
 | `ComplianceCheck` | `checksDecision exactly 1`；`passed exactly 1` |
+| `Fund` | `managedBy exactly 1 FundCompany`；`fundCode exactly 1`；`hasFundFee min 1` |
+| `ETF` | `tracksIndex exactly 1 Index` |
+| `ConvertibleBond` | `underlyingAsset exactly 1 AShare`；`conversionPremium exactly 1` |
+| `Order` | `orderFor exactly 1 Security`；`placedBy exactly 1 Investor`；订单字段各 1 |
+| `Approval` | `approves exactly 1 InvestmentDecision`；`approvedBy exactly 1 MarketParticipant` |
 
 ### 7.2 属性特征与逆属性
 
@@ -372,19 +380,21 @@ RDFS 推断主要依赖：
 
 ---
 
-## 8. SKOS 层：三套概念方案
+## 8. SKOS 层：五套概念方案
 
-文件：`ontology/skos/taxonomy.ttl`（513 条三元组）
+文件：`ontology/skos/taxonomy.ttl`（856 条三元组）
 
 ### 8.1 方案
 
 | 方案 | 概念数 | 用途 |
 | --- | --- | --- |
-| `ashs:scheme-industry` | 36 | 一级行业 + 二级行业 |
+| `ashs:scheme-industry` | 44 | 一级行业 + 二级行业 |
 | `ashs:scheme-theme` | 10 | 跨行业投资主题 |
 | `ashs:scheme-style` | 6 | 价值/成长/红利/质量/动量/低波 |
+| `ashs:scheme-asset-class` | 21 | A 股、ETF/LOF、债券、衍生品、REITs、现金等资产类别 |
+| `ashs:scheme-factor` | 12 | 价值、成长、质量、动量、低波、红利、规模、盈利等因子 |
 
-合计 52 个概念。
+合计 93 个概念。
 
 ### 8.2 构造
 
@@ -416,7 +426,7 @@ RDFS 推断主要依赖：
 
 ## 9. SWRL 层：规则
 
-文件：`ontology/swrl/rules.ttl`（792 条三元组）
+文件：`ontology/swrl/rules.ttl`（980 条三元组）
 
 ### 9.1 语法选择
 
@@ -447,6 +457,10 @@ SWRL 规范同时定义了抽象语法与 XML 具体语法；本仓库采用 RDF
 | R09 | 低流动性证券识别 | 换手率 < 0.5%、总市值 < 50 亿元 | `IlliquidSecurity` | high |
 | R10 | 成长候选筛选 | 营收增速 ≥ 25%、利润增速 ≥ 20%、PE > 40 | `GrowthCandidate` | medium |
 | R11 | 高风险买入二次复核 | `actionCode = BUY` 且 `riskScore ≥ 60` | `RequiresSecondReview` | high |
+| R12 | ETF 跟踪误差超限 | 基金份额 `trackingError > 2.0` | `TrackingErrorBreach` | medium |
+| R13 | 可转债高溢价 | `conversionPremium > 30.0` | `ConvertibleRich` | medium |
+| R14 | 未审批订单阻断 | `orderStatus = PENDING` | `TradeBlocked` | high |
+| R15 | 基金净流出风险 | `netFlowPct < -5.0` | `FundOutflowRisk` | high |
 
 ### 9.3 规则边界
 
@@ -504,7 +518,7 @@ OWL-S 作为语义服务契约。
 
 ## 11. ODRL 层：政策
 
-文件：`ontology/odrl/policies.ttl`（284 条三元组）
+文件：`ontology/odrl/policies.ttl`（348 条三元组）
 
 ### 11.1 政策清单
 
@@ -513,6 +527,7 @@ OWL-S 作为语义服务契约。
 | `policy-research-data` | `odrl:Set` | 行情与财务数据包 | 允许 read/derive/aggregate；约束 purpose=research、spatial=CN、dateTime<2027-01-01、count≤12；义务 attribute/delete；禁止 distribute/commercialize |
 | `policy-decision-use` | `odrl:Agreement` | 投资决策报告 | 允许 read/use/reproduce；约束 purpose、recipient isA QualifiedInvestor、dateTime；义务 inform/obtainConsent/attribute；禁止分发给非合格投资者；补救 reviewPolicy |
 | `policy-trade-guard` | `odrl:Set` | 订单意图 | 允许 execute 当且仅当 humanApproval=true 且 compliancePassed=true；禁止 humanApproval=false 的执行；义务 inform/reviewPolicy |
+| `policy-ai-analysis` | `odrl:Agreement` | AI 辅助分析 | 允许 read/use/reproduce；约束 purpose、recipient isA QualifiedInvestor；禁止绕过人工审批执行订单；义务 attribute/reviewPolicy |
 
 ### 11.2 关键构造
 
@@ -594,15 +609,15 @@ ODRL 政策是**声明式**的。本仓库：
 
 ```text
 modules: 7
-triples: 4290
-classes: 72
-object properties: 46
-data properties: 75
-SKOS concepts: 52
-SWRL rules: 11
+triples: 6253
+classes: 136
+object properties: 90
+data properties: 125
+SKOS concepts: 93
+SWRL rules: 15
 OWL-S services: 1
-ODRL policies: 3
-OWL RL closure: 2887 -> 7991 triples (5104 inferred)
+ODRL policies: 4
+OWL RL closure: 4598 -> 12503 triples (7905 inferred)
 warnings: 0
 ```
 
@@ -611,11 +626,11 @@ warnings: 0
 使用 Firefox + Playwright 做冒烟检查：
 
 - 页面标题与数据快照加载；
-- 336 个实体、11 条规则、7 个流程步骤、3 项政策渲染；
+- 564 个实体、15 条规则、7 个流程步骤、4 项政策渲染；
 - 搜索 `InvestmentDecision` 返回 1 条；
 - 点击实体详情显示 8 条 OWL 限制；
 - 规则严重程度筛选、政策 tab、概念树、示例 tab 交互正常；
-- 图谱三种模式：领域全景 72 节点/96 边、决策链 19 节点/15 条带标签边、SKOS 52 节点；
+- 图谱四种模式：核心全景 51 节点/82 边、全部类 136 节点/202 边、决策链 19 节点/15 条带标签边、SKOS 93 节点；
 - 图谱缩放、图例隐藏/恢复、节点聚焦、跳转 Explorer/SKOS 均正常；
 - 桌面与 390px 手机视口无横向滚动、无 console error；
 - 截图见 `docs/evidence/`。
@@ -666,12 +681,13 @@ index.html + assets/js/app.js
 
 图谱使用原生 SVG 与自实现力导向布局，不引入 D3 或图表库：
 
-- **领域全景**：72 个类节点；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
+- **核心全景**：51 个核心类节点，保证可读性；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
+- **全部类**：136 个类节点、202 条关系，用于查看完整扩展域；
 - **决策链**：19 个核心类的手工布局，边标签显示对象属性，适合讲解决策路径；
-- **SKOS 分类**：52 个概念，按三套 ConceptScheme 着色，边为 `broader`；
+- **SKOS 分类**：93 个概念，按五套 ConceptScheme 着色，边为 `broader`；
 - **交互**：滚轮缩放、拖拽平移、图例筛选、节点聚焦、`标签`开关；点击节点在右侧显示类/概念详情；
 - **联动**：详情中的“在 Explorer 中打开”跳转到实体浏览器；“在 SKOS 分类中查看”跳转到概念树；
-- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 72 节点全景并缩放查看；
+- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、136 节点全部类并缩放查看；
 - **规模评估**：图谱下方固定展示类/属性/概念/三元组规模，并明确“参考实现而非 FIBO 级行业本体”。
 
 图谱节点与边全部来自 `DATA.classes`、`DATA.objectProperties`、`DATA.concepts`，没有手工维护的第二份图数据。

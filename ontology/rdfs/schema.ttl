@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.0.0" .
+    owl:versionInfo "1.1.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -1153,3 +1153,960 @@ ash:endpointStatus a owl:DatatypeProperty ;
     rdfs:range xsd:string ;
     rdfs:label "端点状态"@zh, "endpoint status"@en ;
     rdfs:comment "示意端点状态：illustrative、sandbox、production。"@zh .
+# ===========================================================================
+# Domain expansion 1.1 — funds, fixed income, derivatives, trading, corporate actions,
+# financial depth, factors, risk, ESG and data governance
+# ===========================================================================
+
+ash:Fund a owl:Class ;
+    rdfs:subClassOf ash:FinancialInstrument ;
+    rdfs:label "基金"@zh, "Fund"@en ;
+    rdfs:comment "通过集合投资方式，将投资者资金配置于证券、债券或其他资产的金融工具。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FundShare a owl:Class ;
+    rdfs:subClassOf ash:Security ;
+    rdfs:label "基金份额"@zh, "Fund Share"@en ;
+    rdfs:comment "基金持有人按份额享有收益与风险的证券化权益。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ETF a owl:Class ;
+    rdfs:subClassOf ash:FundShare ;
+    rdfs:label "交易型开放式指数基金"@zh, "Exchange-Traded Fund"@en ;
+    rdfs:comment "在交易所上市交易、通常跟踪特定指数的开放式基金份额。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:LOF a owl:Class ;
+    rdfs:subClassOf ash:FundShare ;
+    rdfs:label "上市开放式基金"@zh, "Listed Open-Ended Fund"@en ;
+    rdfs:comment "既可在场外申购赎回、又可在交易所买卖的开放式基金份额。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ClosedEndedFund a owl:Class ;
+    rdfs:subClassOf ash:Fund ;
+    rdfs:label "封闭式基金"@zh, "Closed-Ended Fund"@en ;
+    rdfs:comment "份额总额在存续期内相对固定、可在交易所交易的基金。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:MoneyMarketFund a owl:Class ;
+    rdfs:subClassOf ash:Fund ;
+    rdfs:label "货币市场基金"@zh, "Money Market Fund"@en ;
+    rdfs:comment "主要投资短期货币市场工具、以流动性管理为目标的基金。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:BondFund a owl:Class ;
+    rdfs:subClassOf ash:Fund ;
+    rdfs:label "债券基金"@zh, "Bond Fund"@en ;
+    rdfs:comment "主要投资国债、信用债或可转债等固定收益资产的基金。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:EquityFund a owl:Class ;
+    rdfs:subClassOf ash:Fund ;
+    rdfs:label "股票基金"@zh, "Equity Fund"@en ;
+    rdfs:comment "主要投资股票资产的公募或私募基金。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FundCompany a owl:Class ;
+    rdfs:subClassOf ash:ServiceProvider ;
+    rdfs:label "基金管理公司"@zh, "Fund Company"@en ;
+    rdfs:comment "发行和管理基金产品、承担受托管理职责的机构。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FundManager a owl:Class ;
+    rdfs:subClassOf ash:MarketParticipant ;
+    rdfs:label "基金经理"@zh, "Fund Manager"@en ;
+    rdfs:comment "负责基金投资组合构建与日常管理的专业人员。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FundFee a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "基金费用"@zh, "Fund Fee"@en ;
+    rdfs:comment "管理费、托管费、销售服务费等基金费用信息。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FundFlow a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "基金资金流"@zh, "Fund Flow"@en ;
+    rdfs:comment "基金申购、赎回与净流入流出的观测记录。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Bond a owl:Class ;
+    rdfs:subClassOf ash:Security ;
+    rdfs:label "债券"@zh, "Bond"@en ;
+    rdfs:comment "发行人按约定还本付息的固定收益证券。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:GovernmentBond a owl:Class ;
+    rdfs:subClassOf ash:Bond ;
+    rdfs:label "国债"@zh, "Government Bond"@en ;
+    rdfs:comment "由中央政府发行、以国家信用支持的债券。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:CorporateBond a owl:Class ;
+    rdfs:subClassOf ash:Bond ;
+    rdfs:label "信用债"@zh, "Corporate Bond"@en ;
+    rdfs:comment "由非金融企业或金融机构发行、承担信用风险的债券。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ConvertibleBond a owl:Class ;
+    rdfs:subClassOf ash:Bond ;
+    rdfs:label "可转换债券"@zh, "Convertible Bond"@en ;
+    rdfs:comment "可在约定条件下转换为发行公司股票的债券。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:BondRating a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "债券评级"@zh, "Bond Rating"@en ;
+    rdfs:comment "对债券发行人偿债能力与违约风险的外部或内部评级。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:YieldCurve a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "收益率曲线"@zh, "Yield Curve"@en ;
+    rdfs:comment "不同期限无风险或信用债收益率构成的市场曲线。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Repo a owl:Class ;
+    rdfs:subClassOf ash:FinancialInstrument ;
+    rdfs:label "回购"@zh, "Repo"@en ;
+    rdfs:comment "以证券为担保的短期资金融通交易。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:BondCovenant a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "债券契约条款"@zh, "Bond Covenant"@en ;
+    rdfs:comment "债券发行文件中的财务约束、回售、担保与违约条款。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Derivative a owl:Class ;
+    rdfs:subClassOf ash:FinancialInstrument ;
+    rdfs:label "衍生品"@zh, "Derivative"@en ;
+    rdfs:comment "价值取决于标的资产、利率、指数或其他变量的金融合约。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FuturesContract a owl:Class ;
+    rdfs:subClassOf ash:Derivative ;
+    rdfs:label "期货合约"@zh, "Futures Contract"@en ;
+    rdfs:comment "在交易所标准化、约定未来交割的合约。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:OptionContract a owl:Class ;
+    rdfs:subClassOf ash:Derivative ;
+    rdfs:label "期权合约"@zh, "Option Contract"@en ;
+    rdfs:comment "赋予买方在约定日期按约定价格买入或卖出标的权利的合约。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:IndexFuture a owl:Class ;
+    rdfs:subClassOf ash:FuturesContract ;
+    rdfs:label "股指期货"@zh, "Index Futures"@en ;
+    rdfs:comment "以股票指数为标的的期货合约。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:CommodityFuture a owl:Class ;
+    rdfs:subClassOf ash:FuturesContract ;
+    rdfs:label "商品期货"@zh, "Commodity Futures"@en ;
+    rdfs:comment "以大宗商品为标的的期货合约。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:StockOption a owl:Class ;
+    rdfs:subClassOf ash:OptionContract ;
+    rdfs:label "股票期权"@zh, "Stock Option"@en ;
+    rdfs:comment "以单只股票或 ETF 为标的的期权合约。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ContractSpecification a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "合约规格"@zh, "Contract Specification"@en ;
+    rdfs:comment "合约乘数、报价单位、交割方式与最后交易日等标准化条款。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:MarginRequirement a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "保证金要求"@zh, "Margin Requirement"@en ;
+    rdfs:comment "衍生品或信用交易要求缴纳的保证金比例与追保规则。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:TradingCalendar a owl:Class ;
+    rdfs:subClassOf ash:MarketStructure ;
+    rdfs:label "交易日历"@zh, "Trading Calendar"@en ;
+    rdfs:comment "交易所开市、休市、结算与节假日安排。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:TradingSession a owl:Class ;
+    rdfs:subClassOf ash:MarketStructure ;
+    rdfs:label "交易时段"@zh, "Trading Session"@en ;
+    rdfs:comment "集合竞价、连续竞价、盘后固定价格交易等时段。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:OrderBook a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "订单簿"@zh, "Order Book"@en ;
+    rdfs:comment "按价格优先级组织的买卖委托快照。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Order a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "委托订单"@zh, "Order"@en ;
+    rdfs:comment "投资者提交、等待执行或已撤销的买卖指令。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Trade a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "成交"@zh, "Trade"@en ;
+    rdfs:comment "订单撮合后形成的成交记录。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ExecutionReport a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "执行回报"@zh, "Execution Report"@en ;
+    rdfs:comment "订单状态、成交数量、成交价格与拒单原因等执行反馈。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:LimitState a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "涨跌停状态"@zh, "Limit State"@en ;
+    rdfs:comment "证券当日涨停、跌停或接近涨跌停的价格状态。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:MarginAccount a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "信用账户"@zh, "Margin Account"@en ;
+    rdfs:comment "用于融资融券交易的担保品、负债与维持担保比例记录。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Shareholder a owl:Class ;
+    rdfs:subClassOf ash:MarketParticipant ;
+    rdfs:label "股东"@zh, "Shareholder"@en ;
+    rdfs:comment "持有上市公司股份的自然人、机构或国资主体。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ControllingShareholder a owl:Class ;
+    rdfs:subClassOf ash:Shareholder ;
+    rdfs:label "控股股东"@zh, "Controlling Shareholder"@en ;
+    rdfs:comment "能够对上市公司股东大会决议产生重大影响的股东。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:OwnershipStructure a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "股权结构"@zh, "Ownership Structure"@en ;
+    rdfs:comment "上市公司股东持股比例、控制链与一致行动关系。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:RelatedPartyTransaction a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "关联交易"@zh, "Related-Party Transaction"@en ;
+    rdfs:comment "上市公司与关联方之间的购买、销售、资金往来或担保。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ShareRepurchase a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "股份回购"@zh, "Share Repurchase"@en ;
+    rdfs:comment "上市公司使用自有资金或融资回购自身股份的行为。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:EquityOffering a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "股权融资"@zh, "Equity Offering"@en ;
+    rdfs:comment "定增、配股、可转债转股等增加股本的融资行为。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:MergerAcquisition a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "并购重组"@zh, "Merger and Acquisition"@en ;
+    rdfs:comment "收购、合并、资产注入、分拆或控制权变更等交易。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:LockupRelease a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "限售解禁"@zh, "Lockup Release"@en ;
+    rdfs:comment "限售股份到期解除限售、增加可流通股本的事件。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:StatementLineItem a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "报表科目"@zh, "Statement Line Item"@en ;
+    rdfs:comment "资产负债表、利润表或现金流量表中的具体科目。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:SegmentReport a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "分部报告"@zh, "Segment Report"@en ;
+    rdfs:comment "按业务、地区或产品划分的收入、利润与资产披露。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:AnalystEstimate a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "分析师预测"@zh, "Analyst Estimate"@en ;
+    rdfs:comment "分析师对收入、利润、目标价或评级的预测。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ConsensusEstimate a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "一致预期"@zh, "Consensus Estimate"@en ;
+    rdfs:comment "多名分析师预测的汇总值、离散度与修正方向。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:RatingAction a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "评级行动"@zh, "Rating Action"@en ;
+    rdfs:comment "上调、下调、列入观察或撤销评级的行动。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Factor a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "因子"@zh, "Factor"@en ;
+    rdfs:comment "用于解释证券收益横截面差异的可观测变量。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FactorExposure a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "因子暴露"@zh, "Factor Exposure"@en ;
+    rdfs:comment "组合或证券对某因子的敏感度与暴露值。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:RiskModel a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "风险模型"@zh, "Risk Model"@en ;
+    rdfs:comment "估计协方差、因子暴露、跟踪误差与压力损失的风险模型。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:PortfolioConstraint a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "组合约束"@zh, "Portfolio Constraint"@en ;
+    rdfs:comment "单票、行业、流动性、换手与跟踪误差等组合限制。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Backtest a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "回测"@zh, "Backtest"@en ;
+    rdfs:comment "在历史数据上评估策略收益、风险与交易成本的过程记录。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:TradeCost a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "交易成本"@zh, "Trade Cost"@en ;
+    rdfs:comment "佣金、印花税、滑点与冲击成本等交易摩擦。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ESGRating a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "ESG 评级"@zh, "ESG Rating"@en ;
+    rdfs:comment "环境、社会与治理表现的综合评分。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ControversyEvent a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "争议事件"@zh, "Controversy Event"@en ;
+    rdfs:comment "环境污染、劳工、治理或产品安全等 ESG 争议事件。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:DataLineage a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "数据血缘"@zh, "Data Lineage"@en ;
+    rdfs:comment "数据从来源、加工、修订到消费的可追溯链路。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ModelVersion a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "模型版本"@zh, "Model Version"@en ;
+    rdfs:comment "风险模型、因子模型或估值模型的版本与校验信息。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:Approval a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "审批"@zh, "Approval"@en ;
+    rdfs:comment "对决策、订单或模型变更进行人工批准或驳回的记录。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:TrackingErrorBreach a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "跟踪误差超限"@zh, "Tracking Error Breach"@en ;
+    rdfs:comment "ETF 或指数基金的跟踪误差超过约束的状态。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ConvertibleRich a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "可转债高溢价"@zh, "Convertible Rich"@en ;
+    rdfs:comment "可转债转股溢价率过高、股性定价偏贵的状态。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:TradeBlocked a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "交易阻断"@zh, "Trade Blocked"@en ;
+    rdfs:comment "订单因未审批、合规或风控原因被阻断的状态。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:FundOutflowRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "基金流出风险"@zh, "Fund Outflow Risk"@en ;
+    rdfs:comment "基金出现显著净赎回、流动性承压的状态。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+
+# ---------------------------------------------------------------------------
+# Domain expansion 1.1 — object and data properties
+# ---------------------------------------------------------------------------
+
+ash:hasFundShare a owl:ObjectProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range ash:FundShare ;
+    rdfs:label "持有基金份额"@zh, "has fund share"@en ;
+    rdfs:comment "基金与其发行的基金份额之间的关系。"@zh .
+
+ash:managedBy a owl:ObjectProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range ash:FundCompany ;
+    rdfs:label "管理人为"@zh, "managed by"@en ;
+    rdfs:comment "基金产品的基金管理公司。"@zh .
+
+ash:hasFundManager a owl:ObjectProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range ash:FundManager ;
+    rdfs:label "基金经理"@zh, "has fund manager"@en ;
+    rdfs:comment "基金产品的主要基金经理。"@zh .
+
+ash:tracksIndex a owl:ObjectProperty ;
+    rdfs:domain ash:FundShare ;
+    rdfs:range ash:Index ;
+    rdfs:label "跟踪指数"@zh, "tracks index"@en ;
+    rdfs:comment "ETF 或指数基金所跟踪的业绩指数。"@zh .
+
+ash:hasFundFee a owl:ObjectProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range ash:FundFee ;
+    rdfs:label "基金费用"@zh, "has fund fee"@en ;
+    rdfs:comment "基金产品的管理费、托管费等费用信息。"@zh .
+
+ash:hasFundFlow a owl:ObjectProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range ash:FundFlow ;
+    rdfs:label "资金流"@zh, "has fund flow"@en ;
+    rdfs:comment "基金申购赎回与净流入流出的观测记录。"@zh .
+
+ash:hasBondRating a owl:ObjectProperty ;
+    rdfs:domain ash:Bond ;
+    rdfs:range ash:BondRating ;
+    rdfs:label "债券评级"@zh, "has bond rating"@en ;
+    rdfs:comment "债券对应的外部或内部信用评级。"@zh .
+
+ash:hasBondCovenant a owl:ObjectProperty ;
+    rdfs:domain ash:Bond ;
+    rdfs:range ash:BondCovenant ;
+    rdfs:label "债券契约"@zh, "has bond covenant"@en ;
+    rdfs:comment "债券发行文件中的契约条款。"@zh .
+
+ash:underlyingAsset a owl:ObjectProperty ;
+    rdfs:domain ash:FinancialInstrument ;
+    rdfs:range ash:Entity ;
+    rdfs:label "标的资产"@zh, "underlying asset"@en ;
+    rdfs:comment "衍生品或可转债所挂钩的标的资产。"@zh .
+
+ash:hasContractSpec a owl:ObjectProperty ;
+    rdfs:domain ash:Derivative ;
+    rdfs:range ash:ContractSpecification ;
+    rdfs:label "合约规格"@zh, "has contract specification"@en ;
+    rdfs:comment "衍生品合约的标准化规格。"@zh .
+
+ash:hasMarginRequirement a owl:ObjectProperty ;
+    rdfs:domain ash:Derivative ;
+    rdfs:range ash:MarginRequirement ;
+    rdfs:label "保证金要求"@zh, "has margin requirement"@en ;
+    rdfs:comment "衍生品交易适用的保证金要求。"@zh .
+
+ash:hasTradingSession a owl:ObjectProperty ;
+    rdfs:domain ash:TradingCalendar ;
+    rdfs:range ash:TradingSession ;
+    rdfs:label "交易时段"@zh, "has trading session"@en ;
+    rdfs:comment "交易日历中的交易时段安排。"@zh .
+
+ash:hasOrderBook a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:OrderBook ;
+    rdfs:label "订单簿"@zh, "has order book"@en ;
+    rdfs:comment "证券的买卖委托订单簿快照。"@zh .
+
+ash:orderFor a owl:ObjectProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range ash:Security ;
+    rdfs:label "订单标的"@zh, "order for"@en ;
+    rdfs:comment "委托订单指向的证券。"@zh .
+
+ash:placedBy a owl:ObjectProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range ash:Investor ;
+    rdfs:label "下单人"@zh, "placed by"@en ;
+    rdfs:comment "委托订单的提交投资者。"@zh .
+
+ash:executedAs a owl:ObjectProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range ash:Trade ;
+    rdfs:label "成交为"@zh, "executed as"@en ;
+    rdfs:comment "订单执行后形成的成交记录。"@zh .
+
+ash:generatedFromOrder a owl:ObjectProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range ash:Order ;
+    rdfs:label "由订单生成"@zh, "generated from order"@en ;
+    rdfs:comment "成交记录所来源的委托订单。"@zh .
+
+ash:hasExecutionReport a owl:ObjectProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range ash:ExecutionReport ;
+    rdfs:label "执行回报"@zh, "has execution report"@en ;
+    rdfs:comment "成交对应的执行回报。"@zh .
+
+ash:hasLimitState a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:LimitState ;
+    rdfs:label "涨跌停状态"@zh, "has limit state"@en ;
+    rdfs:comment "证券当前的涨跌停或接近涨跌停状态。"@zh .
+
+ash:hasMarginAccount a owl:ObjectProperty ;
+    rdfs:domain ash:Investor ;
+    rdfs:range ash:MarginAccount ;
+    rdfs:label "信用账户"@zh, "has margin account"@en ;
+    rdfs:comment "投资者用于融资融券的信用账户。"@zh .
+
+ash:hasShareholder a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:Shareholder ;
+    rdfs:label "股东"@zh, "has shareholder"@en ;
+    rdfs:comment "上市公司的主要股东。"@zh .
+
+ash:controls a owl:ObjectProperty ;
+    rdfs:domain ash:Shareholder ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "控制"@zh, "controls"@en ;
+    rdfs:comment "股东对上市公司的控制关系。"@zh .
+
+ash:hasOwnershipStructure a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:OwnershipStructure ;
+    rdfs:label "股权结构"@zh, "has ownership structure"@en ;
+    rdfs:comment "上市公司的股权与控制结构。"@zh .
+
+ash:hasRelatedPartyTransaction a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:RelatedPartyTransaction ;
+    rdfs:label "关联交易"@zh, "has related-party transaction"@en ;
+    rdfs:comment "上市公司发生的关联交易。"@zh .
+
+ash:hasStatementLineItem a owl:ObjectProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range ash:StatementLineItem ;
+    rdfs:label "报表科目"@zh, "has statement line item"@en ;
+    rdfs:comment "财务报告中的具体报表科目。"@zh .
+
+ash:hasSegmentReport a owl:ObjectProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range ash:SegmentReport ;
+    rdfs:label "分部报告"@zh, "has segment report"@en ;
+    rdfs:comment "财务报告中的业务或地区分部信息。"@zh .
+
+ash:hasAnalystEstimate a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:AnalystEstimate ;
+    rdfs:label "分析师预测"@zh, "has analyst estimate"@en ;
+    rdfs:comment "分析师对公司的预测与目标价。"@zh .
+
+ash:hasConsensusEstimate a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:ConsensusEstimate ;
+    rdfs:label "一致预期"@zh, "has consensus estimate"@en ;
+    rdfs:comment "市场分析师的一致预期。"@zh .
+
+ash:hasRatingAction a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:RatingAction ;
+    rdfs:label "评级行动"@zh, "has rating action"@en ;
+    rdfs:comment "公司或债券的评级调整行动。"@zh .
+
+ash:hasFactorExposure a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:FactorExposure ;
+    rdfs:label "因子暴露"@zh, "has factor exposure"@en ;
+    rdfs:comment "组合对因子的暴露记录。"@zh .
+
+ash:exposedToFactor a owl:ObjectProperty ;
+    rdfs:domain ash:FactorExposure ;
+    rdfs:range ash:Factor ;
+    rdfs:label "暴露于因子"@zh, "exposed to factor"@en ;
+    rdfs:comment "因子暴露所对应的具体因子。"@zh .
+
+ash:usesRiskModel a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:RiskModel ;
+    rdfs:label "使用风险模型"@zh, "uses risk model"@en ;
+    rdfs:comment "组合采用的风险模型。"@zh .
+
+ash:hasConstraint a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:PortfolioConstraint ;
+    rdfs:label "组合约束"@zh, "has constraint"@en ;
+    rdfs:comment "组合必须满足的约束条件。"@zh .
+
+ash:hasBacktest a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentStrategy ;
+    rdfs:range ash:Backtest ;
+    rdfs:label "回测记录"@zh, "has backtest"@en ;
+    rdfs:comment "策略的历史回测记录。"@zh .
+
+ash:hasTradeCost a owl:ObjectProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range ash:TradeCost ;
+    rdfs:label "交易成本"@zh, "has trade cost"@en ;
+    rdfs:comment "成交对应的交易成本。"@zh .
+
+ash:hasESGRating a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:ESGRating ;
+    rdfs:label "ESG 评级"@zh, "has ESG rating"@en ;
+    rdfs:comment "上市公司的 ESG 评级。"@zh .
+
+ash:hasControversy a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:ControversyEvent ;
+    rdfs:label "争议事件"@zh, "has controversy"@en ;
+    rdfs:comment "上市公司涉及的 ESG 争议事件。"@zh .
+
+ash:hasDataLineage a owl:ObjectProperty ;
+    rdfs:domain ash:InformationObject ;
+    rdfs:range ash:DataLineage ;
+    rdfs:label "数据血缘"@zh, "has data lineage"@en ;
+    rdfs:comment "信息对象的数据血缘记录。"@zh .
+
+ash:hasModelVersion a owl:ObjectProperty ;
+    rdfs:domain ash:RiskModel ;
+    rdfs:range ash:ModelVersion ;
+    rdfs:label "模型版本"@zh, "has model version"@en ;
+    rdfs:comment "风险模型的版本记录。"@zh .
+
+ash:hasApproval a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:Approval ;
+    rdfs:label "审批记录"@zh, "has approval"@en ;
+    rdfs:comment "决策对应的人工审批记录。"@zh .
+
+ash:approves a owl:ObjectProperty ;
+    rdfs:domain ash:Approval ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "审批对象"@zh, "approves"@en ;
+    rdfs:comment "审批所覆盖的投资决策。"@zh .
+
+ash:approvedBy a owl:ObjectProperty ;
+    rdfs:domain ash:Approval ;
+    rdfs:range ash:MarketParticipant ;
+    rdfs:label "审批人"@zh, "approved by"@en ;
+    rdfs:comment "执行审批的合规或授权人员。"@zh .
+
+ash:hasOrder a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:Order ;
+    rdfs:label "组合订单"@zh, "has order"@en ;
+    rdfs:comment "组合关联的委托订单。"@zh .
+
+ash:hasTrade a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:Trade ;
+    rdfs:label "组合成交"@zh, "has trade"@en ;
+    rdfs:comment "组合关联的成交记录。"@zh .
+
+ash:fundCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range xsd:string ;
+    rdfs:label "基金代码"@zh, "fund code"@en ;
+    rdfs:comment "基金产品的稳定业务代码。"@zh .
+
+ash:fundType a owl:DatatypeProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range xsd:string ;
+    rdfs:label "基金类型"@zh, "fund type"@en ;
+    rdfs:comment "基金类型：ETF、LOF、货币、债券或股票基金。"@zh .
+
+ash:managementFee a owl:DatatypeProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "管理费率"@zh, "management fee"@en ;
+    rdfs:comment "基金管理费率，以百分数表示。"@zh .
+
+ash:netAssetValue a owl:DatatypeProperty ;
+    rdfs:domain ash:FundShare ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "基金净值"@zh, "net asset value"@en ;
+    rdfs:comment "基金份额净值，单位：人民币元。"@zh .
+
+ash:trackingError a owl:DatatypeProperty ;
+    rdfs:domain ash:FundShare ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "跟踪误差"@zh, "tracking error"@en ;
+    rdfs:comment "ETF 或指数基金相对业绩基准的跟踪误差，以百分数表示。"@zh .
+
+ash:premiumDiscount a owl:DatatypeProperty ;
+    rdfs:domain ash:FundShare ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "折溢价率"@zh, "premium/discount"@en ;
+    rdfs:comment "基金二级市场价格相对净值的折溢价率，以百分数表示。"@zh .
+
+ash:netFlowPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Fund ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "净流入比例"@zh, "net flow percent"@en ;
+    rdfs:comment "观察期内基金净申购占资产规模的比例，以百分数表示。"@zh .
+
+ash:flowAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:FundFlow ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "资金流金额"@zh, "flow amount"@en ;
+    rdfs:comment "申购减赎回的净金额，单位：人民币元。"@zh .
+
+ash:flowPeriod a owl:DatatypeProperty ;
+    rdfs:domain ash:FundFlow ;
+    rdfs:range xsd:gYearMonth ;
+    rdfs:label "资金流期间"@zh, "flow period"@en ;
+    rdfs:comment "资金流统计对应的年月。"@zh .
+
+ash:bondCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Bond ;
+    rdfs:range xsd:string ;
+    rdfs:label "债券代码"@zh, "bond code"@en ;
+    rdfs:comment "债券的稳定业务代码。"@zh .
+
+ash:couponRate a owl:DatatypeProperty ;
+    rdfs:domain ash:Bond ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "票面利率"@zh, "coupon rate"@en ;
+    rdfs:comment "债券票面年利率，以百分数表示。"@zh .
+
+ash:maturityDate a owl:DatatypeProperty ;
+    rdfs:domain ash:Bond ;
+    rdfs:range xsd:date ;
+    rdfs:label "到期日"@zh, "maturity date"@en ;
+    rdfs:comment "债券本金到期兑付日。"@zh .
+
+ash:creditRating a owl:DatatypeProperty ;
+    rdfs:domain ash:BondRating ;
+    rdfs:range xsd:string ;
+    rdfs:label "信用评级"@zh, "credit rating"@en ;
+    rdfs:comment "债券或发行人的信用等级，例如 AAA、AA+。"@zh .
+
+ash:conversionPremium a owl:DatatypeProperty ;
+    rdfs:domain ash:ConvertibleBond ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "转股溢价率"@zh, "conversion premium"@en ;
+    rdfs:comment "可转债转股价值相对债券价格的溢价率，以百分数表示。"@zh .
+
+ash:yieldToMaturity a owl:DatatypeProperty ;
+    rdfs:domain ash:Bond ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "到期收益率"@zh, "yield to maturity"@en ;
+    rdfs:comment "持有至到期的年化收益率，以百分数表示。"@zh .
+
+ash:contractCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Derivative ;
+    rdfs:range xsd:string ;
+    rdfs:label "合约代码"@zh, "contract code"@en ;
+    rdfs:comment "期货或期权合约的稳定代码。"@zh .
+
+ash:multiplier a owl:DatatypeProperty ;
+    rdfs:domain ash:FuturesContract ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "合约乘数"@zh, "contract multiplier"@en ;
+    rdfs:comment "期货合约每点对应的标的数量。"@zh .
+
+ash:strikePrice a owl:DatatypeProperty ;
+    rdfs:domain ash:OptionContract ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "行权价"@zh, "strike price"@en ;
+    rdfs:comment "期权合约约定的行权价格。"@zh .
+
+ash:expiryDate a owl:DatatypeProperty ;
+    rdfs:domain ash:Derivative ;
+    rdfs:range xsd:date ;
+    rdfs:label "到期日"@zh, "expiry date"@en ;
+    rdfs:comment "衍生品合约的最后交易日或到期日。"@zh .
+
+ash:marginRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:MarginRequirement ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "保证金比例"@zh, "margin ratio"@en ;
+    rdfs:comment "保证金占合约名义价值的比例，以百分数表示。"@zh .
+
+ash:tradingStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:string ;
+    rdfs:label "交易状态"@zh, "trading status"@en ;
+    rdfs:comment "证券交易状态：normal、suspended、limit-up、limit-down。"@zh .
+
+ash:orderId a owl:DatatypeProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range xsd:string ;
+    rdfs:label "订单编号"@zh, "order id"@en ;
+    rdfs:comment "委托订单的稳定标识。"@zh .
+
+ash:orderSide a owl:DatatypeProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range xsd:string ;
+    rdfs:label "买卖方向"@zh, "order side"@en ;
+    rdfs:comment "订单方向：BUY 或 SELL。"@zh .
+
+ash:orderQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "委托数量"@zh, "order quantity"@en ;
+    rdfs:comment "委托的证券数量。"@zh .
+
+ash:orderPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "委托价格"@zh, "order price"@en ;
+    rdfs:comment "限价委托价格，单位：人民币元。"@zh .
+
+ash:orderStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range xsd:string ;
+    rdfs:label "订单状态"@zh, "order status"@en ;
+    rdfs:comment "订单状态：PENDING、FILLED、CANCELLED、REJECTED。"@zh .
+
+ash:executionPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成交价格"@zh, "execution price"@en ;
+    rdfs:comment "成交价格，单位：人民币元。"@zh .
+
+ash:executionQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成交数量"@zh, "execution quantity"@en ;
+    rdfs:comment "成交的证券数量。"@zh .
+
+ash:tradeDate a owl:DatatypeProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range xsd:date ;
+    rdfs:label "成交日期"@zh, "trade date"@en ;
+    rdfs:comment "成交发生的日期。"@zh .
+
+ash:settlementDate a owl:DatatypeProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range xsd:date ;
+    rdfs:label "结算日期"@zh, "settlement date"@en ;
+    rdfs:comment "成交对应的资金与证券交收日期。"@zh .
+
+ash:ownershipRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:Shareholder ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "持股比例"@zh, "ownership ratio"@en ;
+    rdfs:comment "股东持有上市公司股份的比例，取值 0—1。"@zh .
+
+ash:repurchaseAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:ShareRepurchase ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "回购金额"@zh, "repurchase amount"@en ;
+    rdfs:comment "公司计划或实际回购金额，单位：人民币元。"@zh .
+
+ash:offeringSize a owl:DatatypeProperty ;
+    rdfs:domain ash:EquityOffering ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "融资规模"@zh, "offering size"@en ;
+    rdfs:comment "股权融资计划募集资金规模，单位：人民币元。"@zh .
+
+ash:lockupEndDate a owl:DatatypeProperty ;
+    rdfs:domain ash:LockupRelease ;
+    rdfs:range xsd:date ;
+    rdfs:label "解禁日期"@zh, "lockup end date"@en ;
+    rdfs:comment "限售股份解除限售的日期。"@zh .
+
+ash:lineItemCode a owl:DatatypeProperty ;
+    rdfs:domain ash:StatementLineItem ;
+    rdfs:range xsd:string ;
+    rdfs:label "科目代码"@zh, "line item code"@en ;
+    rdfs:comment "财务报表科目的稳定代码。"@zh .
+
+ash:lineItemValue a owl:DatatypeProperty ;
+    rdfs:domain ash:StatementLineItem ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "科目金额"@zh, "line item value"@en ;
+    rdfs:comment "报表科目的金额，单位：人民币元。"@zh .
+
+ash:segmentName a owl:DatatypeProperty ;
+    rdfs:domain ash:SegmentReport ;
+    rdfs:range xsd:string ;
+    rdfs:label "分部名称"@zh, "segment name"@en ;
+    rdfs:comment "业务或地区分部的名称。"@zh .
+
+ash:estimateValue a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalystEstimate ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "预测值"@zh, "estimate value"@en ;
+    rdfs:comment "分析师对净利润等指标的预测值，单位：人民币元。"@zh .
+
+ash:analystTargetPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalystEstimate ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "分析师目标价"@zh, "analyst target price"@en ;
+    rdfs:comment "分析师给出的目标价，单位：人民币元。"@zh .
+
+ash:estimateDate a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalystEstimate ;
+    rdfs:range xsd:date ;
+    rdfs:label "预测日期"@zh, "estimate date"@en ;
+    rdfs:comment "分析师预测发布或更新的日期。"@zh .
+
+ash:ratingCode a owl:DatatypeProperty ;
+    rdfs:domain ash:RatingAction ;
+    rdfs:range xsd:string ;
+    rdfs:label "评级代码"@zh, "rating code"@en ;
+    rdfs:comment "评级行动代码或评级符号。"@zh .
+
+ash:factorValue a owl:DatatypeProperty ;
+    rdfs:domain ash:FactorExposure ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "因子值"@zh, "factor value"@en ;
+    rdfs:comment "组合或证券在特定因子上的暴露值。"@zh .
+
+ash:trackingErrorLimit a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioConstraint ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "跟踪误差上限"@zh, "tracking error limit"@en ;
+    rdfs:comment "组合允许的最大跟踪误差，以百分数表示。"@zh .
+
+ash:backtestPeriod a owl:DatatypeProperty ;
+    rdfs:domain ash:Backtest ;
+    rdfs:range xsd:string ;
+    rdfs:label "回测区间"@zh, "backtest period"@en ;
+    rdfs:comment "回测覆盖的时间区间。"@zh .
+
+ash:costRate a owl:DatatypeProperty ;
+    rdfs:domain ash:TradeCost ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成本率"@zh, "cost rate"@en ;
+    rdfs:comment "交易成本占成交金额的比例，以百分数表示。"@zh .
+
+ash:esgScore a owl:DatatypeProperty ;
+    rdfs:domain ash:ESGRating ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "ESG 分数"@zh, "ESG score"@en ;
+    rdfs:comment "ESG 综合评分，0—100。"@zh .
+
+ash:dataVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:DataLineage ;
+    rdfs:range xsd:string ;
+    rdfs:label "数据版本"@zh, "data version"@en ;
+    rdfs:comment "数据产品或加工结果的版本标识。"@zh .
+
+ash:approvalStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:Approval ;
+    rdfs:range xsd:string ;
+    rdfs:label "审批状态"@zh, "approval status"@en ;
+    rdfs:comment "审批状态：PENDING、APPROVED、REJECTED。"@zh .
+
+ash:modelVersionCode a owl:DatatypeProperty ;
+    rdfs:domain ash:ModelVersion ;
+    rdfs:range xsd:string ;
+    rdfs:label "模型版本号"@zh, "model version code"@en ;
+    rdfs:comment "模型版本稳定标识。"@zh .
+
+ash:fundFlowAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:FundFlow ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "净流入金额"@zh, "net flow amount"@en ;
+    rdfs:comment "基金观察期净流入金额，单位：人民币元。"@zh .

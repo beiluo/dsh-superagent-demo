@@ -3,7 +3,7 @@ window.ASH_DATA = {
   "meta": {
     "title": "A 股投资决策本体",
     "titleEn": "A-Share Investment Decision Ontology",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "date": "2026-11",
     "namespace": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#",
     "repo": "https://github.com/beiluo/dsh-superagent-demo",
@@ -12,20 +12,20 @@ window.ASH_DATA = {
     "disclaimer": "本体、规则、政策与页面中的全部数据均为设计示例，不构成投资建议，也不连接真实交易系统。"
   },
   "stats": {
-    "totalTriples": 4290,
-    "classes": 72,
-    "objectProperties": 46,
-    "dataProperties": 75,
-    "properties": 121,
-    "individuals": 76,
-    "concepts": 52,
-    "schemes": 3,
-    "rules": 11,
+    "totalTriples": 6253,
+    "classes": 136,
+    "objectProperties": 90,
+    "dataProperties": 125,
+    "properties": 215,
+    "individuals": 100,
+    "concepts": 93,
+    "schemes": 5,
+    "rules": 15,
     "services": 1,
-    "policies": 3,
-    "restrictions": 38,
-    "disjointGroups": 6,
-    "keys": 7,
+    "policies": 4,
+    "restrictions": 72,
+    "disjointGroups": 9,
+    "keys": 10,
     "competencyQuestions": 10
   },
   "layers": [
@@ -39,9 +39,9 @@ window.ASH_DATA = {
       "file": "ontology/rdf/instances.ttl",
       "desc": "用三元组描述公司、证券、行情、财报、风险与决策实例；所有示例均可与词表层自由合并。",
       "color": "#b52a22",
-      "count": 709,
+      "count": 901,
       "unit": "实例三元组",
-      "triples": 709
+      "triples": 901
     },
     {
       "key": "rdfs",
@@ -53,9 +53,9 @@ window.ASH_DATA = {
       "file": "ontology/rdfs/schema.ttl",
       "desc": "定义类层次、属性定义域与值域、标签和自然语言释义，构成可读的领域词汇表。",
       "color": "#b8862f",
-      "count": 193,
+      "count": 351,
       "unit": "类 / 属性",
-      "triples": 1099
+      "triples": 2047
     },
     {
       "key": "owl",
@@ -67,9 +67,9 @@ window.ASH_DATA = {
       "file": "ontology/owl/ontology.ttl",
       "desc": "用限制、基数、属性特征、键与不相交公理表达决策对象的结构约束和身份规则。",
       "color": "#7b4d9e",
-      "count": 137,
+      "count": 226,
       "unit": "结构公理",
-      "triples": 566
+      "triples": 794
     },
     {
       "key": "skos",
@@ -81,9 +81,9 @@ window.ASH_DATA = {
       "file": "ontology/skos/taxonomy.ttl",
       "desc": "以概念方案组织行业、主题和投资风格；支持多语言标签、层级、关联与映射。",
       "color": "#0f766e",
-      "count": 52,
+      "count": 93,
       "unit": "概念",
-      "triples": 513
+      "triples": 856
     },
     {
       "key": "swrl",
@@ -95,9 +95,9 @@ window.ASH_DATA = {
       "file": "ontology/swrl/rules.ttl",
       "desc": "把价值筛选、财务风险、止损、集中度、限制名单和可审计性写成可执行 Horn 规则。",
       "color": "#c2410c",
-      "count": 11,
+      "count": 15,
       "unit": "条规则",
-      "triples": 792
+      "triples": 980
     },
     {
       "key": "owl-s",
@@ -123,9 +123,9 @@ window.ASH_DATA = {
       "file": "ontology/odrl/policies.ttl",
       "desc": "以权限、禁止、义务和约束表达数据使用、决策消费与人工批准交易护栏。",
       "color": "#6d28d9",
-      "count": 3,
+      "count": 4,
       "unit": "项政策",
-      "triples": 284
+      "triples": 348
     }
   ],
   "classes": [
@@ -170,6 +170,51 @@ window.ASH_DATA = {
         }
       ],
       "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ESGRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+      "kind": "class",
+      "label": {
+        "zh": "ESG 评级",
+        "en": "ESG Rating"
+      },
+      "comment": "环境、社会与治理表现的综合评分。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "AssessmentResult",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AssessmentResult",
+          "label": "评估结果"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "esgScore",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#esgScore",
+            "label": "ESG 分数"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "ESG 分数 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "esgScore",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#esgScore",
+          "label": "ESG 分数"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -235,6 +280,32 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "ConsensusEstimate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConsensusEstimate",
+      "kind": "class",
+      "label": {
+        "zh": "一致预期",
+        "en": "Consensus Estimate"
+      },
+      "comment": "多名分析师预测的汇总值、离散度与修正方向。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "ListedCompany",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
       "kind": "class",
@@ -294,22 +365,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "hasSecurity",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSecurity",
-            "label": "发行证券"
-          },
-          "onClass": null,
-          "kind": "some",
-          "cardinality": null,
-          "value": {
-            "id": "Security",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
-            "label": "证券"
-          },
-          "summary": "发行证券 至少有一个 证券"
-        },
-        {
-          "property": {
             "id": "primaryIndustry",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
             "label": "一级行业"
@@ -323,9 +378,30 @@ window.ASH_DATA = {
           "cardinality": "1",
           "value": null,
           "summary": "一级行业 至少 1 个 Concept"
+        },
+        {
+          "property": {
+            "id": "hasSecurity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSecurity",
+            "label": "发行证券"
+          },
+          "onClass": null,
+          "kind": "some",
+          "cardinality": null,
+          "value": {
+            "id": "Security",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+            "label": "证券"
+          },
+          "summary": "发行证券 至少有一个 证券"
         }
       ],
       "properties": [
+        {
+          "id": "hasESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasESGRating",
+          "label": "ESG 评级"
+        },
         {
           "id": "isST",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
@@ -337,9 +413,19 @@ window.ASH_DATA = {
           "label": "一级行业"
         },
         {
+          "id": "hasConsensusEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConsensusEstimate",
+          "label": "一致预期"
+        },
+        {
           "id": "hasThemeExposure",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasThemeExposure",
           "label": "主题暴露"
+        },
+        {
+          "id": "hasControversy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasControversy",
+          "label": "争议事件"
         },
         {
           "id": "hasDisclosure",
@@ -355,6 +441,16 @@ window.ASH_DATA = {
           "id": "companyCode",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyCode",
           "label": "公司编码"
+        },
+        {
+          "id": "hasRelatedPartyTransaction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRelatedPartyTransaction",
+          "label": "关联交易"
+        },
+        {
+          "id": "hasAnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasAnalystEstimate",
+          "label": "分析师预测"
         },
         {
           "id": "hasCorporateEvent",
@@ -382,11 +478,52 @@ window.ASH_DATA = {
           "label": "母公司"
         },
         {
+          "id": "hasShareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasShareholder",
+          "label": "股东"
+        },
+        {
+          "id": "hasOwnershipStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOwnershipStructure",
+          "label": "股权结构"
+        },
+        {
+          "id": "hasRatingAction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRatingAction",
+          "label": "评级行动"
+        },
+        {
           "id": "delistingRisk",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
           "label": "退市风险"
         }
       ],
+      "deprecated": false
+    },
+    {
+      "id": "LOF",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LOF",
+      "kind": "class",
+      "label": {
+        "zh": "上市开放式基金",
+        "en": "Listed Open-Ended Fund"
+      },
+      "comment": "既可在场外申购赎回、又可在交易所买卖的开放式基金份额。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
       "deprecated": false
     },
     {
@@ -406,6 +543,191 @@ window.ASH_DATA = {
           "id": "FinancialReport",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
           "label": "财务报告"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ControversyEvent",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControversyEvent",
+      "kind": "class",
+      "label": {
+        "zh": "争议事件",
+        "en": "Controversy Event"
+      },
+      "comment": "环境污染、劳工、治理或产品安全等 ESG 争议事件。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ETF",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ETF",
+      "kind": "class",
+      "label": {
+        "zh": "交易型开放式指数基金",
+        "en": "Exchange-Traded Fund"
+      },
+      "comment": "在交易所上市交易、通常跟踪特定指数的开放式基金份额。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "tracksIndex",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tracksIndex",
+            "label": "跟踪指数"
+          },
+          "onClass": {
+            "id": "Index",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
+            "label": "指数"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "跟踪指数 恰好 1 个 指数"
+        }
+      ],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "TradeCost",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeCost",
+      "kind": "class",
+      "label": {
+        "zh": "交易成本",
+        "en": "Trade Cost"
+      },
+      "comment": "佣金、印花税、滑点与冲击成本等交易摩擦。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "costRate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#costRate",
+          "label": "成本率"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "TradingCalendar",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingCalendar",
+      "kind": "class",
+      "label": {
+        "zh": "交易日历",
+        "en": "Trading Calendar"
+      },
+      "comment": "交易所开市、休市、结算与节假日安排。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "MarketStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketStructure",
+          "label": "市场结构"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "hasTradingSession",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTradingSession",
+          "label": "交易时段"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "TradingSession",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingSession",
+      "kind": "class",
+      "label": {
+        "zh": "交易时段",
+        "en": "Trading Session"
+      },
+      "comment": "集合竞价、连续竞价、盘后固定价格交易等时段。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "MarketStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketStructure",
+          "label": "市场结构"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "TradeBlocked",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeBlocked",
+      "kind": "class",
+      "label": {
+        "zh": "交易阻断",
+        "en": "Trade Blocked"
+      },
+      "comment": "订单因未审批、合规或风控原因被阻断的状态。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "RiskSignal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskSignal",
+          "label": "风险信号"
         }
       ],
       "subClasses": [],
@@ -515,18 +837,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "peTtm",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
-            "label": "市盈率 TTM"
-          },
-          "onClass": null,
-          "kind": "exactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "市盈率 TTM 恰好 1 个值"
-        },
-        {
-          "property": {
             "id": "valuationOf",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#valuationOf",
             "label": "估值所属证券"
@@ -540,6 +850,18 @@ window.ASH_DATA = {
             "label": "证券"
           },
           "summary": "估值所属证券 至少有一个 证券"
+        },
+        {
+          "property": {
+            "id": "peTtm",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
+            "label": "市盈率 TTM"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "市盈率 TTM 恰好 1 个值"
         }
       ],
       "properties": [
@@ -598,6 +920,38 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "MarginRequirement",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+      "kind": "class",
+      "label": {
+        "zh": "保证金要求",
+        "en": "Margin Requirement"
+      },
+      "comment": "衍生品或信用交易要求缴纳的保证金比例与追保规则。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "marginRatio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marginRatio",
+          "label": "保证金比例"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "Signal",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Signal",
       "kind": "class",
@@ -618,14 +972,14 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "RiskSignal",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskSignal",
-          "label": "风险信号"
-        },
-        {
           "id": "OpportunitySignal",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OpportunitySignal",
           "label": "机会信号"
+        },
+        {
+          "id": "RiskSignal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskSignal",
+          "label": "风险信号"
         }
       ],
       "disjointWith": [],
@@ -655,44 +1009,9 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "Evidence",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
-          "label": "证据"
-        },
-        {
-          "id": "ResearchReport",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ResearchReport",
-          "label": "研究报告"
-        },
-        {
-          "id": "NewsItem",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#NewsItem",
-          "label": "新闻条目"
-        },
-        {
-          "id": "FinancialReport",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
-          "label": "财务报告"
-        },
-        {
-          "id": "CorporateEvent",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
-          "label": "公司事件"
-        },
-        {
-          "id": "Signal",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Signal",
-          "label": "信号"
-        },
-        {
-          "id": "Valuation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Valuation",
-          "label": "估值快照"
-        },
-        {
-          "id": "MarketQuote",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
-          "label": "行情快照"
+          "id": "AssessmentResult",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AssessmentResult",
+          "label": "评估结果"
         },
         {
           "id": "Disclosure",
@@ -700,14 +1019,154 @@ window.ASH_DATA = {
           "label": "信息披露"
         },
         {
+          "id": "BondCovenant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondCovenant",
+          "label": "债券契约条款"
+        },
+        {
+          "id": "Valuation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Valuation",
+          "label": "估值快照"
+        },
+        {
+          "id": "NewsItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#NewsItem",
+          "label": "新闻条目"
+        },
+        {
+          "id": "MarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+          "label": "保证金要求"
+        },
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        },
+        {
+          "id": "ModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+          "label": "模型版本"
+        },
+        {
+          "id": "Signal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Signal",
+          "label": "信号"
+        },
+        {
+          "id": "LimitState",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LimitState",
+          "label": "涨跌停状态"
+        },
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        },
+        {
+          "id": "ExecutionReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ExecutionReport",
+          "label": "执行回报"
+        },
+        {
+          "id": "Factor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Factor",
+          "label": "因子"
+        },
+        {
+          "id": "OwnershipStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OwnershipStructure",
+          "label": "股权结构"
+        },
+        {
+          "id": "RatingAction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RatingAction",
+          "label": "评级行动"
+        },
+        {
+          "id": "ResearchReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ResearchReport",
+          "label": "研究报告"
+        },
+        {
+          "id": "ContractSpecification",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ContractSpecification",
+          "label": "合约规格"
+        },
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        },
+        {
+          "id": "DataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+          "label": "数据血缘"
+        },
+        {
+          "id": "OrderBook",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OrderBook",
+          "label": "订单簿"
+        },
+        {
+          "id": "SegmentReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#SegmentReport",
+          "label": "分部报告"
+        },
+        {
           "id": "MacroIndicator",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
           "label": "宏观指标"
         },
         {
-          "id": "AssessmentResult",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AssessmentResult",
-          "label": "评估结果"
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        },
+        {
+          "id": "FundFee",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFee",
+          "label": "基金费用"
+        },
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        },
+        {
+          "id": "YieldCurve",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#YieldCurve",
+          "label": "收益率曲线"
+        },
+        {
+          "id": "RiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+          "label": "风险模型"
+        },
+        {
+          "id": "FinancialReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
+          "label": "财务报告"
+        },
+        {
+          "id": "TradeCost",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeCost",
+          "label": "交易成本"
+        },
+        {
+          "id": "Evidence",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
+          "label": "证据"
+        },
+        {
+          "id": "ConsensusEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConsensusEstimate",
+          "label": "一致预期"
+        },
+        {
+          "id": "MarketQuote",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
+          "label": "行情快照"
         }
       ],
       "disjointWith": [],
@@ -723,6 +1182,11 @@ window.ASH_DATA = {
           "id": "dataSource",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
           "label": "数据来源"
+        },
+        {
+          "id": "hasDataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasDataLineage",
+          "label": "数据血缘"
         },
         {
           "id": "dataQualityFlag",
@@ -784,6 +1248,58 @@ window.ASH_DATA = {
           "label": "新闻条目"
         }
       ],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "CorporateBond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateBond",
+      "kind": "class",
+      "label": {
+        "zh": "信用债",
+        "en": "Corporate Bond"
+      },
+      "comment": "由非金融企业或金融机构发行、承担信用风险的债券。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "MarginAccount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginAccount",
+      "kind": "class",
+      "label": {
+        "zh": "信用账户",
+        "en": "Margin Account"
+      },
+      "comment": "用于融资融券交易的担保品、负债与维持担保比例记录。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "DecisionObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
+          "label": "决策对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
       "keys": [],
       "restrictions": [],
       "properties": [],
@@ -852,6 +1368,214 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "Bond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+      "kind": "class",
+      "label": {
+        "zh": "债券",
+        "en": "Bond"
+      },
+      "comment": "发行人按约定还本付息的固定收益证券。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "CorporateBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateBond",
+          "label": "信用债"
+        },
+        {
+          "id": "GovernmentBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#GovernmentBond",
+          "label": "国债"
+        },
+        {
+          "id": "ConvertibleBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleBond",
+          "label": "可转换债券"
+        }
+      ],
+      "disjointWith": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "keys": [
+        [
+          {
+            "id": "bondCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+            "label": "债券代码"
+          }
+        ]
+      ],
+      "restrictions": [
+        {
+          "property": {
+            "id": "couponRate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#couponRate",
+            "label": "票面利率"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "票面利率 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "maturityDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maturityDate",
+            "label": "到期日"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "到期日 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "bondCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+            "label": "债券代码"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "债券代码 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "bondCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+          "label": "债券代码"
+        },
+        {
+          "id": "hasBondCovenant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondCovenant",
+          "label": "债券契约"
+        },
+        {
+          "id": "hasBondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondRating",
+          "label": "债券评级"
+        },
+        {
+          "id": "yieldToMaturity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#yieldToMaturity",
+          "label": "到期收益率"
+        },
+        {
+          "id": "maturityDate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maturityDate",
+          "label": "到期日"
+        },
+        {
+          "id": "couponRate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#couponRate",
+          "label": "票面利率"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "BondFund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondFund",
+      "kind": "class",
+      "label": {
+        "zh": "债券基金",
+        "en": "Bond Fund"
+      },
+      "comment": "主要投资国债、信用债或可转债等固定收益资产的基金。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "BondCovenant",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondCovenant",
+      "kind": "class",
+      "label": {
+        "zh": "债券契约条款",
+        "en": "Bond Covenant"
+      },
+      "comment": "债券发行文件中的财务约束、回售、担保与违约条款。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "BondRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+      "kind": "class",
+      "label": {
+        "zh": "债券评级",
+        "en": "Bond Rating"
+      },
+      "comment": "对债券发行人偿债能力与违约风险的外部或内部评级。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "AssessmentResult",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AssessmentResult",
+          "label": "评估结果"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "creditRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#creditRating",
+          "label": "信用评级"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "CorporateEvent",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
       "kind": "class",
@@ -872,14 +1596,44 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "RegulatoryEvent",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RegulatoryEvent",
-          "label": "监管事件"
+          "id": "ShareRepurchase",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ShareRepurchase",
+          "label": "股份回购"
         },
         {
           "id": "DividendEvent",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DividendEvent",
           "label": "分红事件"
+        },
+        {
+          "id": "ControversyEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControversyEvent",
+          "label": "争议事件"
+        },
+        {
+          "id": "EquityOffering",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#EquityOffering",
+          "label": "股权融资"
+        },
+        {
+          "id": "RelatedPartyTransaction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RelatedPartyTransaction",
+          "label": "关联交易"
+        },
+        {
+          "id": "LockupRelease",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LockupRelease",
+          "label": "限售解禁"
+        },
+        {
+          "id": "RegulatoryEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RegulatoryEvent",
+          "label": "监管事件"
+        },
+        {
+          "id": "MergerAcquisition",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MergerAcquisition",
+          "label": "并购重组"
         }
       ],
       "disjointWith": [],
@@ -892,6 +1646,32 @@ window.ASH_DATA = {
           "label": "事件主体"
         }
       ],
+      "deprecated": false
+    },
+    {
+      "id": "RelatedPartyTransaction",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RelatedPartyTransaction",
+      "kind": "class",
+      "label": {
+        "zh": "关联交易",
+        "en": "Related-Party Transaction"
+      },
+      "comment": "上市公司与关联方之间的购买、销售、资金往来或担保。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
       "deprecated": false
     },
     {
@@ -915,39 +1695,9 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "ComplianceCheck",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
-          "label": "合规检查"
-        },
-        {
-          "id": "InvestorProfile",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile",
-          "label": "投资者画像"
-        },
-        {
-          "id": "AuditRecord",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AuditRecord",
-          "label": "审计记录"
-        },
-        {
-          "id": "InvestmentStrategy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentStrategy",
-          "label": "投资策略"
-        },
-        {
-          "id": "InvestmentHorizon",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
-          "label": "投资期限"
-        },
-        {
-          "id": "Position",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Position",
-          "label": "持仓"
-        },
-        {
-          "id": "Recommendation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Recommendation",
-          "label": "投资建议"
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
         },
         {
           "id": "DecisionRationale",
@@ -955,9 +1705,69 @@ window.ASH_DATA = {
           "label": "决策理由"
         },
         {
+          "id": "Recommendation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Recommendation",
+          "label": "投资建议"
+        },
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        },
+        {
+          "id": "ComplianceCheck",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
+          "label": "合规检查"
+        },
+        {
+          "id": "AuditRecord",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AuditRecord",
+          "label": "审计记录"
+        },
+        {
+          "id": "InvestorProfile",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile",
+          "label": "投资者画像"
+        },
+        {
+          "id": "InvestmentHorizon",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
+          "label": "投资期限"
+        },
+        {
           "id": "InvestmentDecision",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
           "label": "投资决策"
+        },
+        {
+          "id": "Backtest",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Backtest",
+          "label": "回测"
+        },
+        {
+          "id": "Position",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Position",
+          "label": "持仓"
+        },
+        {
+          "id": "MarginAccount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginAccount",
+          "label": "信用账户"
+        },
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        },
+        {
+          "id": "PortfolioConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+          "label": "组合约束"
+        },
+        {
+          "id": "InvestmentStrategy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentStrategy",
+          "label": "投资策略"
         },
         {
           "id": "Portfolio",
@@ -1111,18 +1921,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "rationaleText",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#rationaleText",
-            "label": "理由正文"
-          },
-          "onClass": null,
-          "kind": "exactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "理由正文 恰好 1 个值"
-        },
-        {
-          "property": {
             "id": "hasEvidence",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasEvidence",
             "label": "理由证据"
@@ -1136,6 +1934,18 @@ window.ASH_DATA = {
           "cardinality": "1",
           "value": null,
           "summary": "理由证据 至少 1 个 证据"
+        },
+        {
+          "property": {
+            "id": "rationaleText",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#rationaleText",
+            "label": "理由正文"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "理由正文 恰好 1 个值"
         }
       ],
       "properties": [
@@ -1158,6 +1968,85 @@ window.ASH_DATA = {
           "id": "hasEvidence",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasEvidence",
           "label": "理由证据"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "AnalystEstimate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+      "kind": "class",
+      "label": {
+        "zh": "分析师预测",
+        "en": "Analyst Estimate"
+      },
+      "comment": "分析师对收入、利润、目标价或评级的预测。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "estimateValue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateValue",
+            "label": "预测值"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "预测值 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "estimateDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateDate",
+            "label": "预测日期"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "预测日期 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "analystTargetPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#analystTargetPrice",
+            "label": "分析师目标价"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "分析师目标价 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "analystTargetPrice",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#analystTargetPrice",
+          "label": "分析师目标价"
+        },
+        {
+          "id": "estimateValue",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateValue",
+          "label": "预测值"
+        },
+        {
+          "id": "estimateDate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateDate",
+          "label": "预测日期"
         }
       ],
       "deprecated": false
@@ -1189,6 +2078,38 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "SegmentReport",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#SegmentReport",
+      "kind": "class",
+      "label": {
+        "zh": "分部报告",
+        "en": "Segment Report"
+      },
+      "comment": "按业务、地区或产品划分的收入、利润与资产披露。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "segmentName",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#segmentName",
+          "label": "分部名称"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "AuditableDecision",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AuditableDecision",
       "kind": "class",
@@ -1213,22 +2134,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "hasRiskAssessment",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
-            "label": "风险评估"
-          },
-          "onClass": null,
-          "kind": "some",
-          "cardinality": null,
-          "value": {
-            "id": "RiskAssessment",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
-            "label": "风险评估"
-          },
-          "summary": "风险评估 至少有一个 风险评估"
-        },
-        {
-          "property": {
             "id": "governedBy",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
             "label": "受政策治理"
@@ -1242,6 +2147,22 @@ window.ASH_DATA = {
             "label": "决策政策"
           },
           "summary": "受政策治理 至少有一个 决策政策"
+        },
+        {
+          "property": {
+            "id": "hasRiskAssessment",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
+            "label": "风险评估"
+          },
+          "onClass": null,
+          "kind": "some",
+          "cardinality": null,
+          "value": {
+            "id": "RiskAssessment",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
+            "label": "风险评估"
+          },
+          "summary": "风险评估 至少有一个 风险评估"
         },
         {
           "property": {
@@ -1280,6 +2201,93 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "ConvertibleRich",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleRich",
+      "kind": "class",
+      "label": {
+        "zh": "可转债高溢价",
+        "en": "Convertible Rich"
+      },
+      "comment": "可转债转股溢价率过高、股性定价偏贵的状态。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "RiskSignal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskSignal",
+          "label": "风险信号"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ConvertibleBond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleBond",
+      "kind": "class",
+      "label": {
+        "zh": "可转换债券",
+        "en": "Convertible Bond"
+      },
+      "comment": "可在约定条件下转换为发行公司股票的债券。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "conversionPremium",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#conversionPremium",
+            "label": "转股溢价率"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "转股溢价率 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "underlyingAsset",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+            "label": "标的资产"
+          },
+          "onClass": {
+            "id": "AShare",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AShare",
+            "label": "A 股"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "标的资产 恰好 1 个 A 股"
+        }
+      ],
+      "properties": [
+        {
+          "id": "conversionPremium",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#conversionPremium",
+          "label": "转股溢价率"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "QualifiedInvestor",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#QualifiedInvestor",
       "kind": "class",
@@ -1296,6 +2304,32 @@ window.ASH_DATA = {
           "id": "Investor",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
           "label": "投资者"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ContractSpecification",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ContractSpecification",
+      "kind": "class",
+      "label": {
+        "zh": "合约规格",
+        "en": "Contract Specification"
+      },
+      "comment": "合约乘数、报价单位、交割方式与最后交易日等标准化条款。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
         }
       ],
       "subClasses": [],
@@ -1470,6 +2504,744 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "CommodityFuture",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CommodityFuture",
+      "kind": "class",
+      "label": {
+        "zh": "商品期货",
+        "en": "Commodity Futures"
+      },
+      "comment": "以大宗商品为标的的期货合约。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FuturesContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FuturesContract",
+          "label": "期货合约"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "Backtest",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Backtest",
+      "kind": "class",
+      "label": {
+        "zh": "回测",
+        "en": "Backtest"
+      },
+      "comment": "在历史数据上评估策略收益、风险与交易成本的过程记录。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "DecisionObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
+          "label": "决策对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "backtestPeriod",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#backtestPeriod",
+          "label": "回测区间"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "Repo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Repo",
+      "kind": "class",
+      "label": {
+        "zh": "回购",
+        "en": "Repo"
+      },
+      "comment": "以证券为担保的短期资金融通交易。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FinancialInstrument",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
+          "label": "金融工具"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        },
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "Factor",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Factor",
+      "kind": "class",
+      "label": {
+        "zh": "因子",
+        "en": "Factor"
+      },
+      "comment": "用于解释证券收益横截面差异的可观测变量。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "FactorExposure",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+      "kind": "class",
+      "label": {
+        "zh": "因子暴露",
+        "en": "Factor Exposure"
+      },
+      "comment": "组合或证券对某因子的敏感度与暴露值。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "factorValue",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#factorValue",
+          "label": "因子值"
+        },
+        {
+          "id": "exposedToFactor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exposedToFactor",
+          "label": "暴露于因子"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "GovernmentBond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#GovernmentBond",
+      "kind": "class",
+      "label": {
+        "zh": "国债",
+        "en": "Government Bond"
+      },
+      "comment": "由中央政府发行、以国家信用支持的债券。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "Fund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+      "kind": "class",
+      "label": {
+        "zh": "基金",
+        "en": "Fund"
+      },
+      "comment": "通过集合投资方式，将投资者资金配置于证券、债券或其他资产的金融工具。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FinancialInstrument",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
+          "label": "金融工具"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "BondFund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondFund",
+          "label": "债券基金"
+        },
+        {
+          "id": "EquityFund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#EquityFund",
+          "label": "股票基金"
+        },
+        {
+          "id": "ClosedEndedFund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ClosedEndedFund",
+          "label": "封闭式基金"
+        },
+        {
+          "id": "MoneyMarketFund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MoneyMarketFund",
+          "label": "货币市场基金"
+        }
+      ],
+      "disjointWith": [
+        {
+          "id": "Repo",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Repo",
+          "label": "回购"
+        },
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "keys": [
+        [
+          {
+            "id": "fundCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundCode",
+            "label": "基金代码"
+          }
+        ]
+      ],
+      "restrictions": [
+        {
+          "property": {
+            "id": "hasFundFee",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFee",
+            "label": "基金费用"
+          },
+          "onClass": {
+            "id": "FundFee",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFee",
+            "label": "基金费用"
+          },
+          "kind": "qualifiedMin",
+          "cardinality": "1",
+          "value": null,
+          "summary": "基金费用 至少 1 个 基金费用"
+        },
+        {
+          "property": {
+            "id": "fundCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundCode",
+            "label": "基金代码"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "基金代码 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "managedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managedBy",
+            "label": "管理人为"
+          },
+          "onClass": {
+            "id": "FundCompany",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundCompany",
+            "label": "基金管理公司"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "管理人为 恰好 1 个 基金管理公司"
+        }
+      ],
+      "properties": [
+        {
+          "id": "netFlowPct",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+          "label": "净流入比例"
+        },
+        {
+          "id": "fundCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundCode",
+          "label": "基金代码"
+        },
+        {
+          "id": "fundType",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundType",
+          "label": "基金类型"
+        },
+        {
+          "id": "hasFundManager",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundManager",
+          "label": "基金经理"
+        },
+        {
+          "id": "hasFundFee",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFee",
+          "label": "基金费用"
+        },
+        {
+          "id": "hasFundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundShare",
+          "label": "持有基金份额"
+        },
+        {
+          "id": "managedBy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managedBy",
+          "label": "管理人为"
+        },
+        {
+          "id": "managementFee",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managementFee",
+          "label": "管理费率"
+        },
+        {
+          "id": "hasFundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFlow",
+          "label": "资金流"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "FundShare",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+      "kind": "class",
+      "label": {
+        "zh": "基金份额",
+        "en": "Fund Share"
+      },
+      "comment": "基金持有人按份额享有收益与风险的证券化权益。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "ETF",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ETF",
+          "label": "交易型开放式指数基金"
+        },
+        {
+          "id": "LOF",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LOF",
+          "label": "上市开放式基金"
+        }
+      ],
+      "disjointWith": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "netAssetValue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netAssetValue",
+            "label": "基金净值"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "基金净值 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "netAssetValue",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netAssetValue",
+          "label": "基金净值"
+        },
+        {
+          "id": "premiumDiscount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#premiumDiscount",
+          "label": "折溢价率"
+        },
+        {
+          "id": "tracksIndex",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tracksIndex",
+          "label": "跟踪指数"
+        },
+        {
+          "id": "trackingError",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingError",
+          "label": "跟踪误差"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "FundOutflowRisk",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundOutflowRisk",
+      "kind": "class",
+      "label": {
+        "zh": "基金流出风险",
+        "en": "Fund Outflow Risk"
+      },
+      "comment": "基金出现显著净赎回、流动性承压的状态。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "RiskSignal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskSignal",
+          "label": "风险信号"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "FundCompany",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundCompany",
+      "kind": "class",
+      "label": {
+        "zh": "基金管理公司",
+        "en": "Fund Company"
+      },
+      "comment": "发行和管理基金产品、承担受托管理职责的机构。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "ServiceProvider",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ServiceProvider",
+          "label": "服务提供方"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "FundManager",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundManager",
+      "kind": "class",
+      "label": {
+        "zh": "基金经理",
+        "en": "Fund Manager"
+      },
+      "comment": "负责基金投资组合构建与日常管理的专业人员。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "MarketParticipant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
+          "label": "市场参与者"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "FundFee",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFee",
+      "kind": "class",
+      "label": {
+        "zh": "基金费用",
+        "en": "Fund Fee"
+      },
+      "comment": "管理费、托管费、销售服务费等基金费用信息。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "FundFlow",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+      "kind": "class",
+      "label": {
+        "zh": "基金资金流",
+        "en": "Fund Flow"
+      },
+      "comment": "基金申购、赎回与净流入流出的观测记录。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "fundFlowAmount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundFlowAmount",
+          "label": "净流入金额"
+        },
+        {
+          "id": "flowPeriod",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowPeriod",
+          "label": "资金流期间"
+        },
+        {
+          "id": "flowAmount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowAmount",
+          "label": "资金流金额"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "Order",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+      "kind": "class",
+      "label": {
+        "zh": "委托订单",
+        "en": "Order"
+      },
+      "comment": "投资者提交、等待执行或已撤销的买卖指令。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "DecisionObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
+          "label": "决策对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "keys": [
+        [
+          {
+            "id": "orderId",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderId",
+            "label": "订单编号"
+          }
+        ]
+      ],
+      "restrictions": [
+        {
+          "property": {
+            "id": "orderId",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderId",
+            "label": "订单编号"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "订单编号 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "orderQuantity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderQuantity",
+            "label": "委托数量"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "委托数量 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "orderPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderPrice",
+            "label": "委托价格"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "委托价格 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "orderFor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderFor",
+            "label": "订单标的"
+          },
+          "onClass": {
+            "id": "Security",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+            "label": "证券"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "订单标的 恰好 1 个 证券"
+        },
+        {
+          "property": {
+            "id": "placedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#placedBy",
+            "label": "下单人"
+          },
+          "onClass": {
+            "id": "Investor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+            "label": "投资者"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "下单人 恰好 1 个 投资者"
+        },
+        {
+          "property": {
+            "id": "orderSide",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderSide",
+            "label": "买卖方向"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "买卖方向 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "orderStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderStatus",
+            "label": "订单状态"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "订单状态 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "placedBy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#placedBy",
+          "label": "下单人"
+        },
+        {
+          "id": "orderSide",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderSide",
+          "label": "买卖方向"
+        },
+        {
+          "id": "orderPrice",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderPrice",
+          "label": "委托价格"
+        },
+        {
+          "id": "orderQuantity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderQuantity",
+          "label": "委托数量"
+        },
+        {
+          "id": "executedAs",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executedAs",
+          "label": "成交为"
+        },
+        {
+          "id": "orderFor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderFor",
+          "label": "订单标的"
+        },
+        {
+          "id": "orderStatus",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderStatus",
+          "label": "订单状态"
+        },
+        {
+          "id": "orderId",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderId",
+          "label": "订单编号"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "MacroIndicator",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
       "kind": "class",
@@ -1562,19 +3334,24 @@ window.ASH_DATA = {
       "superClasses": [],
       "subClasses": [
         {
+          "id": "CompetencyQuestion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CompetencyQuestion",
+          "label": "能力问题"
+        },
+        {
+          "id": "DecisionService",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionService",
+          "label": "决策服务"
+        },
+        {
           "id": "DataSource",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataSource",
           "label": "数据源"
         },
         {
-          "id": "FinancialInstrument",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
-          "label": "金融工具"
-        },
-        {
-          "id": "MarketStructure",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketStructure",
-          "label": "市场结构"
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
         },
         {
           "id": "RuleArtifact",
@@ -1582,19 +3359,19 @@ window.ASH_DATA = {
           "label": "规则工件"
         },
         {
-          "id": "MarketParticipant",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
-          "label": "市场参与者"
+          "id": "MarketStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketStructure",
+          "label": "市场结构"
+        },
+        {
+          "id": "FinancialInstrument",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
+          "label": "金融工具"
         },
         {
           "id": "DecisionObject",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
           "label": "决策对象"
-        },
-        {
-          "id": "DecisionService",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionService",
-          "label": "决策服务"
         },
         {
           "id": "DecisionPolicy",
@@ -1607,14 +3384,9 @@ window.ASH_DATA = {
           "label": "风险"
         },
         {
-          "id": "CompetencyQuestion",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CompetencyQuestion",
-          "label": "能力问题"
-        },
-        {
-          "id": "InformationObject",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
-          "label": "信息对象"
+          "id": "MarketParticipant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
+          "label": "市场参与者"
         }
       ],
       "disjointWith": [],
@@ -1640,6 +3412,93 @@ window.ASH_DATA = {
           "id": "exampleNote",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exampleNote",
           "label": "示例说明"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "Approval",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+      "kind": "class",
+      "label": {
+        "zh": "审批",
+        "en": "Approval"
+      },
+      "comment": "对决策、订单或模型变更进行人工批准或驳回的记录。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "DecisionObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
+          "label": "决策对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "approvalStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvalStatus",
+            "label": "审批状态"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "审批状态 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "approvedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvedBy",
+            "label": "审批人"
+          },
+          "onClass": {
+            "id": "MarketParticipant",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
+            "label": "市场参与者"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "审批人 恰好 1 个 市场参与者"
+        },
+        {
+          "property": {
+            "id": "approves",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+            "label": "审批对象"
+          },
+          "onClass": {
+            "id": "InvestmentDecision",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
+            "label": "投资决策"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "审批对象 恰好 1 个 投资决策"
+        }
+      ],
+      "properties": [
+        {
+          "id": "approvedBy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvedBy",
+          "label": "审批人"
+        },
+        {
+          "id": "approves",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+          "label": "审批对象"
+        },
+        {
+          "id": "approvalStatus",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvalStatus",
+          "label": "审批状态"
         }
       ],
       "deprecated": false
@@ -1671,6 +3530,32 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "ClosedEndedFund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ClosedEndedFund",
+      "kind": "class",
+      "label": {
+        "zh": "封闭式基金",
+        "en": "Closed-Ended Fund"
+      },
+      "comment": "份额总额在存续期内相对固定、可在交易所交易的基金。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "MarketParticipant",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
       "kind": "class",
@@ -1691,14 +3576,19 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "ListedCompany",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
-          "label": "上市公司"
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
         },
         {
-          "id": "ServiceProvider",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ServiceProvider",
-          "label": "服务提供方"
+          "id": "Investor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+          "label": "投资者"
+        },
+        {
+          "id": "FundManager",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundManager",
+          "label": "基金经理"
         },
         {
           "id": "Regulator",
@@ -1706,9 +3596,14 @@ window.ASH_DATA = {
           "label": "监管机构"
         },
         {
-          "id": "Investor",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
-          "label": "投资者"
+          "id": "ServiceProvider",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ServiceProvider",
+          "label": "服务提供方"
+        },
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
         }
       ],
       "disjointWith": [],
@@ -1770,14 +3665,24 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
+          "id": "MarketSegment",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketSegment",
+          "label": "市场板块"
+        },
+        {
           "id": "Exchange",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Exchange",
           "label": "证券交易所"
         },
         {
-          "id": "MarketSegment",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketSegment",
-          "label": "市场板块"
+          "id": "TradingCalendar",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingCalendar",
+          "label": "交易日历"
+        },
+        {
+          "id": "TradingSession",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingSession",
+          "label": "交易时段"
         }
       ],
       "disjointWith": [],
@@ -1875,6 +3780,153 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "MergerAcquisition",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MergerAcquisition",
+      "kind": "class",
+      "label": {
+        "zh": "并购重组",
+        "en": "Merger and Acquisition"
+      },
+      "comment": "收购、合并、资产注入、分拆或控制权变更等交易。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "Trade",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+      "kind": "class",
+      "label": {
+        "zh": "成交",
+        "en": "Trade"
+      },
+      "comment": "订单撮合后形成的成交记录。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "DecisionObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
+          "label": "决策对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "executionQuantity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionQuantity",
+            "label": "成交数量"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "成交数量 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "generatedFromOrder",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedFromOrder",
+            "label": "由订单生成"
+          },
+          "onClass": {
+            "id": "Order",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+            "label": "委托订单"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "由订单生成 恰好 1 个 委托订单"
+        },
+        {
+          "property": {
+            "id": "executionPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionPrice",
+            "label": "成交价格"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "成交价格 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "tradeDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradeDate",
+            "label": "成交日期"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "成交日期 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "hasTradeCost",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTradeCost",
+          "label": "交易成本"
+        },
+        {
+          "id": "executionPrice",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionPrice",
+          "label": "成交价格"
+        },
+        {
+          "id": "executionQuantity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionQuantity",
+          "label": "成交数量"
+        },
+        {
+          "id": "tradeDate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradeDate",
+          "label": "成交日期"
+        },
+        {
+          "id": "hasExecutionReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasExecutionReport",
+          "label": "执行回报"
+        },
+        {
+          "id": "generatedFromOrder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedFromOrder",
+          "label": "由订单生成"
+        },
+        {
+          "id": "settlementDate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#settlementDate",
+          "label": "结算日期"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "GrowthCandidate",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#GrowthCandidate",
       "kind": "class",
@@ -1888,14 +3940,40 @@ window.ASH_DATA = {
       "layer": "rdfs",
       "superClasses": [
         {
-          "id": "OpportunitySignal",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OpportunitySignal",
-          "label": "机会信号"
-        },
-        {
           "id": "ListedCompany",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
           "label": "上市公司"
+        },
+        {
+          "id": "OpportunitySignal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OpportunitySignal",
+          "label": "机会信号"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ExecutionReport",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ExecutionReport",
+      "kind": "class",
+      "label": {
+        "zh": "执行回报",
+        "en": "Execution Report"
+      },
+      "comment": "订单状态、成交数量、成交价格与拒单原因等执行反馈。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
         }
       ],
       "subClasses": [],
@@ -1975,102 +4053,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "hasRationale",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
-            "label": "决策理由"
-          },
-          "onClass": {
-            "id": "DecisionRationale",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale",
-            "label": "决策理由"
-          },
-          "kind": "qualifiedExactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "决策理由 恰好 1 个 决策理由"
-        },
-        {
-          "property": {
-            "id": "hasComplianceCheck",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
-            "label": "合规检查"
-          },
-          "onClass": {
-            "id": "ComplianceCheck",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
-            "label": "合规检查"
-          },
-          "kind": "qualifiedMin",
-          "cardinality": "1",
-          "value": null,
-          "summary": "合规检查 至少 1 个 合规检查"
-        },
-        {
-          "property": {
-            "id": "aboutSecurity",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
-            "label": "决策标的"
-          },
-          "onClass": {
-            "id": "Security",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
-            "label": "证券"
-          },
-          "kind": "qualifiedMin",
-          "cardinality": "1",
-          "value": null,
-          "summary": "决策标的 至少 1 个 证券"
-        },
-        {
-          "property": {
-            "id": "hasHorizon",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
-            "label": "投资期限"
-          },
-          "onClass": {
-            "id": "InvestmentHorizon",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
-            "label": "投资期限"
-          },
-          "kind": "qualifiedExactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "投资期限 恰好 1 个 投资期限"
-        },
-        {
-          "property": {
-            "id": "hasRiskAssessment",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
-            "label": "风险评估"
-          },
-          "onClass": {
-            "id": "RiskAssessment",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
-            "label": "风险评估"
-          },
-          "kind": "qualifiedExactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "风险评估 恰好 1 个 风险评估"
-        },
-        {
-          "property": {
-            "id": "decidedFor",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decidedFor",
-            "label": "服务画像"
-          },
-          "onClass": {
-            "id": "InvestorProfile",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile",
-            "label": "投资者画像"
-          },
-          "kind": "qualifiedExactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "服务画像 恰好 1 个 投资者画像"
-        },
-        {
-          "property": {
             "id": "hasRecommendation",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRecommendation",
             "label": "投资建议"
@@ -2100,6 +4082,102 @@ window.ASH_DATA = {
           "cardinality": "1",
           "value": null,
           "summary": "受政策治理 至少 1 个 决策政策"
+        },
+        {
+          "property": {
+            "id": "hasRiskAssessment",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
+            "label": "风险评估"
+          },
+          "onClass": {
+            "id": "RiskAssessment",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
+            "label": "风险评估"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "风险评估 恰好 1 个 风险评估"
+        },
+        {
+          "property": {
+            "id": "hasHorizon",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
+            "label": "投资期限"
+          },
+          "onClass": {
+            "id": "InvestmentHorizon",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
+            "label": "投资期限"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "投资期限 恰好 1 个 投资期限"
+        },
+        {
+          "property": {
+            "id": "aboutSecurity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
+            "label": "决策标的"
+          },
+          "onClass": {
+            "id": "Security",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+            "label": "证券"
+          },
+          "kind": "qualifiedMin",
+          "cardinality": "1",
+          "value": null,
+          "summary": "决策标的 至少 1 个 证券"
+        },
+        {
+          "property": {
+            "id": "decidedFor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decidedFor",
+            "label": "服务画像"
+          },
+          "onClass": {
+            "id": "InvestorProfile",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile",
+            "label": "投资者画像"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "服务画像 恰好 1 个 投资者画像"
+        },
+        {
+          "property": {
+            "id": "hasRationale",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
+            "label": "决策理由"
+          },
+          "onClass": {
+            "id": "DecisionRationale",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale",
+            "label": "决策理由"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "决策理由 恰好 1 个 决策理由"
+        },
+        {
+          "property": {
+            "id": "hasComplianceCheck",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
+            "label": "合规检查"
+          },
+          "onClass": {
+            "id": "ComplianceCheck",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
+            "label": "合规检查"
+          },
+          "kind": "qualifiedMin",
+          "cardinality": "1",
+          "value": null,
+          "summary": "合规检查 至少 1 个 合规检查"
         }
       ],
       "properties": [
@@ -2147,6 +4225,11 @@ window.ASH_DATA = {
           "id": "hasMacroContext",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMacroContext",
           "label": "宏观背景"
+        },
+        {
+          "id": "hasApproval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasApproval",
+          "label": "审批记录"
         },
         {
           "id": "hasRecommendation",
@@ -2321,7 +4404,13 @@ window.ASH_DATA = {
       "disjointWith": [],
       "keys": [],
       "restrictions": [],
-      "properties": [],
+      "properties": [
+        {
+          "id": "hasBacktest",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBacktest",
+          "label": "回测记录"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -2380,22 +4469,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "hasBenchmark",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBenchmark",
-            "label": "业绩基准"
-          },
-          "onClass": {
-            "id": "Index",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
-            "label": "指数"
-          },
-          "kind": "qualifiedMax",
-          "cardinality": "1",
-          "value": null,
-          "summary": "业绩基准 至多 1 个 指数"
-        },
-        {
-          "property": {
             "id": "followsStrategy",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#followsStrategy",
             "label": "遵循策略"
@@ -2409,6 +4482,22 @@ window.ASH_DATA = {
           "cardinality": "1",
           "value": null,
           "summary": "遵循策略 恰好 1 个 投资策略"
+        },
+        {
+          "property": {
+            "id": "hasBenchmark",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBenchmark",
+            "label": "业绩基准"
+          },
+          "onClass": {
+            "id": "Index",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
+            "label": "指数"
+          },
+          "kind": "qualifiedMax",
+          "cardinality": "1",
+          "value": null,
+          "summary": "业绩基准 至多 1 个 指数"
         }
       ],
       "properties": [
@@ -2418,9 +4507,34 @@ window.ASH_DATA = {
           "label": "业绩基准"
         },
         {
+          "id": "usesRiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#usesRiskModel",
+          "label": "使用风险模型"
+        },
+        {
+          "id": "hasFactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFactorExposure",
+          "label": "因子暴露"
+        },
+        {
           "id": "holdsPosition",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#holdsPosition",
           "label": "持有仓位"
+        },
+        {
+          "id": "hasTrade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTrade",
+          "label": "组合成交"
+        },
+        {
+          "id": "hasConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConstraint",
+          "label": "组合约束"
+        },
+        {
+          "id": "hasOrder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrder",
+          "label": "组合订单"
         },
         {
           "id": "followsStrategy",
@@ -2476,6 +4590,11 @@ window.ASH_DATA = {
       "keys": [],
       "restrictions": [],
       "properties": [
+        {
+          "id": "hasMarginAccount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginAccount",
+          "label": "信用账户"
+        },
         {
           "id": "hasInvestorProfile",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasInvestorProfile",
@@ -2540,18 +4659,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "maxSingleWeight",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maxSingleWeight",
-            "label": "单票上限"
-          },
-          "onClass": null,
-          "kind": "exactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "单票上限 恰好 1 个值"
-        },
-        {
-          "property": {
             "id": "riskTolerance",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskTolerance",
             "label": "风险承受能力"
@@ -2561,6 +4668,18 @@ window.ASH_DATA = {
           "cardinality": "1",
           "value": null,
           "summary": "风险承受能力 恰好 1 个值"
+        },
+        {
+          "property": {
+            "id": "maxSingleWeight",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maxSingleWeight",
+            "label": "单票上限"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "单票上限 恰好 1 个值"
         }
       ],
       "properties": [
@@ -2573,6 +4692,43 @@ window.ASH_DATA = {
           "id": "riskTolerance",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskTolerance",
           "label": "风险承受能力"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "StatementLineItem",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+      "kind": "class",
+      "label": {
+        "zh": "报表科目",
+        "en": "Statement Line Item"
+      },
+      "comment": "资产负债表、利润表或现金流量表中的具体科目。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "lineItemCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lineItemCode",
+          "label": "科目代码"
+        },
+        {
+          "id": "lineItemValue",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lineItemValue",
+          "label": "科目金额"
         }
       ],
       "deprecated": false
@@ -2633,18 +4789,6 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
-            "id": "positionWeight",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionWeight",
-            "label": "持仓权重"
-          },
-          "onClass": null,
-          "kind": "exactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "持仓权重 恰好 1 个值"
-        },
-        {
-          "property": {
             "id": "positionIn",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionIn",
             "label": "持仓证券"
@@ -2658,6 +4802,18 @@ window.ASH_DATA = {
           "cardinality": "1",
           "value": null,
           "summary": "持仓证券 恰好 1 个 证券"
+        },
+        {
+          "property": {
+            "id": "positionWeight",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionWeight",
+            "label": "持仓权重"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "持仓权重 恰好 1 个值"
         },
         {
           "property": {
@@ -2760,6 +4916,32 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "ControllingShareholder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControllingShareholder",
+      "kind": "class",
+      "label": {
+        "zh": "控股股东",
+        "en": "Controlling Shareholder"
+      },
+      "comment": "能够对上市公司股东大会决议产生重大影响的股东。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "OperationalRisk",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OperationalRisk",
       "kind": "class",
@@ -2822,6 +5004,32 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "YieldCurve",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#YieldCurve",
+      "kind": "class",
+      "label": {
+        "zh": "收益率曲线",
+        "en": "Yield Curve"
+      },
+      "comment": "不同期限无风险或信用债收益率构成的市场曲线。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "DataProvider",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataProvider",
       "kind": "class",
@@ -2871,6 +5079,51 @@ window.ASH_DATA = {
       "keys": [],
       "restrictions": [],
       "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "DataLineage",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+      "kind": "class",
+      "label": {
+        "zh": "数据血缘",
+        "en": "Data Lineage"
+      },
+      "comment": "数据从来源、加工、修订到消费的可追溯链路。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "dataVersion",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataVersion",
+            "label": "数据版本"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "数据版本 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "dataVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataVersion",
+          "label": "数据版本"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -2951,6 +5204,11 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
+          "id": "FundCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundCompany",
+          "label": "基金管理公司"
+        },
+        {
           "id": "DataProvider",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataProvider",
           "label": "数据提供方"
@@ -2979,6 +5237,120 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "OptionContract",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OptionContract",
+      "kind": "class",
+      "label": {
+        "zh": "期权合约",
+        "en": "Option Contract"
+      },
+      "comment": "赋予买方在约定日期按约定价格买入或卖出标的权利的合约。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "StockOption",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StockOption",
+          "label": "股票期权"
+        }
+      ],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "strikePrice",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#strikePrice",
+          "label": "行权价"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "FuturesContract",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FuturesContract",
+      "kind": "class",
+      "label": {
+        "zh": "期货合约",
+        "en": "Futures Contract"
+      },
+      "comment": "在交易所标准化、约定未来交割的合约。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "IndexFuture",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#IndexFuture",
+          "label": "股指期货"
+        },
+        {
+          "id": "CommodityFuture",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CommodityFuture",
+          "label": "商品期货"
+        }
+      ],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "underlyingAsset",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+            "label": "标的资产"
+          },
+          "onClass": {
+            "id": "Entity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Entity",
+            "label": "实体"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "标的资产 恰好 1 个 实体"
+        },
+        {
+          "property": {
+            "id": "hasContractSpec",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasContractSpec",
+            "label": "合约规格"
+          },
+          "onClass": {
+            "id": "ContractSpecification",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ContractSpecification",
+            "label": "合约规格"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "合约规格 恰好 1 个 合约规格"
+        }
+      ],
+      "properties": [
+        {
+          "id": "multiplier",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#multiplier",
+          "label": "合约乘数"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "OpportunitySignal",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OpportunitySignal",
       "kind": "class",
@@ -2999,20 +5371,52 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "GrowthCandidate",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#GrowthCandidate",
-          "label": "成长候选"
-        },
-        {
           "id": "ValueCandidate",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ValueCandidate",
           "label": "价值候选"
+        },
+        {
+          "id": "GrowthCandidate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#GrowthCandidate",
+          "label": "成长候选"
         }
       ],
       "disjointWith": [],
       "keys": [],
       "restrictions": [],
       "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "ModelVersion",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+      "kind": "class",
+      "label": {
+        "zh": "模型版本",
+        "en": "Model Version"
+      },
+      "comment": "风险模型、因子模型或估值模型的版本与校验信息。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "modelVersionCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#modelVersionCode",
+          "label": "模型版本号"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -3166,6 +5570,32 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "LimitState",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LimitState",
+      "kind": "class",
+      "label": {
+        "zh": "涨跌停状态",
+        "en": "Limit State"
+      },
+      "comment": "证券当日涨停、跌停或接近涨跌停的价格状态。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "RegulatoryEvent",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RegulatoryEvent",
       "kind": "class",
@@ -3291,6 +5721,223 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "PortfolioConstraint",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+      "kind": "class",
+      "label": {
+        "zh": "组合约束",
+        "en": "Portfolio Constraint"
+      },
+      "comment": "单票、行业、流动性、换手与跟踪误差等组合限制。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "DecisionObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionObject",
+          "label": "决策对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "trackingErrorLimit",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingErrorLimit",
+            "label": "跟踪误差上限"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "跟踪误差上限 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "trackingErrorLimit",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingErrorLimit",
+          "label": "跟踪误差上限"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "Shareholder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+      "kind": "class",
+      "label": {
+        "zh": "股东",
+        "en": "Shareholder"
+      },
+      "comment": "持有上市公司股份的自然人、机构或国资主体。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "MarketParticipant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
+          "label": "市场参与者"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "ControllingShareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControllingShareholder",
+          "label": "控股股东"
+        }
+      ],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "ownershipRatio",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ownershipRatio",
+            "label": "持股比例"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "持股比例 恰好 1 个值"
+        }
+      ],
+      "properties": [
+        {
+          "id": "ownershipRatio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ownershipRatio",
+          "label": "持股比例"
+        },
+        {
+          "id": "controls",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#controls",
+          "label": "控制"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "ShareRepurchase",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ShareRepurchase",
+      "kind": "class",
+      "label": {
+        "zh": "股份回购",
+        "en": "Share Repurchase"
+      },
+      "comment": "上市公司使用自有资金或融资回购自身股份的行为。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "repurchaseAmount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#repurchaseAmount",
+          "label": "回购金额"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "IndexFuture",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#IndexFuture",
+      "kind": "class",
+      "label": {
+        "zh": "股指期货",
+        "en": "Index Futures"
+      },
+      "comment": "以股票指数为标的的期货合约。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FuturesContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FuturesContract",
+          "label": "期货合约"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "OwnershipStructure",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OwnershipStructure",
+      "kind": "class",
+      "label": {
+        "zh": "股权结构",
+        "en": "Ownership Structure"
+      },
+      "comment": "上市公司股东持股比例、控制链与一致行动关系。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "EquityOffering",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#EquityOffering",
+      "kind": "class",
+      "label": {
+        "zh": "股权融资",
+        "en": "Equity Offering"
+      },
+      "comment": "定增、配股、可转债转股等增加股本的融资行为。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "offeringSize",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#offeringSize",
+          "label": "融资规模"
+        }
+      ],
+      "deprecated": false
+    },
+    {
       "id": "Stock",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Stock",
       "kind": "class",
@@ -3316,6 +5963,58 @@ window.ASH_DATA = {
           "label": "A 股"
         }
       ],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "EquityFund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#EquityFund",
+      "kind": "class",
+      "label": {
+        "zh": "股票基金",
+        "en": "Equity Fund"
+      },
+      "comment": "主要投资股票资产的公募或私募基金。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "StockOption",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StockOption",
+      "kind": "class",
+      "label": {
+        "zh": "股票期权",
+        "en": "Stock Option"
+      },
+      "comment": "以单只股票或 ETF 为标的的期权合约。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "OptionContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OptionContract",
+          "label": "期权合约"
+        }
+      ],
+      "subClasses": [],
       "disjointWith": [],
       "keys": [],
       "restrictions": [],
@@ -3417,6 +6116,18 @@ window.ASH_DATA = {
       "restrictions": [
         {
           "property": {
+            "id": "lastPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lastPrice",
+            "label": "最新价"
+          },
+          "onClass": null,
+          "kind": "exactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "最新价 恰好 1 个值"
+        },
+        {
+          "property": {
             "id": "quoteOf",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
             "label": "行情所属证券"
@@ -3430,18 +6141,6 @@ window.ASH_DATA = {
             "label": "证券"
           },
           "summary": "行情所属证券 至少有一个 证券"
-        },
-        {
-          "property": {
-            "id": "lastPrice",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lastPrice",
-            "label": "最新价"
-          },
-          "onClass": null,
-          "kind": "exactly",
-          "cardinality": "1",
-          "value": null,
-          "summary": "最新价 恰好 1 个值"
         },
         {
           "property": {
@@ -3486,6 +6185,75 @@ window.ASH_DATA = {
           "id": "quoteOf",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
           "label": "行情所属证券"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "Derivative",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+      "kind": "class",
+      "label": {
+        "zh": "衍生品",
+        "en": "Derivative"
+      },
+      "comment": "价值取决于标的资产、利率、指数或其他变量的金融合约。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "FinancialInstrument",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
+          "label": "金融工具"
+        }
+      ],
+      "subClasses": [
+        {
+          "id": "FuturesContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FuturesContract",
+          "label": "期货合约"
+        },
+        {
+          "id": "OptionContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OptionContract",
+          "label": "期权合约"
+        }
+      ],
+      "disjointWith": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        },
+        {
+          "id": "Repo",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Repo",
+          "label": "回购"
+        }
+      ],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "hasMarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginRequirement",
+          "label": "保证金要求"
+        },
+        {
+          "id": "expiryDate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#expiryDate",
+          "label": "到期日"
+        },
+        {
+          "id": "contractCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#contractCode",
+          "label": "合约代码"
+        },
+        {
+          "id": "hasContractSpec",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasContractSpec",
+          "label": "合约规格"
         }
       ],
       "deprecated": false
@@ -3563,6 +6331,32 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "OrderBook",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OrderBook",
+      "kind": "class",
+      "label": {
+        "zh": "订单簿",
+        "en": "Order Book"
+      },
+      "comment": "按价格优先级组织的买卖委托快照。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "Security",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
       "kind": "class",
@@ -3583,9 +6377,19 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        },
+        {
           "id": "Stock",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Stock",
           "label": "股票"
+        },
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
         }
       ],
       "disjointWith": [
@@ -3649,6 +6453,11 @@ window.ASH_DATA = {
           "label": "交易于板块"
         },
         {
+          "id": "tradingStatus",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradingStatus",
+          "label": "交易状态"
+        },
+        {
           "id": "hasValuation",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasValuation",
           "label": "估值快照"
@@ -3669,9 +6478,19 @@ window.ASH_DATA = {
           "label": "发行人为"
         },
         {
+          "id": "hasLimitState",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasLimitState",
+          "label": "涨跌停状态"
+        },
+        {
           "id": "hasMarketQuote",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
           "label": "行情快照"
+        },
+        {
+          "id": "hasOrderBook",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrderBook",
+          "label": "订单簿"
         },
         {
           "id": "securityCode",
@@ -3800,20 +6619,62 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
+          "id": "RiskAssessment",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
+          "label": "风险评估"
+        },
+        {
+          "id": "BondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+          "label": "债券评级"
+        },
+        {
           "id": "RiskLevel",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskLevel",
           "label": "风险等级"
         },
         {
-          "id": "RiskAssessment",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
-          "label": "风险评估"
+          "id": "ESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+          "label": "ESG 评级"
         }
       ],
       "disjointWith": [],
       "keys": [],
       "restrictions": [],
       "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "RatingAction",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RatingAction",
+      "kind": "class",
+      "label": {
+        "zh": "评级行动",
+        "en": "Rating Action"
+      },
+      "comment": "上调、下调、列入观察或撤销评级的行动。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "ratingCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ratingCode",
+          "label": "评级代码"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -3837,14 +6698,14 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "InterimReport",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InterimReport",
-          "label": "中期报告"
-        },
-        {
           "id": "AnnualReport",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnnualReport",
           "label": "年度报告"
+        },
+        {
+          "id": "InterimReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InterimReport",
+          "label": "中期报告"
         }
       ],
       "disjointWith": [
@@ -3945,6 +6806,11 @@ window.ASH_DATA = {
           "label": "净资产收益率"
         },
         {
+          "id": "hasSegmentReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSegmentReport",
+          "label": "分部报告"
+        },
+        {
           "id": "interestCoverage",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
           "label": "利息保障倍数"
@@ -3963,6 +6829,11 @@ window.ASH_DATA = {
           "id": "reportPeriod",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportPeriod",
           "label": "报告期"
+        },
+        {
+          "id": "hasStatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasStatementLineItem",
+          "label": "报表科目"
         },
         {
           "id": "eps",
@@ -3993,6 +6864,58 @@ window.ASH_DATA = {
       "deprecated": false
     },
     {
+      "id": "MoneyMarketFund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MoneyMarketFund",
+      "kind": "class",
+      "label": {
+        "zh": "货币市场基金",
+        "en": "Money Market Fund"
+      },
+      "comment": "主要投资短期货币市场工具、以流动性管理为目标的基金。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "TrackingErrorBreach",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TrackingErrorBreach",
+      "kind": "class",
+      "label": {
+        "zh": "跟踪误差超限",
+        "en": "Tracking Error Breach"
+      },
+      "comment": "ETF 或指数基金的跟踪误差超过约束的状态。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "RiskSignal",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskSignal",
+          "label": "风险信号"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [],
+      "deprecated": false
+    },
+    {
       "id": "FinancialInstrument",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
       "kind": "class",
@@ -4013,20 +6936,73 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "Index",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
-          "label": "指数"
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        },
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
         },
         {
           "id": "Security",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
           "label": "证券"
+        },
+        {
+          "id": "Index",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
+          "label": "指数"
+        },
+        {
+          "id": "Repo",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Repo",
+          "label": "回购"
         }
       ],
       "disjointWith": [],
       "keys": [],
       "restrictions": [],
-      "properties": [],
+      "properties": [
+        {
+          "id": "underlyingAsset",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+          "label": "标的资产"
+        }
+      ],
+      "deprecated": false
+    },
+    {
+      "id": "LockupRelease",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LockupRelease",
+      "kind": "class",
+      "label": {
+        "zh": "限售解禁",
+        "en": "Lockup Release"
+      },
+      "comment": "限售股份到期解除限售、增加可流通股本的事件。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "CorporateEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#CorporateEvent",
+          "label": "公司事件"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [],
+      "properties": [
+        {
+          "id": "lockupEndDate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lockupEndDate",
+          "label": "解禁日期"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -4190,39 +7166,14 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "ComplianceRisk",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceRisk",
-          "label": "合规风险"
-        },
-        {
           "id": "MarketRisk",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketRisk",
           "label": "市场风险"
         },
         {
-          "id": "ModelRisk",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelRisk",
-          "label": "模型风险"
-        },
-        {
-          "id": "LiquidityRisk",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LiquidityRisk",
-          "label": "流动性风险"
-        },
-        {
-          "id": "OperationalRisk",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OperationalRisk",
-          "label": "操作风险"
-        },
-        {
           "id": "ESGRisk",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRisk",
           "label": "ESG 风险"
-        },
-        {
-          "id": "ConcentrationRisk",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConcentrationRisk",
-          "label": "集中度风险"
         },
         {
           "id": "CreditRisk",
@@ -4233,6 +7184,31 @@ window.ASH_DATA = {
           "id": "RiskFactor",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskFactor",
           "label": "风险因子"
+        },
+        {
+          "id": "ModelRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelRisk",
+          "label": "模型风险"
+        },
+        {
+          "id": "ConcentrationRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConcentrationRisk",
+          "label": "集中度风险"
+        },
+        {
+          "id": "ComplianceRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceRisk",
+          "label": "合规风险"
+        },
+        {
+          "id": "LiquidityRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LiquidityRisk",
+          "label": "流动性风险"
+        },
+        {
+          "id": "OperationalRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OperationalRisk",
+          "label": "操作风险"
         }
       ],
       "disjointWith": [],
@@ -4262,24 +7238,14 @@ window.ASH_DATA = {
       ],
       "subClasses": [
         {
-          "id": "IlliquidSecurity",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#IlliquidSecurity",
-          "label": "低流动性证券"
-        },
-        {
-          "id": "HighFinancialRisk",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#HighFinancialRisk",
-          "label": "高财务风险"
-        },
-        {
-          "id": "StopLossTriggered",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StopLossTriggered",
-          "label": "止损触发"
-        },
-        {
           "id": "RequiresComplianceReview",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RequiresComplianceReview",
           "label": "需合规复核"
+        },
+        {
+          "id": "IlliquidSecurity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#IlliquidSecurity",
+          "label": "低流动性证券"
         },
         {
           "id": "RequiresSecondReview",
@@ -4287,14 +7253,44 @@ window.ASH_DATA = {
           "label": "需二次复核"
         },
         {
-          "id": "ConcentrationBreach",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConcentrationBreach",
-          "label": "集中度超限"
+          "id": "StopLossTriggered",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StopLossTriggered",
+          "label": "止损触发"
+        },
+        {
+          "id": "HighFinancialRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#HighFinancialRisk",
+          "label": "高财务风险"
         },
         {
           "id": "ExcludedFromUniverse",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ExcludedFromUniverse",
           "label": "排除出股票池"
+        },
+        {
+          "id": "ConcentrationBreach",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConcentrationBreach",
+          "label": "集中度超限"
+        },
+        {
+          "id": "TradeBlocked",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeBlocked",
+          "label": "交易阻断"
+        },
+        {
+          "id": "FundOutflowRisk",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundOutflowRisk",
+          "label": "基金流出风险"
+        },
+        {
+          "id": "ConvertibleRich",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleRich",
+          "label": "可转债高溢价"
+        },
+        {
+          "id": "TrackingErrorBreach",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TrackingErrorBreach",
+          "label": "跟踪误差超限"
         }
       ],
       "disjointWith": [],
@@ -4327,6 +7323,55 @@ window.ASH_DATA = {
       "keys": [],
       "restrictions": [],
       "properties": [],
+      "deprecated": false
+    },
+    {
+      "id": "RiskModel",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+      "kind": "class",
+      "label": {
+        "zh": "风险模型",
+        "en": "Risk Model"
+      },
+      "comment": "估计协方差、因子暴露、跟踪误差与压力损失的风险模型。",
+      "example": "",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "superClasses": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "subClasses": [],
+      "disjointWith": [],
+      "keys": [],
+      "restrictions": [
+        {
+          "property": {
+            "id": "hasModelVersion",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasModelVersion",
+            "label": "模型版本"
+          },
+          "onClass": {
+            "id": "ModelVersion",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+            "label": "模型版本"
+          },
+          "kind": "qualifiedExactly",
+          "cardinality": "1",
+          "value": null,
+          "summary": "模型版本 恰好 1 个 模型版本"
+        }
+      ],
+      "properties": [
+        {
+          "id": "hasModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasModelVersion",
+          "label": "模型版本"
+        }
+      ],
       "deprecated": false
     },
     {
@@ -4481,6 +7526,38 @@ window.ASH_DATA = {
   ],
   "properties": [
     {
+      "id": "esgScore",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#esgScore",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "ESG 分数",
+        "en": "ESG score"
+      },
+      "comment": "ESG 综合评分，0—100。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+          "label": "ESG 评级"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "isin",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
       "kind": "dataProperty",
@@ -4618,6 +7695,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "orderSide",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderSide",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "买卖方向",
+        "en": "order side"
+      },
+      "comment": "订单方向：BUY 或 SELL。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "exchangeCode",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exchangeCode",
       "kind": "dataProperty",
@@ -4633,6 +7742,38 @@ window.ASH_DATA = {
           "id": "Exchange",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Exchange",
           "label": "证券交易所"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "tradingStatus",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradingStatus",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "交易状态",
+        "en": "trading status"
+      },
+      "comment": "证券交易状态：normal、suspended、limit-up、limit-down。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
         }
       ],
       "range": [
@@ -4672,6 +7813,102 @@ window.ASH_DATA = {
           "id": "date",
           "iri": "http://www.w3.org/2001/XMLSchema#date",
           "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "marginRatio",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marginRatio",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "保证金比例",
+        "en": "margin ratio"
+      },
+      "comment": "保证金占合约名义价值的比例，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "MarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+          "label": "保证金要求"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "creditRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#creditRating",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "信用评级",
+        "en": "credit rating"
+      },
+      "comment": "债券或发行人的信用等级，例如 AAA、AA+。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "BondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+          "label": "债券评级"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "bondCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "债券代码",
+        "en": "bond code"
+      },
+      "comment": "债券的稳定业务代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
         }
       ],
       "inverseOf": [],
@@ -4948,6 +8185,73 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "netFlowPct",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "净流入比例",
+        "en": "net flow percent"
+      },
+      "comment": "观察期内基金净申购占资产规模的比例，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R15",
+          "label": "基金净流出风险"
+        }
+      ]
+    },
+    {
+      "id": "fundFlowAmount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundFlowAmount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "净流入金额",
+        "en": "net flow amount"
+      },
+      "comment": "基金观察期净流入金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "roe",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
       "kind": "dataProperty",
@@ -4985,6 +8289,70 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "analystTargetPrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#analystTargetPrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "分析师目标价",
+        "en": "analyst target price"
+      },
+      "comment": "分析师给出的目标价，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "segmentName",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#segmentName",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "分部名称",
+        "en": "segment name"
+      },
+      "comment": "业务或地区分部的名称。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "SegmentReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#SegmentReport",
+          "label": "分部报告"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "interestCoverage",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
       "kind": "dataProperty",
@@ -5020,6 +8388,102 @@ window.ASH_DATA = {
           "label": "高财务风险识别"
         }
       ]
+    },
+    {
+      "id": "yieldToMaturity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#yieldToMaturity",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "到期收益率",
+        "en": "yield to maturity"
+      },
+      "comment": "持有至到期的年化收益率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "expiryDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#expiryDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "到期日",
+        "en": "expiry date"
+      },
+      "comment": "衍生品合约的最后交易日或到期日。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "maturityDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maturityDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "到期日",
+        "en": "maturity date"
+      },
+      "comment": "债券本金到期兑付日。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
     },
     {
       "id": "maxSingleWeight",
@@ -5086,6 +8550,262 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "multiplier",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#multiplier",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "合约乘数",
+        "en": "contract multiplier"
+      },
+      "comment": "期货合约每点对应的标的数量。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FuturesContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FuturesContract",
+          "label": "期货合约"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "contractCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#contractCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "合约代码",
+        "en": "contract code"
+      },
+      "comment": "期货或期权合约的稳定代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "backtestPeriod",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#backtestPeriod",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "回测区间",
+        "en": "backtest period"
+      },
+      "comment": "回测覆盖的时间区间。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Backtest",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Backtest",
+          "label": "回测"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "repurchaseAmount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#repurchaseAmount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "回购金额",
+        "en": "repurchase amount"
+      },
+      "comment": "公司计划或实际回购金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ShareRepurchase",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ShareRepurchase",
+          "label": "股份回购"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "factorValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#factorValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "因子值",
+        "en": "factor value"
+      },
+      "comment": "组合或证券在特定因子上的暴露值。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "fundCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "基金代码",
+        "en": "fund code"
+      },
+      "comment": "基金产品的稳定业务代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "netAssetValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netAssetValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "基金净值",
+        "en": "net asset value"
+      },
+      "comment": "基金份额净值，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "fundType",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundType",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "基金类型",
+        "en": "fund type"
+      },
+      "comment": "基金类型：ETF、LOF、货币、债券或股票基金。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "reviewDate",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reviewDate",
       "kind": "dataProperty",
@@ -5108,6 +8828,102 @@ window.ASH_DATA = {
           "id": "date",
           "iri": "http://www.w3.org/2001/XMLSchema#date",
           "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "orderPrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderPrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "委托价格",
+        "en": "order price"
+      },
+      "comment": "限价委托价格，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "orderQuantity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderQuantity",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "委托数量",
+        "en": "order quantity"
+      },
+      "comment": "委托的证券数量。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "approvalStatus",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvalStatus",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "审批状态",
+        "en": "approval status"
+      },
+      "comment": "审批状态：PENDING、APPROVED、REJECTED。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
         }
       ],
       "inverseOf": [],
@@ -5329,6 +9145,102 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "executionPrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionPrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成交价格",
+        "en": "execution price"
+      },
+      "comment": "成交价格，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "executionQuantity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionQuantity",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成交数量",
+        "en": "execution quantity"
+      },
+      "comment": "成交的证券数量。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "tradeDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradeDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成交日期",
+        "en": "trade date"
+      },
+      "comment": "成交发生的日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "volume",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
       "kind": "dataProperty",
@@ -5344,6 +9256,70 @@ window.ASH_DATA = {
           "id": "MarketQuote",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
           "label": "行情快照"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "costRate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#costRate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成本率",
+        "en": "cost rate"
+      },
+      "comment": "交易成本占成交金额的比例，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "TradeCost",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeCost",
+          "label": "交易成本"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "premiumDiscount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#premiumDiscount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "折溢价率",
+        "en": "premium/discount"
+      },
+      "comment": "基金二级市场价格相对净值的折溢价率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
         }
       ],
       "range": [
@@ -5497,6 +9473,38 @@ window.ASH_DATA = {
           "label": "单票集中度超限"
         }
       ]
+    },
+    {
+      "id": "ownershipRatio",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ownershipRatio",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "持股比例",
+        "en": "ownership ratio"
+      },
+      "comment": "股东持有上市公司股份的比例，取值 0—1。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
     },
     {
       "id": "indicatorCode",
@@ -5782,6 +9790,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "dataVersion",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataVersion",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "数据版本",
+        "en": "data version"
+      },
+      "comment": "数据产品或加工结果的版本标识。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "DataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+          "label": "数据血缘"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "dataQualityFlag",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
       "kind": "dataProperty",
@@ -6009,6 +10049,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "modelVersionCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#modelVersionCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "模型版本号",
+        "en": "model version code"
+      },
+      "comment": "模型版本稳定标识。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+          "label": "模型版本"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "stopLoss",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#stopLoss",
       "kind": "dataProperty",
@@ -6201,6 +10273,102 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "couponRate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#couponRate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "票面利率",
+        "en": "coupon rate"
+      },
+      "comment": "债券票面年利率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "lineItemCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lineItemCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "科目代码",
+        "en": "line item code"
+      },
+      "comment": "财务报表科目的稳定代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "lineItemValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lineItemValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "科目金额",
+        "en": "line item value"
+      },
+      "comment": "报表科目的金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "endpointStatus",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#endpointStatus",
       "kind": "dataProperty",
@@ -6233,6 +10401,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "managementFee",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managementFee",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "管理费率",
+        "en": "management fee"
+      },
+      "comment": "基金管理费率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "operatingCashFlow",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#operatingCashFlow",
       "kind": "dataProperty",
@@ -6255,6 +10455,38 @@ window.ASH_DATA = {
           "id": "decimal",
           "iri": "http://www.w3.org/2001/XMLSchema#decimal",
           "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "settlementDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#settlementDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "结算日期",
+        "en": "settlement date"
+      },
+      "comment": "成交对应的资金与证券交收日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
         }
       ],
       "inverseOf": [],
@@ -6396,6 +10628,70 @@ window.ASH_DATA = {
           "label": "成长候选筛选"
         }
       ]
+    },
+    {
+      "id": "offeringSize",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#offeringSize",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "融资规模",
+        "en": "offering size"
+      },
+      "comment": "股权融资计划募集资金规模，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "EquityOffering",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#EquityOffering",
+          "label": "股权融资"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "strikePrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#strikePrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "行权价",
+        "en": "strike price"
+      },
+      "comment": "期权合约约定的行权价格。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "OptionContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OptionContract",
+          "label": "期权合约"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
     },
     {
       "id": "rulePriority",
@@ -6654,6 +10950,107 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "lockupEndDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lockupEndDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "解禁日期",
+        "en": "lockup end date"
+      },
+      "comment": "限售股份解除限售的日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "LockupRelease",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LockupRelease",
+          "label": "限售解禁"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "orderStatus",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderStatus",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "订单状态",
+        "en": "order status"
+      },
+      "comment": "订单状态：PENDING、FILLED、CANCELLED、REJECTED。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R14",
+          "label": "未审批订单阻断"
+        }
+      ]
+    },
+    {
+      "id": "orderId",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderId",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "订单编号",
+        "en": "order id"
+      },
+      "comment": "委托订单的稳定标识。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "securityCode",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
       "kind": "dataProperty",
@@ -6718,6 +11115,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "ratingCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ratingCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "评级代码",
+        "en": "rating code"
+      },
+      "comment": "评级行动代码或评级符号。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "RatingAction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RatingAction",
+          "label": "评级行动"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "debtRatio",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
       "kind": "dataProperty",
@@ -6751,6 +11180,176 @@ window.ASH_DATA = {
         {
           "id": "R02",
           "label": "高财务风险识别"
+        }
+      ]
+    },
+    {
+      "id": "flowPeriod",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowPeriod",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "资金流期间",
+        "en": "flow period"
+      },
+      "comment": "资金流统计对应的年月。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "range": [
+        {
+          "id": "gYearMonth",
+          "iri": "http://www.w3.org/2001/XMLSchema#gYearMonth",
+          "label": "gYearMonth"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "flowAmount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowAmount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "资金流金额",
+        "en": "flow amount"
+      },
+      "comment": "申购减赎回的净金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "trackingError",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingError",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "跟踪误差",
+        "en": "tracking error"
+      },
+      "comment": "ETF 或指数基金相对业绩基准的跟踪误差，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R12",
+          "label": "ETF 跟踪误差超限"
+        }
+      ]
+    },
+    {
+      "id": "trackingErrorLimit",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingErrorLimit",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "跟踪误差上限",
+        "en": "tracking error limit"
+      },
+      "comment": "组合允许的最大跟踪误差，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "PortfolioConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+          "label": "组合约束"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "conversionPremium",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#conversionPremium",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "转股溢价率",
+        "en": "conversion premium"
+      },
+      "comment": "可转债转股价值相对债券价格的溢价率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ConvertibleBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleBond",
+          "label": "可转换债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R13",
+          "label": "可转债高溢价"
         }
       ]
     },
@@ -6893,6 +11492,70 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "estimateValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "预测值",
+        "en": "estimate value"
+      },
+      "comment": "分析师对净利润等指标的预测值，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "estimateDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "预测日期",
+        "en": "estimate date"
+      },
+      "comment": "分析师预测发布或更新的日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "riskScore",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
       "kind": "dataProperty",
@@ -6962,6 +11625,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "hasESGRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasESGRating",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "ESG 评级",
+        "en": "has ESG rating"
+      },
+      "comment": "上市公司的 ESG 评级。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "ESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+          "label": "ESG 评级"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "primaryIndustry",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
       "kind": "objectProperty",
@@ -6984,6 +11677,36 @@ window.ASH_DATA = {
           "id": "Concept",
           "iri": "http://www.w3.org/2004/02/skos/core#Concept",
           "label": "Concept"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasConsensusEstimate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConsensusEstimate",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "一致预期",
+        "en": "has consensus estimate"
+      },
+      "comment": "市场分析师的一致预期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "ConsensusEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConsensusEstimate",
+          "label": "一致预期"
         }
       ],
       "inverseOf": [],
@@ -7027,6 +11750,36 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "placedBy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#placedBy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "下单人",
+        "en": "placed by"
+      },
+      "comment": "委托订单的提交投资者。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "Investor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+          "label": "投资者"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -7084,6 +11837,36 @@ window.ASH_DATA = {
           "id": "Concept",
           "iri": "http://www.w3.org/2004/02/skos/core#Concept",
           "label": "Concept"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasControversy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasControversy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "争议事件",
+        "en": "has controversy"
+      },
+      "comment": "上市公司涉及的 ESG 争议事件。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "ControversyEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControversyEvent",
+          "label": "争议事件"
         }
       ],
       "inverseOf": [],
@@ -7150,6 +11933,66 @@ window.ASH_DATA = {
           "id": "MarketSegment",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketSegment",
           "label": "市场板块"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasTradeCost",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTradeCost",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "交易成本",
+        "en": "has trade cost"
+      },
+      "comment": "成交对应的交易成本。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "TradeCost",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeCost",
+          "label": "交易成本"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasTradingSession",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTradingSession",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "交易时段",
+        "en": "has trading session"
+      },
+      "comment": "交易日历中的交易时段安排。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "TradingCalendar",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingCalendar",
+          "label": "交易日历"
+        }
+      ],
+      "range": [
+        {
+          "id": "TradingSession",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingSession",
+          "label": "交易时段"
         }
       ],
       "inverseOf": [],
@@ -7266,6 +12109,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "usesRiskModel",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#usesRiskModel",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "使用风险模型",
+        "en": "uses risk model"
+      },
+      "comment": "组合采用的风险模型。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "RiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+          "label": "风险模型"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "basedOn",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
       "kind": "objectProperty",
@@ -7301,6 +12174,36 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "hasMarginRequirement",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginRequirement",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "保证金要求",
+        "en": "has margin requirement"
+      },
+      "comment": "衍生品交易适用的保证金要求。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "MarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+          "label": "保证金要求"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasDisclosure",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasDisclosure",
       "kind": "objectProperty",
@@ -7323,6 +12226,126 @@ window.ASH_DATA = {
           "id": "Disclosure",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Disclosure",
           "label": "信息披露"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasMarginAccount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginAccount",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "信用账户",
+        "en": "has margin account"
+      },
+      "comment": "投资者用于融资融券的信用账户。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Investor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+          "label": "投资者"
+        }
+      ],
+      "range": [
+        {
+          "id": "MarginAccount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginAccount",
+          "label": "信用账户"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasBondCovenant",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondCovenant",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "债券契约",
+        "en": "has bond covenant"
+      },
+      "comment": "债券发行文件中的契约条款。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "BondCovenant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondCovenant",
+          "label": "债券契约条款"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasBondRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondRating",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "债券评级",
+        "en": "has bond rating"
+      },
+      "comment": "债券对应的外部或内部信用评级。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "BondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+          "label": "债券评级"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasRelatedPartyTransaction",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRelatedPartyTransaction",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "关联交易",
+        "en": "has related-party transaction"
+      },
+      "comment": "上市公司发生的关联交易。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "RelatedPartyTransaction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RelatedPartyTransaction",
+          "label": "关联交易"
         }
       ],
       "inverseOf": [],
@@ -7541,6 +12564,66 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "hasAnalystEstimate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasAnalystEstimate",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "分析师预测",
+        "en": "has analyst estimate"
+      },
+      "comment": "分析师对公司的预测与目标价。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasSegmentReport",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSegmentReport",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "分部报告",
+        "en": "has segment report"
+      },
+      "comment": "财务报告中的业务或地区分部信息。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FinancialReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
+          "label": "财务报告"
+        }
+      ],
+      "range": [
+        {
+          "id": "SegmentReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#SegmentReport",
+          "label": "分部报告"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasCorporateEvent",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasCorporateEvent",
       "kind": "objectProperty",
@@ -7684,6 +12767,36 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "hasContractSpec",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasContractSpec",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "合约规格",
+        "en": "has contract specification"
+      },
+      "comment": "衍生品合约的标准化规格。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "ContractSpecification",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ContractSpecification",
+          "label": "合约规格"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasComplianceCheck",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
       "kind": "objectProperty",
@@ -7706,6 +12819,126 @@ window.ASH_DATA = {
           "id": "ComplianceCheck",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
           "label": "合规检查"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasBacktest",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBacktest",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "回测记录",
+        "en": "has backtest"
+      },
+      "comment": "策略的历史回测记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "InvestmentStrategy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentStrategy",
+          "label": "投资策略"
+        }
+      ],
+      "range": [
+        {
+          "id": "Backtest",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Backtest",
+          "label": "回测"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFactorExposure",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFactorExposure",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "因子暴露",
+        "en": "has factor exposure"
+      },
+      "comment": "组合对因子的暴露记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFundManager",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundManager",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "基金经理",
+        "en": "has fund manager"
+      },
+      "comment": "基金产品的主要基金经理。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundManager",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundManager",
+          "label": "基金经理"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFundFee",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFee",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "基金费用",
+        "en": "has fund fee"
+      },
+      "comment": "基金产品的管理费、托管费等费用信息。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundFee",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFee",
+          "label": "基金费用"
         }
       ],
       "inverseOf": [],
@@ -7774,6 +13007,168 @@ window.ASH_DATA = {
           "id": "MacroIndicator",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
           "label": "宏观指标"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "approvedBy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvedBy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "审批人",
+        "en": "approved by"
+      },
+      "comment": "执行审批的合规或授权人员。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "range": [
+        {
+          "id": "MarketParticipant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
+          "label": "市场参与者"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "approves",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "审批对象",
+        "en": "approves"
+      },
+      "comment": "审批所覆盖的投资决策。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "range": [
+        {
+          "id": "InvestmentDecision",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
+          "label": "投资决策"
+        }
+      ],
+      "inverseOf": [
+        {
+          "id": "hasApproval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasApproval",
+          "label": "审批记录"
+        }
+      ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasApproval",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasApproval",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "审批记录",
+        "en": "has approval"
+      },
+      "comment": "决策对应的人工审批记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "InvestmentDecision",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
+          "label": "投资决策"
+        }
+      ],
+      "range": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "inverseOf": [
+        {
+          "id": "approves",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+          "label": "审批对象"
+        }
+      ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "executedAs",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executedAs",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "成交为",
+        "en": "executed as"
+      },
+      "comment": "订单执行后形成的成交记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasExecutionReport",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasExecutionReport",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "执行回报",
+        "en": "has execution report"
+      },
+      "comment": "成交对应的执行回报。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "ExecutionReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ExecutionReport",
+          "label": "执行回报"
         }
       ],
       "inverseOf": [],
@@ -7912,6 +13307,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "hasStatementLineItem",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasStatementLineItem",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "报表科目",
+        "en": "has statement line item"
+      },
+      "comment": "财务报告中的具体报表科目。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FinancialReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
+          "label": "财务报告"
+        }
+      ],
+      "range": [
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasFinancialReport",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
       "kind": "objectProperty",
@@ -8014,6 +13439,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "hasFundShare",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundShare",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "持有基金份额",
+        "en": "has fund share"
+      },
+      "comment": "基金与其发行的基金份额之间的关系。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "lists",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lists",
       "kind": "objectProperty",
@@ -8045,6 +13500,96 @@ window.ASH_DATA = {
           "label": "上市于"
         }
       ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "controls",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#controls",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "控制",
+        "en": "controls"
+      },
+      "comment": "股东对上市公司的控制关系。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "range": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasDataLineage",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasDataLineage",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "数据血缘",
+        "en": "has data lineage"
+      },
+      "comment": "信息对象的数据血缘记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "range": [
+        {
+          "id": "DataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+          "label": "数据血缘"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "exposedToFactor",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exposedToFactor",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "暴露于因子",
+        "en": "exposed to factor"
+      },
+      "comment": "因子暴露所对应的具体因子。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "range": [
+        {
+          "id": "Factor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Factor",
+          "label": "因子"
+        }
+      ],
+      "inverseOf": [],
       "subPropertyOf": [],
       "characteristics": [],
       "usedByRules": []
@@ -8082,6 +13627,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "underlyingAsset",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "标的资产",
+        "en": "underlying asset"
+      },
+      "comment": "衍生品或可转债所挂钩的标的资产。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FinancialInstrument",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
+          "label": "金融工具"
+        }
+      ],
+      "range": [
+        {
+          "id": "Entity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Entity",
+          "label": "实体"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "checksDecision",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#checksDecision",
       "kind": "objectProperty",
@@ -8111,6 +13686,36 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "hasModelVersion",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasModelVersion",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "模型版本",
+        "en": "has model version"
+      },
+      "comment": "风险模型的版本记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "RiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+          "label": "风险模型"
+        }
+      ],
+      "range": [
+        {
+          "id": "ModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+          "label": "模型版本"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -8149,6 +13754,36 @@ window.ASH_DATA = {
       "characteristics": [
         "传递"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "hasLimitState",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasLimitState",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "涨跌停状态",
+        "en": "has limit state"
+      },
+      "comment": "证券当前的涨跌停或接近涨跌停状态。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "range": [
+        {
+          "id": "LimitState",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LimitState",
+          "label": "涨跌停状态"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -8211,6 +13846,216 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "generatedFromOrder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedFromOrder",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "由订单生成",
+        "en": "generated from order"
+      },
+      "comment": "成交记录所来源的委托订单。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "managedBy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managedBy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "管理人为",
+        "en": "managed by"
+      },
+      "comment": "基金产品的基金管理公司。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundCompany",
+          "label": "基金管理公司"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasTrade",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTrade",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "组合成交",
+        "en": "has trade"
+      },
+      "comment": "组合关联的成交记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasConstraint",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConstraint",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "组合约束",
+        "en": "has constraint"
+      },
+      "comment": "组合必须满足的约束条件。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "PortfolioConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+          "label": "组合约束"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasOrder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrder",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "组合订单",
+        "en": "has order"
+      },
+      "comment": "组合关联的委托订单。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasShareholder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasShareholder",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "股东",
+        "en": "has shareholder"
+      },
+      "comment": "上市公司的主要股东。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasOwnershipStructure",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOwnershipStructure",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "股权结构",
+        "en": "has ownership structure"
+      },
+      "comment": "上市公司的股权与控制结构。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "OwnershipStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OwnershipStructure",
+          "label": "股权结构"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -8281,6 +14126,66 @@ window.ASH_DATA = {
           "label": "行情快照"
         }
       ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "orderFor",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderFor",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "订单标的",
+        "en": "order for"
+      },
+      "comment": "委托订单指向的证券。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasOrderBook",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrderBook",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "订单簿",
+        "en": "has order book"
+      },
+      "comment": "证券的买卖委托订单簿快照。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "range": [
+        {
+          "id": "OrderBook",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OrderBook",
+          "label": "订单簿"
+        }
+      ],
+      "inverseOf": [],
       "subPropertyOf": [],
       "characteristics": [],
       "usedByRules": []
@@ -8381,6 +14286,96 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "hasRatingAction",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRatingAction",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "评级行动",
+        "en": "has rating action"
+      },
+      "comment": "公司或债券的评级调整行动。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "RatingAction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RatingAction",
+          "label": "评级行动"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFundFlow",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFlow",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "资金流",
+        "en": "has fund flow"
+      },
+      "comment": "基金申购赎回与净流入流出的观测记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "tracksIndex",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tracksIndex",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "跟踪指数",
+        "en": "tracks index"
+      },
+      "comment": "ETF 或指数基金所跟踪的业绩指数。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "range": [
+        {
+          "id": "Index",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
+          "label": "指数"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -8523,6 +14518,36 @@ window.ASH_DATA = {
   ],
   "objectProperties": [
     {
+      "id": "hasESGRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasESGRating",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "ESG 评级",
+        "en": "has ESG rating"
+      },
+      "comment": "上市公司的 ESG 评级。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "ESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+          "label": "ESG 评级"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "primaryIndustry",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
       "kind": "objectProperty",
@@ -8545,6 +14570,36 @@ window.ASH_DATA = {
           "id": "Concept",
           "iri": "http://www.w3.org/2004/02/skos/core#Concept",
           "label": "Concept"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasConsensusEstimate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConsensusEstimate",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "一致预期",
+        "en": "has consensus estimate"
+      },
+      "comment": "市场分析师的一致预期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "ConsensusEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConsensusEstimate",
+          "label": "一致预期"
         }
       ],
       "inverseOf": [],
@@ -8588,6 +14643,36 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "placedBy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#placedBy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "下单人",
+        "en": "placed by"
+      },
+      "comment": "委托订单的提交投资者。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "Investor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+          "label": "投资者"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -8645,6 +14730,36 @@ window.ASH_DATA = {
           "id": "Concept",
           "iri": "http://www.w3.org/2004/02/skos/core#Concept",
           "label": "Concept"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasControversy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasControversy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "争议事件",
+        "en": "has controversy"
+      },
+      "comment": "上市公司涉及的 ESG 争议事件。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "ControversyEvent",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControversyEvent",
+          "label": "争议事件"
         }
       ],
       "inverseOf": [],
@@ -8711,6 +14826,66 @@ window.ASH_DATA = {
           "id": "MarketSegment",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketSegment",
           "label": "市场板块"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasTradeCost",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTradeCost",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "交易成本",
+        "en": "has trade cost"
+      },
+      "comment": "成交对应的交易成本。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "TradeCost",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeCost",
+          "label": "交易成本"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasTradingSession",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTradingSession",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "交易时段",
+        "en": "has trading session"
+      },
+      "comment": "交易日历中的交易时段安排。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "TradingCalendar",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingCalendar",
+          "label": "交易日历"
+        }
+      ],
+      "range": [
+        {
+          "id": "TradingSession",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradingSession",
+          "label": "交易时段"
         }
       ],
       "inverseOf": [],
@@ -8827,6 +15002,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "usesRiskModel",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#usesRiskModel",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "使用风险模型",
+        "en": "uses risk model"
+      },
+      "comment": "组合采用的风险模型。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "RiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+          "label": "风险模型"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "basedOn",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
       "kind": "objectProperty",
@@ -8862,6 +15067,36 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "hasMarginRequirement",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginRequirement",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "保证金要求",
+        "en": "has margin requirement"
+      },
+      "comment": "衍生品交易适用的保证金要求。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "MarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+          "label": "保证金要求"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasDisclosure",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasDisclosure",
       "kind": "objectProperty",
@@ -8884,6 +15119,126 @@ window.ASH_DATA = {
           "id": "Disclosure",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Disclosure",
           "label": "信息披露"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasMarginAccount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginAccount",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "信用账户",
+        "en": "has margin account"
+      },
+      "comment": "投资者用于融资融券的信用账户。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Investor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+          "label": "投资者"
+        }
+      ],
+      "range": [
+        {
+          "id": "MarginAccount",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginAccount",
+          "label": "信用账户"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasBondCovenant",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondCovenant",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "债券契约",
+        "en": "has bond covenant"
+      },
+      "comment": "债券发行文件中的契约条款。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "BondCovenant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondCovenant",
+          "label": "债券契约条款"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasBondRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondRating",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "债券评级",
+        "en": "has bond rating"
+      },
+      "comment": "债券对应的外部或内部信用评级。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "BondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+          "label": "债券评级"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasRelatedPartyTransaction",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRelatedPartyTransaction",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "关联交易",
+        "en": "has related-party transaction"
+      },
+      "comment": "上市公司发生的关联交易。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "RelatedPartyTransaction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RelatedPartyTransaction",
+          "label": "关联交易"
         }
       ],
       "inverseOf": [],
@@ -9102,6 +15457,66 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "hasAnalystEstimate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasAnalystEstimate",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "分析师预测",
+        "en": "has analyst estimate"
+      },
+      "comment": "分析师对公司的预测与目标价。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasSegmentReport",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSegmentReport",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "分部报告",
+        "en": "has segment report"
+      },
+      "comment": "财务报告中的业务或地区分部信息。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FinancialReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
+          "label": "财务报告"
+        }
+      ],
+      "range": [
+        {
+          "id": "SegmentReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#SegmentReport",
+          "label": "分部报告"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasCorporateEvent",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasCorporateEvent",
       "kind": "objectProperty",
@@ -9245,6 +15660,36 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "hasContractSpec",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasContractSpec",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "合约规格",
+        "en": "has contract specification"
+      },
+      "comment": "衍生品合约的标准化规格。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "ContractSpecification",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ContractSpecification",
+          "label": "合约规格"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasComplianceCheck",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
       "kind": "objectProperty",
@@ -9267,6 +15712,126 @@ window.ASH_DATA = {
           "id": "ComplianceCheck",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
           "label": "合规检查"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasBacktest",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBacktest",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "回测记录",
+        "en": "has backtest"
+      },
+      "comment": "策略的历史回测记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "InvestmentStrategy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentStrategy",
+          "label": "投资策略"
+        }
+      ],
+      "range": [
+        {
+          "id": "Backtest",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Backtest",
+          "label": "回测"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFactorExposure",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFactorExposure",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "因子暴露",
+        "en": "has factor exposure"
+      },
+      "comment": "组合对因子的暴露记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFundManager",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundManager",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "基金经理",
+        "en": "has fund manager"
+      },
+      "comment": "基金产品的主要基金经理。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundManager",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundManager",
+          "label": "基金经理"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFundFee",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFee",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "基金费用",
+        "en": "has fund fee"
+      },
+      "comment": "基金产品的管理费、托管费等费用信息。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundFee",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFee",
+          "label": "基金费用"
         }
       ],
       "inverseOf": [],
@@ -9335,6 +15900,168 @@ window.ASH_DATA = {
           "id": "MacroIndicator",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
           "label": "宏观指标"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "approvedBy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvedBy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "审批人",
+        "en": "approved by"
+      },
+      "comment": "执行审批的合规或授权人员。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "range": [
+        {
+          "id": "MarketParticipant",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketParticipant",
+          "label": "市场参与者"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "approves",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "审批对象",
+        "en": "approves"
+      },
+      "comment": "审批所覆盖的投资决策。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "range": [
+        {
+          "id": "InvestmentDecision",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
+          "label": "投资决策"
+        }
+      ],
+      "inverseOf": [
+        {
+          "id": "hasApproval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasApproval",
+          "label": "审批记录"
+        }
+      ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasApproval",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasApproval",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "审批记录",
+        "en": "has approval"
+      },
+      "comment": "决策对应的人工审批记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "InvestmentDecision",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
+          "label": "投资决策"
+        }
+      ],
+      "range": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "inverseOf": [
+        {
+          "id": "approves",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+          "label": "审批对象"
+        }
+      ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "executedAs",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executedAs",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "成交为",
+        "en": "executed as"
+      },
+      "comment": "订单执行后形成的成交记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasExecutionReport",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasExecutionReport",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "执行回报",
+        "en": "has execution report"
+      },
+      "comment": "成交对应的执行回报。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "ExecutionReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ExecutionReport",
+          "label": "执行回报"
         }
       ],
       "inverseOf": [],
@@ -9473,6 +16200,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "hasStatementLineItem",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasStatementLineItem",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "报表科目",
+        "en": "has statement line item"
+      },
+      "comment": "财务报告中的具体报表科目。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FinancialReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialReport",
+          "label": "财务报告"
+        }
+      ],
+      "range": [
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "hasFinancialReport",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
       "kind": "objectProperty",
@@ -9575,6 +16332,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "hasFundShare",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundShare",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "持有基金份额",
+        "en": "has fund share"
+      },
+      "comment": "基金与其发行的基金份额之间的关系。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "lists",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lists",
       "kind": "objectProperty",
@@ -9606,6 +16393,96 @@ window.ASH_DATA = {
           "label": "上市于"
         }
       ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "controls",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#controls",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "控制",
+        "en": "controls"
+      },
+      "comment": "股东对上市公司的控制关系。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "range": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasDataLineage",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasDataLineage",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "数据血缘",
+        "en": "has data lineage"
+      },
+      "comment": "信息对象的数据血缘记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "InformationObject",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InformationObject",
+          "label": "信息对象"
+        }
+      ],
+      "range": [
+        {
+          "id": "DataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+          "label": "数据血缘"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "exposedToFactor",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exposedToFactor",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "暴露于因子",
+        "en": "exposed to factor"
+      },
+      "comment": "因子暴露所对应的具体因子。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "range": [
+        {
+          "id": "Factor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Factor",
+          "label": "因子"
+        }
+      ],
+      "inverseOf": [],
       "subPropertyOf": [],
       "characteristics": [],
       "usedByRules": []
@@ -9643,6 +16520,36 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "underlyingAsset",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "标的资产",
+        "en": "underlying asset"
+      },
+      "comment": "衍生品或可转债所挂钩的标的资产。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FinancialInstrument",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FinancialInstrument",
+          "label": "金融工具"
+        }
+      ],
+      "range": [
+        {
+          "id": "Entity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Entity",
+          "label": "实体"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "checksDecision",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#checksDecision",
       "kind": "objectProperty",
@@ -9672,6 +16579,36 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "hasModelVersion",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasModelVersion",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "模型版本",
+        "en": "has model version"
+      },
+      "comment": "风险模型的版本记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "RiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+          "label": "风险模型"
+        }
+      ],
+      "range": [
+        {
+          "id": "ModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+          "label": "模型版本"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -9710,6 +16647,36 @@ window.ASH_DATA = {
       "characteristics": [
         "传递"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "hasLimitState",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasLimitState",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "涨跌停状态",
+        "en": "has limit state"
+      },
+      "comment": "证券当前的涨跌停或接近涨跌停状态。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "range": [
+        {
+          "id": "LimitState",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LimitState",
+          "label": "涨跌停状态"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -9772,6 +16739,216 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "generatedFromOrder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedFromOrder",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "由订单生成",
+        "en": "generated from order"
+      },
+      "comment": "成交记录所来源的委托订单。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "managedBy",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managedBy",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "管理人为",
+        "en": "managed by"
+      },
+      "comment": "基金产品的基金管理公司。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundCompany",
+          "label": "基金管理公司"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasTrade",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasTrade",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "组合成交",
+        "en": "has trade"
+      },
+      "comment": "组合关联的成交记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasConstraint",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConstraint",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "组合约束",
+        "en": "has constraint"
+      },
+      "comment": "组合必须满足的约束条件。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "PortfolioConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+          "label": "组合约束"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasOrder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrder",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "组合订单",
+        "en": "has order"
+      },
+      "comment": "组合关联的委托订单。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Portfolio",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio",
+          "label": "投资组合"
+        }
+      ],
+      "range": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasShareholder",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasShareholder",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "股东",
+        "en": "has shareholder"
+      },
+      "comment": "上市公司的主要股东。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasOwnershipStructure",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOwnershipStructure",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "股权结构",
+        "en": "has ownership structure"
+      },
+      "comment": "上市公司的股权与控制结构。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "OwnershipStructure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OwnershipStructure",
+          "label": "股权结构"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -9842,6 +17019,66 @@ window.ASH_DATA = {
           "label": "行情快照"
         }
       ],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "orderFor",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderFor",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "订单标的",
+        "en": "order for"
+      },
+      "comment": "委托订单指向的证券。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasOrderBook",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrderBook",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "订单簿",
+        "en": "has order book"
+      },
+      "comment": "证券的买卖委托订单簿快照。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
+        }
+      ],
+      "range": [
+        {
+          "id": "OrderBook",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OrderBook",
+          "label": "订单簿"
+        }
+      ],
+      "inverseOf": [],
       "subPropertyOf": [],
       "characteristics": [],
       "usedByRules": []
@@ -9942,6 +17179,96 @@ window.ASH_DATA = {
       "characteristics": [
         "函数式"
       ],
+      "usedByRules": []
+    },
+    {
+      "id": "hasRatingAction",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRatingAction",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "评级行动",
+        "en": "has rating action"
+      },
+      "comment": "公司或债券的评级调整行动。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
+        }
+      ],
+      "range": [
+        {
+          "id": "RatingAction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RatingAction",
+          "label": "评级行动"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "hasFundFlow",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFlow",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "资金流",
+        "en": "has fund flow"
+      },
+      "comment": "基金申购赎回与净流入流出的观测记录。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
+      "id": "tracksIndex",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tracksIndex",
+      "kind": "objectProperty",
+      "label": {
+        "zh": "跟踪指数",
+        "en": "tracks index"
+      },
+      "comment": "ETF 或指数基金所跟踪的业绩指数。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "range": [
+        {
+          "id": "Index",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Index",
+          "label": "指数"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
       "usedByRules": []
     },
     {
@@ -10084,6 +17411,38 @@ window.ASH_DATA = {
   ],
   "dataProperties": [
     {
+      "id": "esgScore",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#esgScore",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "ESG 分数",
+        "en": "ESG score"
+      },
+      "comment": "ESG 综合评分，0—100。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+          "label": "ESG 评级"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "isin",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
       "kind": "dataProperty",
@@ -10221,6 +17580,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "orderSide",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderSide",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "买卖方向",
+        "en": "order side"
+      },
+      "comment": "订单方向：BUY 或 SELL。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "exchangeCode",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exchangeCode",
       "kind": "dataProperty",
@@ -10236,6 +17627,38 @@ window.ASH_DATA = {
           "id": "Exchange",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Exchange",
           "label": "证券交易所"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "tradingStatus",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradingStatus",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "交易状态",
+        "en": "trading status"
+      },
+      "comment": "证券交易状态：normal、suspended、limit-up、limit-down。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Security",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Security",
+          "label": "证券"
         }
       ],
       "range": [
@@ -10275,6 +17698,102 @@ window.ASH_DATA = {
           "id": "date",
           "iri": "http://www.w3.org/2001/XMLSchema#date",
           "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "marginRatio",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marginRatio",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "保证金比例",
+        "en": "margin ratio"
+      },
+      "comment": "保证金占合约名义价值的比例，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "MarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+          "label": "保证金要求"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "creditRating",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#creditRating",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "信用评级",
+        "en": "credit rating"
+      },
+      "comment": "债券或发行人的信用等级，例如 AAA、AA+。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "BondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+          "label": "债券评级"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "bondCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "债券代码",
+        "en": "bond code"
+      },
+      "comment": "债券的稳定业务代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
         }
       ],
       "inverseOf": [],
@@ -10551,6 +18070,73 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "netFlowPct",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "净流入比例",
+        "en": "net flow percent"
+      },
+      "comment": "观察期内基金净申购占资产规模的比例，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R15",
+          "label": "基金净流出风险"
+        }
+      ]
+    },
+    {
+      "id": "fundFlowAmount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundFlowAmount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "净流入金额",
+        "en": "net flow amount"
+      },
+      "comment": "基金观察期净流入金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [],
+      "usedByRules": []
+    },
+    {
       "id": "roe",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
       "kind": "dataProperty",
@@ -10588,6 +18174,70 @@ window.ASH_DATA = {
       ]
     },
     {
+      "id": "analystTargetPrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#analystTargetPrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "分析师目标价",
+        "en": "analyst target price"
+      },
+      "comment": "分析师给出的目标价，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "segmentName",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#segmentName",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "分部名称",
+        "en": "segment name"
+      },
+      "comment": "业务或地区分部的名称。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "SegmentReport",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#SegmentReport",
+          "label": "分部报告"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "interestCoverage",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
       "kind": "dataProperty",
@@ -10623,6 +18273,102 @@ window.ASH_DATA = {
           "label": "高财务风险识别"
         }
       ]
+    },
+    {
+      "id": "yieldToMaturity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#yieldToMaturity",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "到期收益率",
+        "en": "yield to maturity"
+      },
+      "comment": "持有至到期的年化收益率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "expiryDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#expiryDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "到期日",
+        "en": "expiry date"
+      },
+      "comment": "衍生品合约的最后交易日或到期日。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "maturityDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maturityDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "到期日",
+        "en": "maturity date"
+      },
+      "comment": "债券本金到期兑付日。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
     },
     {
       "id": "maxSingleWeight",
@@ -10689,6 +18435,262 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "multiplier",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#multiplier",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "合约乘数",
+        "en": "contract multiplier"
+      },
+      "comment": "期货合约每点对应的标的数量。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FuturesContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FuturesContract",
+          "label": "期货合约"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "contractCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#contractCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "合约代码",
+        "en": "contract code"
+      },
+      "comment": "期货或期权合约的稳定代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Derivative",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Derivative",
+          "label": "衍生品"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "backtestPeriod",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#backtestPeriod",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "回测区间",
+        "en": "backtest period"
+      },
+      "comment": "回测覆盖的时间区间。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Backtest",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Backtest",
+          "label": "回测"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "repurchaseAmount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#repurchaseAmount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "回购金额",
+        "en": "repurchase amount"
+      },
+      "comment": "公司计划或实际回购金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ShareRepurchase",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ShareRepurchase",
+          "label": "股份回购"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "factorValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#factorValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "因子值",
+        "en": "factor value"
+      },
+      "comment": "组合或证券在特定因子上的暴露值。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "fundCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "基金代码",
+        "en": "fund code"
+      },
+      "comment": "基金产品的稳定业务代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "netAssetValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netAssetValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "基金净值",
+        "en": "net asset value"
+      },
+      "comment": "基金份额净值，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "fundType",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundType",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "基金类型",
+        "en": "fund type"
+      },
+      "comment": "基金类型：ETF、LOF、货币、债券或股票基金。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "reviewDate",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reviewDate",
       "kind": "dataProperty",
@@ -10711,6 +18713,102 @@ window.ASH_DATA = {
           "id": "date",
           "iri": "http://www.w3.org/2001/XMLSchema#date",
           "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "orderPrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderPrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "委托价格",
+        "en": "order price"
+      },
+      "comment": "限价委托价格，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "orderQuantity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderQuantity",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "委托数量",
+        "en": "order quantity"
+      },
+      "comment": "委托的证券数量。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "approvalStatus",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvalStatus",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "审批状态",
+        "en": "approval status"
+      },
+      "comment": "审批状态：PENDING、APPROVED、REJECTED。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
         }
       ],
       "inverseOf": [],
@@ -10932,6 +19030,102 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "executionPrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionPrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成交价格",
+        "en": "execution price"
+      },
+      "comment": "成交价格，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "executionQuantity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#executionQuantity",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成交数量",
+        "en": "execution quantity"
+      },
+      "comment": "成交的证券数量。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "tradeDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradeDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成交日期",
+        "en": "trade date"
+      },
+      "comment": "成交发生的日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "volume",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
       "kind": "dataProperty",
@@ -10947,6 +19141,70 @@ window.ASH_DATA = {
           "id": "MarketQuote",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
           "label": "行情快照"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "costRate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#costRate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "成本率",
+        "en": "cost rate"
+      },
+      "comment": "交易成本占成交金额的比例，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "TradeCost",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradeCost",
+          "label": "交易成本"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "premiumDiscount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#premiumDiscount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "折溢价率",
+        "en": "premium/discount"
+      },
+      "comment": "基金二级市场价格相对净值的折溢价率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
         }
       ],
       "range": [
@@ -11100,6 +19358,38 @@ window.ASH_DATA = {
           "label": "单票集中度超限"
         }
       ]
+    },
+    {
+      "id": "ownershipRatio",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ownershipRatio",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "持股比例",
+        "en": "ownership ratio"
+      },
+      "comment": "股东持有上市公司股份的比例，取值 0—1。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Shareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Shareholder",
+          "label": "股东"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
     },
     {
       "id": "indicatorCode",
@@ -11385,6 +19675,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "dataVersion",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataVersion",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "数据版本",
+        "en": "data version"
+      },
+      "comment": "数据产品或加工结果的版本标识。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "DataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+          "label": "数据血缘"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "dataQualityFlag",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
       "kind": "dataProperty",
@@ -11612,6 +19934,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "modelVersionCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#modelVersionCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "模型版本号",
+        "en": "model version code"
+      },
+      "comment": "模型版本稳定标识。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+          "label": "模型版本"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "stopLoss",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#stopLoss",
       "kind": "dataProperty",
@@ -11804,6 +20158,102 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "couponRate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#couponRate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "票面利率",
+        "en": "coupon rate"
+      },
+      "comment": "债券票面年利率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Bond",
+          "label": "债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "lineItemCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lineItemCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "科目代码",
+        "en": "line item code"
+      },
+      "comment": "财务报表科目的稳定代码。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "lineItemValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lineItemValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "科目金额",
+        "en": "line item value"
+      },
+      "comment": "报表科目的金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "StatementLineItem",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#StatementLineItem",
+          "label": "报表科目"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "endpointStatus",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#endpointStatus",
       "kind": "dataProperty",
@@ -11836,6 +20286,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "managementFee",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managementFee",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "管理费率",
+        "en": "management fee"
+      },
+      "comment": "基金管理费率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "operatingCashFlow",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#operatingCashFlow",
       "kind": "dataProperty",
@@ -11858,6 +20340,38 @@ window.ASH_DATA = {
           "id": "decimal",
           "iri": "http://www.w3.org/2001/XMLSchema#decimal",
           "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "settlementDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#settlementDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "结算日期",
+        "en": "settlement date"
+      },
+      "comment": "成交对应的资金与证券交收日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Trade",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Trade",
+          "label": "成交"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
         }
       ],
       "inverseOf": [],
@@ -11999,6 +20513,70 @@ window.ASH_DATA = {
           "label": "成长候选筛选"
         }
       ]
+    },
+    {
+      "id": "offeringSize",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#offeringSize",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "融资规模",
+        "en": "offering size"
+      },
+      "comment": "股权融资计划募集资金规模，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "EquityOffering",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#EquityOffering",
+          "label": "股权融资"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "strikePrice",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#strikePrice",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "行权价",
+        "en": "strike price"
+      },
+      "comment": "期权合约约定的行权价格。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "OptionContract",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OptionContract",
+          "label": "期权合约"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
     },
     {
       "id": "rulePriority",
@@ -12257,6 +20835,107 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "lockupEndDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lockupEndDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "解禁日期",
+        "en": "lockup end date"
+      },
+      "comment": "限售股份解除限售的日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "LockupRelease",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#LockupRelease",
+          "label": "限售解禁"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "orderStatus",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderStatus",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "订单状态",
+        "en": "order status"
+      },
+      "comment": "订单状态：PENDING、FILLED、CANCELLED、REJECTED。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R14",
+          "label": "未审批订单阻断"
+        }
+      ]
+    },
+    {
+      "id": "orderId",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderId",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "订单编号",
+        "en": "order id"
+      },
+      "comment": "委托订单的稳定标识。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "securityCode",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
       "kind": "dataProperty",
@@ -12321,6 +21000,38 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "ratingCode",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ratingCode",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "评级代码",
+        "en": "rating code"
+      },
+      "comment": "评级行动代码或评级符号。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "RatingAction",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RatingAction",
+          "label": "评级行动"
+        }
+      ],
+      "range": [
+        {
+          "id": "string",
+          "iri": "http://www.w3.org/2001/XMLSchema#string",
+          "label": "string"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "debtRatio",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
       "kind": "dataProperty",
@@ -12354,6 +21065,176 @@ window.ASH_DATA = {
         {
           "id": "R02",
           "label": "高财务风险识别"
+        }
+      ]
+    },
+    {
+      "id": "flowPeriod",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowPeriod",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "资金流期间",
+        "en": "flow period"
+      },
+      "comment": "资金流统计对应的年月。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "range": [
+        {
+          "id": "gYearMonth",
+          "iri": "http://www.w3.org/2001/XMLSchema#gYearMonth",
+          "label": "gYearMonth"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "flowAmount",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowAmount",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "资金流金额",
+        "en": "flow amount"
+      },
+      "comment": "申购减赎回的净金额，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "trackingError",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingError",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "跟踪误差",
+        "en": "tracking error"
+      },
+      "comment": "ETF 或指数基金相对业绩基准的跟踪误差，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R12",
+          "label": "ETF 跟踪误差超限"
+        }
+      ]
+    },
+    {
+      "id": "trackingErrorLimit",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingErrorLimit",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "跟踪误差上限",
+        "en": "tracking error limit"
+      },
+      "comment": "组合允许的最大跟踪误差，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "PortfolioConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+          "label": "组合约束"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "conversionPremium",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#conversionPremium",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "转股溢价率",
+        "en": "conversion premium"
+      },
+      "comment": "可转债转股价值相对债券价格的溢价率，以百分数表示。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "ConvertibleBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleBond",
+          "label": "可转换债券"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": [
+        {
+          "id": "R13",
+          "label": "可转债高溢价"
         }
       ]
     },
@@ -12496,6 +21377,70 @@ window.ASH_DATA = {
       "usedByRules": []
     },
     {
+      "id": "estimateValue",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateValue",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "预测值",
+        "en": "estimate value"
+      },
+      "comment": "分析师对净利润等指标的预测值，单位：人民币元。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "range": [
+        {
+          "id": "decimal",
+          "iri": "http://www.w3.org/2001/XMLSchema#decimal",
+          "label": "decimal"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
+      "id": "estimateDate",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateDate",
+      "kind": "dataProperty",
+      "label": {
+        "zh": "预测日期",
+        "en": "estimate date"
+      },
+      "comment": "分析师预测发布或更新的日期。",
+      "source": "rdfs",
+      "layer": "rdfs",
+      "domain": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        }
+      ],
+      "range": [
+        {
+          "id": "date",
+          "iri": "http://www.w3.org/2001/XMLSchema#date",
+          "label": "date"
+        }
+      ],
+      "inverseOf": [],
+      "subPropertyOf": [],
+      "characteristics": [
+        "函数式"
+      ],
+      "usedByRules": []
+    },
+    {
       "id": "riskScore",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
       "kind": "dataProperty",
@@ -12579,17 +21524,39 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "MacroIndicator",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
           "label": "宏观指标"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "indicatorUnit",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorUnit",
+            "label": "指标单位"
+          },
+          "value": {
+            "literal": "%",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "indicatorValue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorValue",
+            "label": "指标值"
+          },
+          "value": {
+            "literal": "2.90",
+            "datatype": "decimal"
+          }
+        },
         {
           "property": {
             "id": "indicatorCode",
@@ -12610,28 +21577,6 @@ window.ASH_DATA = {
           "value": {
             "literal": "2026-10-20",
             "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "indicatorValue",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorValue",
-            "label": "指标值"
-          },
-          "value": {
-            "literal": "2.90",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "indicatorUnit",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorUnit",
-            "label": "指标单位"
-          },
-          "value": {
-            "literal": "%",
-            "datatype": ""
           }
         },
         {
@@ -12711,14 +21656,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "Exchange",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Exchange",
           "label": "证券交易所"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
@@ -12749,14 +21694,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "RiskLevel",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskLevel",
           "label": "风险等级"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [],
@@ -12775,14 +21720,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "InvestmentHorizon",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
-          "label": "投资期限"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "InvestmentHorizon",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
+          "label": "投资期限"
         }
       ],
       "facts": [],
@@ -12827,14 +21772,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "MarketSegment",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketSegment",
           "label": "市场板块"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [],
@@ -12853,14 +21798,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "DataSource",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataSource",
-          "label": "数据源"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "DataSource",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataSource",
+          "label": "数据源"
         }
       ],
       "facts": [],
@@ -12879,14 +21824,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "RiskFactor",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskFactor",
-          "label": "风险因子"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "RiskFactor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskFactor",
+          "label": "风险因子"
         }
       ],
       "facts": [],
@@ -12905,14 +21850,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "RiskLevel",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskLevel",
           "label": "风险等级"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [],
@@ -12957,14 +21902,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "DataSource",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataSource",
           "label": "数据源"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [],
@@ -13047,25 +21992,25 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "MacroIndicator",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
-          "label": "宏观指标"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "MacroIndicator",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MacroIndicator",
+          "label": "宏观指标"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "indicatorUnit",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorUnit",
-            "label": "指标单位"
+            "id": "indicatorCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorCode",
+            "label": "指标代码"
           },
           "value": {
-            "literal": "点",
+            "literal": "PMI",
             "datatype": ""
           }
         },
@@ -13082,13 +22027,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "indicatorCode",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorCode",
-            "label": "指标代码"
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
           },
           "value": {
-            "literal": "PMI",
-            "datatype": ""
+            "literal": "2026-10-31",
+            "datatype": "date"
           }
         },
         {
@@ -13104,13 +22049,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
+            "id": "indicatorUnit",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorUnit",
+            "label": "指标单位"
           },
           "value": {
-            "literal": "2026-10-31",
-            "datatype": "date"
+            "literal": "点",
+            "datatype": ""
           }
         }
       ],
@@ -13181,6 +22126,94 @@ window.ASH_DATA = {
       "exampleNote": "合成示例，不代表真实交易所数据。"
     },
     {
+      "id": "lineage-huachen-report",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#lineage-huachen-report",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰 2025 年报数据血缘",
+        "en": "华辰 2025 年报数据血缘"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "DataLineage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DataLineage",
+          "label": "数据血缘"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "dataVersion",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataVersion",
+            "label": "数据版本"
+          },
+          "value": {
+            "literal": "2025.1",
+            "datatype": ""
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "shareholder-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#shareholder-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰控股集团（示例）",
+        "en": "华辰控股集团（示例）"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "ControllingShareholder",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ControllingShareholder",
+          "label": "控股股东"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "controls",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#controls",
+            "label": "控制"
+          },
+          "value": {
+            "id": "company-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
+            "label": "华辰智造"
+          }
+        },
+        {
+          "property": {
+            "id": "ownershipRatio",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ownershipRatio",
+            "label": "持股比例"
+          },
+          "value": {
+            "literal": "0.32",
+            "datatype": "decimal"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
       "id": "company-huachen",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
       "kind": "individual",
@@ -13193,28 +22226,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "ListedCompany",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
           "label": "上市公司"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "delistingRisk",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
-            "label": "退市风险"
-          },
-          "value": {
-            "literal": "false",
-            "datatype": "boolean"
-          }
-        },
         {
           "property": {
             "id": "hasDisclosure",
@@ -13229,6 +22251,29 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "hasAnalystEstimate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasAnalystEstimate",
+            "label": "分析师预测"
+          },
+          "value": {
+            "id": "estimate-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#estimate-huachen",
+            "label": "华辰智造 2027 年净利润预测"
+          }
+        },
+        {
+          "property": {
+            "id": "isST",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
+            "label": "ST 状态"
+          },
+          "value": {
+            "literal": "false",
+            "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
             "id": "companyCode",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyCode",
             "label": "公司编码"
@@ -13236,6 +22281,30 @@ window.ASH_DATA = {
           "value": {
             "literal": "HC001",
             "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "primaryIndustry",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
+            "label": "一级行业"
+          },
+          "value": {
+            "id": "industry-advanced-manufacturing",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-advanced-manufacturing",
+            "label": "高端制造"
+          }
+        },
+        {
+          "property": {
+            "id": "hasThemeExposure",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasThemeExposure",
+            "label": "主题暴露"
+          },
+          "value": {
+            "id": "theme-ai",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
+            "label": "人工智能"
           }
         },
         {
@@ -13264,37 +22333,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasThemeExposure",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasThemeExposure",
-            "label": "主题暴露"
+            "id": "delistingRisk",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
+            "label": "退市风险"
           },
           "value": {
-            "id": "theme-ai",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
-            "label": "人工智能"
-          }
-        },
-        {
-          "property": {
-            "id": "primaryIndustry",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
-            "label": "一级行业"
-          },
-          "value": {
-            "id": "industry-advanced-manufacturing",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-advanced-manufacturing",
-            "label": "高端制造"
-          }
-        },
-        {
-          "property": {
-            "id": "companyName",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyName",
-            "label": "公司名称"
-          },
-          "value": {
-            "literal": "华辰智造股份有限公司",
-            "datatype": ""
+            "literal": "false",
+            "datatype": "boolean"
           }
         },
         {
@@ -13311,17 +22356,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "isST",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
-            "label": "ST 状态"
-          },
-          "value": {
-            "literal": "false",
-            "datatype": "boolean"
-          }
-        },
-        {
-          "property": {
             "id": "hasFinancialReport",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
             "label": "披露财报"
@@ -13330,6 +22364,41 @@ window.ASH_DATA = {
             "id": "report-huachen-2025",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#report-huachen-2025",
             "label": "华辰智造 2025 年年报"
+          }
+        },
+        {
+          "property": {
+            "id": "hasShareholder",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasShareholder",
+            "label": "股东"
+          },
+          "value": {
+            "id": "shareholder-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#shareholder-demo",
+            "label": "华辰控股集团（示例）"
+          }
+        },
+        {
+          "property": {
+            "id": "companyName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyName",
+            "label": "公司名称"
+          },
+          "value": {
+            "literal": "华辰智造股份有限公司",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasESGRating",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasESGRating",
+            "label": "ESG 评级"
+          },
+          "value": {
+            "id": "esg-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#esg-huachen",
+            "label": "华辰智造 ESG 评分"
           }
         },
         {
@@ -13360,28 +22429,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "Disclosure",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Disclosure",
           "label": "信息披露"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2026-04-20",
-            "datatype": "date"
-          }
-        },
         {
           "property": {
             "id": "dataSource",
@@ -13391,6 +22449,17 @@ window.ASH_DATA = {
           "value": {
             "literal": "合成公告（示例）",
             "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2026-04-20",
+            "datatype": "date"
           }
         }
       ],
@@ -13409,40 +22478,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "AnnualReport",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnnualReport",
           "label": "年度报告"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成年度报告（示例）",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "reportsOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
-            "label": "报告主体"
-          },
-          "value": {
-            "id": "company-huachen",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
-            "label": "华辰智造"
-          }
-        },
         {
           "property": {
             "id": "netProfit",
@@ -13456,35 +22502,35 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "debtRatio",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
-            "label": "资产负债率"
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
           },
           "value": {
-            "literal": "46.8",
-            "datatype": "decimal"
+            "literal": "合成年度报告（示例）",
+            "datatype": ""
           }
         },
         {
           "property": {
-            "id": "eps",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
-            "label": "每股收益"
+            "id": "fiscalYearEnd",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
+            "label": "会计年度截止日"
           },
           "value": {
-            "literal": "1.82",
-            "datatype": "decimal"
+            "literal": "2025-12-31",
+            "datatype": "date"
           }
         },
         {
           "property": {
-            "id": "revenueGrowth",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenueGrowth",
-            "label": "营收增速"
+            "id": "dataQualityFlag",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
+            "label": "数据质量标记"
           },
           "value": {
-            "literal": "21.5",
-            "datatype": "decimal"
+            "literal": "illustrative",
+            "datatype": ""
           }
         },
         {
@@ -13500,12 +22546,35 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "roe",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
-            "label": "净资产收益率"
+            "id": "hasDataLineage",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasDataLineage",
+            "label": "数据血缘"
           },
           "value": {
-            "literal": "18.2",
+            "id": "lineage-huachen-report",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#lineage-huachen-report",
+            "label": "华辰 2025 年报数据血缘"
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "eps",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
+            "label": "每股收益"
+          },
+          "value": {
+            "literal": "1.82",
             "datatype": "decimal"
           }
         },
@@ -13522,46 +22591,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataQualityFlag",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
-            "label": "数据质量标记"
+            "id": "revenueGrowth",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenueGrowth",
+            "label": "营收增速"
           },
           "value": {
-            "literal": "illustrative",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "revenue",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenue",
-            "label": "营业收入"
-          },
-          "value": {
-            "literal": "18600000000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "operatingCashFlow",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#operatingCashFlow",
-            "label": "经营活动现金流"
-          },
-          "value": {
-            "literal": "2900000000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
+            "literal": "21.5",
+            "datatype": "decimal"
           }
         },
         {
@@ -13577,13 +22613,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "fiscalYearEnd",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
-            "label": "会计年度截止日"
+            "id": "debtRatio",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
+            "label": "资产负债率"
           },
           "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
+            "literal": "46.8",
+            "datatype": "decimal"
           }
         },
         {
@@ -13595,6 +22631,51 @@ window.ASH_DATA = {
           "value": {
             "literal": "9.4",
             "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "revenue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenue",
+            "label": "营业收入"
+          },
+          "value": {
+            "literal": "18600000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "reportsOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
+            "label": "报告主体"
+          },
+          "value": {
+            "id": "company-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
+            "label": "华辰智造"
+          }
+        },
+        {
+          "property": {
+            "id": "roe",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
+            "label": "净资产收益率"
+          },
+          "value": {
+            "literal": "18.2",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "operatingCashFlow",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#operatingCashFlow",
+            "label": "经营活动现金流"
+          },
+          "value": {
+            "literal": "2900000000",
+            "datatype": "integer"
           }
         }
       ],
@@ -13626,17 +22707,6 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
             "id": "hasSource",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSource",
             "label": "证据来源"
@@ -13656,6 +22726,17 @@ window.ASH_DATA = {
           "value": {
             "literal": "合成年度报告（示例）",
             "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
           }
         }
       ],
@@ -13698,89 +22779,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasHorizon",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
-            "label": "投资期限"
-          },
-          "value": {
-            "id": "horizon-medium",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#horizon-medium",
-            "label": "中期（3—12 个月）"
-          }
-        },
-        {
-          "property": {
-            "id": "basedOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
-            "label": "依据证据"
-          },
-          "value": {
-            "id": "evidence-huachen-report",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-report",
-            "label": "华辰智造 2025 年财务报告"
-          }
-        },
-        {
-          "property": {
-            "id": "basedOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
-            "label": "依据证据"
-          },
-          "value": {
-            "id": "evidence-huachen-industry",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-industry",
-            "label": "工业自动化行业景气跟踪"
-          }
-        },
-        {
-          "property": {
-            "id": "basedOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
-            "label": "依据证据"
-          },
-          "value": {
-            "id": "evidence-huachen-quote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-quote",
-            "label": "华辰智造 2026-10-30 收盘行情"
-          }
-        },
-        {
-          "property": {
-            "id": "hasComplianceCheck",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
-            "label": "合规检查"
-          },
-          "value": {
-            "id": "check-huachen",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#check-huachen",
-            "label": "华辰智造决策合规检查"
-          }
-        },
-        {
-          "property": {
-            "id": "decisionDate",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decisionDate",
-            "label": "决策日期"
-          },
-          "value": {
-            "literal": "2026-10-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "hasRiskAssessment",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
-            "label": "风险评估"
-          },
-          "value": {
-            "id": "risk-huachen",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-huachen",
-            "label": "华辰智造风险评估"
-          }
-        },
-        {
-          "property": {
             "id": "stopLoss",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#stopLoss",
             "label": "止损价"
@@ -13788,18 +22786,6 @@ window.ASH_DATA = {
           "value": {
             "literal": "30.50",
             "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "generatedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedBy",
-            "label": "生成服务"
-          },
-          "value": {
-            "id": "svc-ashare-decision",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#svc-ashare-decision",
-            "label": "A 股投资决策服务"
           }
         },
         {
@@ -13828,47 +22814,24 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "aboutSecurity",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
-            "label": "决策标的"
+            "id": "aboutCompany",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutCompany",
+            "label": "决策公司"
           },
           "value": {
-            "id": "sec-huachen-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
-            "label": "华辰智造 A"
+            "id": "company-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
+            "label": "华辰智造"
           }
         },
         {
           "property": {
-            "id": "decidedFor",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decidedFor",
-            "label": "服务画像"
+            "id": "decisionDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decisionDate",
+            "label": "决策日期"
           },
           "value": {
-            "id": "profile-balanced",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#profile-balanced",
-            "label": "稳健均衡型投资者"
-          }
-        },
-        {
-          "property": {
-            "id": "decisionId",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decisionId",
-            "label": "决策编号"
-          },
-          "value": {
-            "literal": "DEC-2026-HC-001",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "validUntil",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#validUntil",
-            "label": "有效期至"
-          },
-          "value": {
-            "literal": "2026-12-31",
+            "literal": "2026-10-31",
             "datatype": "date"
           }
         },
@@ -13886,14 +22849,14 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasRationale",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
-            "label": "决策理由"
+            "id": "hasRiskAssessment",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
+            "label": "风险评估"
           },
           "value": {
-            "id": "rationale-huachen",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rationale-huachen",
-            "label": "华辰智造增持理由"
+            "id": "risk-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-huachen",
+            "label": "华辰智造风险评估"
           }
         },
         {
@@ -13922,6 +22885,102 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "hasHorizon",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
+            "label": "投资期限"
+          },
+          "value": {
+            "id": "horizon-medium",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#horizon-medium",
+            "label": "中期（3—12 个月）"
+          }
+        },
+        {
+          "property": {
+            "id": "basedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
+            "label": "依据证据"
+          },
+          "value": {
+            "id": "evidence-huachen-industry",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-industry",
+            "label": "工业自动化行业景气跟踪"
+          }
+        },
+        {
+          "property": {
+            "id": "basedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
+            "label": "依据证据"
+          },
+          "value": {
+            "id": "evidence-huachen-report",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-report",
+            "label": "华辰智造 2025 年财务报告"
+          }
+        },
+        {
+          "property": {
+            "id": "basedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
+            "label": "依据证据"
+          },
+          "value": {
+            "id": "evidence-huachen-quote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-quote",
+            "label": "华辰智造 2026-10-30 收盘行情"
+          }
+        },
+        {
+          "property": {
+            "id": "hasRationale",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
+            "label": "决策理由"
+          },
+          "value": {
+            "id": "rationale-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rationale-huachen",
+            "label": "华辰智造增持理由"
+          }
+        },
+        {
+          "property": {
+            "id": "generatedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedBy",
+            "label": "生成服务"
+          },
+          "value": {
+            "id": "svc-ashare-decision",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#svc-ashare-decision",
+            "label": "A 股投资决策服务"
+          }
+        },
+        {
+          "property": {
+            "id": "hasComplianceCheck",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
+            "label": "合规检查"
+          },
+          "value": {
+            "id": "check-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#check-huachen",
+            "label": "华辰智造决策合规检查"
+          }
+        },
+        {
+          "property": {
+            "id": "aboutSecurity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
+            "label": "决策标的"
+          },
+          "value": {
+            "id": "sec-huachen-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
+            "label": "华辰智造 A"
+          }
+        },
+        {
+          "property": {
             "id": "confidence",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#confidence",
             "label": "置信度"
@@ -13933,14 +22992,36 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "aboutCompany",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutCompany",
-            "label": "决策公司"
+            "id": "validUntil",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#validUntil",
+            "label": "有效期至"
           },
           "value": {
-            "id": "company-huachen",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
-            "label": "华辰智造"
+            "literal": "2026-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "decidedFor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decidedFor",
+            "label": "服务画像"
+          },
+          "value": {
+            "id": "profile-balanced",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#profile-balanced",
+            "label": "稳健均衡型投资者"
+          }
+        },
+        {
+          "property": {
+            "id": "decisionId",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decisionId",
+            "label": "决策编号"
+          },
+          "value": {
+            "literal": "DEC-2026-HC-001",
+            "datatype": ""
           }
         }
       ],
@@ -13959,17 +23040,40 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Valuation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Valuation",
-          "label": "估值快照"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Valuation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Valuation",
+          "label": "估值快照"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "valuationOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#valuationOf",
+            "label": "估值所属证券"
+          },
+          "value": {
+            "id": "sec-huachen-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
+            "label": "华辰智造 A"
+          }
+        },
+        {
+          "property": {
+            "id": "peTtm",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
+            "label": "市盈率 TTM"
+          },
+          "value": {
+            "literal": "19.8",
+            "datatype": "decimal"
+          }
+        },
         {
           "property": {
             "id": "pb",
@@ -13978,6 +23082,17 @@ window.ASH_DATA = {
           },
           "value": {
             "literal": "3.2",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "psTtm",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#psTtm",
+            "label": "市销率 TTM"
+          },
+          "value": {
+            "literal": "2.5",
             "datatype": "decimal"
           }
         },
@@ -13994,29 +23109,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成估值（示例）",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "valuationOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#valuationOf",
-            "label": "估值所属证券"
-          },
-          "value": {
-            "id": "sec-huachen-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
-            "label": "华辰智造 A"
-          }
-        },
-        {
-          "property": {
             "id": "dividendYield",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dividendYield",
             "label": "股息率"
@@ -14028,24 +23120,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "peTtm",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
-            "label": "市盈率 TTM"
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
           },
           "value": {
-            "literal": "19.8",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "psTtm",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#psTtm",
-            "label": "市销率 TTM"
-          },
-          "value": {
-            "literal": "2.5",
-            "datatype": "decimal"
+            "literal": "合成估值（示例）",
+            "datatype": ""
           }
         },
         {
@@ -14075,17 +23156,28 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Evidence",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
-          "label": "证据"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Evidence",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
+          "label": "证据"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
+          },
+          "value": {
+            "literal": "合成行情（示例）",
+            "datatype": ""
+          }
+        },
         {
           "property": {
             "id": "hasSource",
@@ -14108,17 +23200,6 @@ window.ASH_DATA = {
             "literal": "2026-10-30",
             "datatype": "date"
           }
-        },
-        {
-          "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成行情（示例）",
-            "datatype": ""
-          }
         }
       ],
       "exampleNote": ""
@@ -14136,28 +23217,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "MarketQuote",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
-          "label": "行情快照"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "MarketQuote",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
+          "label": "行情快照"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "marketCap",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
-            "label": "总市值"
-          },
-          "value": {
-            "literal": "47200000000",
-            "datatype": "integer"
-          }
-        },
         {
           "property": {
             "id": "dataAsOf",
@@ -14171,12 +23241,45 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "volume",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
+            "label": "成交量"
+          },
+          "value": {
+            "literal": "18400000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "turnoverRate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#turnoverRate",
+            "label": "换手率"
+          },
+          "value": {
+            "literal": "1.80",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
             "id": "lastPrice",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lastPrice",
             "label": "最新价"
           },
           "value": {
             "literal": "36.80",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "changePct",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#changePct",
+            "label": "涨跌幅"
+          },
+          "value": {
+            "literal": "1.94",
             "datatype": "decimal"
           }
         },
@@ -14193,36 +23296,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "changePct",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#changePct",
-            "label": "涨跌幅"
+            "id": "marketCap",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
+            "label": "总市值"
           },
           "value": {
-            "literal": "1.94",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "quoteOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
-            "label": "行情所属证券"
-          },
-          "value": {
-            "id": "sec-huachen-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
-            "label": "华辰智造 A"
-          }
-        },
-        {
-          "property": {
-            "id": "turnoverRate",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#turnoverRate",
-            "label": "换手率"
-          },
-          "value": {
-            "literal": "1.80",
-            "datatype": "decimal"
+            "literal": "47200000000",
+            "datatype": "integer"
           }
         },
         {
@@ -14238,12 +23318,73 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "volume",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
-            "label": "成交量"
+            "id": "quoteOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
+            "label": "行情所属证券"
           },
           "value": {
-            "literal": "18400000",
+            "id": "sec-huachen-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
+            "label": "华辰智造 A"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "estimate-huachen",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#estimate-huachen",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰智造 2027 年净利润预测",
+        "en": "华辰智造 2027 年净利润预测"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "AnalystEstimate",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnalystEstimate",
+          "label": "分析师预测"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "analystTargetPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#analystTargetPrice",
+            "label": "分析师目标价"
+          },
+          "value": {
+            "literal": "46.00",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "estimateDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateDate",
+            "label": "预测日期"
+          },
+          "value": {
+            "literal": "2026-10-28",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "estimateValue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#estimateValue",
+            "label": "预测值"
+          },
+          "value": {
+            "literal": "2850000000",
             "datatype": "integer"
           }
         }
@@ -14263,85 +23404,26 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "AShare",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AShare",
-          "label": "A 股"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "AShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AShare",
+          "label": "A 股"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "listingDate",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
-            "label": "上市日期"
+            "id": "isSuspended",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isSuspended",
+            "label": "停牌状态"
           },
           "value": {
-            "literal": "2010-06-18",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "issuedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#issuedBy",
-            "label": "发行人为"
-          },
-          "value": {
-            "id": "company-huachen",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
-            "label": "华辰智造"
-          }
-        },
-        {
-          "property": {
-            "id": "listedOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listedOn",
-            "label": "上市于"
-          },
-          "value": {
-            "id": "exchange-sse",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
-            "label": "上海证券交易所"
-          }
-        },
-        {
-          "property": {
-            "id": "hasMarketQuote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
-            "label": "行情快照"
-          },
-          "value": {
-            "id": "quote-huachen-20261030",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#quote-huachen-20261030",
-            "label": "华辰智造 2026-10-30 行情"
-          }
-        },
-        {
-          "property": {
-            "id": "tradesOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
-            "label": "交易于板块"
-          },
-          "value": {
-            "id": "segment-main",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
-            "label": "主板"
-          }
-        },
-        {
-          "property": {
-            "id": "securityCode",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
-            "label": "证券代码"
-          },
-          "value": {
-            "literal": "600000",
-            "datatype": ""
+            "literal": "false",
+            "datatype": "boolean"
           }
         },
         {
@@ -14352,28 +23434,6 @@ window.ASH_DATA = {
           },
           "value": {
             "literal": "华辰智造",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "isRestricted",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
-            "label": "限制名单"
-          },
-          "value": {
-            "literal": "false",
-            "datatype": "boolean"
-          }
-        },
-        {
-          "property": {
-            "id": "isin",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
-            "label": "ISIN"
-          },
-          "value": {
-            "literal": "CN0000000001",
             "datatype": ""
           }
         },
@@ -14391,17 +23451,327 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "isSuspended",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isSuspended",
-            "label": "停牌状态"
+            "id": "listedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listedOn",
+            "label": "上市于"
+          },
+          "value": {
+            "id": "exchange-sse",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
+            "label": "上海证券交易所"
+          }
+        },
+        {
+          "property": {
+            "id": "issuedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#issuedBy",
+            "label": "发行人为"
+          },
+          "value": {
+            "id": "company-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
+            "label": "华辰智造"
+          }
+        },
+        {
+          "property": {
+            "id": "hasMarketQuote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
+            "label": "行情快照"
+          },
+          "value": {
+            "id": "quote-huachen-20261030",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#quote-huachen-20261030",
+            "label": "华辰智造 2026-10-30 行情"
+          }
+        },
+        {
+          "property": {
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
+          },
+          "value": {
+            "literal": "600000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "isin",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
+            "label": "ISIN"
+          },
+          "value": {
+            "literal": "CN0000000001",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "tradesOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
+            "label": "交易于板块"
+          },
+          "value": {
+            "id": "segment-main",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
+            "label": "主板"
+          }
+        },
+        {
+          "property": {
+            "id": "isRestricted",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
+            "label": "限制名单"
           },
           "value": {
             "literal": "false",
             "datatype": "boolean"
           }
+        },
+        {
+          "property": {
+            "id": "listingDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
+            "label": "上市日期"
+          },
+          "value": {
+            "literal": "2010-06-18",
+            "datatype": "date"
+          }
         }
       ],
       "exampleNote": "证券代码、价格和估值均为合成数据。"
+    },
+    {
+      "id": "esg-huachen",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#esg-huachen",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰智造 ESG 评分",
+        "en": "华辰智造 ESG 评分"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "ESGRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ESGRating",
+          "label": "ESG 评级"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2026-10-30",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "esgScore",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#esgScore",
+            "label": "ESG 分数"
+          },
+          "value": {
+            "literal": "72",
+            "datatype": "integer"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "order-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#order-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰智造买入订单意图（示例）",
+        "en": "华辰智造买入订单意图（示例）"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "orderSide",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderSide",
+            "label": "买卖方向"
+          },
+          "value": {
+            "literal": "BUY",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "orderPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderPrice",
+            "label": "委托价格"
+          },
+          "value": {
+            "literal": "36.50",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "placedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#placedBy",
+            "label": "下单人"
+          },
+          "value": {
+            "id": "investor-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#investor-demo",
+            "label": "示例机构投资者"
+          }
+        },
+        {
+          "property": {
+            "id": "orderStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderStatus",
+            "label": "订单状态"
+          },
+          "value": {
+            "literal": "PENDING",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "orderFor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderFor",
+            "label": "订单标的"
+          },
+          "value": {
+            "id": "sec-huachen-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
+            "label": "华辰智造 A"
+          }
+        },
+        {
+          "property": {
+            "id": "orderId",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderId",
+            "label": "订单编号"
+          },
+          "value": {
+            "literal": "ORD-2026-001",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasApproval",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasApproval",
+            "label": "审批记录"
+          },
+          "value": {
+            "id": "approval-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#approval-demo",
+            "label": "华辰智造决策人工审批"
+          }
+        },
+        {
+          "property": {
+            "id": "orderQuantity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderQuantity",
+            "label": "委托数量"
+          },
+          "value": {
+            "literal": "10000",
+            "datatype": "integer"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "approval-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#approval-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰智造决策人工审批",
+        "en": "华辰智造决策人工审批"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "Approval",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Approval",
+          "label": "审批"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "approvedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvedBy",
+            "label": "审批人"
+          },
+          "value": {
+            "id": "party-compliance",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-compliance",
+            "label": "合规官（示例）"
+          }
+        },
+        {
+          "property": {
+            "id": "approves",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approves",
+            "label": "审批对象"
+          },
+          "value": {
+            "id": "decision-huachen-2026q4",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#decision-huachen-2026q4",
+            "label": "华辰智造 2026 年四季度增持决策"
+          }
+        },
+        {
+          "property": {
+            "id": "approvalStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#approvalStatus",
+            "label": "审批状态"
+          },
+          "value": {
+            "literal": "PENDING",
+            "datatype": ""
+          }
+        }
+      ],
+      "exampleNote": ""
     },
     {
       "id": "check-huachen",
@@ -14416,14 +23786,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "ComplianceCheck",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
           "label": "合规检查"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
@@ -14477,39 +23847,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "DecisionRationale",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale",
-          "label": "决策理由"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "DecisionRationale",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale",
+          "label": "决策理由"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "assumption",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assumption",
-            "label": "关键假设"
-          },
-          "value": {
-            "literal": "制造业资本开支温和复苏；公司核心产品毛利率维持在 35% 以上。",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "rationaleText",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#rationaleText",
-            "label": "理由正文"
-          },
-          "value": {
-            "literal": "公司在工业自动化与智能装备领域具备稳定的客户基础和高于行业的 ROE；当前 PE 低于过去三年中枢，估值与盈利质量匹配。目标价对应 2027 年约 22 倍 PE，止损价对应 2026 年约 17 倍 PE。",
-            "datatype": ""
-          }
-        },
         {
           "property": {
             "id": "hasEvidence",
@@ -14529,9 +23877,9 @@ window.ASH_DATA = {
             "label": "理由证据"
           },
           "value": {
-            "id": "evidence-huachen-industry",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-industry",
-            "label": "工业自动化行业景气跟踪"
+            "id": "evidence-huachen-quote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-quote",
+            "label": "华辰智造 2026-10-30 收盘行情"
           }
         },
         {
@@ -14541,9 +23889,9 @@ window.ASH_DATA = {
             "label": "理由证据"
           },
           "value": {
-            "id": "evidence-huachen-quote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-quote",
-            "label": "华辰智造 2026-10-30 收盘行情"
+            "id": "evidence-huachen-industry",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-huachen-industry",
+            "label": "工业自动化行业景气跟踪"
           }
         },
         {
@@ -14554,6 +23902,28 @@ window.ASH_DATA = {
           },
           "value": {
             "literal": "若大客户资本开支延后或供应链成本上升，盈利增速可能低于预期；12% 的组合权重已超过单票 10% 的约束，需先降仓再执行增持。",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "rationaleText",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#rationaleText",
+            "label": "理由正文"
+          },
+          "value": {
+            "literal": "公司在工业自动化与智能装备领域具备稳定的客户基础和高于行业的 ROE；当前 PE 低于过去三年中枢，估值与盈利质量匹配。目标价对应 2027 年约 22 倍 PE，止损价对应 2026 年约 17 倍 PE。",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "assumption",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assumption",
+            "label": "关键假设"
+          },
+          "value": {
+            "literal": "制造业资本开支温和复苏；公司核心产品毛利率维持在 35% 以上。",
             "datatype": ""
           }
         }
@@ -14597,13 +23967,14 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "quantity",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quantity",
-            "label": "持仓数量"
+            "id": "positionIn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionIn",
+            "label": "持仓证券"
           },
           "value": {
-            "literal": "120000",
-            "datatype": "integer"
+            "id": "sec-huachen-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
+            "label": "华辰智造 A"
           }
         },
         {
@@ -14631,14 +24002,74 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "positionIn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionIn",
-            "label": "持仓证券"
+            "id": "quantity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quantity",
+            "label": "持仓数量"
           },
           "value": {
-            "id": "sec-huachen-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
-            "label": "华辰智造 A"
+            "literal": "120000",
+            "datatype": "integer"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "event-huachen-buyback",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#event-huachen-buyback",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰智造股份回购（示例）",
+        "en": "华辰智造股份回购（示例）"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "ShareRepurchase",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ShareRepurchase",
+          "label": "股份回购"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "eventOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eventOf",
+            "label": "事件主体"
+          },
+          "value": {
+            "id": "company-huachen",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-huachen",
+            "label": "华辰智造"
+          }
+        },
+        {
+          "property": {
+            "id": "repurchaseAmount",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#repurchaseAmount",
+            "label": "回购金额"
+          },
+          "value": {
+            "literal": "200000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2026-09-30",
+            "datatype": "date"
           }
         }
       ],
@@ -14670,6 +24101,18 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
+            "id": "hasRiskLevel",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskLevel",
+            "label": "风险等级"
+          },
+          "value": {
+            "id": "risk-medium",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-medium",
+            "label": "中"
+          }
+        },
+        {
+          "property": {
             "id": "assessesSecurity",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesSecurity",
             "label": "评估证券"
@@ -14678,6 +24121,18 @@ window.ASH_DATA = {
             "id": "sec-huachen-a",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
             "label": "华辰智造 A"
+          }
+        },
+        {
+          "property": {
+            "id": "assessesDecision",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesDecision",
+            "label": "评估决策"
+          },
+          "value": {
+            "id": "decision-huachen-2026q4",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#decision-huachen-2026q4",
+            "label": "华辰智造 2026 年四季度增持决策"
           }
         },
         {
@@ -14698,9 +24153,9 @@ window.ASH_DATA = {
             "label": "风险因子"
           },
           "value": {
-            "id": "factor-huachen-customer",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#factor-huachen-customer",
-            "label": "大客户依赖"
+            "id": "factor-huachen-supply",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#factor-huachen-supply",
+            "label": "供应链集中"
           }
         },
         {
@@ -14710,21 +24165,9 @@ window.ASH_DATA = {
             "label": "风险因子"
           },
           "value": {
-            "id": "factor-huachen-supply",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#factor-huachen-supply",
-            "label": "供应链集中"
-          }
-        },
-        {
-          "property": {
-            "id": "hasRiskLevel",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskLevel",
-            "label": "风险等级"
-          },
-          "value": {
-            "id": "risk-medium",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-medium",
-            "label": "中"
+            "id": "factor-huachen-customer",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#factor-huachen-customer",
+            "label": "大客户依赖"
           }
         },
         {
@@ -14737,17 +24180,488 @@ window.ASH_DATA = {
             "literal": "42",
             "datatype": "integer"
           }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-csi300etf",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-csi300etf",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰沪深 300ETF",
+        "en": "华辰沪深 300ETF"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "ETF",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ETF",
+          "label": "交易型开放式指数基金"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "tradingStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradingStatus",
+            "label": "交易状态"
+          },
+          "value": {
+            "literal": "normal",
+            "datatype": ""
+          }
         },
         {
           "property": {
-            "id": "assessesDecision",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesDecision",
-            "label": "评估决策"
+            "id": "securityName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
+            "label": "证券简称"
           },
           "value": {
-            "id": "decision-huachen-2026q4",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#decision-huachen-2026q4",
-            "label": "华辰智造 2026 年四季度增持决策"
+            "literal": "华辰沪深 300ETF",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "isSuspended",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isSuspended",
+            "label": "停牌状态"
+          },
+          "value": {
+            "literal": "false",
+            "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
+            "id": "tracksIndex",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tracksIndex",
+            "label": "跟踪指数"
+          },
+          "value": {
+            "id": "index-csi300",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#index-csi300",
+            "label": "沪深 300"
+          }
+        },
+        {
+          "property": {
+            "id": "listedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listedOn",
+            "label": "上市于"
+          },
+          "value": {
+            "id": "exchange-sse",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
+            "label": "上海证券交易所"
+          }
+        },
+        {
+          "property": {
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
+          },
+          "value": {
+            "literal": "510300",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "tradesOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
+            "label": "交易于板块"
+          },
+          "value": {
+            "id": "segment-main",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
+            "label": "主板"
+          }
+        },
+        {
+          "property": {
+            "id": "premiumDiscount",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#premiumDiscount",
+            "label": "折溢价率"
+          },
+          "value": {
+            "literal": "0.12",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "netAssetValue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netAssetValue",
+            "label": "基金净值"
+          },
+          "value": {
+            "literal": "12400000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "isRestricted",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
+            "label": "限制名单"
+          },
+          "value": {
+            "literal": "false",
+            "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
+            "id": "trackingError",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingError",
+            "label": "跟踪误差"
+          },
+          "value": {
+            "literal": "2.8",
+            "datatype": "decimal"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-csi300etf-flow",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-csi300etf-flow",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰沪深 300ETF 2026-10 资金流",
+        "en": "华辰沪深 300ETF 2026-10 资金流"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "flowAmount",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowAmount",
+            "label": "资金流金额"
+          },
+          "value": {
+            "literal": "-210000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "netFlowPct",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+            "label": "净流入比例"
+          },
+          "value": {
+            "literal": "-1.7",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "flowPeriod",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowPeriod",
+            "label": "资金流期间"
+          },
+          "value": {
+            "literal": "2026-10",
+            "datatype": "gYearMonth"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰沪深 300ETF 联接（示例）",
+        "en": "华辰沪深 300ETF 联接（示例）"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "hasFundFee",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFee",
+            "label": "基金费用"
+          },
+          "value": {
+            "id": "fund-fee-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-fee-demo",
+            "label": "示例基金管理费"
+          }
+        },
+        {
+          "property": {
+            "id": "fundCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundCode",
+            "label": "基金代码"
+          },
+          "value": {
+            "literal": "F0001",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "fundType",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fundType",
+            "label": "基金类型"
+          },
+          "value": {
+            "literal": "ETF",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasFundFlow",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundFlow",
+            "label": "资金流"
+          },
+          "value": {
+            "id": "fund-flow-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-flow-demo",
+            "label": "示例基金 2026-10 资金流"
+          }
+        },
+        {
+          "property": {
+            "id": "hasFundManager",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundManager",
+            "label": "基金经理"
+          },
+          "value": {
+            "id": "fund-manager-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-manager-demo",
+            "label": "示例基金经理"
+          }
+        },
+        {
+          "property": {
+            "id": "managedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managedBy",
+            "label": "管理人为"
+          },
+          "value": {
+            "id": "fund-company-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-company-demo",
+            "label": "示例基金管理公司"
+          }
+        },
+        {
+          "property": {
+            "id": "hasFundShare",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFundShare",
+            "label": "持有基金份额"
+          },
+          "value": {
+            "id": "fund-csi300etf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-csi300etf",
+            "label": "华辰沪深 300ETF"
+          }
+        },
+        {
+          "property": {
+            "id": "netFlowPct",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+            "label": "净流入比例"
+          },
+          "value": {
+            "literal": "-6.2",
+            "datatype": "decimal"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "cb-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#cb-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "华辰转债（示例）",
+        "en": "华辰转债（示例）"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "ConvertibleBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleBond",
+          "label": "可转换债券"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "securityName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
+            "label": "证券简称"
+          },
+          "value": {
+            "literal": "华辰转债",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "tradesOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
+            "label": "交易于板块"
+          },
+          "value": {
+            "id": "segment-main",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
+            "label": "主板"
+          }
+        },
+        {
+          "property": {
+            "id": "bondCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+            "label": "债券代码"
+          },
+          "value": {
+            "literal": "110000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "maturityDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maturityDate",
+            "label": "到期日"
+          },
+          "value": {
+            "literal": "2031-06-30",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
+          },
+          "value": {
+            "literal": "110000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasBondRating",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondRating",
+            "label": "债券评级"
+          },
+          "value": {
+            "id": "bond-rating-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#bond-rating-demo",
+            "label": "示例国债 AAA 评级"
+          }
+        },
+        {
+          "property": {
+            "id": "conversionPremium",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#conversionPremium",
+            "label": "转股溢价率"
+          },
+          "value": {
+            "literal": "34.0",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "tradingStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradingStatus",
+            "label": "交易状态"
+          },
+          "value": {
+            "literal": "normal",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "couponRate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#couponRate",
+            "label": "票面利率"
+          },
+          "value": {
+            "literal": "0.50",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "listedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listedOn",
+            "label": "上市于"
+          },
+          "value": {
+            "id": "exchange-sse",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
+            "label": "上海证券交易所"
+          }
+        },
+        {
+          "property": {
+            "id": "underlyingAsset",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+            "label": "标的资产"
+          },
+          "value": {
+            "id": "sec-huachen-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-huachen-a",
+            "label": "华辰智造 A"
           }
         }
       ],
@@ -14903,30 +24817,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "primaryIndustry",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
-            "label": "一级行业"
-          },
-          "value": {
-            "id": "industry-new-energy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-new-energy",
-            "label": "新能源"
-          }
-        },
-        {
-          "property": {
-            "id": "hasFinancialReport",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
-            "label": "披露财报"
-          },
-          "value": {
-            "id": "report-ningyuan-2025",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#report-ningyuan-2025",
-            "label": "宁源新能源 2025 年年报"
-          }
-        },
-        {
-          "property": {
             "id": "delistingRisk",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
             "label": "退市风险"
@@ -14974,6 +24864,30 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "primaryIndustry",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
+            "label": "一级行业"
+          },
+          "value": {
+            "id": "industry-new-energy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-new-energy",
+            "label": "新能源"
+          }
+        },
+        {
+          "property": {
+            "id": "hasFinancialReport",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
+            "label": "披露财报"
+          },
+          "value": {
+            "id": "report-ningyuan-2025",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#report-ningyuan-2025",
+            "label": "宁源新能源 2025 年年报"
+          }
+        },
+        {
+          "property": {
             "id": "companyName",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyName",
             "label": "公司名称"
@@ -15012,14 +24926,24 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "reportsOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
-            "label": "报告主体"
+            "id": "eps",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
+            "label": "每股收益"
           },
           "value": {
-            "id": "company-ningyuan",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-ningyuan",
-            "label": "宁源新能源"
+            "literal": "2.45",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "interestCoverage",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
+            "label": "利息保障倍数"
+          },
+          "value": {
+            "literal": "4.1",
+            "datatype": "decimal"
           }
         },
         {
@@ -15035,67 +24959,12 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataQualityFlag",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
-            "label": "数据质量标记"
-          },
-          "value": {
-            "literal": "illustrative",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
             "id": "operatingCashFlow",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#operatingCashFlow",
             "label": "经营活动现金流"
           },
           "value": {
             "literal": "4100000000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "roe",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
-            "label": "净资产收益率"
-          },
-          "value": {
-            "literal": "16.4",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "fiscalYearEnd",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
-            "label": "会计年度截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "netProfit",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netProfit",
-            "label": "净利润"
-          },
-          "value": {
-            "literal": "3100000000",
             "datatype": "integer"
           }
         },
@@ -15112,13 +24981,47 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "eps",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
-            "label": "每股收益"
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
           },
           "value": {
-            "literal": "2.45",
-            "datatype": "decimal"
+            "literal": "合成年度报告（示例）",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "reportsOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
+            "label": "报告主体"
+          },
+          "value": {
+            "id": "company-ningyuan",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-ningyuan",
+            "label": "宁源新能源"
+          }
+        },
+        {
+          "property": {
+            "id": "fiscalYearEnd",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
+            "label": "会计年度截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
           }
         },
         {
@@ -15145,6 +25048,17 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "netProfit",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netProfit",
+            "label": "净利润"
+          },
+          "value": {
+            "literal": "3100000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
             "id": "revenue",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenue",
             "label": "营业收入"
@@ -15156,23 +25070,23 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
+            "id": "dataQualityFlag",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
+            "label": "数据质量标记"
           },
           "value": {
-            "literal": "合成年度报告（示例）",
+            "literal": "illustrative",
             "datatype": ""
           }
         },
         {
           "property": {
-            "id": "interestCoverage",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
-            "label": "利息保障倍数"
+            "id": "roe",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
+            "label": "净资产收益率"
           },
           "value": {
-            "literal": "4.1",
+            "literal": "16.4",
             "datatype": "decimal"
           }
         },
@@ -15216,13 +25130,14 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
+            "id": "hasSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSource",
+            "label": "证据来源"
           },
           "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
+            "id": "source-annual-report",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#source-annual-report",
+            "label": "公司年度报告"
           }
         },
         {
@@ -15238,14 +25153,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSource",
-            "label": "证据来源"
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
           },
           "value": {
-            "id": "source-annual-report",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#source-annual-report",
-            "label": "公司年度报告"
+            "literal": "2025-12-31",
+            "datatype": "date"
           }
         }
       ],
@@ -15264,144 +25178,27 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "InvestmentDecision",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
           "label": "投资决策"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "aboutCompany",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutCompany",
-            "label": "决策公司"
+            "id": "hasHorizon",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
+            "label": "投资期限"
           },
           "value": {
-            "id": "company-ningyuan",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-ningyuan",
-            "label": "宁源新能源"
-          }
-        },
-        {
-          "property": {
-            "id": "governedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
-            "label": "受政策治理"
-          },
-          "value": {
-            "id": "policy-decision-use",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-decision-use",
-            "label": "决策报告使用协议"
-          }
-        },
-        {
-          "property": {
-            "id": "decidedFor",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decidedFor",
-            "label": "服务画像"
-          },
-          "value": {
-            "id": "profile-balanced",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#profile-balanced",
-            "label": "稳健均衡型投资者"
-          }
-        },
-        {
-          "property": {
-            "id": "confidence",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#confidence",
-            "label": "置信度"
-          },
-          "value": {
-            "literal": "0.64",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "hasRationale",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
-            "label": "决策理由"
-          },
-          "value": {
-            "id": "rationale-ningyuan",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rationale-ningyuan",
-            "label": "宁源新能源观察理由"
-          }
-        },
-        {
-          "property": {
-            "id": "hasMacroContext",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMacroContext",
-            "label": "宏观背景"
-          },
-          "value": {
-            "id": "macro-pmi-2026-10",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#macro-pmi-2026-10",
-            "label": "制造业 PMI"
-          }
-        },
-        {
-          "property": {
-            "id": "validUntil",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#validUntil",
-            "label": "有效期至"
-          },
-          "value": {
-            "literal": "2026-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "basedOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
-            "label": "依据证据"
-          },
-          "value": {
-            "id": "evidence-ningyuan-quote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-ningyuan-quote",
-            "label": "宁源新能源 2026-10-30 行情"
-          }
-        },
-        {
-          "property": {
-            "id": "basedOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
-            "label": "依据证据"
-          },
-          "value": {
-            "id": "evidence-ningyuan-report",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-ningyuan-report",
-            "label": "宁源新能源 2025 年财务报告"
-          }
-        },
-        {
-          "property": {
-            "id": "targetPrice",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#targetPrice",
-            "label": "目标价"
-          },
-          "value": {
-            "literal": "58.00",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "hasComplianceCheck",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
-            "label": "合规检查"
-          },
-          "value": {
-            "id": "check-ningyuan",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#check-ningyuan",
-            "label": "宁源新能源决策合规检查"
+            "id": "horizon-medium",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#horizon-medium",
+            "label": "中期（3—12 个月）"
           }
         },
         {
@@ -15418,6 +25215,17 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "confidence",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#confidence",
+            "label": "置信度"
+          },
+          "value": {
+            "literal": "0.64",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
             "id": "decisionDate",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decisionDate",
             "label": "决策日期"
@@ -15425,6 +25233,42 @@ window.ASH_DATA = {
           "value": {
             "literal": "2026-10-31",
             "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "basedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
+            "label": "依据证据"
+          },
+          "value": {
+            "id": "evidence-ningyuan-report",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-ningyuan-report",
+            "label": "宁源新能源 2025 年财务报告"
+          }
+        },
+        {
+          "property": {
+            "id": "basedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#basedOn",
+            "label": "依据证据"
+          },
+          "value": {
+            "id": "evidence-ningyuan-quote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-ningyuan-quote",
+            "label": "宁源新能源 2026-10-30 行情"
+          }
+        },
+        {
+          "property": {
+            "id": "hasMacroContext",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMacroContext",
+            "label": "宏观背景"
+          },
+          "value": {
+            "id": "macro-pmi-2026-10",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#macro-pmi-2026-10",
+            "label": "制造业 PMI"
           }
         },
         {
@@ -15441,14 +25285,73 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasHorizon",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
-            "label": "投资期限"
+            "id": "hasComplianceCheck",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
+            "label": "合规检查"
           },
           "value": {
-            "id": "horizon-medium",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#horizon-medium",
-            "label": "中期（3—12 个月）"
+            "id": "check-ningyuan",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#check-ningyuan",
+            "label": "宁源新能源决策合规检查"
+          }
+        },
+        {
+          "property": {
+            "id": "validUntil",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#validUntil",
+            "label": "有效期至"
+          },
+          "value": {
+            "literal": "2026-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "decidedFor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#decidedFor",
+            "label": "服务画像"
+          },
+          "value": {
+            "id": "profile-balanced",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#profile-balanced",
+            "label": "稳健均衡型投资者"
+          }
+        },
+        {
+          "property": {
+            "id": "generatedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedBy",
+            "label": "生成服务"
+          },
+          "value": {
+            "id": "svc-ashare-decision",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#svc-ashare-decision",
+            "label": "A 股投资决策服务"
+          }
+        },
+        {
+          "property": {
+            "id": "hasRationale",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
+            "label": "决策理由"
+          },
+          "value": {
+            "id": "rationale-ningyuan",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rationale-ningyuan",
+            "label": "宁源新能源观察理由"
+          }
+        },
+        {
+          "property": {
+            "id": "aboutCompany",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutCompany",
+            "label": "决策公司"
+          },
+          "value": {
+            "id": "company-ningyuan",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-ningyuan",
+            "label": "宁源新能源"
           }
         },
         {
@@ -15475,6 +25378,17 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "targetPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#targetPrice",
+            "label": "目标价"
+          },
+          "value": {
+            "literal": "58.00",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
             "id": "hasRecommendation",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRecommendation",
             "label": "投资建议"
@@ -15487,14 +25401,14 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "generatedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#generatedBy",
-            "label": "生成服务"
+            "id": "governedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
+            "label": "受政策治理"
           },
           "value": {
-            "id": "svc-ashare-decision",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#svc-ashare-decision",
-            "label": "A 股投资决策服务"
+            "id": "policy-decision-use",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-decision-use",
+            "label": "决策报告使用协议"
           }
         }
       ],
@@ -15526,28 +25440,6 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "peTtm",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
-            "label": "市盈率 TTM"
-          },
-          "value": {
-            "literal": "34.5",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "psTtm",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#psTtm",
-            "label": "市销率 TTM"
-          },
-          "value": {
-            "literal": "1.9",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
             "id": "dataAsOf",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
             "label": "数据截止日"
@@ -15555,6 +25447,39 @@ window.ASH_DATA = {
           "value": {
             "literal": "2026-10-30",
             "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "pb",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#pb",
+            "label": "市净率"
+          },
+          "value": {
+            "literal": "5.6",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "dividendYield",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dividendYield",
+            "label": "股息率"
+          },
+          "value": {
+            "literal": "0.6",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "dataQualityFlag",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
+            "label": "数据质量标记"
+          },
+          "value": {
+            "literal": "illustrative",
+            "datatype": ""
           }
         },
         {
@@ -15571,35 +25496,24 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dividendYield",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dividendYield",
-            "label": "股息率"
+            "id": "psTtm",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#psTtm",
+            "label": "市销率 TTM"
           },
           "value": {
-            "literal": "0.6",
+            "literal": "1.9",
             "datatype": "decimal"
           }
         },
         {
           "property": {
-            "id": "pb",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#pb",
-            "label": "市净率"
+            "id": "peTtm",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
+            "label": "市盈率 TTM"
           },
           "value": {
-            "literal": "5.6",
+            "literal": "34.5",
             "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "dataQualityFlag",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
-            "label": "数据质量标记"
-          },
-          "value": {
-            "literal": "illustrative",
-            "datatype": ""
           }
         },
         {
@@ -15642,46 +25556,13 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
+            "id": "dataQualityFlag",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
+            "label": "数据质量标记"
           },
           "value": {
-            "literal": "2026-10-30",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "volume",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
-            "label": "成交量"
-          },
-          "value": {
-            "literal": "26300000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成行情（示例）",
+            "literal": "illustrative",
             "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "marketCap",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
-            "label": "总市值"
-          },
-          "value": {
-            "literal": "63100000000",
-            "datatype": "integer"
           }
         },
         {
@@ -15708,13 +25589,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataQualityFlag",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
-            "label": "数据质量标记"
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
           },
           "value": {
-            "literal": "illustrative",
-            "datatype": ""
+            "literal": "2026-10-30",
+            "datatype": "date"
           }
         },
         {
@@ -15730,6 +25611,17 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "marketCap",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
+            "label": "总市值"
+          },
+          "value": {
+            "literal": "63100000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
             "id": "quoteOf",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
             "label": "行情所属证券"
@@ -15738,6 +25630,28 @@ window.ASH_DATA = {
             "id": "sec-ningyuan-a",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-ningyuan-a",
             "label": "宁源新能源 A"
+          }
+        },
+        {
+          "property": {
+            "id": "volume",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
+            "label": "成交量"
+          },
+          "value": {
+            "literal": "26300000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
+          },
+          "value": {
+            "literal": "合成行情（示例）",
+            "datatype": ""
           }
         }
       ],
@@ -15756,17 +25670,28 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Evidence",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
-          "label": "证据"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Evidence",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
+          "label": "证据"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
+          },
+          "value": {
+            "literal": "合成行情（示例）",
+            "datatype": ""
+          }
+        },
         {
           "property": {
             "id": "hasSource",
@@ -15788,17 +25713,6 @@ window.ASH_DATA = {
           "value": {
             "literal": "2026-10-30",
             "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成行情（示例）",
-            "datatype": ""
           }
         }
       ],
@@ -15830,6 +25744,86 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
+            "id": "isin",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
+            "label": "ISIN"
+          },
+          "value": {
+            "literal": "CN0000000002",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasMarketQuote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
+            "label": "行情快照"
+          },
+          "value": {
+            "id": "quote-ningyuan-20261030",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#quote-ningyuan-20261030",
+            "label": "宁源新能源 2026-10-30 行情"
+          }
+        },
+        {
+          "property": {
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
+          },
+          "value": {
+            "literal": "300000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "listingDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
+            "label": "上市日期"
+          },
+          "value": {
+            "literal": "2018-09-12",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "issuedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#issuedBy",
+            "label": "发行人为"
+          },
+          "value": {
+            "id": "company-ningyuan",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-ningyuan",
+            "label": "宁源新能源"
+          }
+        },
+        {
+          "property": {
+            "id": "isRestricted",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
+            "label": "限制名单"
+          },
+          "value": {
+            "literal": "false",
+            "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
+            "id": "hasValuation",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasValuation",
+            "label": "估值快照"
+          },
+          "value": {
+            "id": "val-ningyuan-20261030",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#val-ningyuan-20261030",
+            "label": "宁源新能源 2026-10-30 估值"
+          }
+        },
+        {
+          "property": {
             "id": "tradesOn",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
             "label": "交易于板块"
@@ -15838,6 +25832,17 @@ window.ASH_DATA = {
             "id": "segment-chinext",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-chinext",
             "label": "创业板"
+          }
+        },
+        {
+          "property": {
+            "id": "securityName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
+            "label": "证券简称"
+          },
+          "value": {
+            "literal": "宁源新能源",
+            "datatype": ""
           }
         },
         {
@@ -15862,97 +25867,6 @@ window.ASH_DATA = {
             "literal": "false",
             "datatype": "boolean"
           }
-        },
-        {
-          "property": {
-            "id": "securityCode",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
-            "label": "证券代码"
-          },
-          "value": {
-            "literal": "300000",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "securityName",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
-            "label": "证券简称"
-          },
-          "value": {
-            "literal": "宁源新能源",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "issuedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#issuedBy",
-            "label": "发行人为"
-          },
-          "value": {
-            "id": "company-ningyuan",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-ningyuan",
-            "label": "宁源新能源"
-          }
-        },
-        {
-          "property": {
-            "id": "hasValuation",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasValuation",
-            "label": "估值快照"
-          },
-          "value": {
-            "id": "val-ningyuan-20261030",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#val-ningyuan-20261030",
-            "label": "宁源新能源 2026-10-30 估值"
-          }
-        },
-        {
-          "property": {
-            "id": "hasMarketQuote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
-            "label": "行情快照"
-          },
-          "value": {
-            "id": "quote-ningyuan-20261030",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#quote-ningyuan-20261030",
-            "label": "宁源新能源 2026-10-30 行情"
-          }
-        },
-        {
-          "property": {
-            "id": "isin",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
-            "label": "ISIN"
-          },
-          "value": {
-            "literal": "CN0000000002",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "listingDate",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
-            "label": "上市日期"
-          },
-          "value": {
-            "literal": "2018-09-12",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "isRestricted",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
-            "label": "限制名单"
-          },
-          "value": {
-            "literal": "false",
-            "datatype": "boolean"
-          }
         }
       ],
       "exampleNote": "证券代码、价格和估值均为合成数据。"
@@ -15970,17 +25884,28 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "ComplianceCheck",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck",
           "label": "合规检查"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "passed",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#passed",
+            "label": "是否通过"
+          },
+          "value": {
+            "literal": "true",
+            "datatype": "boolean"
+          }
+        },
         {
           "property": {
             "id": "checksDecision",
@@ -15991,17 +25916,6 @@ window.ASH_DATA = {
             "id": "decision-ningyuan-2026q4",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#decision-ningyuan-2026q4",
             "label": "宁源新能源 2026 年四季度观察决策"
-          }
-        },
-        {
-          "property": {
-            "id": "passed",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#passed",
-            "label": "是否通过"
-          },
-          "value": {
-            "literal": "true",
-            "datatype": "boolean"
           }
         },
         {
@@ -16031,29 +25945,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "Position",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Position",
           "label": "持仓"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "positionOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionOf",
-            "label": "仓位所属组合"
-          },
-          "value": {
-            "id": "portfolio-demo",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#portfolio-demo",
-            "label": "示例质量价值组合"
-          }
-        },
         {
           "property": {
             "id": "avgCost",
@@ -16074,6 +25976,18 @@ window.ASH_DATA = {
           "value": {
             "literal": "30000",
             "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "positionOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionOf",
+            "label": "仓位所属组合"
+          },
+          "value": {
+            "id": "portfolio-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#portfolio-demo",
+            "label": "示例质量价值组合"
           }
         },
         {
@@ -16115,37 +26029,27 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "DecisionRationale",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale",
           "label": "决策理由"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "assumption",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assumption",
-            "label": "关键假设"
+            "id": "hasEvidence",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasEvidence",
+            "label": "理由证据"
           },
           "value": {
-            "literal": "储能装机需求维持高增长；动力电池价格战在 2027 年缓和。",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "counterArgument",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#counterArgument",
-            "label": "反方观点"
-          },
-          "value": {
-            "literal": "若固态电池技术路线快速商业化，现有产线可能面临减值；若价格战延续，毛利率可能继续下行。",
-            "datatype": ""
+            "id": "evidence-ningyuan-report",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-ningyuan-report",
+            "label": "宁源新能源 2025 年财务报告"
           }
         },
         {
@@ -16162,14 +26066,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasEvidence",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasEvidence",
-            "label": "理由证据"
+            "id": "counterArgument",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#counterArgument",
+            "label": "反方观点"
           },
           "value": {
-            "id": "evidence-ningyuan-report",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-ningyuan-report",
-            "label": "宁源新能源 2025 年财务报告"
+            "literal": "若固态电池技术路线快速商业化，现有产线可能面临减值；若价格战延续，毛利率可能继续下行。",
+            "datatype": ""
           }
         },
         {
@@ -16180,6 +26083,17 @@ window.ASH_DATA = {
           },
           "value": {
             "literal": "收入与利润增速较快，储能业务提供第二增长曲线；但资产负债率 64.2%、利息保障倍数 4.1 倍，且行业价格竞争激烈，当前估值缺乏足够安全边际，因此给予观察而非增持。",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "assumption",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assumption",
+            "label": "关键假设"
+          },
+          "value": {
+            "literal": "储能装机需求维持高增长；动力电池价格战在 2027 年缓和。",
             "datatype": ""
           }
         }
@@ -16199,17 +26113,51 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "RiskAssessment",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
-          "label": "风险评估"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "RiskAssessment",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment",
+          "label": "风险评估"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2026-10-30",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "assessesSecurity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesSecurity",
+            "label": "评估证券"
+          },
+          "value": {
+            "id": "sec-ningyuan-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-ningyuan-a",
+            "label": "宁源新能源 A"
+          }
+        },
+        {
+          "property": {
+            "id": "riskScore",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
+            "label": "风险分数"
+          },
+          "value": {
+            "literal": "68",
+            "datatype": "integer"
+          }
+        },
         {
           "property": {
             "id": "hasRiskFactor",
@@ -16244,40 +26192,6 @@ window.ASH_DATA = {
             "id": "risk-high",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-high",
             "label": "高"
-          }
-        },
-        {
-          "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2026-10-30",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "assessesSecurity",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesSecurity",
-            "label": "评估证券"
-          },
-          "value": {
-            "id": "sec-ningyuan-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-ningyuan-a",
-            "label": "宁源新能源 A"
-          }
-        },
-        {
-          "property": {
-            "id": "riskScore",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
-            "label": "风险分数"
-          },
-          "value": {
-            "literal": "68",
-            "datatype": "integer"
           }
         },
         {
@@ -16321,17 +26235,6 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "indicatorCode",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorCode",
-            "label": "指标代码"
-          },
-          "value": {
-            "literal": "CPI",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
             "id": "indicatorPeriod",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorPeriod",
             "label": "指标期间"
@@ -16365,6 +26268,17 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "indicatorCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorCode",
+            "label": "指标代码"
+          },
+          "value": {
+            "literal": "CPI",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
             "id": "indicatorValue",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#indicatorValue",
             "label": "指标值"
@@ -16390,27 +26304,26 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Evidence",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
-          "label": "证据"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Evidence",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
+          "label": "证据"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "hasSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSource",
-            "label": "证据来源"
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
           },
           "value": {
-            "id": "source-industry-research",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#source-industry-research",
-            "label": "行业研究笔记"
+            "literal": "合成行业研究（示例）",
+            "datatype": ""
           }
         },
         {
@@ -16426,13 +26339,14 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
+            "id": "hasSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasSource",
+            "label": "证据来源"
           },
           "value": {
-            "literal": "合成行业研究（示例）",
-            "datatype": ""
+            "id": "source-industry-research",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#source-industry-research",
+            "label": "行业研究笔记"
           }
         }
       ],
@@ -16515,14 +26429,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "ListedCompany",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
-          "label": "上市公司"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
         }
       ],
       "facts": [
@@ -16539,14 +26453,14 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasFinancialReport",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
-            "label": "披露财报"
+            "id": "hasThemeExposure",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasThemeExposure",
+            "label": "主题暴露"
           },
           "value": {
-            "id": "report-jingkang-2025",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#report-jingkang-2025",
-            "label": "景康生物 2025 年年报"
+            "id": "theme-innovative-drug-global",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-innovative-drug-global",
+            "label": "创新药出海"
           }
         },
         {
@@ -16562,25 +26476,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "companyName",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyName",
-            "label": "公司名称"
+            "id": "delistingRisk",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
+            "label": "退市风险"
           },
           "value": {
-            "literal": "景康生物股份有限公司",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "primaryIndustry",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
-            "label": "一级行业"
-          },
-          "value": {
-            "id": "industry-innovative-drug",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-innovative-drug",
-            "label": "创新药"
+            "literal": "false",
+            "datatype": "boolean"
           }
         },
         {
@@ -16597,25 +26499,37 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "delistingRisk",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
-            "label": "退市风险"
+            "id": "hasFinancialReport",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFinancialReport",
+            "label": "披露财报"
           },
           "value": {
-            "literal": "false",
-            "datatype": "boolean"
+            "id": "report-jingkang-2025",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#report-jingkang-2025",
+            "label": "景康生物 2025 年年报"
           }
         },
         {
           "property": {
-            "id": "hasThemeExposure",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasThemeExposure",
-            "label": "主题暴露"
+            "id": "primaryIndustry",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
+            "label": "一级行业"
           },
           "value": {
-            "id": "theme-innovative-drug-global",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-innovative-drug-global",
-            "label": "创新药出海"
+            "id": "industry-innovative-drug",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-innovative-drug",
+            "label": "创新药"
+          }
+        },
+        {
+          "property": {
+            "id": "companyName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#companyName",
+            "label": "公司名称"
+          },
+          "value": {
+            "literal": "景康生物股份有限公司",
+            "datatype": ""
           }
         }
       ],
@@ -16634,49 +26548,26 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "AnnualReport",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnnualReport",
           "label": "年度报告"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "revenueGrowth",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenueGrowth",
-            "label": "营收增速"
+            "id": "eps",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
+            "label": "每股收益"
           },
           "value": {
-            "literal": "18.4",
+            "literal": "0.86",
             "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "reportsOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
-            "label": "报告主体"
-          },
-          "value": {
-            "id": "company-jingkang",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-jingkang",
-            "label": "景康生物"
-          }
-        },
-        {
-          "property": {
-            "id": "dataQualityFlag",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
-            "label": "数据质量标记"
-          },
-          "value": {
-            "literal": "illustrative",
-            "datatype": ""
           }
         },
         {
@@ -16692,23 +26583,12 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "debtRatio",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
-            "label": "资产负债率"
+            "id": "interestCoverage",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
+            "label": "利息保障倍数"
           },
           "value": {
-            "literal": "38.5",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "eps",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
-            "label": "每股收益"
-          },
-          "value": {
-            "literal": "0.86",
+            "literal": "6.2",
             "datatype": "decimal"
           }
         },
@@ -16725,78 +26605,12 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
+            "id": "revenueGrowth",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenueGrowth",
+            "label": "营收增速"
           },
           "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "reportPeriod",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportPeriod",
-            "label": "报告期"
-          },
-          "value": {
-            "literal": "2025",
-            "datatype": "gYear"
-          }
-        },
-        {
-          "property": {
-            "id": "fiscalYearEnd",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
-            "label": "会计年度截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "netProfit",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netProfit",
-            "label": "净利润"
-          },
-          "value": {
-            "literal": "620000000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "interestCoverage",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
-            "label": "利息保障倍数"
-          },
-          "value": {
-            "literal": "6.2",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "roe",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
-            "label": "净资产收益率"
-          },
-          "value": {
-            "literal": "11.8",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "roa",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roa",
-            "label": "总资产收益率"
-          },
-          "value": {
-            "literal": "5.1",
+            "literal": "18.4",
             "datatype": "decimal"
           }
         },
@@ -16813,6 +26627,40 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "reportsOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
+            "label": "报告主体"
+          },
+          "value": {
+            "id": "company-jingkang",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-jingkang",
+            "label": "景康生物"
+          }
+        },
+        {
+          "property": {
+            "id": "debtRatio",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
+            "label": "资产负债率"
+          },
+          "value": {
+            "literal": "38.5",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
             "id": "dataSource",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
             "label": "数据来源"
@@ -16820,6 +26668,72 @@ window.ASH_DATA = {
           "value": {
             "literal": "合成年度报告（示例）",
             "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "roe",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
+            "label": "净资产收益率"
+          },
+          "value": {
+            "literal": "11.8",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "fiscalYearEnd",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
+            "label": "会计年度截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "dataQualityFlag",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
+            "label": "数据质量标记"
+          },
+          "value": {
+            "literal": "illustrative",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "reportPeriod",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportPeriod",
+            "label": "报告期"
+          },
+          "value": {
+            "literal": "2025",
+            "datatype": "gYear"
+          }
+        },
+        {
+          "property": {
+            "id": "roa",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roa",
+            "label": "总资产收益率"
+          },
+          "value": {
+            "literal": "5.1",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "netProfit",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netProfit",
+            "label": "净利润"
+          },
+          "value": {
+            "literal": "620000000",
+            "datatype": "integer"
           }
         }
       ],
@@ -16838,28 +26752,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Evidence",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
-          "label": "证据"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Evidence",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Evidence",
+          "label": "证据"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成年度报告（示例）",
-            "datatype": ""
-          }
-        },
         {
           "property": {
             "id": "hasSource",
@@ -16870,6 +26773,17 @@ window.ASH_DATA = {
             "id": "source-annual-report",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#source-annual-report",
             "label": "公司年度报告"
+          }
+        },
+        {
+          "property": {
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
+          },
+          "value": {
+            "literal": "合成年度报告（示例）",
+            "datatype": ""
           }
         },
         {
@@ -16899,40 +26813,17 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "InvestmentDecision",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
-          "label": "投资决策"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "InvestmentDecision",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision",
+          "label": "投资决策"
         }
       ],
       "facts": [
-        {
-          "property": {
-            "id": "hasRecommendation",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRecommendation",
-            "label": "投资建议"
-          },
-          "value": {
-            "id": "rec-watch",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rec-watch",
-            "label": "观察"
-          }
-        },
-        {
-          "property": {
-            "id": "confidence",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#confidence",
-            "label": "置信度"
-          },
-          "value": {
-            "literal": "0.58",
-            "datatype": "decimal"
-          }
-        },
         {
           "property": {
             "id": "generatedBy",
@@ -16947,26 +26838,47 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasHorizon",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
-            "label": "投资期限"
+            "id": "stopLoss",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#stopLoss",
+            "label": "止损价"
           },
           "value": {
-            "id": "horizon-long",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#horizon-long",
-            "label": "长期（1—3 年）"
+            "literal": "23.50",
+            "datatype": "decimal"
           }
         },
         {
           "property": {
-            "id": "aboutSecurity",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
-            "label": "决策标的"
+            "id": "targetPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#targetPrice",
+            "label": "目标价"
           },
           "value": {
-            "id": "sec-jingkang-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-jingkang-a",
-            "label": "景康生物 A"
+            "literal": "36.00",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "validUntil",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#validUntil",
+            "label": "有效期至"
+          },
+          "value": {
+            "literal": "2027-03-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "hasRecommendation",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRecommendation",
+            "label": "投资建议"
+          },
+          "value": {
+            "id": "rec-watch",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rec-watch",
+            "label": "观察"
           }
         },
         {
@@ -16979,29 +26891,6 @@ window.ASH_DATA = {
             "id": "rationale-jingkang",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rationale-jingkang",
             "label": "景康生物观察理由"
-          }
-        },
-        {
-          "property": {
-            "id": "governedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
-            "label": "受政策治理"
-          },
-          "value": {
-            "id": "policy-decision-use",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-decision-use",
-            "label": "决策报告使用协议"
-          }
-        },
-        {
-          "property": {
-            "id": "stopLoss",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#stopLoss",
-            "label": "止损价"
-          },
-          "value": {
-            "literal": "23.50",
-            "datatype": "decimal"
           }
         },
         {
@@ -17029,25 +26918,14 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "validUntil",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#validUntil",
-            "label": "有效期至"
+            "id": "governedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
+            "label": "受政策治理"
           },
           "value": {
-            "literal": "2027-03-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "hasComplianceCheck",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
-            "label": "合规检查"
-          },
-          "value": {
-            "id": "check-jingkang",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#check-jingkang",
-            "label": "景康生物决策合规检查"
+            "id": "policy-decision-use",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-decision-use",
+            "label": "决策报告使用协议"
           }
         },
         {
@@ -17075,13 +26953,49 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "targetPrice",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#targetPrice",
-            "label": "目标价"
+            "id": "hasHorizon",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasHorizon",
+            "label": "投资期限"
           },
           "value": {
-            "literal": "36.00",
+            "id": "horizon-long",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#horizon-long",
+            "label": "长期（1—3 年）"
+          }
+        },
+        {
+          "property": {
+            "id": "confidence",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#confidence",
+            "label": "置信度"
+          },
+          "value": {
+            "literal": "0.58",
             "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "hasComplianceCheck",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasComplianceCheck",
+            "label": "合规检查"
+          },
+          "value": {
+            "id": "check-jingkang",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#check-jingkang",
+            "label": "景康生物决策合规检查"
+          }
+        },
+        {
+          "property": {
+            "id": "aboutSecurity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
+            "label": "决策标的"
+          },
+          "value": {
+            "id": "sec-jingkang-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-jingkang-a",
+            "label": "景康生物 A"
           }
         },
         {
@@ -17124,25 +27038,37 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Valuation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Valuation",
-          "label": "估值快照"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Valuation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Valuation",
+          "label": "估值快照"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "peTtm",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
-            "label": "市盈率 TTM"
+            "id": "valuationOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#valuationOf",
+            "label": "估值所属证券"
           },
           "value": {
-            "literal": "45.2",
+            "id": "sec-jingkang-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-jingkang-a",
+            "label": "景康生物 A"
+          }
+        },
+        {
+          "property": {
+            "id": "pb",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#pb",
+            "label": "市净率"
+          },
+          "value": {
+            "literal": "4.1",
             "datatype": "decimal"
           }
         },
@@ -17159,14 +27085,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "valuationOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#valuationOf",
-            "label": "估值所属证券"
+            "id": "dividendYield",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dividendYield",
+            "label": "股息率"
           },
           "value": {
-            "id": "sec-jingkang-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-jingkang-a",
-            "label": "景康生物 A"
+            "literal": "0.2",
+            "datatype": "decimal"
           }
         },
         {
@@ -17193,17 +27118,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dividendYield",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dividendYield",
-            "label": "股息率"
-          },
-          "value": {
-            "literal": "0.2",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
             "id": "dataSource",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
             "label": "数据来源"
@@ -17215,12 +27129,12 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "pb",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#pb",
-            "label": "市净率"
+            "id": "peTtm",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
+            "label": "市盈率 TTM"
           },
           "value": {
-            "literal": "4.1",
+            "literal": "45.2",
             "datatype": "decimal"
           }
         }
@@ -17240,14 +27154,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "MarketQuote",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
-          "label": "行情快照"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "MarketQuote",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarketQuote",
+          "label": "行情快照"
         }
       ],
       "facts": [
@@ -17259,62 +27173,6 @@ window.ASH_DATA = {
           },
           "value": {
             "literal": "0.46",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "dataQualityFlag",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
-            "label": "数据质量标记"
-          },
-          "value": {
-            "literal": "illustrative",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "quoteOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
-            "label": "行情所属证券"
-          },
-          "value": {
-            "id": "sec-jingkang-a",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-jingkang-a",
-            "label": "景康生物 A"
-          }
-        },
-        {
-          "property": {
-            "id": "marketCap",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
-            "label": "总市值"
-          },
-          "value": {
-            "literal": "19800000000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2026-10-30",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "lastPrice",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lastPrice",
-            "label": "最新价"
-          },
-          "value": {
-            "literal": "28.40",
             "datatype": "decimal"
           }
         },
@@ -17342,6 +27200,40 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "quoteOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#quoteOf",
+            "label": "行情所属证券"
+          },
+          "value": {
+            "id": "sec-jingkang-a",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#sec-jingkang-a",
+            "label": "景康生物 A"
+          }
+        },
+        {
+          "property": {
+            "id": "dataQualityFlag",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataQualityFlag",
+            "label": "数据质量标记"
+          },
+          "value": {
+            "literal": "illustrative",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "marketCap",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
+            "label": "总市值"
+          },
+          "value": {
+            "literal": "19800000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
             "id": "volume",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#volume",
             "label": "成交量"
@@ -17349,6 +27241,28 @@ window.ASH_DATA = {
           "value": {
             "literal": "6800000",
             "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "lastPrice",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#lastPrice",
+            "label": "最新价"
+          },
+          "value": {
+            "literal": "28.40",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2026-10-30",
+            "datatype": "date"
           }
         }
       ],
@@ -17380,85 +27294,6 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "isRestricted",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
-            "label": "限制名单"
-          },
-          "value": {
-            "literal": "false",
-            "datatype": "boolean"
-          }
-        },
-        {
-          "property": {
-            "id": "hasMarketQuote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
-            "label": "行情快照"
-          },
-          "value": {
-            "id": "quote-jingkang-20261030",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#quote-jingkang-20261030",
-            "label": "景康生物 2026-10-30 行情"
-          }
-        },
-        {
-          "property": {
-            "id": "securityName",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
-            "label": "证券简称"
-          },
-          "value": {
-            "literal": "景康生物",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "securityCode",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
-            "label": "证券代码"
-          },
-          "value": {
-            "literal": "688000",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "issuedBy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#issuedBy",
-            "label": "发行人为"
-          },
-          "value": {
-            "id": "company-jingkang",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-jingkang",
-            "label": "景康生物"
-          }
-        },
-        {
-          "property": {
-            "id": "isSuspended",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isSuspended",
-            "label": "停牌状态"
-          },
-          "value": {
-            "literal": "false",
-            "datatype": "boolean"
-          }
-        },
-        {
-          "property": {
-            "id": "isin",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
-            "label": "ISIN"
-          },
-          "value": {
-            "literal": "CN0000000003",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
             "id": "listedOn",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listedOn",
             "label": "上市于"
@@ -17467,6 +27302,17 @@ window.ASH_DATA = {
             "id": "exchange-sse",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
             "label": "上海证券交易所"
+          }
+        },
+        {
+          "property": {
+            "id": "listingDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
+            "label": "上市日期"
+          },
+          "value": {
+            "literal": "2021-03-05",
+            "datatype": "date"
           }
         },
         {
@@ -17483,6 +27329,85 @@ window.ASH_DATA = {
         },
         {
           "property": {
+            "id": "issuedBy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#issuedBy",
+            "label": "发行人为"
+          },
+          "value": {
+            "id": "company-jingkang",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-jingkang",
+            "label": "景康生物"
+          }
+        },
+        {
+          "property": {
+            "id": "hasMarketQuote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarketQuote",
+            "label": "行情快照"
+          },
+          "value": {
+            "id": "quote-jingkang-20261030",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#quote-jingkang-20261030",
+            "label": "景康生物 2026-10-30 行情"
+          }
+        },
+        {
+          "property": {
+            "id": "isin",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isin",
+            "label": "ISIN"
+          },
+          "value": {
+            "literal": "CN0000000003",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "isRestricted",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
+            "label": "限制名单"
+          },
+          "value": {
+            "literal": "false",
+            "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
+          },
+          "value": {
+            "literal": "688000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "isSuspended",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isSuspended",
+            "label": "停牌状态"
+          },
+          "value": {
+            "literal": "false",
+            "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
+            "id": "securityName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
+            "label": "证券简称"
+          },
+          "value": {
+            "literal": "景康生物",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
             "id": "hasValuation",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasValuation",
             "label": "估值快照"
@@ -17491,17 +27416,6 @@ window.ASH_DATA = {
             "id": "val-jingkang-20261030",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#val-jingkang-20261030",
             "label": "景康生物 2026-10-30 估值"
-          }
-        },
-        {
-          "property": {
-            "id": "listingDate",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
-            "label": "上市日期"
-          },
-          "value": {
-            "literal": "2021-03-05",
-            "datatype": "date"
           }
         }
       ],
@@ -17533,13 +27447,13 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "passed",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#passed",
-            "label": "是否通过"
+            "id": "checkNote",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#checkNote",
+            "label": "检查说明"
           },
           "value": {
-            "literal": "true",
-            "datatype": "boolean"
+            "literal": "通过：观察建议；若转为买入，需补充临床数据尽调与流动性压力测试。",
+            "datatype": ""
           }
         },
         {
@@ -17556,13 +27470,13 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "checkNote",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#checkNote",
-            "label": "检查说明"
+            "id": "passed",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#passed",
+            "label": "是否通过"
           },
           "value": {
-            "literal": "通过：观察建议；若转为买入，需补充临床数据尽调与流动性压力测试。",
-            "datatype": ""
+            "literal": "true",
+            "datatype": "boolean"
           }
         }
       ],
@@ -17581,17 +27495,40 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Position",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Position",
-          "label": "持仓"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Position",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Position",
+          "label": "持仓"
         }
       ],
       "facts": [
+        {
+          "property": {
+            "id": "positionWeight",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionWeight",
+            "label": "持仓权重"
+          },
+          "value": {
+            "literal": "0.03",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "positionOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionOf",
+            "label": "仓位所属组合"
+          },
+          "value": {
+            "id": "portfolio-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#portfolio-demo",
+            "label": "示例质量价值组合"
+          }
+        },
         {
           "property": {
             "id": "quantity",
@@ -17611,29 +27548,6 @@ window.ASH_DATA = {
           },
           "value": {
             "literal": "30.00",
-            "datatype": "decimal"
-          }
-        },
-        {
-          "property": {
-            "id": "positionOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionOf",
-            "label": "仓位所属组合"
-          },
-          "value": {
-            "id": "portfolio-demo",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#portfolio-demo",
-            "label": "示例质量价值组合"
-          }
-        },
-        {
-          "property": {
-            "id": "positionWeight",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#positionWeight",
-            "label": "持仓权重"
-          },
-          "value": {
-            "literal": "0.03",
             "datatype": "decimal"
           }
         },
@@ -17689,18 +27603,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "hasEvidence",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasEvidence",
-            "label": "理由证据"
-          },
-          "value": {
-            "id": "evidence-jingkang-report",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-jingkang-report",
-            "label": "景康生物 2025 年财务报告"
-          }
-        },
-        {
-          "property": {
             "id": "assumption",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assumption",
             "label": "关键假设"
@@ -17719,6 +27621,18 @@ window.ASH_DATA = {
           "value": {
             "literal": "核心管线处于关键临床阶段，成功商业化将带来非线性增长；当前估值已计入部分成功概率，且临床读数存在二元风险，适合长期观察而非在当前价位建仓。",
             "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasEvidence",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasEvidence",
+            "label": "理由证据"
+          },
+          "value": {
+            "id": "evidence-jingkang-report",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#evidence-jingkang-report",
+            "label": "景康生物 2025 年财务报告"
           }
         }
       ],
@@ -17750,29 +27664,6 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "riskScore",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
-            "label": "风险分数"
-          },
-          "value": {
-            "literal": "55",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "hasRiskLevel",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskLevel",
-            "label": "风险等级"
-          },
-          "value": {
-            "id": "risk-high",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-high",
-            "label": "高"
-          }
-        },
-        {
-          "property": {
             "id": "dataAsOf",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
             "label": "数据截止日"
@@ -17780,6 +27671,18 @@ window.ASH_DATA = {
           "value": {
             "literal": "2026-10-30",
             "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "assessesDecision",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesDecision",
+            "label": "评估决策"
+          },
+          "value": {
+            "id": "decision-jingkang-2026q4",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#decision-jingkang-2026q4",
+            "label": "景康生物 2026 年四季度观察决策"
           }
         },
         {
@@ -17796,14 +27699,25 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "assessesDecision",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#assessesDecision",
-            "label": "评估决策"
+            "id": "hasRiskLevel",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskLevel",
+            "label": "风险等级"
           },
           "value": {
-            "id": "decision-jingkang-2026q4",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#decision-jingkang-2026q4",
-            "label": "景康生物 2026 年四季度观察决策"
+            "id": "risk-high",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-high",
+            "label": "高"
+          }
+        },
+        {
+          "property": {
+            "id": "riskScore",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
+            "label": "风险分数"
+          },
+          "value": {
+            "literal": "55",
+            "datatype": "integer"
           }
         },
         {
@@ -17874,6 +27788,128 @@ window.ASH_DATA = {
       "exampleNote": ""
     },
     {
+      "id": "future-csi300",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#future-csi300",
+      "kind": "individual",
+      "label": {
+        "zh": "沪深 300 股指期货 IF2612",
+        "en": "沪深 300 股指期货 IF2612"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "IndexFuture",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#IndexFuture",
+          "label": "股指期货"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "underlyingAsset",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#underlyingAsset",
+            "label": "标的资产"
+          },
+          "value": {
+            "id": "index-csi300",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#index-csi300",
+            "label": "沪深 300"
+          }
+        },
+        {
+          "property": {
+            "id": "hasContractSpec",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasContractSpec",
+            "label": "合约规格"
+          },
+          "value": {
+            "id": "spec-if",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#spec-if",
+            "label": "沪深 300 股指期货合约规格"
+          }
+        },
+        {
+          "property": {
+            "id": "hasMarginRequirement",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasMarginRequirement",
+            "label": "保证金要求"
+          },
+          "value": {
+            "id": "margin-if",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#margin-if",
+            "label": "股指期货保证金要求"
+          }
+        },
+        {
+          "property": {
+            "id": "multiplier",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#multiplier",
+            "label": "合约乘数"
+          },
+          "value": {
+            "literal": "300",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "expiryDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#expiryDate",
+            "label": "到期日"
+          },
+          "value": {
+            "literal": "2026-12-18",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "contractCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#contractCode",
+            "label": "合约代码"
+          },
+          "value": {
+            "literal": "IF2612",
+            "datatype": ""
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "spec-if",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#spec-if",
+      "kind": "individual",
+      "label": {
+        "zh": "沪深 300 股指期货合约规格",
+        "en": "沪深 300 股指期货合约规格"
+      },
+      "comment": "合约乘数 300 元/点、现金交割的示例规格。",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "ContractSpecification",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ContractSpecification",
+          "label": "合约规格"
+        }
+      ],
+      "facts": [],
+      "exampleNote": ""
+    },
+    {
       "id": "exchange-szse",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-szse",
       "kind": "individual",
@@ -17886,14 +27922,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "Exchange",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Exchange",
           "label": "证券交易所"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
@@ -17924,17 +27960,157 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "InvestmentHorizon",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
           "label": "投资期限"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [],
+      "exampleNote": ""
+    },
+    {
+      "id": "bond-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#bond-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例 30 年国债",
+        "en": "示例 30 年国债"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "GovernmentBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#GovernmentBond",
+          "label": "国债"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "listedOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listedOn",
+            "label": "上市于"
+          },
+          "value": {
+            "id": "exchange-sse",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
+            "label": "上海证券交易所"
+          }
+        },
+        {
+          "property": {
+            "id": "yieldToMaturity",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#yieldToMaturity",
+            "label": "到期收益率"
+          },
+          "value": {
+            "literal": "2.62",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "tradesOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
+            "label": "交易于板块"
+          },
+          "value": {
+            "id": "segment-main",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
+            "label": "主板"
+          }
+        },
+        {
+          "property": {
+            "id": "securityName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
+            "label": "证券简称"
+          },
+          "value": {
+            "literal": "示例 30 年国债",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "bondCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#bondCode",
+            "label": "债券代码"
+          },
+          "value": {
+            "literal": "019000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "maturityDate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maturityDate",
+            "label": "到期日"
+          },
+          "value": {
+            "literal": "2052-06-30",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "couponRate",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#couponRate",
+            "label": "票面利率"
+          },
+          "value": {
+            "literal": "2.45",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
+          },
+          "value": {
+            "literal": "019000",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "hasBondRating",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasBondRating",
+            "label": "债券评级"
+          },
+          "value": {
+            "id": "bond-rating-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#bond-rating-demo",
+            "label": "示例国债 AAA 评级"
+          }
+        },
+        {
+          "property": {
+            "id": "tradingStatus",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradingStatus",
+            "label": "交易状态"
+          },
+          "value": {
+            "literal": "normal",
+            "datatype": ""
+          }
+        }
+      ],
       "exampleNote": ""
     },
     {
@@ -17963,28 +28139,6 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "securityName",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
-            "label": "证券简称"
-          },
-          "value": {
-            "literal": "示例 ST",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "isRestricted",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
-            "label": "限制名单"
-          },
-          "value": {
-            "literal": "true",
-            "datatype": "boolean"
-          }
-        },
-        {
-          "property": {
             "id": "listingDate",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#listingDate",
             "label": "上市日期"
@@ -17992,6 +28146,29 @@ window.ASH_DATA = {
           "value": {
             "literal": "2005-01-04",
             "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "tradesOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
+            "label": "交易于板块"
+          },
+          "value": {
+            "id": "segment-main",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
+            "label": "主板"
+          }
+        },
+        {
+          "property": {
+            "id": "securityName",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityName",
+            "label": "证券简称"
+          },
+          "value": {
+            "literal": "示例 ST",
+            "datatype": ""
           }
         },
         {
@@ -18019,14 +28196,24 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "tradesOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#tradesOn",
-            "label": "交易于板块"
+            "id": "securityCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
+            "label": "证券代码"
           },
           "value": {
-            "id": "segment-main",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#segment-main",
-            "label": "主板"
+            "literal": "600001",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "isRestricted",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
+            "label": "限制名单"
+          },
+          "value": {
+            "literal": "true",
+            "datatype": "boolean"
           }
         },
         {
@@ -18039,17 +28226,6 @@ window.ASH_DATA = {
             "id": "exchange-sse",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#exchange-sse",
             "label": "上海证券交易所"
-          }
-        },
-        {
-          "property": {
-            "id": "securityCode",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#securityCode",
-            "label": "证券代码"
-          },
-          "value": {
-            "literal": "600001",
-            "datatype": ""
           }
         }
       ],
@@ -18068,26 +28244,38 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "ListedCompany",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
-          "label": "上市公司"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "ListedCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ListedCompany",
+          "label": "上市公司"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "isST",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
-            "label": "ST 状态"
+            "id": "delistingRisk",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
+            "label": "退市风险"
           },
           "value": {
             "literal": "true",
             "datatype": "boolean"
+          }
+        },
+        {
+          "property": {
+            "id": "primaryIndustry",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
+            "label": "一级行业"
+          },
+          "value": {
+            "id": "industry-materials",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-materials",
+            "label": "材料"
           }
         },
         {
@@ -18127,9 +28315,9 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "delistingRisk",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#delistingRisk",
-            "label": "退市风险"
+            "id": "isST",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
+            "label": "ST 状态"
           },
           "value": {
             "literal": "true",
@@ -18145,18 +28333,6 @@ window.ASH_DATA = {
           "value": {
             "literal": "ST004",
             "datatype": ""
-          }
-        },
-        {
-          "property": {
-            "id": "primaryIndustry",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#primaryIndustry",
-            "label": "一级行业"
-          },
-          "value": {
-            "id": "industry-materials",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-materials",
-            "label": "材料"
           }
         }
       ],
@@ -18175,60 +28351,70 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "AnnualReport",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AnnualReport",
           "label": "年度报告"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [
         {
           "property": {
-            "id": "revenue",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenue",
-            "label": "营业收入"
+            "id": "roa",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roa",
+            "label": "总资产收益率"
           },
           "value": {
-            "literal": "1800000000",
-            "datatype": "integer"
-          }
-        },
-        {
-          "property": {
-            "id": "debtRatio",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
-            "label": "资产负债率"
-          },
-          "value": {
-            "literal": "78.4",
+            "literal": "-4.2",
             "datatype": "decimal"
           }
         },
         {
           "property": {
-            "id": "reportsOn",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
-            "label": "报告主体"
+            "id": "interestCoverage",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
+            "label": "利息保障倍数"
           },
           "value": {
-            "id": "company-st-demo",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-st-demo",
-            "label": "示例 ST 公司"
+            "literal": "0.8",
+            "datatype": "decimal"
           }
         },
         {
           "property": {
-            "id": "eps",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
-            "label": "每股收益"
+            "id": "dataSource",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
+            "label": "数据来源"
           },
           "value": {
-            "literal": "-0.31",
-            "datatype": "decimal"
+            "literal": "合成年度报告（示例）",
+            "datatype": ""
+          }
+        },
+        {
+          "property": {
+            "id": "fiscalYearEnd",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
+            "label": "会计年度截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
+          }
+        },
+        {
+          "property": {
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
+          },
+          "value": {
+            "literal": "2025-12-31",
+            "datatype": "date"
           }
         },
         {
@@ -18255,28 +28441,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "dataAsOf",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
-            "label": "数据截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
-            "id": "fiscalYearEnd",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#fiscalYearEnd",
-            "label": "会计年度截止日"
-          },
-          "value": {
-            "literal": "2025-12-31",
-            "datatype": "date"
-          }
-        },
-        {
-          "property": {
             "id": "revenueGrowth",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenueGrowth",
             "label": "营收增速"
@@ -18288,12 +28452,46 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "interestCoverage",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
-            "label": "利息保障倍数"
+            "id": "eps",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#eps",
+            "label": "每股收益"
           },
           "value": {
-            "literal": "0.8",
+            "literal": "-0.31",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "reportsOn",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportsOn",
+            "label": "报告主体"
+          },
+          "value": {
+            "id": "company-st-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#company-st-demo",
+            "label": "示例 ST 公司"
+          }
+        },
+        {
+          "property": {
+            "id": "reportPeriod",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportPeriod",
+            "label": "报告期"
+          },
+          "value": {
+            "literal": "2025",
+            "datatype": "gYear"
+          }
+        },
+        {
+          "property": {
+            "id": "debtRatio",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
+            "label": "资产负债率"
+          },
+          "value": {
+            "literal": "78.4",
             "datatype": "decimal"
           }
         },
@@ -18310,28 +28508,6 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "reportPeriod",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#reportPeriod",
-            "label": "报告期"
-          },
-          "value": {
-            "literal": "2025",
-            "datatype": "gYear"
-          }
-        },
-        {
-          "property": {
-            "id": "dataSource",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataSource",
-            "label": "数据来源"
-          },
-          "value": {
-            "literal": "合成年度报告（示例）",
-            "datatype": ""
-          }
-        },
-        {
-          "property": {
             "id": "profitGrowth",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#profitGrowth",
             "label": "净利润增速"
@@ -18339,6 +28515,17 @@ window.ASH_DATA = {
           "value": {
             "literal": "-35.6",
             "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "revenue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenue",
+            "label": "营业收入"
+          },
+          "value": {
+            "literal": "1800000000",
+            "datatype": "integer"
           }
         },
         {
@@ -18351,16 +28538,243 @@ window.ASH_DATA = {
             "literal": "-120000000",
             "datatype": "integer"
           }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "bond-rating-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#bond-rating-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例国债 AAA 评级",
+        "en": "示例国债 AAA 评级"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "BondRating",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#BondRating",
+          "label": "债券评级"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "creditRating",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#creditRating",
+            "label": "信用评级"
+          },
+          "value": {
+            "literal": "AAA",
+            "datatype": ""
+          }
         },
         {
           "property": {
-            "id": "roa",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roa",
-            "label": "总资产收益率"
+            "id": "dataAsOf",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#dataAsOf",
+            "label": "数据截止日"
           },
           "value": {
-            "literal": "-4.2",
+            "literal": "2026-10-30",
+            "datatype": "date"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-flow-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-flow-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例基金 2026-10 资金流",
+        "en": "示例基金 2026-10 资金流"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "FundFlow",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFlow",
+          "label": "基金资金流"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "flowPeriod",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowPeriod",
+            "label": "资金流期间"
+          },
+          "value": {
+            "literal": "2026-10",
+            "datatype": "gYearMonth"
+          }
+        },
+        {
+          "property": {
+            "id": "flowAmount",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#flowAmount",
+            "label": "资金流金额"
+          },
+          "value": {
+            "literal": "-620000000",
+            "datatype": "integer"
+          }
+        },
+        {
+          "property": {
+            "id": "netFlowPct",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+            "label": "净流入比例"
+          },
+          "value": {
+            "literal": "-6.2",
             "datatype": "decimal"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-company-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-company-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例基金管理公司",
+        "en": "Sample Fund Company"
+      },
+      "comment": "用于演示基金管理关系的合成机构。",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "FundCompany",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundCompany",
+          "label": "基金管理公司"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-fee-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-fee-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例基金管理费",
+        "en": "示例基金管理费"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "FundFee",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundFee",
+          "label": "基金费用"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "managementFee",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#managementFee",
+            "label": "管理费率"
+          },
+          "value": {
+            "literal": "0.50",
+            "datatype": "decimal"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "fund-manager-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#fund-manager-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例基金经理",
+        "en": "Sample Fund Manager"
+      },
+      "comment": "用于演示基金经理职责的合成人员。",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "FundManager",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundManager",
+          "label": "基金经理"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [],
+      "exampleNote": ""
+    },
+    {
+      "id": "risk-model-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-model-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例多因子风险模型",
+        "en": "示例多因子风险模型"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "RiskModel",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskModel",
+          "label": "风险模型"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "hasModelVersion",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasModelVersion",
+            "label": "模型版本"
+          },
+          "value": {
+            "id": "model-version-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#model-version-demo",
+            "label": "示例风险模型版本 1.0"
           }
         }
       ],
@@ -18379,14 +28793,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Investor",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
-          "label": "投资者"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Investor",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Investor",
+          "label": "投资者"
         }
       ],
       "facts": [
@@ -18400,6 +28814,94 @@ window.ASH_DATA = {
             "id": "profile-balanced",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#profile-balanced",
             "label": "稳健均衡型投资者"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "factor-exposure-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#factor-exposure-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例组合质量因子暴露",
+        "en": "示例组合质量因子暴露"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "FactorExposure",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FactorExposure",
+          "label": "因子暴露"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "factorValue",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#factorValue",
+            "label": "因子值"
+          },
+          "value": {
+            "literal": "1.18",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
+            "id": "exposedToFactor",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#exposedToFactor",
+            "label": "暴露于因子"
+          },
+          "value": {
+            "id": "factor-quality",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-quality",
+            "label": "质量"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "constraint-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#constraint-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例组合跟踪误差约束",
+        "en": "示例组合跟踪误差约束"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "PortfolioConstraint",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PortfolioConstraint",
+          "label": "组合约束"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "trackingErrorLimit",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingErrorLimit",
+            "label": "跟踪误差上限"
+          },
+          "value": {
+            "literal": "5.0",
+            "datatype": "decimal"
           }
         }
       ],
@@ -18431,14 +28933,26 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
-            "id": "holdsPosition",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#holdsPosition",
-            "label": "持有仓位"
+            "id": "followsStrategy",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#followsStrategy",
+            "label": "遵循策略"
           },
           "value": {
-            "id": "position-jingkang",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#position-jingkang",
-            "label": "景康生物持仓"
+            "id": "strategy-quality-value",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#strategy-quality-value",
+            "label": "质量价值策略"
+          }
+        },
+        {
+          "property": {
+            "id": "usesRiskModel",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#usesRiskModel",
+            "label": "使用风险模型"
+          },
+          "value": {
+            "id": "risk-model-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#risk-model-demo",
+            "label": "示例多因子风险模型"
           }
         },
         {
@@ -18467,14 +28981,26 @@ window.ASH_DATA = {
         },
         {
           "property": {
-            "id": "followsStrategy",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#followsStrategy",
-            "label": "遵循策略"
+            "id": "holdsPosition",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#holdsPosition",
+            "label": "持有仓位"
           },
           "value": {
-            "id": "strategy-quality-value",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#strategy-quality-value",
-            "label": "质量价值策略"
+            "id": "position-jingkang",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#position-jingkang",
+            "label": "景康生物持仓"
+          }
+        },
+        {
+          "property": {
+            "id": "hasFactorExposure",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasFactorExposure",
+            "label": "因子暴露"
+          },
+          "value": {
+            "id": "factor-exposure-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#factor-exposure-demo",
+            "label": "示例组合质量因子暴露"
           }
         },
         {
@@ -18487,6 +29013,68 @@ window.ASH_DATA = {
             "id": "index-csi300",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#index-csi300",
             "label": "沪深 300"
+          }
+        },
+        {
+          "property": {
+            "id": "hasOrder",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasOrder",
+            "label": "组合订单"
+          },
+          "value": {
+            "id": "order-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#order-demo",
+            "label": "华辰智造买入订单意图（示例）"
+          }
+        },
+        {
+          "property": {
+            "id": "hasConstraint",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasConstraint",
+            "label": "组合约束"
+          },
+          "value": {
+            "id": "constraint-demo",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#constraint-demo",
+            "label": "示例组合跟踪误差约束"
+          }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "model-version-demo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#model-version-demo",
+      "kind": "individual",
+      "label": {
+        "zh": "示例风险模型版本 1.0",
+        "en": "示例风险模型版本 1.0"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        },
+        {
+          "id": "ModelVersion",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ModelVersion",
+          "label": "模型版本"
+        }
+      ],
+      "facts": [
+        {
+          "property": {
+            "id": "modelVersionCode",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#modelVersionCode",
+            "label": "模型版本号"
+          },
+          "value": {
+            "literal": "RM-1.0",
+            "datatype": ""
           }
         }
       ],
@@ -18544,6 +29132,17 @@ window.ASH_DATA = {
       "facts": [
         {
           "property": {
+            "id": "maxSingleWeight",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maxSingleWeight",
+            "label": "单票上限"
+          },
+          "value": {
+            "literal": "0.10",
+            "datatype": "decimal"
+          }
+        },
+        {
+          "property": {
             "id": "riskTolerance",
             "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskTolerance",
             "label": "风险承受能力"
@@ -18552,15 +29151,42 @@ window.ASH_DATA = {
             "literal": "medium",
             "datatype": ""
           }
+        }
+      ],
+      "exampleNote": ""
+    },
+    {
+      "id": "margin-if",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#margin-if",
+      "kind": "individual",
+      "label": {
+        "zh": "股指期货保证金要求",
+        "en": "股指期货保证金要求"
+      },
+      "comment": "",
+      "source": "rdf",
+      "layer": "rdf",
+      "types": [
+        {
+          "id": "MarginRequirement",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#MarginRequirement",
+          "label": "保证金要求"
         },
         {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
+        }
+      ],
+      "facts": [
+        {
           "property": {
-            "id": "maxSingleWeight",
-            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#maxSingleWeight",
-            "label": "单票上限"
+            "id": "marginRatio",
+            "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marginRatio",
+            "label": "保证金比例"
           },
           "value": {
-            "literal": "0.10",
+            "literal": "12.0",
             "datatype": "decimal"
           }
         }
@@ -18606,14 +29232,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "Recommendation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Recommendation",
-          "label": "投资建议"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "Recommendation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Recommendation",
+          "label": "投资建议"
         }
       ],
       "facts": [
@@ -18644,14 +29270,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "InvestmentStrategy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentStrategy",
-          "label": "投资策略"
-        },
-        {
           "id": "NamedIndividual",
           "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
           "label": "NamedIndividual"
+        },
+        {
+          "id": "InvestmentStrategy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentStrategy",
+          "label": "投资策略"
         }
       ],
       "facts": [],
@@ -18670,14 +29296,14 @@ window.ASH_DATA = {
       "layer": "rdf",
       "types": [
         {
-          "id": "NamedIndividual",
-          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
-          "label": "NamedIndividual"
-        },
-        {
           "id": "InvestmentHorizon",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentHorizon",
           "label": "投资期限"
+        },
+        {
+          "id": "NamedIndividual",
+          "iri": "http://www.w3.org/2002/07/owl#NamedIndividual",
+          "label": "NamedIndividual"
         }
       ],
       "facts": [],
@@ -18721,19 +29347,14 @@ window.ASH_DATA = {
       "definition": "按主营业务对 A 股上市公司进行的一级、二级行业划分，用于行业暴露、比较与约束。",
       "topConcepts": [
         {
-          "id": "industry-materials",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-materials",
-          "label": "材料"
-        },
-        {
-          "id": "industry-advanced-manufacturing",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-advanced-manufacturing",
-          "label": "高端制造"
-        },
-        {
           "id": "industry-consumer",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-consumer",
           "label": "消费"
+        },
+        {
+          "id": "industry-materials",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-materials",
+          "label": "材料"
         },
         {
           "id": "industry-communication-services",
@@ -18741,9 +29362,9 @@ window.ASH_DATA = {
           "label": "通信服务"
         },
         {
-          "id": "industry-utilities",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-utilities",
-          "label": "公用事业"
+          "id": "industry-information-technology",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-information-technology",
+          "label": "信息技术"
         },
         {
           "id": "industry-healthcare",
@@ -18751,14 +29372,9 @@ window.ASH_DATA = {
           "label": "医药健康"
         },
         {
-          "id": "industry-information-technology",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-information-technology",
-          "label": "信息技术"
-        },
-        {
-          "id": "industry-financials",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-financials",
-          "label": "金融"
+          "id": "industry-energy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-energy",
+          "label": "能源"
         },
         {
           "id": "industry-real-estate",
@@ -18766,9 +29382,19 @@ window.ASH_DATA = {
           "label": "房地产"
         },
         {
-          "id": "industry-energy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-energy",
-          "label": "能源"
+          "id": "industry-financials",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-financials",
+          "label": "金融"
+        },
+        {
+          "id": "industry-utilities",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-utilities",
+          "label": "公用事业"
+        },
+        {
+          "id": "industry-advanced-manufacturing",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-advanced-manufacturing",
+          "label": "高端制造"
         }
       ],
       "source": "skos"
@@ -18782,26 +29408,6 @@ window.ASH_DATA = {
       },
       "definition": "跨行业、由产业趋势或政策驱动的可投资主题，用于主题暴露和集中度分析。",
       "topConcepts": [
-        {
-          "id": "theme-innovative-drug-global",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-innovative-drug-global",
-          "label": "创新药出海"
-        },
-        {
-          "id": "theme-ma-restructuring",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ma-restructuring",
-          "label": "并购重组"
-        },
-        {
-          "id": "theme-soe-revaluation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-soe-revaluation",
-          "label": "央国企价值重估"
-        },
-        {
-          "id": "theme-high-dividend",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-high-dividend",
-          "label": "高股息"
-        },
         {
           "id": "theme-ai",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
@@ -18818,9 +29424,24 @@ window.ASH_DATA = {
           "label": "半导体国产化"
         },
         {
-          "id": "theme-new-energy-vehicle",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-new-energy-vehicle",
-          "label": "新能源汽车"
+          "id": "theme-soe-revaluation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-soe-revaluation",
+          "label": "央国企价值重估"
+        },
+        {
+          "id": "theme-innovative-drug-global",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-innovative-drug-global",
+          "label": "创新药出海"
+        },
+        {
+          "id": "theme-low-altitude-economy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-low-altitude-economy",
+          "label": "低空经济"
+        },
+        {
+          "id": "theme-high-dividend",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-high-dividend",
+          "label": "高股息"
         },
         {
           "id": "theme-energy-storage",
@@ -18828,9 +29449,14 @@ window.ASH_DATA = {
           "label": "储能"
         },
         {
-          "id": "theme-low-altitude-economy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-low-altitude-economy",
-          "label": "低空经济"
+          "id": "theme-new-energy-vehicle",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-new-energy-vehicle",
+          "label": "新能源汽车"
+        },
+        {
+          "id": "theme-ma-restructuring",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ma-restructuring",
+          "label": "并购重组"
         }
       ],
       "source": "skos"
@@ -18845,14 +29471,14 @@ window.ASH_DATA = {
       "definition": "描述组合构建与选股偏好的风格标签，用于策略归因和风格漂移监控。",
       "topConcepts": [
         {
-          "id": "style-value",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-value",
-          "label": "价值"
+          "id": "style-quality",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-quality",
+          "label": "质量"
         },
         {
-          "id": "style-growth",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-growth",
-          "label": "成长"
+          "id": "style-momentum",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-momentum",
+          "label": "动量"
         },
         {
           "id": "style-low-volatility",
@@ -18865,20 +29491,329 @@ window.ASH_DATA = {
           "label": "红利"
         },
         {
-          "id": "style-momentum",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-momentum",
+          "id": "style-growth",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-growth",
+          "label": "成长"
+        },
+        {
+          "id": "style-value",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-value",
+          "label": "价值"
+        }
+      ],
+      "source": "skos"
+    },
+    {
+      "id": "scheme-asset-class",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+      "label": {
+        "zh": "A 股资产类别（示例）",
+        "en": "A-Share Asset Classes (illustrative)"
+      },
+      "definition": "用于区分股票、基金、债券、衍生品与现金等资产类别的概念方案。",
+      "topConcepts": [
+        {
+          "id": "asset-cash",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-cash",
+          "label": "现金"
+        },
+        {
+          "id": "asset-bond-fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-bond-fund",
+          "label": "债券基金"
+        },
+        {
+          "id": "asset-main-board",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-main-board",
+          "label": "主板"
+        },
+        {
+          "id": "asset-a-share",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-a-share",
+          "label": "A 股"
+        },
+        {
+          "id": "asset-etf",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-etf",
+          "label": "ETF"
+        },
+        {
+          "id": "asset-reit",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-reit",
+          "label": "REITs"
+        },
+        {
+          "id": "asset-government-bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-government-bond",
+          "label": "国债"
+        },
+        {
+          "id": "asset-public-fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-public-fund",
+          "label": "公募基金"
+        },
+        {
+          "id": "asset-convertible-bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-convertible-bond",
+          "label": "可转债"
+        },
+        {
+          "id": "asset-chinext",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-chinext",
+          "label": "创业板"
+        },
+        {
+          "id": "asset-equity-fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-equity-fund",
+          "label": "股票基金"
+        },
+        {
+          "id": "asset-credit-bond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-credit-bond",
+          "label": "信用债"
+        },
+        {
+          "id": "asset-money-market-fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-money-market-fund",
+          "label": "货币基金"
+        },
+        {
+          "id": "asset-commodity-future",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-commodity-future",
+          "label": "商品期货"
+        },
+        {
+          "id": "asset-repo",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-repo",
+          "label": "回购"
+        },
+        {
+          "id": "asset-star",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-star",
+          "label": "科创板"
+        },
+        {
+          "id": "asset-private-fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-private-fund",
+          "label": "私募基金"
+        },
+        {
+          "id": "asset-lof",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-lof",
+          "label": "LOF"
+        },
+        {
+          "id": "asset-bse",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-bse",
+          "label": "北交所"
+        },
+        {
+          "id": "asset-stock-option",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-stock-option",
+          "label": "股票期权"
+        },
+        {
+          "id": "asset-index-future",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-index-future",
+          "label": "股指期货"
+        }
+      ],
+      "source": "skos"
+    },
+    {
+      "id": "scheme-factor",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+      "label": {
+        "zh": "投资因子（示例）",
+        "en": "Investment Factors (illustrative)"
+      },
+      "definition": "用于描述组合收益来源与风险暴露的因子概念方案。",
+      "topConcepts": [
+        {
+          "id": "factor-value",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-value",
+          "label": "价值"
+        },
+        {
+          "id": "factor-liquidity",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-liquidity",
+          "label": "流动性"
+        },
+        {
+          "id": "factor-leverage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-leverage",
+          "label": "杠杆"
+        },
+        {
+          "id": "factor-valuation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-valuation",
+          "label": "估值"
+        },
+        {
+          "id": "factor-quality",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-quality",
+          "label": "质量"
+        },
+        {
+          "id": "factor-momentum",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-momentum",
           "label": "动量"
         },
         {
-          "id": "style-quality",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-quality",
-          "label": "质量"
+          "id": "factor-profitability",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-profitability",
+          "label": "盈利"
+        },
+        {
+          "id": "factor-low-vol",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-low-vol",
+          "label": "低波"
+        },
+        {
+          "id": "factor-dividend",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-dividend",
+          "label": "红利"
+        },
+        {
+          "id": "factor-size",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-size",
+          "label": "规模"
+        },
+        {
+          "id": "factor-volatility",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-volatility",
+          "label": "波动率"
+        },
+        {
+          "id": "factor-growth",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-growth",
+          "label": "成长"
         }
       ],
       "source": "skos"
     }
   ],
   "concepts": [
+    {
+      "id": "asset-a-share",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-a-share",
+      "kind": "concept",
+      "label": {
+        "zh": "A 股",
+        "en": "A-Share"
+      },
+      "definition": "在中国境内证券交易所上市、以人民币交易的股票。",
+      "scopeNote": "",
+      "notation": "AC-ASHARE",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-etf",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-etf",
+      "kind": "concept",
+      "label": {
+        "zh": "ETF",
+        "en": "ETF"
+      },
+      "definition": "交易所交易基金份额。",
+      "scopeNote": "",
+      "notation": "AC-ETF",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-lof",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-lof",
+      "kind": "concept",
+      "label": {
+        "zh": "LOF",
+        "en": "LOF"
+      },
+      "definition": "上市开放式基金份额。",
+      "scopeNote": "",
+      "notation": "AC-LOF",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-reit",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-reit",
+      "kind": "concept",
+      "label": {
+        "zh": "REITs",
+        "en": "REITs"
+      },
+      "definition": "基础设施或不动产投资信托。",
+      "scopeNote": "",
+      "notation": "AC-REIT",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-main-board",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-main-board",
+      "kind": "concept",
+      "label": {
+        "zh": "主板",
+        "en": "Main Board"
+      },
+      "definition": "上交所与深交所的主板上市证券。",
+      "scopeNote": "",
+      "notation": "AC-MAIN",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
     {
       "id": "theme-ai",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
@@ -18903,19 +29838,49 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "industry-machinery",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-machinery",
-          "label": "机械设备"
-        },
-        {
           "id": "industry-software",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-software",
           "label": "软件服务"
         },
         {
+          "id": "industry-machinery",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-machinery",
+          "label": "机械设备"
+        },
+        {
           "id": "industry-semiconductor",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-semiconductor",
           "label": "半导体"
+        }
+      ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-value",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-value",
+      "kind": "concept",
+      "label": {
+        "zh": "价值",
+        "en": "Value"
+      },
+      "definition": "低估值、高安全边际的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-VALUE",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [
+        {
+          "id": "style-value",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-value",
+          "label": "价值"
         }
       ],
       "topConcept": true,
@@ -18999,6 +29964,30 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "factor-valuation",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-valuation",
+      "kind": "concept",
+      "label": {
+        "zh": "估值",
+        "en": "Valuation"
+      },
+      "definition": "PE、PB、PS 等估值水平的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-VAL",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "style-low-volatility",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-low-volatility",
       "kind": "concept",
@@ -19029,6 +30018,36 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "factor-low-vol",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-low-vol",
+      "kind": "concept",
+      "label": {
+        "zh": "低波",
+        "en": "Low Volatility"
+      },
+      "definition": "低波动率与低回撤的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-LOWVOL",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [
+        {
+          "id": "style-low-volatility",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-low-volatility",
+          "label": "低波"
+        }
+      ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "theme-low-altitude-economy",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-low-altitude-economy",
       "kind": "concept",
@@ -19049,14 +30068,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "industry-machinery",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-machinery",
-          "label": "机械设备"
-        },
-        {
           "id": "industry-defense",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-defense",
           "label": "国防军工"
+        },
+        {
+          "id": "industry-machinery",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-machinery",
+          "label": "机械设备"
         }
       ],
       "topConcept": true,
@@ -19126,11 +30145,69 @@ window.ASH_DATA = {
           "label": "通信设备"
         },
         {
+          "id": "industry-semiconductor-materials",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-semiconductor-materials",
+          "label": "半导体材料"
+        },
+        {
           "id": "industry-semiconductor",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-semiconductor",
           "label": "半导体"
+        },
+        {
+          "id": "industry-semiconductor-equipment",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-semiconductor-equipment",
+          "label": "半导体设备"
         }
       ],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-credit-bond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-credit-bond",
+      "kind": "concept",
+      "label": {
+        "zh": "信用债",
+        "en": "Credit Bond"
+      },
+      "definition": "承担发行人信用风险的债券。",
+      "scopeNote": "",
+      "notation": "AC-CREDITBOND",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-bond-fund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-bond-fund",
+      "kind": "concept",
+      "label": {
+        "zh": "债券基金",
+        "en": "Bond Fund"
+      },
+      "definition": "主要投资固定收益资产的基金。",
+      "scopeNote": "",
+      "notation": "AC-BONDFUND",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
       "related": [],
       "topConcept": true,
       "source": "skos",
@@ -19157,16 +30234,100 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "industry-new-energy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-new-energy",
-          "label": "新能源"
-        },
-        {
           "id": "industry-electric-equipment",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-electric-equipment",
           "label": "电力设备"
+        },
+        {
+          "id": "industry-new-energy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-new-energy",
+          "label": "新能源"
         }
       ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-energy-storage",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-energy-storage",
+      "kind": "concept",
+      "label": {
+        "zh": "储能电池",
+        "en": "Energy Storage Batteries"
+      },
+      "definition": "生产电化学储能电芯、系统或 PCS 的企业。",
+      "scopeNote": "",
+      "notation": "ENRG-ESS",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-new-energy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-new-energy",
+          "label": "新能源"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-photovoltaic",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-photovoltaic",
+      "kind": "concept",
+      "label": {
+        "zh": "光伏设备",
+        "en": "Photovoltaics"
+      },
+      "definition": "生产硅料、硅片、电池片、组件或光伏设备的企业。",
+      "scopeNote": "",
+      "notation": "ENRG-PV",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-new-energy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-new-energy",
+          "label": "新能源"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-public-fund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-public-fund",
+      "kind": "concept",
+      "label": {
+        "zh": "公募基金",
+        "en": "Public Fund"
+      },
+      "definition": "面向公众投资者发行的基金。",
+      "scopeNote": "",
+      "notation": "AC-PUBLIC",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
       "topConcept": true,
       "source": "skos",
       "layer": "skos"
@@ -19191,16 +30352,40 @@ window.ASH_DATA = {
       "broader": [],
       "narrower": [
         {
-          "id": "industry-power",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-power",
-          "label": "电力"
-        },
-        {
           "id": "industry-environmental",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-environmental",
           "label": "环保"
+        },
+        {
+          "id": "industry-power",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-power",
+          "label": "电力"
         }
       ],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-chinext",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-chinext",
+      "kind": "concept",
+      "label": {
+        "zh": "创业板",
+        "en": "ChiNext"
+      },
+      "definition": "深交所创业板上市证券。",
+      "scopeNote": "",
+      "notation": "AC-CHINEXT",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
       "related": [],
       "topConcept": true,
       "source": "skos",
@@ -19230,7 +30415,13 @@ window.ASH_DATA = {
           "label": "医药健康"
         }
       ],
-      "narrower": [],
+      "narrower": [
+        {
+          "id": "industry-cxo",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-cxo",
+          "label": "医药外包 CXO"
+        }
+      ],
       "related": [
         {
           "id": "style-growth",
@@ -19278,6 +30469,36 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "factor-momentum",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-momentum",
+      "kind": "concept",
+      "label": {
+        "zh": "动量",
+        "en": "Momentum"
+      },
+      "definition": "中期价格趋势与相对强弱的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-MOM",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [
+        {
+          "id": "style-momentum",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-momentum",
+          "label": "动量"
+        }
+      ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "style-momentum",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-momentum",
       "kind": "concept",
@@ -19292,6 +30513,30 @@ window.ASH_DATA = {
         "id": "scheme-style",
         "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-style",
         "label": "A 股投资风格（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-bse",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-bse",
+      "kind": "concept",
+      "label": {
+        "zh": "北交所",
+        "en": "Beijing Stock Exchange"
+      },
+      "definition": "北京证券交易所上市证券。",
+      "scopeNote": "",
+      "notation": "AC-BSE",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
       },
       "altLabels": [],
       "broader": [],
@@ -19381,14 +30626,14 @@ window.ASH_DATA = {
       "broader": [],
       "narrower": [
         {
-          "id": "industry-medical-service",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-medical-service",
-          "label": "医疗服务"
-        },
-        {
           "id": "industry-innovative-drug",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-innovative-drug",
           "label": "创新药"
+        },
+        {
+          "id": "industry-medical-service",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-medical-service",
+          "label": "医疗服务"
         },
         {
           "id": "industry-medical-device",
@@ -19398,6 +30643,36 @@ window.ASH_DATA = {
       ],
       "related": [],
       "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-cxo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-cxo",
+      "kind": "concept",
+      "label": {
+        "zh": "医药外包 CXO",
+        "en": "Pharma CXO"
+      },
+      "definition": "提供研发、临床或生产外包服务的医药企业。",
+      "scopeNote": "",
+      "notation": "HLTH-CXO",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-innovative-drug",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-innovative-drug",
+          "label": "创新药"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
       "source": "skos",
       "layer": "skos"
     },
@@ -19418,8 +30693,8 @@ window.ASH_DATA = {
         "label": "A 股行业分类（示例）"
       },
       "altLabels": [
-        "集成电路",
-        "芯片"
+        "芯片",
+        "集成电路"
       ],
       "broader": [
         {
@@ -19431,14 +30706,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "theme-semiconductor-localization",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-semiconductor-localization",
-          "label": "半导体国产化"
-        },
-        {
           "id": "theme-ai",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
           "label": "人工智能"
+        },
+        {
+          "id": "theme-semiconductor-localization",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-semiconductor-localization",
+          "label": "半导体国产化"
         }
       ],
       "topConcept": false,
@@ -19471,6 +30746,162 @@ window.ASH_DATA = {
           "label": "半导体"
         }
       ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-semiconductor-materials",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-semiconductor-materials",
+      "kind": "concept",
+      "label": {
+        "zh": "半导体材料",
+        "en": "Semiconductor Materials"
+      },
+      "definition": "生产硅片、光刻胶、电子特气或靶材的企业。",
+      "scopeNote": "",
+      "notation": "IT-SEMI-MAT",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-information-technology",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-information-technology",
+          "label": "信息技术"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-semiconductor-equipment",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-semiconductor-equipment",
+      "kind": "concept",
+      "label": {
+        "zh": "半导体设备",
+        "en": "Semiconductor Equipment"
+      },
+      "definition": "生产芯片制造、封测或检测设备的企业。",
+      "scopeNote": "",
+      "notation": "IT-SEMI-EQ",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-information-technology",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-information-technology",
+          "label": "信息技术"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-convertible-bond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-convertible-bond",
+      "kind": "concept",
+      "label": {
+        "zh": "可转债",
+        "en": "Convertible Bond"
+      },
+      "definition": "可转换为股票的债券。",
+      "scopeNote": "",
+      "notation": "AC-CB",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-commodity-future",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-commodity-future",
+      "kind": "concept",
+      "label": {
+        "zh": "商品期货",
+        "en": "Commodity Futures"
+      },
+      "definition": "以大宗商品为标的的期货。",
+      "scopeNote": "",
+      "notation": "AC-CF",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-repo",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-repo",
+      "kind": "concept",
+      "label": {
+        "zh": "回购",
+        "en": "Repo"
+      },
+      "definition": "以证券为担保的短期融资交易。",
+      "scopeNote": "",
+      "notation": "AC-REPO",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-government-bond",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-government-bond",
+      "kind": "concept",
+      "label": {
+        "zh": "国债",
+        "en": "Government Bond"
+      },
+      "definition": "中央政府发行的债券。",
+      "scopeNote": "",
+      "notation": "AC-GOVBOND",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
       "topConcept": true,
       "source": "skos",
       "layer": "skos"
@@ -19567,14 +30998,14 @@ window.ASH_DATA = {
           "label": "电力"
         },
         {
-          "id": "style-value",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-value",
-          "label": "价值"
-        },
-        {
           "id": "industry-bank",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-bank",
           "label": "银行"
+        },
+        {
+          "id": "style-value",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-value",
+          "label": "价值"
         }
       ],
       "topConcept": true,
@@ -19635,6 +31066,36 @@ window.ASH_DATA = {
           "id": "industry-securities",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-securities",
           "label": "证券"
+        }
+      ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-growth",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-growth",
+      "kind": "concept",
+      "label": {
+        "zh": "成长",
+        "en": "Growth"
+      },
+      "definition": "收入或利润高增长的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-GROWTH",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [
+        {
+          "id": "style-growth",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-growth",
+          "label": "成长"
         }
       ],
       "topConcept": true,
@@ -19762,14 +31223,14 @@ window.ASH_DATA = {
           "label": "电信运营"
         },
         {
-          "id": "industry-media",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-media",
-          "label": "传媒"
-        },
-        {
           "id": "industry-software",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-software",
           "label": "软件服务"
+        },
+        {
+          "id": "industry-media",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-media",
+          "label": "传媒"
         }
       ],
       "topConcept": true,
@@ -19800,17 +31261,28 @@ window.ASH_DATA = {
           "label": "能源"
         }
       ],
-      "narrower": [],
-      "related": [
+      "narrower": [
         {
-          "id": "theme-energy-storage",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-energy-storage",
-          "label": "储能"
+          "id": "industry-photovoltaic",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-photovoltaic",
+          "label": "光伏设备"
         },
+        {
+          "id": "industry-energy-storage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-energy-storage",
+          "label": "储能电池"
+        }
+      ],
+      "related": [
         {
           "id": "theme-new-energy-vehicle",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-new-energy-vehicle",
           "label": "新能源汽车"
+        },
+        {
+          "id": "theme-energy-storage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-energy-storage",
+          "label": "储能"
         }
       ],
       "topConcept": false,
@@ -19834,12 +31306,17 @@ window.ASH_DATA = {
         "label": "A 股投资主题（示例）"
       },
       "altLabels": [
-        "电动车",
-        "NEV"
+        "NEV",
+        "电动车"
       ],
       "broader": [],
       "narrower": [],
       "related": [
+        {
+          "id": "industry-auto",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-auto",
+          "label": "汽车"
+        },
         {
           "id": "industry-electric-equipment",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-electric-equipment",
@@ -19849,11 +31326,6 @@ window.ASH_DATA = {
           "id": "industry-nonferrous",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-nonferrous",
           "label": "有色金属"
-        },
-        {
-          "id": "industry-auto",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-auto",
-          "label": "汽车"
         }
       ],
       "topConcept": true,
@@ -19887,14 +31359,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "theme-new-energy-vehicle",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-new-energy-vehicle",
-          "label": "新能源汽车"
-        },
-        {
           "id": "theme-energy-storage",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-energy-storage",
           "label": "储能"
+        },
+        {
+          "id": "theme-new-energy-vehicle",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-new-energy-vehicle",
+          "label": "新能源汽车"
         }
       ],
       "topConcept": false,
@@ -19928,14 +31400,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "theme-low-altitude-economy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-low-altitude-economy",
-          "label": "低空经济"
-        },
-        {
           "id": "theme-ai",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
           "label": "人工智能"
+        },
+        {
+          "id": "theme-low-altitude-economy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-low-altitude-economy",
+          "label": "低空经济"
         }
       ],
       "topConcept": false,
@@ -19962,11 +31434,6 @@ window.ASH_DATA = {
       "broader": [],
       "narrower": [
         {
-          "id": "industry-chemicals",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-chemicals",
-          "label": "基础化工"
-        },
-        {
           "id": "industry-steel",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-steel",
           "label": "钢铁"
@@ -19975,8 +31442,37 @@ window.ASH_DATA = {
           "id": "industry-nonferrous",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-nonferrous",
           "label": "有色金属"
+        },
+        {
+          "id": "industry-chemicals",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-chemicals",
+          "label": "基础化工"
         }
       ],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-leverage",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-leverage",
+      "kind": "concept",
+      "label": {
+        "zh": "杠杆",
+        "en": "Leverage"
+      },
+      "definition": "资产负债与融资结构的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-LEV",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
       "related": [],
       "topConcept": true,
       "source": "skos",
@@ -20024,6 +31520,54 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "factor-volatility",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-volatility",
+      "kind": "concept",
+      "label": {
+        "zh": "波动率",
+        "en": "Volatility"
+      },
+      "definition": "已实现或隐含波动率的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-VOL",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-liquidity",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-liquidity",
+      "kind": "concept",
+      "label": {
+        "zh": "流动性",
+        "en": "Liquidity"
+      },
+      "definition": "成交额、换手率与冲击成本的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-LIQ",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "industry-consumer",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-consumer",
       "kind": "concept",
@@ -20050,14 +31594,14 @@ window.ASH_DATA = {
           "label": "食品饮料"
         },
         {
-          "id": "industry-home-appliance",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-home-appliance",
-          "label": "家用电器"
-        },
-        {
           "id": "industry-auto",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-auto",
           "label": "汽车"
+        },
+        {
+          "id": "industry-home-appliance",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-home-appliance",
+          "label": "家用电器"
         }
       ],
       "related": [],
@@ -20138,6 +31682,30 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "asset-cash",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-cash",
+      "kind": "concept",
+      "label": {
+        "zh": "现金",
+        "en": "Cash"
+      },
+      "definition": "现金及等价物。",
+      "scopeNote": "",
+      "notation": "AC-CASH",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "industry-telecom",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-telecom",
       "kind": "concept",
@@ -20164,14 +31732,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "style-dividend",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
-          "label": "红利"
-        },
-        {
           "id": "theme-data-elements",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-data-elements",
           "label": "数据要素"
+        },
+        {
+          "id": "style-dividend",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
+          "label": "红利"
         }
       ],
       "topConcept": false,
@@ -20205,14 +31773,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "theme-soe-revaluation",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-soe-revaluation",
-          "label": "央国企价值重估"
-        },
-        {
           "id": "style-dividend",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
           "label": "红利"
+        },
+        {
+          "id": "theme-soe-revaluation",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-soe-revaluation",
+          "label": "央国企价值重估"
         }
       ],
       "topConcept": false,
@@ -20261,6 +31829,60 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "industry-baijiu",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-baijiu",
+      "kind": "concept",
+      "label": {
+        "zh": "白酒",
+        "en": "Baijiu"
+      },
+      "definition": "生产白酒及配套酒类产品的企业。",
+      "scopeNote": "",
+      "notation": "CONS-BAIJIU",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-food-beverage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-food-beverage",
+          "label": "食品饮料"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-profitability",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-profitability",
+      "kind": "concept",
+      "label": {
+        "zh": "盈利",
+        "en": "Profitability"
+      },
+      "definition": "盈利质量与盈利能力的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-PROFIT",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "industry-oil-petrochemical",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-oil-petrochemical",
       "kind": "concept",
@@ -20297,6 +31919,84 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "asset-private-fund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-private-fund",
+      "kind": "concept",
+      "label": {
+        "zh": "私募基金",
+        "en": "Private Fund"
+      },
+      "definition": "面向合格投资者非公开发行的基金。",
+      "scopeNote": "",
+      "notation": "AC-PRIVATE",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-star",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-star",
+      "kind": "concept",
+      "label": {
+        "zh": "科创板",
+        "en": "STAR Market"
+      },
+      "definition": "上交所科创板上市证券。",
+      "scopeNote": "",
+      "notation": "AC-STAR",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-dividend",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-dividend",
+      "kind": "concept",
+      "label": {
+        "zh": "红利",
+        "en": "Dividend"
+      },
+      "definition": "高股息与稳定分红的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-DIV",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [
+        {
+          "id": "style-dividend",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
+          "label": "红利"
+        }
+      ],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "style-dividend",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
       "kind": "concept",
@@ -20327,6 +32027,78 @@ window.ASH_DATA = {
       "layer": "skos"
     },
     {
+      "id": "asset-index-future",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-index-future",
+      "kind": "concept",
+      "label": {
+        "zh": "股指期货",
+        "en": "Index Futures"
+      },
+      "definition": "以股票指数为标的的期货。",
+      "scopeNote": "",
+      "notation": "AC-IF",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-equity-fund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-equity-fund",
+      "kind": "concept",
+      "label": {
+        "zh": "股票基金",
+        "en": "Equity Fund"
+      },
+      "definition": "主要投资股票资产的基金。",
+      "scopeNote": "",
+      "notation": "AC-EQUITYFUND",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-stock-option",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-stock-option",
+      "kind": "concept",
+      "label": {
+        "zh": "股票期权",
+        "en": "Stock Option"
+      },
+      "definition": "以股票或 ETF 为标的的期权。",
+      "scopeNote": "",
+      "notation": "AC-OPTION",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
       "id": "industry-energy",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-energy",
       "kind": "concept",
@@ -20351,16 +32123,40 @@ window.ASH_DATA = {
           "label": "新能源"
         },
         {
-          "id": "industry-oil-petrochemical",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-oil-petrochemical",
-          "label": "石油石化"
-        },
-        {
           "id": "industry-coal",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-coal",
           "label": "煤炭"
+        },
+        {
+          "id": "industry-oil-petrochemical",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-oil-petrochemical",
+          "label": "石油石化"
         }
       ],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-size",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-size",
+      "kind": "concept",
+      "label": {
+        "zh": "规模",
+        "en": "Size"
+      },
+      "definition": "市值规模差异带来的收益暴露。",
+      "scopeNote": "",
+      "notation": "FCT-SIZE",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
       "related": [],
       "topConcept": true,
       "source": "skos",
@@ -20390,7 +32186,13 @@ window.ASH_DATA = {
           "label": "金融"
         }
       ],
-      "narrower": [],
+      "narrower": [
+        {
+          "id": "industry-securities-brokerage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-securities-brokerage",
+          "label": "证券经纪"
+        }
+      ],
       "related": [
         {
           "id": "theme-ma-restructuring",
@@ -20399,6 +32201,90 @@ window.ASH_DATA = {
         }
       ],
       "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-securities-brokerage",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-securities-brokerage",
+      "kind": "concept",
+      "label": {
+        "zh": "证券经纪",
+        "en": "Securities Brokerage"
+      },
+      "definition": "以证券经纪、两融与财富管理业务为主的证券公司。",
+      "scopeNote": "",
+      "notation": "FIN-BROKER",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-securities",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-securities",
+          "label": "证券"
+        }
+      ],
+      "narrower": [],
+      "related": [],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "asset-money-market-fund",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#asset-money-market-fund",
+      "kind": "concept",
+      "label": {
+        "zh": "货币基金",
+        "en": "Money Market Fund"
+      },
+      "definition": "主要投资货币市场工具的基金。",
+      "scopeNote": "",
+      "notation": "AC-MMF",
+      "scheme": {
+        "id": "scheme-asset-class",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-asset-class",
+        "label": "A 股资产类别（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "topConcept": true,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "factor-quality",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#factor-quality",
+      "kind": "concept",
+      "label": {
+        "zh": "质量",
+        "en": "Quality"
+      },
+      "definition": "高 ROE、稳定现金流与低杠杆的因子暴露。",
+      "scopeNote": "",
+      "notation": "FCT-QUAL",
+      "scheme": {
+        "id": "scheme-factor",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-factor",
+        "label": "投资因子（示例）"
+      },
+      "altLabels": [],
+      "broader": [],
+      "narrower": [],
+      "related": [
+        {
+          "id": "style-quality",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-quality",
+          "label": "质量"
+        }
+      ],
+      "topConcept": true,
       "source": "skos",
       "layer": "skos"
     },
@@ -20459,14 +32345,14 @@ window.ASH_DATA = {
       "narrower": [],
       "related": [
         {
-          "id": "theme-data-elements",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-data-elements",
-          "label": "数据要素"
-        },
-        {
           "id": "theme-ai",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-ai",
           "label": "人工智能"
+        },
+        {
+          "id": "theme-data-elements",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#theme-data-elements",
+          "label": "数据要素"
         }
       ],
       "topConcept": false,
@@ -20493,14 +32379,14 @@ window.ASH_DATA = {
       "broader": [],
       "narrower": [
         {
-          "id": "industry-telecom",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-telecom",
-          "label": "电信运营"
-        },
-        {
           "id": "industry-media",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-media",
           "label": "传媒"
+        },
+        {
+          "id": "industry-telecom",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-telecom",
+          "label": "电信运营"
         }
       ],
       "related": [],
@@ -20564,14 +32450,14 @@ window.ASH_DATA = {
       "broader": [],
       "narrower": [
         {
-          "id": "industry-insurance",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-insurance",
-          "label": "保险"
-        },
-        {
           "id": "industry-securities",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-securities",
           "label": "证券"
+        },
+        {
+          "id": "industry-insurance",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-insurance",
+          "label": "保险"
         },
         {
           "id": "industry-bank",
@@ -20644,7 +32530,13 @@ window.ASH_DATA = {
           "label": "金融"
         }
       ],
-      "narrower": [],
+      "narrower": [
+        {
+          "id": "industry-retail-bank",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-retail-bank",
+          "label": "零售银行"
+        }
+      ],
       "related": [
         {
           "id": "theme-soe-revaluation",
@@ -20657,6 +32549,36 @@ window.ASH_DATA = {
           "label": "红利"
         }
       ],
+      "topConcept": false,
+      "source": "skos",
+      "layer": "skos"
+    },
+    {
+      "id": "industry-retail-bank",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-retail-bank",
+      "kind": "concept",
+      "label": {
+        "zh": "零售银行",
+        "en": "Retail Banking"
+      },
+      "definition": "以个人存贷、财富管理与支付业务为主的银行。",
+      "scopeNote": "",
+      "notation": "FIN-RETAIL",
+      "scheme": {
+        "id": "scheme-industry",
+        "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#scheme-industry",
+        "label": "A 股行业分类（示例）"
+      },
+      "altLabels": [],
+      "broader": [
+        {
+          "id": "industry-bank",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-bank",
+          "label": "银行"
+        }
+      ],
+      "narrower": [],
+      "related": [],
       "topConcept": false,
       "source": "skos",
       "layer": "skos"
@@ -20685,7 +32607,13 @@ window.ASH_DATA = {
           "label": "消费"
         }
       ],
-      "narrower": [],
+      "narrower": [
+        {
+          "id": "industry-baijiu",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-baijiu",
+          "label": "白酒"
+        }
+      ],
       "related": [
         {
           "id": "style-dividend",
@@ -20724,9 +32652,9 @@ window.ASH_DATA = {
       "broader": [],
       "narrower": [
         {
-          "id": "industry-machinery",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-machinery",
-          "label": "机械设备"
+          "id": "industry-electric-equipment",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-electric-equipment",
+          "label": "电力设备"
         },
         {
           "id": "industry-defense",
@@ -20734,9 +32662,9 @@ window.ASH_DATA = {
           "label": "国防军工"
         },
         {
-          "id": "industry-electric-equipment",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-electric-equipment",
-          "label": "电力设备"
+          "id": "industry-machinery",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-machinery",
+          "label": "机械设备"
         }
       ],
       "related": [],
@@ -20770,14 +32698,14 @@ window.ASH_DATA = {
           "label": "电力"
         },
         {
-          "id": "style-dividend",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
-          "label": "红利"
-        },
-        {
           "id": "industry-bank",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#industry-bank",
           "label": "银行"
+        },
+        {
+          "id": "style-dividend",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#style-dividend",
+          "label": "红利"
         }
       ],
       "topConcept": true,
@@ -20825,14 +32753,14 @@ window.ASH_DATA = {
           "label": "净利润"
         },
         {
-          "id": "isST",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
-          "label": "ST 状态"
-        },
-        {
           "id": "roe",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#roe",
           "label": "净资产收益率"
+        },
+        {
+          "id": "isST",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isST",
+          "label": "ST 状态"
         }
       ],
       "bodyAtoms": [
@@ -20908,14 +32836,14 @@ window.ASH_DATA = {
       ],
       "uses": [
         {
-          "id": "interestCoverage",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
-          "label": "利息保障倍数"
-        },
-        {
           "id": "debtRatio",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#debtRatio",
           "label": "资产负债率"
+        },
+        {
+          "id": "interestCoverage",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#interestCoverage",
+          "label": "利息保障倍数"
         }
       ],
       "bodyAtoms": [
@@ -21200,14 +33128,14 @@ window.ASH_DATA = {
       ],
       "uses": [
         {
-          "id": "isRestricted",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
-          "label": "限制名单"
-        },
-        {
           "id": "aboutSecurity",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#aboutSecurity",
           "label": "决策标的"
+        },
+        {
+          "id": "isRestricted",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#isRestricted",
+          "label": "限制名单"
         }
       ],
       "bodyAtoms": [
@@ -21264,6 +33192,11 @@ window.ASH_DATA = {
           "label": "依据证据"
         },
         {
+          "id": "governedBy",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
+          "label": "受政策治理"
+        },
+        {
           "id": "hasRationale",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRationale",
           "label": "决策理由"
@@ -21272,11 +33205,6 @@ window.ASH_DATA = {
           "id": "hasRiskAssessment",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#hasRiskAssessment",
           "label": "风险评估"
-        },
-        {
-          "id": "governedBy",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#governedBy",
-          "label": "受政策治理"
         }
       ],
       "bodyAtoms": [
@@ -21331,14 +33259,14 @@ window.ASH_DATA = {
       ],
       "uses": [
         {
-          "id": "marketCap",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
-          "label": "总市值"
-        },
-        {
           "id": "turnoverRate",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#turnoverRate",
           "label": "换手率"
+        },
+        {
+          "id": "marketCap",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#marketCap",
+          "label": "总市值"
         }
       ],
       "bodyAtoms": [
@@ -21396,14 +33324,14 @@ window.ASH_DATA = {
       ],
       "uses": [
         {
-          "id": "peTtm",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
-          "label": "市盈率 TTM"
-        },
-        {
           "id": "revenueGrowth",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#revenueGrowth",
           "label": "营收增速"
+        },
+        {
+          "id": "peTtm",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#peTtm",
+          "label": "市盈率 TTM"
         },
         {
           "id": "profitGrowth",
@@ -21478,14 +33406,14 @@ window.ASH_DATA = {
       ],
       "uses": [
         {
-          "id": "actionCode",
-          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#actionCode",
-          "label": "建议代码"
-        },
-        {
           "id": "riskScore",
           "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#riskScore",
           "label": "风险分数"
+        },
+        {
+          "id": "actionCode",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#actionCode",
+          "label": "建议代码"
         }
       ],
       "bodyAtoms": [
@@ -21514,6 +33442,210 @@ window.ASH_DATA = {
       "headAtoms": [
         {
           "text": "?decision a 需二次复核"
+        }
+      ]
+    },
+    {
+      "id": "rule-tracking-error",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rule-tracking-error",
+      "kind": "rule",
+      "label": {
+        "zh": "ETF 跟踪误差超限",
+        "en": "ETF tracking error breach"
+      },
+      "comment": "基金份额跟踪误差高于 2% 时，推断为跟踪误差超限。",
+      "source": "swrl",
+      "layer": "swrl",
+      "ruleId": "R12",
+      "ruleIf": "基金份额 trackingError > 2.0",
+      "ruleThen": "基金份额被推断为 ash:TrackingErrorBreach",
+      "severity": "medium",
+      "priority": "18",
+      "status": "active",
+      "version": "1.1.0",
+      "owner": "指数与量化部",
+      "effectiveFrom": "2026-11-01",
+      "appliesTo": [
+        {
+          "id": "FundShare",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#FundShare",
+          "label": "基金份额"
+        }
+      ],
+      "uses": [
+        {
+          "id": "trackingError",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#trackingError",
+          "label": "跟踪误差"
+        }
+      ],
+      "bodyAtoms": [
+        {
+          "text": "?fundShare a 基金份额"
+        },
+        {
+          "text": "?fundShare trackingError ?trackingError"
+        },
+        {
+          "text": "greaterThan(?trackingError, 2.0)"
+        }
+      ],
+      "headAtoms": [
+        {
+          "text": "?fundShare a 跟踪误差超限"
+        }
+      ]
+    },
+    {
+      "id": "rule-convertible-rich",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rule-convertible-rich",
+      "kind": "rule",
+      "label": {
+        "zh": "可转债高溢价",
+        "en": "Convertible bond rich premium"
+      },
+      "comment": "可转债转股溢价率高于 30% 时，推断为高溢价状态。",
+      "source": "swrl",
+      "layer": "swrl",
+      "ruleId": "R13",
+      "ruleIf": "可转债 conversionPremium > 30.0",
+      "ruleThen": "可转债被推断为 ash:ConvertibleRich",
+      "severity": "medium",
+      "priority": "19",
+      "status": "active",
+      "version": "1.1.0",
+      "owner": "固定收益部",
+      "effectiveFrom": "2026-11-01",
+      "appliesTo": [
+        {
+          "id": "ConvertibleBond",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ConvertibleBond",
+          "label": "可转换债券"
+        }
+      ],
+      "uses": [
+        {
+          "id": "conversionPremium",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#conversionPremium",
+          "label": "转股溢价率"
+        }
+      ],
+      "bodyAtoms": [
+        {
+          "text": "?convertible a 可转换债券"
+        },
+        {
+          "text": "?convertible conversionPremium ?conversionPremium"
+        },
+        {
+          "text": "greaterThan(?conversionPremium, 30.0)"
+        }
+      ],
+      "headAtoms": [
+        {
+          "text": "?convertible a 可转债高溢价"
+        }
+      ]
+    },
+    {
+      "id": "rule-order-blocked",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rule-order-blocked",
+      "kind": "rule",
+      "label": {
+        "zh": "未审批订单阻断",
+        "en": "Unapproved order blocked"
+      },
+      "comment": "订单状态仍为 PENDING 时，推断为交易阻断，不得执行。",
+      "source": "swrl",
+      "layer": "swrl",
+      "ruleId": "R14",
+      "ruleIf": "订单 orderStatus = PENDING",
+      "ruleThen": "订单被推断为 ash:TradeBlocked",
+      "severity": "high",
+      "priority": "4",
+      "status": "active",
+      "version": "1.1.0",
+      "owner": "交易运营部",
+      "effectiveFrom": "2026-11-01",
+      "appliesTo": [
+        {
+          "id": "Order",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Order",
+          "label": "委托订单"
+        }
+      ],
+      "uses": [
+        {
+          "id": "orderStatus",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#orderStatus",
+          "label": "订单状态"
+        }
+      ],
+      "bodyAtoms": [
+        {
+          "text": "?order a 委托订单"
+        },
+        {
+          "text": "?order orderStatus ?orderStatus"
+        },
+        {
+          "text": "equal(?orderStatus, PENDING)"
+        }
+      ],
+      "headAtoms": [
+        {
+          "text": "?order a 交易阻断"
+        }
+      ]
+    },
+    {
+      "id": "rule-fund-outflow",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#rule-fund-outflow",
+      "kind": "rule",
+      "label": {
+        "zh": "基金净流出风险",
+        "en": "Fund outflow risk"
+      },
+      "comment": "基金观察期净流入比例低于 -5% 时，推断为基金流出风险。",
+      "source": "swrl",
+      "layer": "swrl",
+      "ruleId": "R15",
+      "ruleIf": "基金 netFlowPct < -5.0",
+      "ruleThen": "基金被推断为 ash:FundOutflowRisk",
+      "severity": "high",
+      "priority": "7",
+      "status": "active",
+      "version": "1.1.0",
+      "owner": "组合管理部",
+      "effectiveFrom": "2026-11-01",
+      "appliesTo": [
+        {
+          "id": "Fund",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Fund",
+          "label": "基金"
+        }
+      ],
+      "uses": [
+        {
+          "id": "netFlowPct",
+          "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#netFlowPct",
+          "label": "净流入比例"
+        }
+      ],
+      "bodyAtoms": [
+        {
+          "text": "?fund a 基金"
+        },
+        {
+          "text": "?fund netFlowPct ?netFlowPct"
+        },
+        {
+          "text": "lessThan(?netFlowPct, -5.0)"
+        }
+      ],
+      "headAtoms": [
+        {
+          "text": "?fund a 基金流出风险"
         }
       ]
     }
@@ -21549,12 +33681,6 @@ window.ASH_DATA = {
             "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
           },
           {
-            "id": "in-investor-profile",
-            "label": "投资者画像",
-            "comment": "风险承受能力、投资期限、单票上限与排除规则。",
-            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
-          },
-          {
             "id": "in-market-data",
             "label": "市场数据包",
             "comment": "行情、估值、财务报告、公告和宏观指标的版本化数据包。",
@@ -21567,6 +33693,12 @@ window.ASH_DATA = {
             "parameterType": "http://www.w3.org/2001/XMLSchema#date"
           },
           {
+            "id": "in-investor-profile",
+            "label": "投资者画像",
+            "comment": "风险承受能力、投资期限、单票上限与排除规则。",
+            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
+          },
+          {
             "id": "in-security-universe",
             "label": "证券池",
             "comment": "待评估的 A 股证券代码列表或筛选条件。",
@@ -21575,16 +33707,10 @@ window.ASH_DATA = {
         ],
         "outputs": [
           {
-            "id": "out-risk",
-            "label": "风险评估",
-            "comment": "风险分数、等级和风险因子。",
-            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment"
-          },
-          {
-            "id": "out-order-intent",
-            "label": "订单意图",
-            "comment": "仅供人工确认的订单意图，不直接触发交易。",
-            "parameterType": "http://www.w3.org/2001/XMLSchema#string"
+            "id": "out-rationale",
+            "label": "决策理由",
+            "comment": "包含正面证据、关键假设和反方观点的理由链。",
+            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale"
           },
           {
             "id": "out-decision",
@@ -21593,18 +33719,19 @@ window.ASH_DATA = {
             "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision"
           },
           {
-            "id": "out-rationale",
-            "label": "决策理由",
-            "comment": "包含正面证据、关键假设和反方观点的理由链。",
-            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale"
+            "id": "out-order-intent",
+            "label": "订单意图",
+            "comment": "仅供人工确认的订单意图，不直接触发交易。",
+            "parameterType": "http://www.w3.org/2001/XMLSchema#string"
+          },
+          {
+            "id": "out-risk",
+            "label": "风险评估",
+            "comment": "风险分数、等级和风险因子。",
+            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment"
           }
         ],
         "preconditions": [
-          {
-            "id": "precond-policy-active",
-            "label": "政策有效性前置条件",
-            "body": "ODRL 决策使用政策与数据使用政策均处于 active 状态，且未超过有效期。"
-          },
           {
             "id": "precond-data-freshness",
             "label": "数据新鲜度前置条件",
@@ -21614,6 +33741,11 @@ window.ASH_DATA = {
             "id": "precond-not-restricted",
             "label": "限制名单前置条件",
             "body": "标的证券不在限制交易、观察或禁投名单中；若命中，则必须进入人工合规复核。"
+          },
+          {
+            "id": "precond-policy-active",
+            "label": "政策有效性前置条件",
+            "body": "ODRL 决策使用政策与数据使用政策均处于 active 状态，且未超过有效期。"
           },
           {
             "id": "precond-suitability",
@@ -21628,22 +33760,10 @@ window.ASH_DATA = {
         "comment": "数据校验 → 因子计算 → 风险评估 → 规则推理 → 组合优化 → 合规检查 → 决策生成。",
         "inputs": [
           {
-            "id": "in-market-data",
-            "label": "市场数据包",
-            "comment": "行情、估值、财务报告、公告和宏观指标的版本化数据包。",
-            "parameterType": "http://www.w3.org/2001/XMLSchema#anyURI"
-          },
-          {
-            "id": "in-as-of-date",
-            "label": "决策基准日",
-            "comment": "用于选择行情、估值和财报版本的基准日期。",
-            "parameterType": "http://www.w3.org/2001/XMLSchema#date"
-          },
-          {
-            "id": "in-security-universe",
-            "label": "证券池",
-            "comment": "待评估的 A 股证券代码列表或筛选条件。",
-            "parameterType": "http://www.w3.org/2001/XMLSchema#string"
+            "id": "in-investor-profile",
+            "label": "投资者画像",
+            "comment": "风险承受能力、投资期限、单票上限与排除规则。",
+            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
           },
           {
             "id": "in-constraints",
@@ -21652,13 +33772,31 @@ window.ASH_DATA = {
             "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
           },
           {
-            "id": "in-investor-profile",
-            "label": "投资者画像",
-            "comment": "风险承受能力、投资期限、单票上限与排除规则。",
-            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
+            "id": "in-market-data",
+            "label": "市场数据包",
+            "comment": "行情、估值、财务报告、公告和宏观指标的版本化数据包。",
+            "parameterType": "http://www.w3.org/2001/XMLSchema#anyURI"
+          },
+          {
+            "id": "in-security-universe",
+            "label": "证券池",
+            "comment": "待评估的 A 股证券代码列表或筛选条件。",
+            "parameterType": "http://www.w3.org/2001/XMLSchema#string"
+          },
+          {
+            "id": "in-as-of-date",
+            "label": "决策基准日",
+            "comment": "用于选择行情、估值和财报版本的基准日期。",
+            "parameterType": "http://www.w3.org/2001/XMLSchema#date"
           }
         ],
         "outputs": [
+          {
+            "id": "out-rationale",
+            "label": "决策理由",
+            "comment": "包含正面证据、关键假设和反方观点的理由链。",
+            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale"
+          },
           {
             "id": "out-order-intent",
             "label": "订单意图",
@@ -21672,12 +33810,6 @@ window.ASH_DATA = {
             "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestmentDecision"
           },
           {
-            "id": "out-rationale",
-            "label": "决策理由",
-            "comment": "包含正面证据、关键假设和反方观点的理由链。",
-            "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionRationale"
-          },
-          {
             "id": "out-risk",
             "label": "风险评估",
             "comment": "风险分数、等级和风险因子。",
@@ -21686,14 +33818,14 @@ window.ASH_DATA = {
         ],
         "preconditions": [
           {
+            "id": "precond-data-freshness",
+            "label": "数据新鲜度前置条件",
+            "body": "行情数据截止日距决策日不超过 1 个交易日；财务报告为最近一个已披露报告期。"
+          },
+          {
             "id": "precond-not-restricted",
             "label": "限制名单前置条件",
             "body": "标的证券不在限制交易、观察或禁投名单中；若命中，则必须进入人工合规复核。"
-          },
-          {
-            "id": "precond-policy-active",
-            "label": "政策有效性前置条件",
-            "body": "ODRL 决策使用政策与数据使用政策均处于 active 状态，且未超过有效期。"
           },
           {
             "id": "precond-suitability",
@@ -21701,9 +33833,9 @@ window.ASH_DATA = {
             "body": "投资者画像的风险承受能力不低于决策风险等级对应的最低承受能力，且单票权重不超过 maxSingleWeight。"
           },
           {
-            "id": "precond-data-freshness",
-            "label": "数据新鲜度前置条件",
-            "body": "行情数据截止日距决策日不超过 1 个交易日；财务报告为最近一个已披露报告期。"
+            "id": "precond-policy-active",
+            "label": "政策有效性前置条件",
+            "body": "ODRL 决策使用政策与数据使用政策均处于 active 状态，且未超过有效期。"
           }
         ],
         "steps": [
@@ -21767,14 +33899,14 @@ window.ASH_DATA = {
             "comment": "评估市场、信用、流动性、集中度、模型与 ESG 风险，生成风险分数和等级。",
             "inputs": [
               {
-                "id": "factors-computed",
-                "label": "因子快照",
+                "id": "data-validated",
+                "label": "已校验数据包",
                 "comment": "",
                 "parameterType": "http://www.w3.org/2001/XMLSchema#anyURI"
               },
               {
-                "id": "data-validated",
-                "label": "已校验数据包",
+                "id": "factors-computed",
+                "label": "因子快照",
                 "comment": "",
                 "parameterType": "http://www.w3.org/2001/XMLSchema#anyURI"
               }
@@ -21821,10 +33953,10 @@ window.ASH_DATA = {
             "comment": "在单票上限、行业约束、流动性门槛和风险预算下生成组合建议。",
             "inputs": [
               {
-                "id": "signals-derived",
-                "label": "推断信号集",
-                "comment": "",
-                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Signal"
+                "id": "in-investor-profile",
+                "label": "投资者画像",
+                "comment": "风险承受能力、投资期限、单票上限与排除规则。",
+                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
               },
               {
                 "id": "in-constraints",
@@ -21833,10 +33965,10 @@ window.ASH_DATA = {
                 "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
               },
               {
-                "id": "in-investor-profile",
-                "label": "投资者画像",
-                "comment": "风险承受能力、投资期限、单票上限与排除规则。",
-                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#InvestorProfile"
+                "id": "signals-derived",
+                "label": "推断信号集",
+                "comment": "",
+                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Signal"
               }
             ],
             "outputs": [
@@ -21881,16 +34013,16 @@ window.ASH_DATA = {
             "comment": "汇总建议、目标价、止损价、证据链、反方观点和人工复核标记。",
             "inputs": [
               {
+                "id": "compliance-result",
+                "label": "合规检查结果",
+                "comment": "",
+                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck"
+              },
+              {
                 "id": "signals-derived",
                 "label": "推断信号集",
                 "comment": "",
                 "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Signal"
-              },
-              {
-                "id": "portfolio-proposal",
-                "label": "组合建议",
-                "comment": "",
-                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio"
               },
               {
                 "id": "out-risk",
@@ -21899,10 +34031,10 @@ window.ASH_DATA = {
                 "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskAssessment"
               },
               {
-                "id": "compliance-result",
-                "label": "合规检查结果",
+                "id": "portfolio-proposal",
+                "label": "组合建议",
                 "comment": "",
-                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck"
+                "parameterType": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#Portfolio"
               }
             ],
             "outputs": [
@@ -21934,12 +34066,12 @@ window.ASH_DATA = {
         "comment": "仅为 OWL-S 结构演示，端点与 WSDL 文档均不指向生产系统。",
         "groundings": [
           {
-            "id": "ground-factor",
-            "process": "02 因子与估值计算",
+            "id": "ground-decision",
+            "process": "07 决策报告生成",
             "document": "https://example.org/ashare-decision/service.wsdl",
             "service": "https://example.org/ashare-decision/service",
             "port": "DecisionPort",
-            "operation": "computeFactors"
+            "operation": "generateDecision"
           },
           {
             "id": "ground-data-quality",
@@ -21950,20 +34082,20 @@ window.ASH_DATA = {
             "operation": "validateData"
           },
           {
+            "id": "ground-rule",
+            "process": "04 SWRL 规则推理",
+            "document": "https://example.org/ashare-decision/service.wsdl",
+            "service": "https://example.org/ashare-decision/service",
+            "port": "DecisionPort",
+            "operation": "runRules"
+          },
+          {
             "id": "ground-compliance",
             "process": "06 合规与适当性检查",
             "document": "https://example.org/ashare-decision/service.wsdl",
             "service": "https://example.org/ashare-decision/service",
             "port": "DecisionPort",
             "operation": "checkCompliance"
-          },
-          {
-            "id": "ground-decision",
-            "process": "07 决策报告生成",
-            "document": "https://example.org/ashare-decision/service.wsdl",
-            "service": "https://example.org/ashare-decision/service",
-            "port": "DecisionPort",
-            "operation": "generateDecision"
           },
           {
             "id": "ground-portfolio",
@@ -21982,18 +34114,199 @@ window.ASH_DATA = {
             "operation": "assessRisk"
           },
           {
-            "id": "ground-rule",
-            "process": "04 SWRL 规则推理",
+            "id": "ground-factor",
+            "process": "02 因子与估值计算",
             "document": "https://example.org/ashare-decision/service.wsdl",
             "service": "https://example.org/ashare-decision/service",
             "port": "DecisionPort",
-            "operation": "runRules"
+            "operation": "computeFactors"
           }
         ]
       }
     }
   ],
   "policies": [
+    {
+      "id": "policy-ai-analysis",
+      "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-ai-analysis",
+      "kind": "policy",
+      "label": {
+        "zh": "AI 辅助分析使用政策",
+        "en": "AI-assisted analysis usage agreement"
+      },
+      "comment": "AI 输出只能作为研究辅助，不得直接转化为交易执行。",
+      "source": "odrl",
+      "layer": "odrl",
+      "title": "AI 辅助分析使用协议",
+      "description": "AI 辅助分析仅用于投资研究；禁止绕过人工审批执行交易；必须标注本体证据和规则来源。",
+      "uid": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-ai-analysis",
+      "profile": "A 股投资决策 ODRL Profile",
+      "conflict": "prohibit",
+      "version": "1.0.0",
+      "status": "active",
+      "reviewDate": "2027-03-31",
+      "permissions": [
+        {
+          "actions": [
+            {
+              "id": "reproduce",
+              "label": "复制"
+            },
+            {
+              "id": "read",
+              "label": "读取"
+            },
+            {
+              "id": "use",
+              "label": "使用"
+            }
+          ],
+          "targets": [
+            {
+              "id": "asset-ai-analysis",
+              "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-ai-analysis",
+              "label": "AI 辅助分析报告"
+            }
+          ],
+          "assigner": [
+            {
+              "id": "party-investment-service",
+              "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investment-service",
+              "label": "投资决策服务（示例）"
+            }
+          ],
+          "assignee": [
+            {
+              "id": "party-investor",
+              "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investor",
+              "label": "合格投资者（示例）"
+            }
+          ],
+          "constraints": [
+            "接收方 属于 合格投资者",
+            "目的 = investment-decision-support"
+          ],
+          "duties": [
+            {
+              "actions": [
+                {
+                  "id": "reviewPolicy",
+                  "label": "复核政策"
+                }
+              ],
+              "targets": [
+                {
+                  "id": "asset-audit-record",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-audit-record",
+                  "label": "决策审计记录"
+                }
+              ],
+              "assigner": [],
+              "assignee": [
+                {
+                  "id": "party-compliance",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-compliance",
+                  "label": "合规官（示例）"
+                }
+              ],
+              "constraints": [],
+              "duties": [],
+              "remedy": [],
+              "consequence": []
+            },
+            {
+              "actions": [
+                {
+                  "id": "attribute",
+                  "label": "标注来源"
+                }
+              ],
+              "targets": [
+                {
+                  "id": "asset-source-notice",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-source-notice",
+                  "label": "数据来源声明"
+                }
+              ],
+              "assigner": [],
+              "assignee": [
+                {
+                  "id": "party-investment-service",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investment-service",
+                  "label": "投资决策服务（示例）"
+                }
+              ],
+              "constraints": [],
+              "duties": [],
+              "remedy": [],
+              "consequence": []
+            }
+          ],
+          "remedy": [],
+          "consequence": []
+        }
+      ],
+      "prohibitions": [
+        {
+          "actions": [
+            {
+              "id": "execute",
+              "label": "执行"
+            }
+          ],
+          "targets": [
+            {
+              "id": "asset-order-intent",
+              "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-order-intent",
+              "label": "订单意图"
+            }
+          ],
+          "assigner": [
+            {
+              "id": "party-investment-service",
+              "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investment-service",
+              "label": "投资决策服务（示例）"
+            }
+          ],
+          "assignee": [
+            {
+              "id": "party-investor",
+              "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investor",
+              "label": "合格投资者（示例）"
+            }
+          ],
+          "constraints": [
+            "人工批准状态 = false"
+          ],
+          "duties": [],
+          "remedy": [
+            {
+              "actions": [
+                {
+                  "id": "reviewPolicy",
+                  "label": "复核政策"
+                }
+              ],
+              "targets": [],
+              "assigner": [],
+              "assignee": [
+                {
+                  "id": "party-compliance",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-compliance",
+                  "label": "合规官（示例）"
+                }
+              ],
+              "constraints": [],
+              "duties": [],
+              "remedy": [],
+              "consequence": []
+            }
+          ],
+          "consequence": []
+        }
+      ],
+      "obligations": []
+    },
     {
       "id": "policy-decision-use",
       "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#policy-decision-use",
@@ -22017,16 +34330,16 @@ window.ASH_DATA = {
         {
           "actions": [
             {
-              "id": "use",
-              "label": "使用"
+              "id": "read",
+              "label": "读取"
             },
             {
               "id": "reproduce",
               "label": "复制"
             },
             {
-              "id": "read",
-              "label": "读取"
+              "id": "use",
+              "label": "使用"
             }
           ],
           "targets": [
@@ -22051,11 +34364,38 @@ window.ASH_DATA = {
             }
           ],
           "constraints": [
-            "时间 < 2027-03-31T00:00:00+00:00",
             "目的 = investment-decision-support",
+            "时间 < 2027-03-31T00:00:00+00:00",
             "接收方 属于 合格投资者"
           ],
           "duties": [
+            {
+              "actions": [
+                {
+                  "id": "inform",
+                  "label": "告知"
+                }
+              ],
+              "targets": [
+                {
+                  "id": "asset-decision-report",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-decision-report",
+                  "label": "投资决策报告"
+                }
+              ],
+              "assigner": [],
+              "assignee": [
+                {
+                  "id": "party-investment-service",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investment-service",
+                  "label": "投资决策服务（示例）"
+                }
+              ],
+              "constraints": [],
+              "duties": [],
+              "remedy": [],
+              "consequence": []
+            },
             {
               "actions": [
                 {
@@ -22095,33 +34435,6 @@ window.ASH_DATA = {
                   "id": "asset-source-notice",
                   "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-source-notice",
                   "label": "数据来源声明"
-                }
-              ],
-              "assigner": [],
-              "assignee": [
-                {
-                  "id": "party-investment-service",
-                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investment-service",
-                  "label": "投资决策服务（示例）"
-                }
-              ],
-              "constraints": [],
-              "duties": [],
-              "remedy": [],
-              "consequence": []
-            },
-            {
-              "actions": [
-                {
-                  "id": "inform",
-                  "label": "告知"
-                }
-              ],
-              "targets": [
-                {
-                  "id": "asset-decision-report",
-                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-decision-report",
-                  "label": "投资决策报告"
                 }
               ],
               "assigner": [],
@@ -22230,16 +34543,16 @@ window.ASH_DATA = {
         {
           "actions": [
             {
-              "id": "aggregate",
-              "label": "聚合"
-            },
-            {
               "id": "derive",
               "label": "派生"
             },
             {
               "id": "read",
               "label": "读取"
+            },
+            {
+              "id": "aggregate",
+              "label": "聚合"
             }
           ],
           "targets": [
@@ -22265,9 +34578,9 @@ window.ASH_DATA = {
           ],
           "constraints": [
             "时间 < 2027-01-01T00:00:00+00:00",
-            "地域 = CN",
+            "次数 ≤ 12",
             "目的 = research",
-            "次数 ≤ 12"
+            "地域 = CN"
           ],
           "duties": [
             {
@@ -22357,12 +34670,12 @@ window.ASH_DATA = {
         {
           "actions": [
             {
-              "id": "distribute",
-              "label": "分发"
-            },
-            {
               "id": "commercialize",
               "label": "商业化"
+            },
+            {
+              "id": "distribute",
+              "label": "分发"
             }
           ],
           "targets": [
@@ -22465,37 +34778,10 @@ window.ASH_DATA = {
             }
           ],
           "constraints": [
-            "合规检查通过 = true",
-            "人工批准状态 = true"
+            "人工批准状态 = true",
+            "合规检查通过 = true"
           ],
           "duties": [
-            {
-              "actions": [
-                {
-                  "id": "reviewPolicy",
-                  "label": "复核政策"
-                }
-              ],
-              "targets": [
-                {
-                  "id": "asset-audit-record",
-                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-audit-record",
-                  "label": "决策审计记录"
-                }
-              ],
-              "assigner": [],
-              "assignee": [
-                {
-                  "id": "party-compliance",
-                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-compliance",
-                  "label": "合规官（示例）"
-                }
-              ],
-              "constraints": [],
-              "duties": [],
-              "remedy": [],
-              "consequence": []
-            },
             {
               "actions": [
                 {
@@ -22516,6 +34802,33 @@ window.ASH_DATA = {
                   "id": "party-investment-service",
                   "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-investment-service",
                   "label": "投资决策服务（示例）"
+                }
+              ],
+              "constraints": [],
+              "duties": [],
+              "remedy": [],
+              "consequence": []
+            },
+            {
+              "actions": [
+                {
+                  "id": "reviewPolicy",
+                  "label": "复核政策"
+                }
+              ],
+              "targets": [
+                {
+                  "id": "asset-audit-record",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#asset-audit-record",
+                  "label": "决策审计记录"
+                }
+              ],
+              "assigner": [],
+              "assignee": [
+                {
+                  "id": "party-compliance",
+                  "iri": "https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#party-compliance",
+                  "label": "合规官（示例）"
                 }
               ],
               "constraints": [],
