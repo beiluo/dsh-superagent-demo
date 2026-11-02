@@ -1,0 +1,38 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — aggregate entry point
+# ---------------------------------------------------------------------------
+# Load this file to import all seven semantic layers. Individual modules can
+# also be loaded independently for review and testing.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share>
+    a owl:Ontology ;
+    owl:versionIRI <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/1.0.0> ;
+    owl:imports
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> ,
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/owl> ,
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos> ,
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdf> ,
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/swrl> ,
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/owl-s> ,
+        <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/odrl> ;
+    dcterms:title "A-Share Investment Decision Ontology"@en ;
+    dcterms:title "A 股投资决策本体"@zh ;
+    dcterms:description "A modular semantic model for auditable A-share investment decisions, spanning RDF, RDFS, OWL 2, SKOS, SWRL, OWL-S and ODRL."@en ;
+    dcterms:description "面向可审计 A 股投资决策的模块化语义模型，覆盖 RDF、RDFS、OWL 2、SKOS、SWRL、OWL-S 与 ODRL。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/owl2-overview/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
+    dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
+    dcterms:conformsTo <https://www.w3.org/Submission/OWL-S/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
+    dcterms:source <https://spec.edmcouncil.org/fibo/> ;
+    rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
+    rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
+    owl:versionInfo "1.0.0" ;
+    ash:designNote "参考 FIBO 的模块化、定义优先和可追溯设计；本体的领域内容为独立编写，不复用 FIBO 本体文本。"@zh .

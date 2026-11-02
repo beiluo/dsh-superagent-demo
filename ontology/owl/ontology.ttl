@@ -1,0 +1,501 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — OWL 2 layer
+# ---------------------------------------------------------------------------
+# OWL 2 DL axioms: restrictions, property characteristics, keys, class
+# disjointness and named-individual identity. The ontology is deliberately
+# modular so the RDFS vocabulary remains readable on its own.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix ashs:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#> .
+@prefix ashd:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/owl>
+    a owl:Ontology ;
+    owl:imports <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> ;
+    dcterms:title "A-Share Investment Decision Ontology — OWL 2 axioms"@en ;
+    dcterms:title "A 股投资决策本体 — OWL 2 公理层"@zh ;
+    dcterms:description "OWL 2 DL class expressions, restrictions, property characteristics, keys and identity constraints."@en ;
+    dcterms:description "OWL 2 DL 类表达式、限制、属性特征、键与个体区分约束。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/TR/owl2-overview/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/owl2-syntax/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
+    dcterms:source <https://spec.edmcouncil.org/fibo/> ;
+    rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
+    owl:versionInfo "1.0.0" ;
+    ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
+
+# ===========================================================================
+# Annotation properties used by the design and the browser
+# ===========================================================================
+
+ash:example a owl:AnnotationProperty ;
+    rdfs:label "示例"@zh, "example"@en ;
+    rdfs:comment "用于在类或属性上给出领域示例的注解属性。"@zh .
+
+ash:ruleUses a owl:AnnotationProperty ;
+    rdfs:label "规则使用"@zh, "rule uses"@en ;
+    rdfs:comment "标记 SWRL 规则读取的类或属性，便于治理与影响分析。"@zh ;
+    rdfs:range rdf:Resource .
+
+ash:appliesTo a owl:AnnotationProperty ;
+    rdfs:label "适用对象"@zh, "applies to"@en ;
+    rdfs:comment "标记规则主要约束的领域类。"@zh ;
+    rdfs:range rdfs:Class .
+
+ash:competencyQuestion a owl:AnnotationProperty ;
+    rdfs:label "能力问题"@zh, "competency question"@en ;
+    rdfs:comment "本体必须能够回答的领域问题，用于验收。"@zh .
+
+ash:designNote a owl:AnnotationProperty ;
+    rdfs:label "设计注记"@zh, "design note"@en ;
+    rdfs:comment "记录建模取舍、规范依据或实现限制。"@zh .
+
+# ===========================================================================
+# Class restrictions
+# ===========================================================================
+
+ash:ListedCompany rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasSecurity ;
+      owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:primaryIndustry ;
+      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass skos:Concept ] .
+
+ash:AShare rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:tradesOn ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:MarketSegment ] .
+
+ash:Security rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:listedOn ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Exchange ] .
+
+ash:FinancialReport rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:reportsOn ;
+      owl:someValuesFrom ash:ListedCompany ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:reportPeriod ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:MarketQuote rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:quoteOf ;
+      owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:lastPrice ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:dataAsOf ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:Valuation rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:valuationOf ;
+      owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:peTtm ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:InvestmentDecision rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:aboutSecurity ;
+      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasRecommendation ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Recommendation ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasRationale ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:DecisionRationale ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasRiskAssessment ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:RiskAssessment ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:decidedFor ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:InvestorProfile ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasHorizon ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:InvestmentHorizon ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:governedBy ;
+      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:DecisionPolicy ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasComplianceCheck ;
+      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:ComplianceCheck ] .
+
+ash:DecisionRationale rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:rationaleText ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasEvidence ;
+      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Evidence ] .
+
+ash:RiskAssessment rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:assessesSecurity ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:riskScore ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasRiskLevel ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:RiskLevel ] .
+
+ash:Portfolio rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:followsStrategy ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:InvestmentStrategy ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasBenchmark ;
+      owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Index ] .
+
+ash:Position rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:positionIn ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:positionWeight ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:avgCost ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:InvestorProfile rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:riskTolerance ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:maxSingleWeight ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:Recommendation rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:actionCode ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:ComplianceCheck rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:checksDecision ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:InvestmentDecision ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:passed ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:AuditableDecision rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasRiskAssessment ;
+      owl:someValuesFrom ash:RiskAssessment ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasRationale ;
+      owl:someValuesFrom ash:DecisionRationale ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:basedOn ;
+      owl:someValuesFrom ash:Evidence ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:governedBy ;
+      owl:someValuesFrom ash:DecisionPolicy ] .
+
+# ===========================================================================
+# Property characteristics
+# ===========================================================================
+
+ash:listedOn a owl:FunctionalProperty .
+ash:hasRecommendation a owl:FunctionalProperty .
+ash:hasRationale a owl:FunctionalProperty .
+ash:hasRiskAssessment a owl:FunctionalProperty .
+ash:decidedFor a owl:FunctionalProperty .
+ash:hasHorizon a owl:FunctionalProperty .
+ash:aboutSecurity a owl:FunctionalProperty .
+ash:aboutCompany a owl:FunctionalProperty .
+ash:generatedBy a owl:FunctionalProperty .
+ash:hasRiskLevel a owl:FunctionalProperty .
+ash:assessesSecurity a owl:FunctionalProperty .
+ash:checksDecision a owl:FunctionalProperty .
+ash:followsStrategy a owl:FunctionalProperty .
+ash:hasBenchmark a owl:FunctionalProperty .
+
+ash:hasParentCompany a owl:TransitiveProperty .
+ash:hasSubsidiary a owl:TransitiveProperty .
+ash:relatedParty a owl:SymmetricProperty .
+
+ash:hasSecurity owl:inverseOf ash:issuedBy .
+ash:issuedBy owl:inverseOf ash:hasSecurity .
+ash:listedOn owl:inverseOf ash:lists .
+ash:lists owl:inverseOf ash:listedOn .
+ash:hasFinancialReport owl:inverseOf ash:reportsOn .
+ash:reportsOn owl:inverseOf ash:hasFinancialReport .
+ash:hasMarketQuote owl:inverseOf ash:quoteOf .
+ash:quoteOf owl:inverseOf ash:hasMarketQuote .
+ash:hasValuation owl:inverseOf ash:valuationOf .
+ash:valuationOf owl:inverseOf ash:hasValuation .
+ash:hasCorporateEvent owl:inverseOf ash:eventOf .
+ash:eventOf owl:inverseOf ash:hasCorporateEvent .
+ash:aboutSecurity owl:inverseOf ash:subjectOfDecision .
+ash:subjectOfDecision owl:inverseOf ash:aboutSecurity .
+ash:hasRiskAssessment owl:inverseOf ash:assessesDecision .
+ash:assessesDecision owl:inverseOf ash:hasRiskAssessment .
+ash:holdsPosition owl:inverseOf ash:positionOf .
+ash:positionOf owl:inverseOf ash:holdsPosition .
+ash:hasParentCompany owl:inverseOf ash:hasSubsidiary .
+ash:hasSubsidiary owl:inverseOf ash:hasParentCompany .
+
+# Functional data properties
+ash:securityCode a owl:FunctionalProperty .
+ash:exchangeCode a owl:FunctionalProperty .
+ash:securityName a owl:FunctionalProperty .
+ash:companyName a owl:FunctionalProperty .
+ash:companyCode a owl:FunctionalProperty .
+ash:isin a owl:FunctionalProperty .
+ash:listingDate a owl:FunctionalProperty .
+ash:delistingDate a owl:FunctionalProperty .
+ash:isST a owl:FunctionalProperty .
+ash:delistingRisk a owl:FunctionalProperty .
+ash:isSuspended a owl:FunctionalProperty .
+ash:isRestricted a owl:FunctionalProperty .
+ash:dataAsOf a owl:FunctionalProperty .
+ash:dataSource a owl:FunctionalProperty .
+ash:dataQualityFlag a owl:FunctionalProperty .
+ash:reportPeriod a owl:FunctionalProperty .
+ash:fiscalYearEnd a owl:FunctionalProperty .
+ash:revenue a owl:FunctionalProperty .
+ash:netProfit a owl:FunctionalProperty .
+ash:roe a owl:FunctionalProperty .
+ash:roa a owl:FunctionalProperty .
+ash:debtRatio a owl:FunctionalProperty .
+ash:interestCoverage a owl:FunctionalProperty .
+ash:operatingCashFlow a owl:FunctionalProperty .
+ash:revenueGrowth a owl:FunctionalProperty .
+ash:profitGrowth a owl:FunctionalProperty .
+ash:eps a owl:FunctionalProperty .
+ash:lastPrice a owl:FunctionalProperty .
+ash:changePct a owl:FunctionalProperty .
+ash:volume a owl:FunctionalProperty .
+ash:turnoverRate a owl:FunctionalProperty .
+ash:marketCap a owl:FunctionalProperty .
+ash:peTtm a owl:FunctionalProperty .
+ash:pb a owl:FunctionalProperty .
+ash:psTtm a owl:FunctionalProperty .
+ash:dividendYield a owl:FunctionalProperty .
+ash:decisionId a owl:FunctionalProperty .
+ash:decisionDate a owl:FunctionalProperty .
+ash:validUntil a owl:FunctionalProperty .
+ash:confidence a owl:FunctionalProperty .
+ash:targetPrice a owl:FunctionalProperty .
+ash:stopLoss a owl:FunctionalProperty .
+ash:positionWeight a owl:FunctionalProperty .
+ash:avgCost a owl:FunctionalProperty .
+ash:quantity a owl:FunctionalProperty .
+ash:riskScore a owl:FunctionalProperty .
+ash:rationaleText a owl:FunctionalProperty .
+ash:assumption a owl:FunctionalProperty .
+ash:counterArgument a owl:FunctionalProperty .
+ash:actionCode a owl:FunctionalProperty .
+ash:riskTolerance a owl:FunctionalProperty .
+ash:maxSingleWeight a owl:FunctionalProperty .
+ash:passed a owl:FunctionalProperty .
+ash:ruleId a owl:FunctionalProperty .
+ash:severity a owl:FunctionalProperty .
+ash:rulePriority a owl:FunctionalProperty .
+ash:ruleIf a owl:FunctionalProperty .
+ash:ruleThen a owl:FunctionalProperty .
+ash:ruleStatus a owl:FunctionalProperty .
+ash:ruleVersion a owl:FunctionalProperty .
+ash:ruleOwner a owl:FunctionalProperty .
+ash:ruleEffectiveFrom a owl:FunctionalProperty .
+ash:policyVersion a owl:FunctionalProperty .
+ash:reviewDate a owl:FunctionalProperty .
+ash:isExample a owl:FunctionalProperty .
+ash:exampleNote a owl:FunctionalProperty .
+ash:humanApprovalRequired a owl:FunctionalProperty .
+ash:serviceVersion a owl:FunctionalProperty .
+ash:endpointStatus a owl:FunctionalProperty .
+
+# ===========================================================================
+# Keys
+# ===========================================================================
+
+ash:ListedCompany owl:hasKey ( ash:companyCode ) .
+ash:Security owl:hasKey ( ash:securityCode ash:listedOn ) .
+ash:Exchange owl:hasKey ( ash:exchangeCode ) .
+ash:FinancialReport owl:hasKey ( ash:reportsOn ash:reportPeriod ) .
+ash:MarketQuote owl:hasKey ( ash:quoteOf ash:dataAsOf ) .
+ash:Valuation owl:hasKey ( ash:valuationOf ash:dataAsOf ) .
+ash:InvestmentDecision owl:hasKey ( ash:decisionId ) .
+
+# ===========================================================================
+# Disjointness
+# ===========================================================================
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:ListedCompany ash:Investor ash:ServiceProvider ash:Regulator ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:Security ash:Index ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:FinancialReport ash:MarketQuote ash:Valuation ash:MacroIndicator ash:Disclosure ash:ResearchReport ash:NewsItem ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:InvestmentDecision ash:DecisionRationale ash:Recommendation ash:Portfolio ash:Position ash:InvestorProfile ash:ComplianceCheck ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:MarketRisk ash:CreditRisk ash:LiquidityRisk ash:OperationalRisk ash:ComplianceRisk ash:ConcentrationRisk ash:ModelRisk ash:ESGRisk ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:Exchange ash:MarketSegment ) .
+
+# ===========================================================================
+# Named individuals: controlled vocabularies
+# ===========================================================================
+
+ashd:rec-buy a owl:NamedIndividual, ash:Recommendation ;
+    ash:actionCode "BUY" ;
+    rdfs:label "增持"@zh, "Buy"@en ;
+    rdfs:comment "在风险预算内增加目标证券暴露。"@zh ;
+    ash:isExample true .
+
+ashd:rec-hold a owl:NamedIndividual, ash:Recommendation ;
+    ash:actionCode "HOLD" ;
+    rdfs:label "持有"@zh, "Hold"@en ;
+    rdfs:comment "维持现有暴露，不新增也不减少。"@zh ;
+    ash:isExample true .
+
+ashd:rec-sell a owl:NamedIndividual, ash:Recommendation ;
+    ash:actionCode "SELL" ;
+    rdfs:label "减持"@zh, "Sell"@en ;
+    rdfs:comment "降低或退出目标证券暴露。"@zh ;
+    ash:isExample true .
+
+ashd:rec-watch a owl:NamedIndividual, ash:Recommendation ;
+    ash:actionCode "WATCH" ;
+    rdfs:label "观察"@zh, "Watch"@en ;
+    rdfs:comment "暂不建仓，等待估值、业绩或事件信号进一步确认。"@zh ;
+    ash:isExample true .
+
+ashd:rec-avoid a owl:NamedIndividual, ash:Recommendation ;
+    ash:actionCode "AVOID" ;
+    rdfs:label "回避"@zh, "Avoid"@en ;
+    rdfs:comment "因风险、合规或能力圈原因不参与。"@zh ;
+    ash:isExample true .
+
+[] a owl:AllDifferent ;
+   owl:members ( ashd:rec-buy ashd:rec-hold ashd:rec-sell ashd:rec-watch ashd:rec-avoid ) .
+
+ashd:risk-low a owl:NamedIndividual, ash:RiskLevel ;
+    rdfs:label "低"@zh, "Low"@en ;
+    rdfs:comment "风险分数 0—25。"@zh ;
+    ash:isExample true .
+
+ashd:risk-medium a owl:NamedIndividual, ash:RiskLevel ;
+    rdfs:label "中"@zh, "Medium"@en ;
+    rdfs:comment "风险分数 26—50。"@zh ;
+    ash:isExample true .
+
+ashd:risk-high a owl:NamedIndividual, ash:RiskLevel ;
+    rdfs:label "高"@zh, "High"@en ;
+    rdfs:comment "风险分数 51—75。"@zh ;
+    ash:isExample true .
+
+ashd:risk-extreme a owl:NamedIndividual, ash:RiskLevel ;
+    rdfs:label "极高"@zh, "Extreme"@en ;
+    rdfs:comment "风险分数 76—100。"@zh ;
+    ash:isExample true .
+
+[] a owl:AllDifferent ;
+   owl:members ( ashd:risk-low ashd:risk-medium ashd:risk-high ashd:risk-extreme ) .
+
+ashd:horizon-short a owl:NamedIndividual, ash:InvestmentHorizon ;
+    rdfs:label "短期（1—3 个月）"@zh, "Short term (1–3 months)"@en ;
+    ash:isExample true .
+
+ashd:horizon-medium a owl:NamedIndividual, ash:InvestmentHorizon ;
+    rdfs:label "中期（3—12 个月）"@zh, "Medium term (3–12 months)"@en ;
+    ash:isExample true .
+
+ashd:horizon-long a owl:NamedIndividual, ash:InvestmentHorizon ;
+    rdfs:label "长期（1—3 年）"@zh, "Long term (1–3 years)"@en ;
+    ash:isExample true .
+
+[] a owl:AllDifferent ;
+   owl:members ( ashd:horizon-short ashd:horizon-medium ashd:horizon-long ) .
+
+# ===========================================================================
+# Competency questions as ontology annotations
+# ===========================================================================
+
+ash:competency-question-01 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ01 哪些公司同时满足高 ROE、低 PE、正利润且非 ST？"@zh ;
+    ash:competencyQuestion "哪些公司同时满足高 ROE、低 PE、正利润且非 ST？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-02 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ02 哪些公司的资产负债率过高且利息保障倍数不足？"@zh ;
+    ash:competencyQuestion "哪些公司的资产负债率过高且利息保障倍数不足？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-03 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ03 当前决策的建议、目标价、止损价和风险等级是什么？"@zh ;
+    ash:competencyQuestion "当前决策的建议、目标价、止损价和风险等级是什么？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-04 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ04 某项决策引用了哪些证据、理由和政策？"@zh ;
+    ash:competencyQuestion "某项决策引用了哪些证据、理由和政策？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-05 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ05 哪些持仓权重超过组合的单票集中度上限？"@zh ;
+    ash:competencyQuestion "哪些持仓权重超过组合的单票集中度上限？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-06 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ06 某项决策服务需要哪些输入、输出和前置条件？"@zh ;
+    ash:competencyQuestion "某项决策服务需要哪些输入、输出和前置条件？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-07 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ07 哪些 ODRL 政策禁止将决策报告分发给非合格投资者？"@zh ;
+    ash:competencyQuestion "哪些 ODRL 政策禁止将决策报告分发给非合格投资者？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-08 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ08 各行业一级概念下有哪些子概念？"@zh ;
+    ash:competencyQuestion "各行业一级概念下有哪些子概念？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-09 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ09 哪些 SWRL 规则处于 active 状态，责任人是谁？"@zh ;
+    ash:competencyQuestion "哪些 SWRL 规则处于 active 状态，责任人是谁？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-10 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ10 哪些投资决策缺少风险评估，需要完整性修复？"@zh ;
+    ash:competencyQuestion "哪些投资决策缺少风险评估，需要完整性修复？"@zh ;
+    ash:isExample true .

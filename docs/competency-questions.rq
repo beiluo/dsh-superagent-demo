@@ -1,0 +1,163 @@
+# Competency questions for the A-share investment decision ontology.
+# Each query is separated by a marker comment so scripts/validate.py can parse
+# the file one query at a time. Prefixes are repeated for copy/paste use.
+
+# --- CQ ---
+# CQ01: Which companies pass the value-candidate screen?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?company ?companyName ?roe ?pe WHERE {
+  ?company a ash:ListedCompany ;
+           ash:companyName ?companyName ;
+           ash:hasFinancialReport ?report ;
+           ash:hasSecurity ?stock .
+  ?stock ash:hasValuation ?valuation .
+  ?report ash:roe ?roe ;
+          ash:netProfit ?profit .
+  ?valuation ash:peTtm ?pe .
+  FILTER (?roe >= 15 && ?pe <= 20 && ?profit > 0)
+  FILTER NOT EXISTS { ?company ash:isST true }
+}
+ORDER BY DESC(?roe)
+
+# --- CQ ---
+# CQ02: Which companies have high financial risk?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?company ?companyName ?debtRatio ?interestCoverage WHERE {
+  ?company a ash:ListedCompany ;
+           ash:companyName ?companyName ;
+           ash:hasFinancialReport ?report .
+  ?report ash:debtRatio ?debtRatio ;
+          ash:interestCoverage ?interestCoverage .
+  FILTER (?debtRatio >= 70 && ?interestCoverage < 2)
+}
+
+# --- CQ ---
+# CQ03: What is the recommendation, target, stop-loss and risk level for
+#      each current decision?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?decisionId ?companyName ?action ?targetPrice ?stopLoss ?riskLevel ?confidence WHERE {
+  ?decision a ash:InvestmentDecision ;
+            ash:decisionId ?decisionId ;
+            ash:aboutCompany ?company ;
+            ash:hasRecommendation ?recommendation ;
+            ash:hasRiskAssessment ?risk ;
+            ash:confidence ?confidence .
+  ?company ash:companyName ?companyName .
+  ?recommendation ash:actionCode ?action .
+  ?risk ash:hasRiskLevel ?level .
+  ?level rdfs:label ?riskLevel .
+  OPTIONAL { ?decision ash:targetPrice ?targetPrice }
+  OPTIONAL { ?decision ash:stopLoss ?stopLoss }
+}
+ORDER BY DESC(?confidence)
+
+# --- CQ ---
+# CQ04: Which evidence, rationale and policy support a decision?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?decisionId ?rationale ?evidenceLabel ?policyTitle WHERE {
+  ?decision a ash:InvestmentDecision ;
+            ash:decisionId ?decisionId ;
+            ash:hasRationale ?rationaleNode ;
+            ash:basedOn ?evidence ;
+            ash:governedBy ?policy .
+  ?rationaleNode ash:rationaleText ?rationale .
+  ?evidence rdfs:label ?evidenceLabel .
+  ?policy dcterms:title ?policyTitle .
+  FILTER (LANG(?policyTitle) = "zh")
+}
+
+# --- CQ ---
+# CQ05: Which positions breach the 10% single-name concentration limit?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?position ?securityName ?weight WHERE {
+  ?portfolio a ash:Portfolio ;
+             ash:holdsPosition ?position .
+  ?position ash:positionIn ?security ;
+            ash:positionWeight ?weight .
+  ?security ash:securityName ?securityName .
+  FILTER (?weight > 0.10)
+}
+
+# --- CQ ---
+# CQ06: Which inputs, outputs and preconditions does the decision service
+#      expose?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX service: <http://www.daml.org/services/owl-s/1.2/Service.owl#>
+PREFIX profile: <http://www.daml.org/services/owl-s/1.2/Profile.owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?serviceName ?inputLabel ?outputLabel ?precondition WHERE {
+  ?service a service:Service ;
+           service:presents ?profile .
+  ?profile profile:serviceName ?serviceName ;
+           profile:hasInput ?input ;
+           profile:hasOutput ?output ;
+           profile:hasPrecondition ?preconditionNode .
+  ?input rdfs:label ?inputLabel .
+  ?output rdfs:label ?outputLabel .
+  ?preconditionNode <http://www.daml.org/services/owl-s/1.2/generic/Expression.owl#expressionBody> ?precondition .
+  FILTER (LANG(?inputLabel) = "zh")
+  FILTER (LANG(?outputLabel) = "zh")
+}
+
+# --- CQ ---
+# CQ07: Which ODRL prohibitions apply to a decision report?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+SELECT ?policyTitle ?action ?targetLabel WHERE {
+  ?policy a ash:DecisionPolicy ;
+          dcterms:title ?policyTitle ;
+          odrl:prohibition ?prohibition .
+  ?prohibition odrl:action ?action ;
+               odrl:target ?target .
+  ?target <http://www.w3.org/2000/01/rdf-schema#label> ?targetLabel .
+  FILTER (LANG(?policyTitle) = "zh")
+}
+
+# --- CQ ---
+# CQ08: What are the child concepts of each industry top concept?
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?parentLabel ?childLabel ?notation WHERE {
+  ?scheme a skos:ConceptScheme ;
+          skos:prefLabel ?schemeLabel .
+  ?concept skos:inScheme ?scheme ;
+           skos:prefLabel ?childLabel ;
+           skos:broader ?parent .
+  ?parent skos:prefLabel ?parentLabel .
+  OPTIONAL { ?concept skos:notation ?notation }
+  FILTER (LANG(?schemeLabel) = "zh")
+  FILTER (LANG(?childLabel) = "zh")
+  FILTER (LANG(?parentLabel) = "zh")
+}
+ORDER BY ?parentLabel ?childLabel
+
+# --- CQ ---
+# CQ09: Which active SWRL rules are owned by which team?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX swrl: <http://www.w3.org/2003/11/swrl#>
+SELECT ?ruleId ?ruleLabel ?severity ?owner ?ruleIf ?ruleThen WHERE {
+  ?rule a swrl:Imp ;
+        ash:ruleId ?ruleId ;
+        ash:severity ?severity ;
+        ash:ruleOwner ?owner ;
+        ash:ruleStatus "active" .
+  OPTIONAL { ?rule <http://www.w3.org/2000/01/rdf-schema#label> ?ruleLabel }
+  OPTIONAL { ?rule ash:ruleIf ?ruleIf }
+  OPTIONAL { ?rule ash:ruleThen ?ruleThen }
+}
+ORDER BY ?ruleId
+
+# --- CQ ---
+# CQ10: Which example decisions lack a risk assessment? This is an integrity
+#       query, not a rule inference: OWL's open-world semantics cannot infer
+#       absence.
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?decision ?decisionId WHERE {
+  ?decision a ash:InvestmentDecision ;
+            ash:decisionId ?decisionId .
+  FILTER NOT EXISTS { ?decision ash:hasRiskAssessment ?risk }
+}

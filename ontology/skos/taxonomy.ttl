@@ -1,0 +1,528 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — SKOS taxonomy layer
+# ---------------------------------------------------------------------------
+# Three concept schemes: industries, investment themes and investment styles.
+# The taxonomy is illustrative and is not an official CSRC/Shenwan
+# classification. It demonstrates SKOS labelling, hierarchy and association.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix ashs:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos>
+    a owl:Ontology ;
+    dcterms:title "A-Share Investment Decision Ontology — SKOS taxonomies"@en ;
+    dcterms:title "A 股投资决策本体 — SKOS 分类层"@zh ;
+    dcterms:description "Concept schemes for A-share industries, investment themes and investment styles."@en ;
+    dcterms:description "用于 A 股行业、投资主题与投资风格标注的概念方案。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
+    dcterms:source <https://spec.edmcouncil.org/fibo/> ;
+    rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
+    owl:versionInfo "1.0.0" .
+
+# ===========================================================================
+# Concept schemes
+# ===========================================================================
+
+ashs:scheme-industry a skos:ConceptScheme ;
+    skos:prefLabel "A 股行业分类（示例）"@zh, "A-Share Industry Classification (illustrative)"@en ;
+    skos:definition "按主营业务对 A 股上市公司进行的一级、二级行业划分，用于行业暴露、比较与约束。"@zh ;
+    skos:note "示例分类参考公开行业分类的结构，不代表任何官方分类标准。"@zh ;
+    skos:hasTopConcept
+        ashs:industry-information-technology ,
+        ashs:industry-advanced-manufacturing ,
+        ashs:industry-consumer ,
+        ashs:industry-healthcare ,
+        ashs:industry-financials ,
+        ashs:industry-energy ,
+        ashs:industry-materials ,
+        ashs:industry-utilities ,
+        ashs:industry-real-estate ,
+        ashs:industry-communication-services ;
+    dcterms:created "2026-10-01"^^<http://www.w3.org/2001/XMLSchema#date> .
+
+ashs:scheme-theme a skos:ConceptScheme ;
+    skos:prefLabel "A 股投资主题（示例）"@zh, "A-Share Investment Themes (illustrative)"@en ;
+    skos:definition "跨行业、由产业趋势或政策驱动的可投资主题，用于主题暴露和集中度分析。"@zh ;
+    skos:note "主题与行业是多对多关系，不等同于行业分类。"@zh ;
+    skos:hasTopConcept
+        ashs:theme-ai ,
+        ashs:theme-semiconductor-localization ,
+        ashs:theme-new-energy-vehicle ,
+        ashs:theme-energy-storage ,
+        ashs:theme-innovative-drug-global ,
+        ashs:theme-high-dividend ,
+        ashs:theme-soe-revaluation ,
+        ashs:theme-ma-restructuring ,
+        ashs:theme-low-altitude-economy ,
+        ashs:theme-data-elements .
+
+ashs:scheme-style a skos:ConceptScheme ;
+    skos:prefLabel "A 股投资风格（示例）"@zh, "A-Share Investment Styles (illustrative)"@en ;
+    skos:definition "描述组合构建与选股偏好的风格标签，用于策略归因和风格漂移监控。"@zh ;
+    skos:hasTopConcept
+        ashs:style-value ,
+        ashs:style-growth ,
+        ashs:style-dividend ,
+        ashs:style-quality ,
+        ashs:style-momentum ,
+        ashs:style-low-volatility .
+
+# ===========================================================================
+# Industry: information technology
+# ===========================================================================
+
+ashs:industry-information-technology a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "信息技术"@zh, "Information Technology"@en ;
+    skos:altLabel "IT"@en, "科技"@zh ;
+    skos:notation "IT" ;
+    skos:definition "提供软件、半导体、通信设备与信息技术服务的行业。"@zh ;
+    skos:scopeNote "包括半导体、软件服务和通信设备等二级行业。"@zh ;
+    skos:narrower ashs:industry-semiconductor, ashs:industry-software, ashs:industry-communication-equipment .
+
+ashs:industry-semiconductor a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "半导体"@zh, "Semiconductors"@en ;
+    skos:altLabel "芯片"@zh, "集成电路"@zh ;
+    skos:notation "IT-SEMI" ;
+    skos:definition "从事芯片设计、制造、封测、设备或材料的企业。"@zh ;
+    skos:broader ashs:industry-information-technology ;
+    skos:related ashs:theme-ai, ashs:theme-semiconductor-localization .
+
+ashs:industry-software a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "软件服务"@zh, "Software & Services"@en ;
+    skos:notation "IT-SW" ;
+    skos:definition "提供企业软件、云服务、信息安全或行业信息化的企业。"@zh ;
+    skos:broader ashs:industry-information-technology ;
+    skos:related ashs:theme-ai, ashs:theme-data-elements .
+
+ashs:industry-communication-equipment a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "通信设备"@zh, "Communication Equipment"@en ;
+    skos:notation "IT-COMM" ;
+    skos:definition "提供通信网络设备、光模块、卫星通信或终端硬件的企业。"@zh ;
+    skos:broader ashs:industry-information-technology ;
+    skos:related ashs:theme-ai .
+
+# ===========================================================================
+# Industry: advanced manufacturing
+# ===========================================================================
+
+ashs:industry-advanced-manufacturing a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "高端制造"@zh, "Advanced Manufacturing"@en ;
+    skos:altLabel "先进制造"@zh ;
+    skos:notation "MFG" ;
+    skos:definition "以电力设备、机械设备、国防军工和自动化装备为代表的高端制造行业。"@zh ;
+    skos:narrower ashs:industry-electric-equipment, ashs:industry-machinery, ashs:industry-defense .
+
+ashs:industry-electric-equipment a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "电力设备"@zh, "Electrical Equipment"@en ;
+    skos:notation "MFG-ELEC" ;
+    skos:definition "提供发电、输配电、储能、光伏、风电或工业电气设备的企业。"@zh ;
+    skos:broader ashs:industry-advanced-manufacturing ;
+    skos:related ashs:theme-new-energy-vehicle, ashs:theme-energy-storage .
+
+ashs:industry-machinery a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "机械设备"@zh, "Machinery"@en ;
+    skos:notation "MFG-MACH" ;
+    skos:definition "提供工业机器人、自动化产线、工程机械或通用设备的企业。"@zh ;
+    skos:broader ashs:industry-advanced-manufacturing ;
+    skos:related ashs:theme-ai, ashs:theme-low-altitude-economy .
+
+ashs:industry-defense a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "国防军工"@zh, "Defense"@en ;
+    skos:notation "MFG-DEF" ;
+    skos:definition "从事航空、航天、兵器、船舶或军工电子业务的企业。"@zh ;
+    skos:broader ashs:industry-advanced-manufacturing ;
+    skos:related ashs:theme-low-altitude-economy .
+
+# ===========================================================================
+# Industry: consumer
+# ===========================================================================
+
+ashs:industry-consumer a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "消费"@zh, "Consumer"@en ;
+    skos:altLabel "大消费"@zh ;
+    skos:notation "CONS" ;
+    skos:definition "面向居民消费需求的食品饮料、家电、汽车、零售与服务行业。"@zh ;
+    skos:narrower ashs:industry-food-beverage, ashs:industry-home-appliance, ashs:industry-auto .
+
+ashs:industry-food-beverage a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "食品饮料"@zh, "Food & Beverage"@en ;
+    skos:notation "CONS-FB" ;
+    skos:definition "生产白酒、啤酒、乳制品、调味品或休闲食品的企业。"@zh ;
+    skos:broader ashs:industry-consumer ;
+    skos:related ashs:style-dividend, ashs:style-quality .
+
+ashs:industry-home-appliance a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "家用电器"@zh, "Home Appliances"@en ;
+    skos:notation "CONS-APP" ;
+    skos:definition "生产白电、黑电、小家电或智能家居产品的企业。"@zh ;
+    skos:broader ashs:industry-consumer .
+
+ashs:industry-auto a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "汽车"@zh, "Automobiles"@en ;
+    skos:notation "CONS-AUTO" ;
+    skos:definition "从事整车、汽车零部件、汽车服务或智能驾驶的企业。"@zh ;
+    skos:broader ashs:industry-consumer ;
+    skos:related ashs:theme-new-energy-vehicle, ashs:theme-ai .
+
+# ===========================================================================
+# Industry: healthcare
+# ===========================================================================
+
+ashs:industry-healthcare a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "医药健康"@zh, "Healthcare"@en ;
+    skos:notation "HLTH" ;
+    skos:definition "覆盖创新药、医疗器械、医疗服务与医药外包的行业。"@zh ;
+    skos:narrower ashs:industry-innovative-drug, ashs:industry-medical-device, ashs:industry-medical-service .
+
+ashs:industry-innovative-drug a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "创新药"@zh, "Innovative Drugs"@en ;
+    skos:notation "HLTH-DRUG" ;
+    skos:definition "从事创新药研发、生产与商业化的企业。"@zh ;
+    skos:broader ashs:industry-healthcare ;
+    skos:related ashs:theme-innovative-drug-global, ashs:style-growth .
+
+ashs:industry-medical-device a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "医疗器械"@zh, "Medical Devices"@en ;
+    skos:notation "HLTH-DEV" ;
+    skos:definition "生产诊断、治疗、监护或高值耗材等医疗器械的企业。"@zh ;
+    skos:broader ashs:industry-healthcare .
+
+ashs:industry-medical-service a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "医疗服务"@zh, "Healthcare Services"@en ;
+    skos:notation "HLTH-SVC" ;
+    skos:definition "提供医院、连锁诊所、第三方检测或医药外包服务的企业。"@zh ;
+    skos:broader ashs:industry-healthcare .
+
+# ===========================================================================
+# Industry: financials
+# ===========================================================================
+
+ashs:industry-financials a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "金融"@zh, "Financials"@en ;
+    skos:notation "FIN" ;
+    skos:definition "银行、证券、保险及其他金融服务行业。"@zh ;
+    skos:narrower ashs:industry-bank, ashs:industry-securities, ashs:industry-insurance .
+
+ashs:industry-bank a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "银行"@zh, "Banks"@en ;
+    skos:notation "FIN-BANK" ;
+    skos:definition "吸收存款、发放贷款并提供结算服务的商业银行。"@zh ;
+    skos:broader ashs:industry-financials ;
+    skos:related ashs:style-dividend, ashs:theme-soe-revaluation .
+
+ashs:industry-securities a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "证券"@zh, "Securities"@en ;
+    skos:notation "FIN-SEC" ;
+    skos:definition "提供经纪、投行、资管、自营或研究服务的证券公司。"@zh ;
+    skos:broader ashs:industry-financials ;
+    skos:related ashs:theme-ma-restructuring .
+
+ashs:industry-insurance a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "保险"@zh, "Insurance"@en ;
+    skos:notation "FIN-INS" ;
+    skos:definition "经营人寿、财产、健康或再保险业务的保险公司。"@zh ;
+    skos:broader ashs:industry-financials .
+
+# ===========================================================================
+# Industry: energy
+# ===========================================================================
+
+ashs:industry-energy a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "能源"@zh, "Energy"@en ;
+    skos:notation "ENRG" ;
+    skos:definition "煤炭、石油石化、新能源发电与能源服务行业。"@zh ;
+    skos:narrower ashs:industry-coal, ashs:industry-oil-petrochemical, ashs:industry-new-energy .
+
+ashs:industry-coal a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "煤炭"@zh, "Coal"@en ;
+    skos:notation "ENRG-COAL" ;
+    skos:definition "从事煤炭开采、洗选、贸易或煤化工的企业。"@zh ;
+    skos:broader ashs:industry-energy ;
+    skos:related ashs:style-dividend .
+
+ashs:industry-oil-petrochemical a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "石油石化"@zh, "Oil & Petrochemicals"@en ;
+    skos:notation "ENRG-OIL" ;
+    skos:definition "从事油气勘探、炼化、销售或油服的企业。"@zh ;
+    skos:broader ashs:industry-energy ;
+    skos:related ashs:theme-soe-revaluation .
+
+ashs:industry-new-energy a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "新能源"@zh, "New Energy"@en ;
+    skos:notation "ENRG-NEW" ;
+    skos:definition "从事光伏、风电、储能、氢能或新能源运营的企业。"@zh ;
+    skos:broader ashs:industry-energy ;
+    skos:related ashs:theme-energy-storage, ashs:theme-new-energy-vehicle .
+
+# ===========================================================================
+# Industry: materials
+# ===========================================================================
+
+ashs:industry-materials a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "材料"@zh, "Materials"@en ;
+    skos:notation "MATL" ;
+    skos:definition "有色金属、基础化工、钢铁与新材料行业。"@zh ;
+    skos:narrower ashs:industry-nonferrous, ashs:industry-chemicals, ashs:industry-steel .
+
+ashs:industry-nonferrous a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "有色金属"@zh, "Non-Ferrous Metals"@en ;
+    skos:notation "MATL-NFM" ;
+    skos:definition "从事铜、铝、锂、稀土或贵金属采选与冶炼的企业。"@zh ;
+    skos:broader ashs:industry-materials ;
+    skos:related ashs:theme-energy-storage, ashs:theme-new-energy-vehicle .
+
+ashs:industry-chemicals a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "基础化工"@zh, "Chemicals"@en ;
+    skos:notation "MATL-CHEM" ;
+    skos:definition "生产基础化工原料、精细化工品或农化产品的企业。"@zh ;
+    skos:broader ashs:industry-materials .
+
+ashs:industry-steel a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "钢铁"@zh, "Steel"@en ;
+    skos:notation "MATL-STEEL" ;
+    skos:definition "从事钢铁冶炼、加工或特殊钢生产的企业。"@zh ;
+    skos:broader ashs:industry-materials ;
+    skos:related ashs:theme-soe-revaluation .
+
+# ===========================================================================
+# Industry: utilities and real estate
+# ===========================================================================
+
+ashs:industry-utilities a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "公用事业"@zh, "Utilities"@en ;
+    skos:notation "UTIL" ;
+    skos:definition "电力、燃气、水务与环保等公共服务行业。"@zh ;
+    skos:narrower ashs:industry-power, ashs:industry-environmental .
+
+ashs:industry-power a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "电力"@zh, "Power"@en ;
+    skos:notation "UTIL-PWR" ;
+    skos:definition "从事火电、水电、核电或新能源发电的企业。"@zh ;
+    skos:broader ashs:industry-utilities ;
+    skos:related ashs:style-dividend, ashs:theme-soe-revaluation .
+
+ashs:industry-environmental a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "环保"@zh, "Environmental Services"@en ;
+    skos:notation "UTIL-ENV" ;
+    skos:definition "从事水处理、固废、大气治理或资源循环的企业。"@zh ;
+    skos:broader ashs:industry-utilities ;
+    skos:related ashs:theme-energy-storage .
+
+ashs:industry-real-estate a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "房地产"@zh, "Real Estate"@en ;
+    skos:notation "RE" ;
+    skos:definition "从事房地产开发、运营、物业管理或房地产服务的企业。"@zh ;
+    skos:narrower ashs:industry-property-development .
+
+ashs:industry-property-development a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "房地产开发"@zh, "Property Development"@en ;
+    skos:notation "RE-DEV" ;
+    skos:definition "从事住宅、商业或产业园区开发销售的企业。"@zh ;
+    skos:broader ashs:industry-real-estate .
+
+ashs:industry-communication-services a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:topConceptOf ashs:scheme-industry ;
+    skos:prefLabel "通信服务"@zh, "Communication Services"@en ;
+    skos:notation "COMM" ;
+    skos:definition "电信运营、传媒与互联网平台服务行业。"@zh ;
+    skos:narrower ashs:industry-telecom, ashs:industry-media .
+
+ashs:industry-telecom a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "电信运营"@zh, "Telecom Services"@en ;
+    skos:notation "COMM-TEL" ;
+    skos:definition "提供移动通信、宽带、数据中心或云网服务的企业。"@zh ;
+    skos:broader ashs:industry-communication-services ;
+    skos:related ashs:theme-data-elements, ashs:style-dividend .
+
+ashs:industry-media a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "传媒"@zh, "Media"@en ;
+    skos:notation "COMM-MEDIA" ;
+    skos:definition "从事内容制作、广告、游戏、出版或互联网平台的企业。"@zh ;
+    skos:broader ashs:industry-communication-services ;
+    skos:related ashs:theme-ai, ashs:theme-data-elements .
+
+# ===========================================================================
+# Investment themes
+# ===========================================================================
+
+ashs:theme-ai a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "人工智能"@zh, "Artificial Intelligence"@en ;
+    skos:altLabel "AI"@en, "大模型"@zh ;
+    skos:notation "TH-AI" ;
+    skos:definition "由大模型、算力基础设施、智能应用与数据要素驱动的跨行业投资主题。"@zh ;
+    skos:related ashs:industry-semiconductor, ashs:industry-software, ashs:industry-machinery .
+
+ashs:theme-semiconductor-localization a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "半导体国产化"@zh, "Semiconductor Localization"@en ;
+    skos:notation "TH-SEMI-LOC" ;
+    skos:definition "芯片设计、制造、设备、材料与 EDA 环节的自主可控主题。"@zh ;
+    skos:related ashs:industry-semiconductor .
+
+ashs:theme-new-energy-vehicle a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "新能源汽车"@zh, "New Energy Vehicles"@en ;
+    skos:altLabel "电动车"@zh, "NEV"@en ;
+    skos:notation "TH-NEV" ;
+    skos:definition "整车、动力电池、电机电控、充换电与智能驾驶产业链主题。"@zh ;
+    skos:related ashs:industry-auto, ashs:industry-electric-equipment, ashs:industry-nonferrous .
+
+ashs:theme-energy-storage a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "储能"@zh, "Energy Storage"@en ;
+    skos:notation "TH-ESS" ;
+    skos:definition "电化学储能、抽水蓄能、电网侧调峰与储能材料主题。"@zh ;
+    skos:related ashs:industry-new-energy, ashs:industry-electric-equipment .
+
+ashs:theme-innovative-drug-global a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "创新药出海"@zh, "Innovative Drug Globalization"@en ;
+    skos:notation "TH-BIOTECH" ;
+    skos:definition "创新药授权合作、海外临床与商业化能力带来的主题。"@zh ;
+    skos:related ashs:industry-innovative-drug .
+
+ashs:theme-high-dividend a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "高股息"@zh, "High Dividend"@en ;
+    skos:notation "TH-DIV" ;
+    skos:definition "现金流稳定、分红率高、估值较低的防御型主题。"@zh ;
+    skos:related ashs:style-dividend, ashs:industry-bank, ashs:industry-power .
+
+ashs:theme-soe-revaluation a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "央国企价值重估"@zh, "SOE Revaluation"@en ;
+    skos:notation "TH-SOE" ;
+    skos:definition "央企与地方国企改善治理、提升分红或资产整合带来的价值重估主题。"@zh ;
+    skos:related ashs:style-value, ashs:industry-bank, ashs:industry-power .
+
+ashs:theme-ma-restructuring a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "并购重组"@zh, "M&A and Restructuring"@en ;
+    skos:notation "TH-MA" ;
+    skos:definition "产业整合、资产注入、分拆上市或控制权变更驱动的主题。"@zh ;
+    skos:related ashs:industry-securities .
+
+ashs:theme-low-altitude-economy a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "低空经济"@zh, "Low-Altitude Economy"@en ;
+    skos:notation "TH-LAE" ;
+    skos:definition "无人机、eVTOL、通航基础设施与低空运营服务主题。"@zh ;
+    skos:related ashs:industry-defense, ashs:industry-machinery .
+
+ashs:theme-data-elements a skos:Concept ;
+    skos:inScheme ashs:scheme-theme ;
+    skos:topConceptOf ashs:scheme-theme ;
+    skos:prefLabel "数据要素"@zh, "Data Elements"@en ;
+    skos:notation "TH-DATA" ;
+    skos:definition "数据确权、交易、治理与行业数据应用形成的主题。"@zh ;
+    skos:related ashs:industry-software, ashs:industry-telecom, ashs:industry-media .
+
+# ===========================================================================
+# Investment styles
+# ===========================================================================
+
+ashs:style-value a skos:Concept ;
+    skos:inScheme ashs:scheme-style ;
+    skos:topConceptOf ashs:scheme-style ;
+    skos:prefLabel "价值"@zh, "Value"@en ;
+    skos:notation "ST-VALUE" ;
+    skos:definition "以低估值、高安全边际和均值回归为主要收益来源的风格。"@zh ;
+    skos:related ashs:theme-soe-revaluation, ashs:theme-high-dividend .
+
+ashs:style-growth a skos:Concept ;
+    skos:inScheme ashs:scheme-style ;
+    skos:topConceptOf ashs:scheme-style ;
+    skos:prefLabel "成长"@zh, "Growth"@en ;
+    skos:notation "ST-GROWTH" ;
+    skos:definition "以收入、利润或产业空间高增长为主要收益来源的风格。"@zh ;
+    skos:related ashs:theme-ai, ashs:theme-innovative-drug-global .
+
+ashs:style-dividend a skos:Concept ;
+    skos:inScheme ashs:scheme-style ;
+    skos:topConceptOf ashs:scheme-style ;
+    skos:prefLabel "红利"@zh, "Dividend"@en ;
+    skos:notation "ST-DIV" ;
+    skos:definition "以稳定现金分红和股息率为核心筛选条件的风格。"@zh ;
+    skos:related ashs:theme-high-dividend .
+
+ashs:style-quality a skos:Concept ;
+    skos:inScheme ashs:scheme-style ;
+    skos:topConceptOf ashs:scheme-style ;
+    skos:prefLabel "质量"@zh, "Quality"@en ;
+    skos:notation "ST-QUAL" ;
+    skos:definition "以高 ROE、稳定现金流、低杠杆和治理质量为核心筛选条件的风格。"@zh ;
+    skos:related ashs:style-value .
+
+ashs:style-momentum a skos:Concept ;
+    skos:inScheme ashs:scheme-style ;
+    skos:topConceptOf ashs:scheme-style ;
+    skos:prefLabel "动量"@zh, "Momentum"@en ;
+    skos:notation "ST-MOM" ;
+    skos:definition "以中期价格趋势和相对强弱为主要信号的风格。"@zh .
+
+ashs:style-low-volatility a skos:Concept ;
+    skos:inScheme ashs:scheme-style ;
+    skos:topConceptOf ashs:scheme-style ;
+    skos:prefLabel "低波"@zh, "Low Volatility"@en ;
+    skos:notation "ST-LOWVOL" ;
+    skos:definition "以低波动率、低回撤和防御性行业暴露为特征的风格。"@zh ;
+    skos:related ashs:style-dividend .
