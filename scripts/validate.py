@@ -140,7 +140,7 @@ def validate_owl(g: Graph, classes: set, object_properties: set, data_properties
 
 def validate_skos(g: Graph, concepts: set) -> None:
     schemes = set(g.subjects(RDF.type, SKOS.ConceptScheme))
-    check(len(schemes) == 3, f"Expected 3 SKOS concept schemes, found {len(schemes)}")
+    check(len(schemes) >= 5, f"Expected at least 5 SKOS concept schemes, found {len(schemes)}")
     for scheme in schemes:
         tops = [item for item in g.objects(scheme, SKOS.hasTopConcept)]
         check(len(tops) > 0, f"Concept scheme has no top concepts: {local(scheme)}")

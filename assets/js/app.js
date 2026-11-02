@@ -56,7 +56,22 @@
     "scheme-industry": { label: "行业分类", color: "#e26b5f" },
     "scheme-theme": { label: "投资主题", color: "#4fc1b3" },
     "scheme-style": { label: "投资风格", color: "#d4a64b" },
+    "scheme-asset-class": { label: "资产类别", color: "#6aa9e9" },
+    "scheme-factor": { label: "投资因子", color: "#b08ae6" },
   };
+
+  const CORE_GRAPH_IDS = [
+    "Entity", "MarketParticipant", "ListedCompany", "Investor", "ServiceProvider",
+    "FundCompany", "FinancialInstrument", "Security", "AShare", "Fund", "FundShare",
+    "ETF", "Bond", "ConvertibleBond", "Derivative", "Index", "Exchange", "MarketSegment",
+    "InformationObject", "FinancialReport", "MarketQuote", "Valuation", "CorporateEvent",
+    "Evidence", "Signal", "RiskSignal", "DecisionObject", "InvestmentDecision",
+    "DecisionRationale", "Recommendation", "RiskAssessment", "RiskFactor", "RiskLevel",
+    "Portfolio", "Position", "InvestmentStrategy", "InvestorProfile", "ComplianceCheck",
+    "Approval", "Order", "Trade", "PortfolioConstraint", "RiskModel", "Factor",
+    "FactorExposure", "DecisionPolicy", "DecisionService", "Shareholder", "AnalystEstimate",
+    "ESGRating", "DataLineage",
+  ];
 
   const GRAPH_DECISION_IDS = [
     "InvestmentDecision",
@@ -394,7 +409,7 @@
       <div class="panel-footer">
         <span><b>R01</b> 价值候选</span>
         <span><b>R06</b> 集中度复核</span>
-        <span class="panel-policy">2 项 ODRL 政策</span>
+        <span class="panel-policy">${number(DATA.stats.policies)} 项 ODRL 政策</span>
       </div>`;
   }
 
@@ -1330,7 +1345,11 @@
         });
       });
     } else {
-      const selectedIds = mode === "decision" ? new Set(GRAPH_DECISION_IDS) : null;
+      const selectedIds = mode === "decision"
+        ? new Set(GRAPH_DECISION_IDS)
+        : mode === "all"
+          ? null
+          : new Set(CORE_GRAPH_IDS);
       DATA.classes.forEach((cls) => {
         if (selectedIds && !selectedIds.has(cls.id)) return;
         const cluster = clusterForClass(cls);

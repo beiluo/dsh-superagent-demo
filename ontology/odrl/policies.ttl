@@ -25,7 +25,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
     rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.0.0" ;
+    owl:versionInfo "1.1.0" ;
     ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
 
 # ===========================================================================
@@ -37,7 +37,7 @@ ashd:odrl-profile a owl:Ontology ;
     dcterms:title "A 股投资决策 ODRL Profile"@zh ;
     dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.0.0" .
+    owl:versionInfo "1.1.0" .
 
 ashd:leftOperand-humanApproval a odrl:LeftOperand ;
     skos:prefLabel "人工批准状态"@zh, "human approval"@en ;
@@ -323,3 +323,73 @@ ashd:policy-trade-guard
     ] ;
     rdfs:label "订单意图交易护栏"@zh ;
     rdfs:comment "人工批准与合规检查是订单意图执行的双重前置条件。"@zh .
+# ===========================================================================
+# Domain expansion 1.1 — AI analysis usage policy
+# ===========================================================================
+
+ashd:asset-ai-analysis a odrl:Asset, ash:InformationObject ;
+    rdfs:label "AI 辅助分析报告"@zh, "AI-assisted analysis"@en ;
+    rdfs:comment "由 Agent 或分析模型基于本体事实生成的辅助分析，不是自动交易指令。"@zh ;
+    odrl:hasPolicy ashd:policy-ai-analysis ;
+    ash:isExample true .
+
+ashd:policy-ai-analysis
+    a odrl:Agreement, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-ai-analysis ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "AI 辅助分析使用协议"@zh, "AI-assisted analysis usage agreement"@en ;
+    dcterms:description "AI 辅助分析仅用于投资研究；禁止绕过人工审批执行交易；必须标注本体证据和规则来源。"@zh ;
+    ash:policyVersion "1.0.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-03-31"^^xsd:date ;
+    ash:isExample true ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-ai-analysis ;
+        odrl:action odrl:read, odrl:use, odrl:reproduce ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "investment-decision-support"@en
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:recipient ;
+            odrl:operator odrl:isA ;
+            odrl:rightOperand ash:QualifiedInvestor
+        ] ;
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:attribute ;
+            odrl:target ashd:asset-source-notice
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-compliance ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:target ashd:asset-audit-record
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-order-intent ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-humanApproval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand false
+        ] ;
+        odrl:remedy [
+            a odrl:Duty ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:assignee ashd:party-compliance
+        ]
+    ] ;
+    rdfs:label "AI 辅助分析使用政策"@zh ;
+    rdfs:comment "AI 输出只能作为研究辅助，不得直接转化为交易执行。"@zh .

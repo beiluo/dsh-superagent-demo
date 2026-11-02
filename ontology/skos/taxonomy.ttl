@@ -21,7 +21,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
-    owl:versionInfo "1.0.0" .
+    owl:versionInfo "1.1.0" .
 
 # ===========================================================================
 # Concept schemes
@@ -526,3 +526,406 @@ ashs:style-low-volatility a skos:Concept ;
     skos:notation "ST-LOWVOL" ;
     skos:definition "以低波动率、低回撤和防御性行业暴露为特征的风格。"@zh ;
     skos:related ashs:style-dividend .
+# ===========================================================================
+# Domain expansion 1.1 — asset classes, factors and deeper industry concepts
+# ===========================================================================
+
+ashs:scheme-asset-class a skos:ConceptScheme ;
+    skos:prefLabel "A 股资产类别（示例）"@zh, "A-Share Asset Classes (illustrative)"@en ;
+    skos:definition "用于区分股票、基金、债券、衍生品与现金等资产类别的概念方案。"@zh ;
+    skos:note "示例分类，不代表任何官方产品分类标准。"@zh ;
+    skos:hasTopConcept
+        ashs:asset-a-share,
+        ashs:asset-main-board,
+        ashs:asset-chinext,
+        ashs:asset-star,
+        ashs:asset-bse,
+        ashs:asset-etf,
+        ashs:asset-lof,
+        ashs:asset-public-fund,
+        ashs:asset-private-fund,
+        ashs:asset-money-market-fund,
+        ashs:asset-bond-fund,
+        ashs:asset-equity-fund,
+        ashs:asset-convertible-bond,
+        ashs:asset-government-bond,
+        ashs:asset-credit-bond,
+        ashs:asset-repo,
+        ashs:asset-index-future,
+        ashs:asset-commodity-future,
+        ashs:asset-stock-option,
+        ashs:asset-reit,
+        ashs:asset-cash .
+
+ashs:scheme-factor a skos:ConceptScheme ;
+    skos:prefLabel "投资因子（示例）"@zh, "Investment Factors (illustrative)"@en ;
+    skos:definition "用于描述组合收益来源与风险暴露的因子概念方案。"@zh ;
+    skos:hasTopConcept
+        ashs:factor-value,
+        ashs:factor-growth,
+        ashs:factor-quality,
+        ashs:factor-momentum,
+        ashs:factor-low-vol,
+        ashs:factor-dividend,
+        ashs:factor-size,
+        ashs:factor-profitability,
+        ashs:factor-volatility,
+        ashs:factor-liquidity,
+        ashs:factor-leverage,
+        ashs:factor-valuation .
+
+
+ashs:asset-a-share a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "A 股"@zh, "A-Share"@en ;
+    skos:notation "AC-ASHARE" ;
+    skos:definition "在中国境内证券交易所上市、以人民币交易的股票。"@zh .
+
+
+ashs:asset-main-board a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "主板"@zh, "Main Board"@en ;
+    skos:notation "AC-MAIN" ;
+    skos:definition "上交所与深交所的主板上市证券。"@zh .
+
+
+ashs:asset-chinext a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "创业板"@zh, "ChiNext"@en ;
+    skos:notation "AC-CHINEXT" ;
+    skos:definition "深交所创业板上市证券。"@zh .
+
+
+ashs:asset-star a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "科创板"@zh, "STAR Market"@en ;
+    skos:notation "AC-STAR" ;
+    skos:definition "上交所科创板上市证券。"@zh .
+
+
+ashs:asset-bse a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "北交所"@zh, "Beijing Stock Exchange"@en ;
+    skos:notation "AC-BSE" ;
+    skos:definition "北京证券交易所上市证券。"@zh .
+
+
+ashs:asset-etf a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "ETF"@zh, "ETF"@en ;
+    skos:notation "AC-ETF" ;
+    skos:definition "交易所交易基金份额。"@zh .
+
+
+ashs:asset-lof a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "LOF"@zh, "LOF"@en ;
+    skos:notation "AC-LOF" ;
+    skos:definition "上市开放式基金份额。"@zh .
+
+
+ashs:asset-public-fund a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "公募基金"@zh, "Public Fund"@en ;
+    skos:notation "AC-PUBLIC" ;
+    skos:definition "面向公众投资者发行的基金。"@zh .
+
+
+ashs:asset-private-fund a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "私募基金"@zh, "Private Fund"@en ;
+    skos:notation "AC-PRIVATE" ;
+    skos:definition "面向合格投资者非公开发行的基金。"@zh .
+
+
+ashs:asset-money-market-fund a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "货币基金"@zh, "Money Market Fund"@en ;
+    skos:notation "AC-MMF" ;
+    skos:definition "主要投资货币市场工具的基金。"@zh .
+
+
+ashs:asset-bond-fund a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "债券基金"@zh, "Bond Fund"@en ;
+    skos:notation "AC-BONDFUND" ;
+    skos:definition "主要投资固定收益资产的基金。"@zh .
+
+
+ashs:asset-equity-fund a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "股票基金"@zh, "Equity Fund"@en ;
+    skos:notation "AC-EQUITYFUND" ;
+    skos:definition "主要投资股票资产的基金。"@zh .
+
+
+ashs:asset-convertible-bond a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "可转债"@zh, "Convertible Bond"@en ;
+    skos:notation "AC-CB" ;
+    skos:definition "可转换为股票的债券。"@zh .
+
+
+ashs:asset-government-bond a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "国债"@zh, "Government Bond"@en ;
+    skos:notation "AC-GOVBOND" ;
+    skos:definition "中央政府发行的债券。"@zh .
+
+
+ashs:asset-credit-bond a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "信用债"@zh, "Credit Bond"@en ;
+    skos:notation "AC-CREDITBOND" ;
+    skos:definition "承担发行人信用风险的债券。"@zh .
+
+
+ashs:asset-repo a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "回购"@zh, "Repo"@en ;
+    skos:notation "AC-REPO" ;
+    skos:definition "以证券为担保的短期融资交易。"@zh .
+
+
+ashs:asset-index-future a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "股指期货"@zh, "Index Futures"@en ;
+    skos:notation "AC-IF" ;
+    skos:definition "以股票指数为标的的期货。"@zh .
+
+
+ashs:asset-commodity-future a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "商品期货"@zh, "Commodity Futures"@en ;
+    skos:notation "AC-CF" ;
+    skos:definition "以大宗商品为标的的期货。"@zh .
+
+
+ashs:asset-stock-option a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "股票期权"@zh, "Stock Option"@en ;
+    skos:notation "AC-OPTION" ;
+    skos:definition "以股票或 ETF 为标的的期权。"@zh .
+
+
+ashs:asset-reit a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "REITs"@zh, "REITs"@en ;
+    skos:notation "AC-REIT" ;
+    skos:definition "基础设施或不动产投资信托。"@zh .
+
+
+ashs:asset-cash a skos:Concept ;
+    skos:inScheme ashs:scheme-asset-class ;
+    skos:topConceptOf ashs:scheme-asset-class ;
+    skos:prefLabel "现金"@zh, "Cash"@en ;
+    skos:notation "AC-CASH" ;
+    skos:definition "现金及等价物。"@zh .
+
+
+ashs:factor-value a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "价值"@zh, "Value"@en ;
+    skos:notation "FCT-VALUE" ;
+    skos:definition "低估值、高安全边际的因子暴露。"@zh .
+
+
+ashs:factor-growth a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "成长"@zh, "Growth"@en ;
+    skos:notation "FCT-GROWTH" ;
+    skos:definition "收入或利润高增长的因子暴露。"@zh .
+
+
+ashs:factor-quality a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "质量"@zh, "Quality"@en ;
+    skos:notation "FCT-QUAL" ;
+    skos:definition "高 ROE、稳定现金流与低杠杆的因子暴露。"@zh .
+
+
+ashs:factor-momentum a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "动量"@zh, "Momentum"@en ;
+    skos:notation "FCT-MOM" ;
+    skos:definition "中期价格趋势与相对强弱的因子暴露。"@zh .
+
+
+ashs:factor-low-vol a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "低波"@zh, "Low Volatility"@en ;
+    skos:notation "FCT-LOWVOL" ;
+    skos:definition "低波动率与低回撤的因子暴露。"@zh .
+
+
+ashs:factor-dividend a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "红利"@zh, "Dividend"@en ;
+    skos:notation "FCT-DIV" ;
+    skos:definition "高股息与稳定分红的因子暴露。"@zh .
+
+
+ashs:factor-size a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "规模"@zh, "Size"@en ;
+    skos:notation "FCT-SIZE" ;
+    skos:definition "市值规模差异带来的收益暴露。"@zh .
+
+
+ashs:factor-profitability a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "盈利"@zh, "Profitability"@en ;
+    skos:notation "FCT-PROFIT" ;
+    skos:definition "盈利质量与盈利能力的因子暴露。"@zh .
+
+
+ashs:factor-volatility a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "波动率"@zh, "Volatility"@en ;
+    skos:notation "FCT-VOL" ;
+    skos:definition "已实现或隐含波动率的因子暴露。"@zh .
+
+
+ashs:factor-liquidity a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "流动性"@zh, "Liquidity"@en ;
+    skos:notation "FCT-LIQ" ;
+    skos:definition "成交额、换手率与冲击成本的因子暴露。"@zh .
+
+
+ashs:factor-leverage a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "杠杆"@zh, "Leverage"@en ;
+    skos:notation "FCT-LEV" ;
+    skos:definition "资产负债与融资结构的因子暴露。"@zh .
+
+
+ashs:factor-valuation a skos:Concept ;
+    skos:inScheme ashs:scheme-factor ;
+    skos:topConceptOf ashs:scheme-factor ;
+    skos:prefLabel "估值"@zh, "Valuation"@en ;
+    skos:notation "FCT-VAL" ;
+    skos:definition "PE、PB、PS 等估值水平的因子暴露。"@zh .
+
+
+ashs:industry-semiconductor-equipment a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "半导体设备"@zh, "Semiconductor Equipment"@en ;
+    skos:notation "IT-SEMI-EQ" ;
+    skos:definition "生产芯片制造、封测或检测设备的企业。"@zh ;
+    skos:broader ashs:industry-information-technology .
+
+
+ashs:industry-semiconductor-materials a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "半导体材料"@zh, "Semiconductor Materials"@en ;
+    skos:notation "IT-SEMI-MAT" ;
+    skos:definition "生产硅片、光刻胶、电子特气或靶材的企业。"@zh ;
+    skos:broader ashs:industry-information-technology .
+
+
+ashs:industry-energy-storage a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "储能电池"@zh, "Energy Storage Batteries"@en ;
+    skos:notation "ENRG-ESS" ;
+    skos:definition "生产电化学储能电芯、系统或 PCS 的企业。"@zh ;
+    skos:broader ashs:industry-new-energy .
+
+
+ashs:industry-photovoltaic a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "光伏设备"@zh, "Photovoltaics"@en ;
+    skos:notation "ENRG-PV" ;
+    skos:definition "生产硅料、硅片、电池片、组件或光伏设备的企业。"@zh ;
+    skos:broader ashs:industry-new-energy .
+
+
+ashs:industry-cxo a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "医药外包 CXO"@zh, "Pharma CXO"@en ;
+    skos:notation "HLTH-CXO" ;
+    skos:definition "提供研发、临床或生产外包服务的医药企业。"@zh ;
+    skos:broader ashs:industry-innovative-drug .
+
+
+ashs:industry-baijiu a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "白酒"@zh, "Baijiu"@en ;
+    skos:notation "CONS-BAIJIU" ;
+    skos:definition "生产白酒及配套酒类产品的企业。"@zh ;
+    skos:broader ashs:industry-food-beverage .
+
+
+ashs:industry-retail-bank a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "零售银行"@zh, "Retail Banking"@en ;
+    skos:notation "FIN-RETAIL" ;
+    skos:definition "以个人存贷、财富管理与支付业务为主的银行。"@zh ;
+    skos:broader ashs:industry-bank .
+
+
+ashs:industry-securities-brokerage a skos:Concept ;
+    skos:inScheme ashs:scheme-industry ;
+    skos:prefLabel "证券经纪"@zh, "Securities Brokerage"@en ;
+    skos:notation "FIN-BROKER" ;
+    skos:definition "以证券经纪、两融与财富管理业务为主的证券公司。"@zh ;
+    skos:broader ashs:industry-securities .
+
+ashs:industry-information-technology skos:narrower ashs:industry-semiconductor-equipment .
+
+ashs:industry-information-technology skos:narrower ashs:industry-semiconductor-materials .
+
+ashs:industry-new-energy skos:narrower ashs:industry-energy-storage .
+
+ashs:industry-new-energy skos:narrower ashs:industry-photovoltaic .
+
+ashs:industry-innovative-drug skos:narrower ashs:industry-cxo .
+
+ashs:industry-food-beverage skos:narrower ashs:industry-baijiu .
+
+ashs:industry-bank skos:narrower ashs:industry-retail-bank .
+
+ashs:industry-securities skos:narrower ashs:industry-securities-brokerage .
+
+ashs:factor-value skos:related ashs:style-value .
+
+ashs:factor-growth skos:related ashs:style-growth .
+
+ashs:factor-quality skos:related ashs:style-quality .
+
+ashs:factor-momentum skos:related ashs:style-momentum .
+
+ashs:factor-low-vol skos:related ashs:style-low-volatility .
+
+ashs:factor-dividend skos:related ashs:style-dividend .

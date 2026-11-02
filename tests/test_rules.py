@@ -100,15 +100,15 @@ def test_company_aliases(store):
 
 def test_rule_catalog_and_policies(store):
     rules = store.rules()
-    assert len(rules) == 11
-    assert {item["ruleId"] for item in rules} == {f"R{i:02d}" for i in range(1, 12)}
+    assert len(rules) >= 15
+    assert {f"R{i:02d}" for i in range(1, 12)} <= {item["ruleId"] for item in rules}
     policies = store.policies()
-    assert len(policies) == 3
-    assert {item["uid"] for item in policies} == {
+    assert len(policies) >= 4
+    assert {
         "policy-research-data",
         "policy-decision-use",
         "policy-trade-guard",
-    }
+    } <= {item["uid"] for item in policies}
     for policy in policies:
         assert policy["permissions"]
         assert policy["prohibitions"]

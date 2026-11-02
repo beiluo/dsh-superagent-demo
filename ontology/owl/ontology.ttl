@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.0.0" ;
+    owl:versionInfo "1.1.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
@@ -499,3 +499,250 @@ ash:competency-question-10 a owl:NamedIndividual, ash:CompetencyQuestion ;
     rdfs:label "CQ10 哪些投资决策缺少风险评估，需要完整性修复？"@zh ;
     ash:competencyQuestion "哪些投资决策缺少风险评估，需要完整性修复？"@zh ;
     ash:isExample true .
+# ===========================================================================
+# Domain expansion 1.1 — OWL restrictions, keys, characteristics
+# ===========================================================================
+
+ash:Fund rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:managedBy ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:FundCompany ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:fundCode ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasFundFee ;
+      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:FundFee ] .
+
+ash:FundShare rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:netAssetValue ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:ETF rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:tracksIndex ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Index ] .
+
+ash:Bond rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:bondCode ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:couponRate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:maturityDate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:ConvertibleBond rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:underlyingAsset ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:AShare ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:conversionPremium ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:FuturesContract rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:underlyingAsset ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Entity ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:hasContractSpec ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:ContractSpecification ] .
+
+ash:Order rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:orderFor ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Security ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:placedBy ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Investor ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:orderId ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:orderSide ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:orderQuantity ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:orderPrice ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:orderStatus ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:Trade rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:generatedFromOrder ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:Order ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:executionPrice ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:executionQuantity ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:tradeDate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:Approval rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:approves ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:InvestmentDecision ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:approvedBy ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:MarketParticipant ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:approvalStatus ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:AnalystEstimate rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:estimateValue ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:analystTargetPrice ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:estimateDate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:RiskModel rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:hasModelVersion ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass ash:ModelVersion ] .
+
+ash:PortfolioConstraint rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:trackingErrorLimit ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:Shareholder rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:ownershipRatio ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:ESGRating rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:esgScore ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:DataLineage rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:dataVersion ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:fundCode a owl:FunctionalProperty .
+
+ash:fundType a owl:FunctionalProperty .
+
+ash:managementFee a owl:FunctionalProperty .
+
+ash:netAssetValue a owl:FunctionalProperty .
+
+ash:trackingError a owl:FunctionalProperty .
+
+ash:premiumDiscount a owl:FunctionalProperty .
+
+ash:netFlowPct a owl:FunctionalProperty .
+
+ash:flowAmount a owl:FunctionalProperty .
+
+ash:flowPeriod a owl:FunctionalProperty .
+
+ash:bondCode a owl:FunctionalProperty .
+
+ash:couponRate a owl:FunctionalProperty .
+
+ash:maturityDate a owl:FunctionalProperty .
+
+ash:creditRating a owl:FunctionalProperty .
+
+ash:conversionPremium a owl:FunctionalProperty .
+
+ash:yieldToMaturity a owl:FunctionalProperty .
+
+ash:contractCode a owl:FunctionalProperty .
+
+ash:multiplier a owl:FunctionalProperty .
+
+ash:strikePrice a owl:FunctionalProperty .
+
+ash:expiryDate a owl:FunctionalProperty .
+
+ash:marginRatio a owl:FunctionalProperty .
+
+ash:tradingStatus a owl:FunctionalProperty .
+
+ash:orderId a owl:FunctionalProperty .
+
+ash:orderSide a owl:FunctionalProperty .
+
+ash:orderQuantity a owl:FunctionalProperty .
+
+ash:orderPrice a owl:FunctionalProperty .
+
+ash:orderStatus a owl:FunctionalProperty .
+
+ash:executionPrice a owl:FunctionalProperty .
+
+ash:executionQuantity a owl:FunctionalProperty .
+
+ash:tradeDate a owl:FunctionalProperty .
+
+ash:settlementDate a owl:FunctionalProperty .
+
+ash:ownershipRatio a owl:FunctionalProperty .
+
+ash:repurchaseAmount a owl:FunctionalProperty .
+
+ash:offeringSize a owl:FunctionalProperty .
+
+ash:lockupEndDate a owl:FunctionalProperty .
+
+ash:lineItemCode a owl:FunctionalProperty .
+
+ash:lineItemValue a owl:FunctionalProperty .
+
+ash:segmentName a owl:FunctionalProperty .
+
+ash:estimateValue a owl:FunctionalProperty .
+
+ash:analystTargetPrice a owl:FunctionalProperty .
+
+ash:estimateDate a owl:FunctionalProperty .
+
+ash:ratingCode a owl:FunctionalProperty .
+
+ash:factorValue a owl:FunctionalProperty .
+
+ash:trackingErrorLimit a owl:FunctionalProperty .
+
+ash:backtestPeriod a owl:FunctionalProperty .
+
+ash:costRate a owl:FunctionalProperty .
+
+ash:esgScore a owl:FunctionalProperty .
+
+ash:dataVersion a owl:FunctionalProperty .
+
+ash:approvalStatus a owl:FunctionalProperty .
+
+ash:modelVersionCode a owl:FunctionalProperty .
+
+
+ash:hasApproval owl:inverseOf ash:approves .
+ash:approves owl:inverseOf ash:hasApproval .
+
+ash:Fund owl:hasKey ( ash:fundCode ) .
+ash:Bond owl:hasKey ( ash:bondCode ) .
+ash:Order owl:hasKey ( ash:orderId ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:Fund ash:Repo ash:Derivative ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:FundShare ash:Bond ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( ash:Order ash:Trade ) .
