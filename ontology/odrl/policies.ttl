@@ -1,0 +1,325 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — ODRL policy layer
+# ---------------------------------------------------------------------------
+# ODRL Information Model 2.2 and ODRL Vocabulary 2.2. Policies describe data
+# usage, decision consumption and the human-approval guard around order intent.
+# Custom left operands are declared as an ODRL profile extension.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix ashd:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/odrl>
+    a owl:Ontology ;
+    owl:imports <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/owl> ;
+    dcterms:title "A-Share Investment Decision Ontology — ODRL policies"@en ;
+    dcterms:title "A 股投资决策本体 — ODRL 政策层"@zh ;
+    dcterms:description "ODRL policies for research-data use, decision consumption and the human-approval trading guard."@en ;
+    dcterms:description "覆盖研究数据使用、决策消费与人工批准交易护栏的 ODRL 政策。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
+    rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
+    owl:versionInfo "1.0.0" ;
+    ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
+
+# ===========================================================================
+# ODRL profile and custom left operands
+# ===========================================================================
+
+ashd:odrl-profile a owl:Ontology ;
+    dcterms:title "A-Share Decision ODRL Profile"@en ;
+    dcterms:title "A 股投资决策 ODRL Profile"@zh ;
+    dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
+    dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
+    owl:versionInfo "1.0.0" .
+
+ashd:leftOperand-humanApproval a odrl:LeftOperand ;
+    skos:prefLabel "人工批准状态"@zh, "human approval"@en ;
+    skos:definition "订单意图是否已获得授权人员批准；取值 true/false。"@zh ;
+    rdfs:isDefinedBy ashd:odrl-profile .
+
+ashd:leftOperand-compliancePassed a odrl:LeftOperand ;
+    skos:prefLabel "合规检查通过"@zh, "compliance passed"@en ;
+    skos:definition "决策是否通过 ODRL 政策与适当性检查；取值 true/false。"@zh ;
+    rdfs:isDefinedBy ashd:odrl-profile .
+
+# ===========================================================================
+# Assets and parties
+# ===========================================================================
+
+ashd:asset-market-data a odrl:Asset, ash:InformationObject ;
+    rdfs:label "A 股行情与财务数据包"@zh, "A-share market and financial data package"@en ;
+    rdfs:comment "包含行情、估值、财务报告与宏观指标的版本化数据产品。"@zh ;
+    odrl:hasPolicy ashd:policy-research-data ;
+    ash:isExample true .
+
+ashd:asset-decision-report a odrl:Asset, ash:InformationObject ;
+    rdfs:label "投资决策报告"@zh, "Investment decision report"@en ;
+    rdfs:comment "由决策服务生成、包含建议、目标价、止损价与理由链的报告。"@zh ;
+    odrl:hasPolicy ashd:policy-decision-use ;
+    ash:isExample true .
+
+ashd:asset-order-intent a odrl:Asset, ash:InformationObject ;
+    rdfs:label "订单意图"@zh, "Order intent"@en ;
+    rdfs:comment "等待人工批准的订单意图，不是已提交交易所的委托。"@zh ;
+    odrl:hasPolicy ashd:policy-trade-guard ;
+    ash:isExample true .
+
+ashd:asset-source-notice a odrl:Asset ;
+    rdfs:label "数据来源声明"@zh, "Data source notice"@en ;
+    rdfs:comment "数据使用方必须保留与展示的来源声明。"@zh ;
+    ash:isExample true .
+
+ashd:asset-audit-record a odrl:Asset, ash:AuditRecord ;
+    rdfs:label "决策审计记录"@zh, "Decision audit record"@en ;
+    rdfs:comment "记录输入版本、规则版本、模型版本与人工批准动作。"@zh ;
+    ash:isExample true .
+
+ashd:party-data-provider a odrl:Party, ash:DataProvider ;
+    rdfs:label "数据提供方（示例）"@zh, "Data Provider (sample)"@en ;
+    ash:isExample true .
+
+ashd:party-investment-service a odrl:Party, ash:ServiceProvider ;
+    rdfs:label "投资决策服务（示例）"@zh, "Investment Decision Service (sample)"@en ;
+    ash:isExample true .
+
+ashd:party-investor a odrl:Party, ash:QualifiedInvestor ;
+    rdfs:label "合格投资者（示例）"@zh, "Qualified Investor (sample)"@en ;
+    ash:isExample true .
+
+ashd:party-qualified-investor a odrl:Party, ash:QualifiedInvestor ;
+    rdfs:label "合格投资者类别（示例）"@zh, "Qualified Investor class (sample)"@en ;
+    ash:isExample true .
+
+ashd:party-compliance a odrl:Party, ash:MarketParticipant ;
+    rdfs:label "合规官（示例）"@zh, "Compliance Officer (sample)"@en ;
+    ash:isExample true .
+
+# ===========================================================================
+# Policy 1 — research data use
+# ===========================================================================
+
+ashd:policy-research-data
+    a odrl:Set, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-research-data ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "A 股研究数据使用政策"@zh, "A-share research data usage policy"@en ;
+    dcterms:description "允许投资决策服务在内部研究目的下读取、派生和聚合行情与财务数据；禁止对外分发和商业化。"@zh ;
+    ash:policyVersion "1.0.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-03-31"^^xsd:date ;
+    ash:isExample true ;
+    ash:exampleNote "示例政策，不构成真实数据授权合同。"@zh ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-data-provider ;
+        odrl:assignee ashd:party-investment-service ;
+        odrl:target ashd:asset-market-data ;
+        odrl:action odrl:read, odrl:derive, odrl:aggregate ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "research"@en
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:spatial ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "CN"@en
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:dateTime ;
+            odrl:operator odrl:lt ;
+            odrl:rightOperand "2027-01-01T00:00:00Z"^^xsd:dateTime
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:count ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "12"^^xsd:integer
+        ] ;
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:attribute ;
+            odrl:target ashd:asset-source-notice ;
+            odrl:consequence [
+                a odrl:Duty ;
+                odrl:action odrl:delete ;
+                odrl:target ashd:asset-market-data
+            ]
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:delete ;
+            odrl:target ashd:asset-market-data ;
+            odrl:constraint [
+                a odrl:Constraint ;
+                odrl:leftOperand odrl:dateTime ;
+                odrl:operator odrl:lt ;
+                odrl:rightOperand "2027-06-30T00:00:00Z"^^xsd:dateTime
+            ]
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-data-provider ;
+        odrl:assignee ashd:party-investment-service ;
+        odrl:target ashd:asset-market-data ;
+        odrl:action odrl:distribute, odrl:commercialize ;
+        odrl:remedy [
+            a odrl:Duty ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:assignee ashd:party-compliance
+        ]
+    ] ;
+    rdfs:label "研究数据使用政策"@zh ;
+    rdfs:comment "数据最小必要、目的限定、地域限定、期限限定与来源标注。"@zh .
+
+# ===========================================================================
+# Policy 2 — decision report consumption
+# ===========================================================================
+
+ashd:policy-decision-use
+    a odrl:Agreement, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-decision-use ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "投资决策报告使用协议"@zh, "Investment decision report usage agreement"@en ;
+    dcterms:description "合格投资者可在投资决策支持目的下使用决策报告；禁止向非合格投资者分发或用于自动化交易。"@zh ;
+    ash:policyVersion "1.0.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-03-31"^^xsd:date ;
+    ash:isExample true ;
+    ash:exampleNote "示例政策，不构成真实客户协议。"@zh ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-decision-report ;
+        odrl:action odrl:read, odrl:use, odrl:reproduce ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "investment-decision-support"@en
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:recipient ;
+            odrl:operator odrl:isA ;
+            odrl:rightOperand ash:QualifiedInvestor
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:dateTime ;
+            odrl:operator odrl:lt ;
+            odrl:rightOperand "2027-03-31T00:00:00Z"^^xsd:dateTime
+        ] ;
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:inform ;
+            odrl:target ashd:asset-decision-report
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investor ;
+            odrl:action odrl:obtainConsent ;
+            odrl:target ashd:asset-decision-report
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:attribute ;
+            odrl:target ashd:asset-source-notice
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-decision-report ;
+        odrl:action odrl:distribute, odrl:commercialize ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:recipient ;
+            odrl:operator odrl:isNoneOf ;
+            odrl:rightOperand ( ashd:party-qualified-investor )
+        ] ;
+        odrl:remedy [
+            a odrl:Duty ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:assignee ashd:party-compliance
+        ]
+    ] ;
+    rdfs:label "决策报告使用协议"@zh ;
+    rdfs:comment "决策报告仅面向合格投资者，且只能用于投资决策支持目的。"@zh .
+
+# ===========================================================================
+# Policy 3 — trade guard
+# ===========================================================================
+
+ashd:policy-trade-guard
+    a odrl:Set, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-trade-guard ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "订单意图交易护栏"@zh, "Order-intent trading guard"@en ;
+    dcterms:description "订单意图只有在合规检查通过且获得人工批准后才可执行；禁止自动执行未经批准的订单意图。"@zh ;
+    ash:policyVersion "1.0.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-03-31"^^xsd:date ;
+    ash:isExample true ;
+    ash:exampleNote "示例政策；系统不连接任何真实交易通道。"@zh ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-order-intent ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-humanApproval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand true
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-compliancePassed ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand true
+        ] ;
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:inform ;
+            odrl:target ashd:asset-audit-record
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-compliance ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:target ashd:asset-audit-record
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-order-intent ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-humanApproval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand false
+        ] ;
+        odrl:remedy [
+            a odrl:Duty ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:assignee ashd:party-compliance
+        ]
+    ] ;
+    rdfs:label "订单意图交易护栏"@zh ;
+    rdfs:comment "人工批准与合规检查是订单意图执行的双重前置条件。"@zh .

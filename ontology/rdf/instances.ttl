@@ -1,0 +1,720 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — RDF instance layer
+# ---------------------------------------------------------------------------
+# All individuals below are synthetic examples created for ontology design,
+# rule testing and page rendering. They are not real securities, prices,
+# financial statements or investment advice.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix ashs:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#> .
+@prefix ashd:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdf>
+    a owl:Ontology ;
+    dcterms:title "A-Share Investment Decision Ontology — RDF instance graph"@en ;
+    dcterms:title "A 股投资决策本体 — RDF 实例层"@zh ;
+    dcterms:description "Synthetic RDF individuals for companies, securities, reports, quotes, valuations, decisions and portfolios."@en ;
+    dcterms:description "用于公司、证券、财报、行情、估值、决策与组合的合成 RDF 实例。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
+    dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
+    dcterms:source "Synthetic example data generated for this ontology design."@en ;
+    owl:versionInfo "1.0.0" .
+
+# ===========================================================================
+# Market structure
+# ===========================================================================
+
+ashd:exchange-sse a owl:NamedIndividual, ash:Exchange ;
+    ash:exchangeCode "SSE" ;
+    rdfs:label "上海证券交易所"@zh, "Shanghai Stock Exchange"@en ;
+    rdfs:comment "示例中的上交所市场结构实例。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "合成示例，不代表真实交易所数据。"@zh .
+
+ashd:exchange-szse a owl:NamedIndividual, ash:Exchange ;
+    ash:exchangeCode "SZSE" ;
+    rdfs:label "深圳证券交易所"@zh, "Shenzhen Stock Exchange"@en ;
+    rdfs:comment "示例中的深交所市场结构实例。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "合成示例，不代表真实交易所数据。"@zh .
+
+ashd:exchange-bse a owl:NamedIndividual, ash:Exchange ;
+    ash:exchangeCode "BSE" ;
+    rdfs:label "北京证券交易所"@zh, "Beijing Stock Exchange"@en ;
+    rdfs:comment "示例中的北交所市场结构实例。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "合成示例，不代表真实交易所数据。"@zh .
+
+ashd:segment-main a owl:NamedIndividual, ash:MarketSegment ;
+    rdfs:label "主板"@zh, "Main Board"@en ;
+    rdfs:comment "上交所与深交所的主板板块。"@zh ;
+    ash:isExample true .
+
+ashd:segment-chinext a owl:NamedIndividual, ash:MarketSegment ;
+    rdfs:label "创业板"@zh, "ChiNext"@en ;
+    rdfs:comment "深交所创业板板块。"@zh ;
+    ash:isExample true .
+
+ashd:segment-star a owl:NamedIndividual, ash:MarketSegment ;
+    rdfs:label "科创板"@zh, "STAR Market"@en ;
+    rdfs:comment "上交所科创板板块。"@zh ;
+    ash:isExample true .
+
+ashd:segment-bse a owl:NamedIndividual, ash:MarketSegment ;
+    rdfs:label "北交所"@zh, "Beijing Stock Exchange Board"@en ;
+    rdfs:comment "北京证券交易所板块。"@zh ;
+    ash:isExample true .
+
+ashd:index-csi300 a owl:NamedIndividual, ash:Index ;
+    rdfs:label "沪深 300"@zh, "CSI 300"@en ;
+    rdfs:comment "示例组合的业绩比较基准。"@zh ;
+    ash:isExample true .
+
+ashd:source-sse a owl:NamedIndividual, ash:DataSource ;
+    rdfs:label "交易所公开行情"@zh, "Exchange public market data"@en ;
+    rdfs:comment "交易所披露的公开行情与证券基本信息。"@zh ;
+    ash:isExample true .
+
+ashd:source-annual-report a owl:NamedIndividual, ash:DataSource ;
+    rdfs:label "公司年度报告"@zh, "Company annual report"@en ;
+    rdfs:comment "上市公司依法披露的年度报告。"@zh ;
+    ash:isExample true .
+
+ashd:source-industry-research a owl:NamedIndividual, ash:DataSource ;
+    rdfs:label "行业研究笔记"@zh, "Industry research note"@en ;
+    rdfs:comment "示例中的行业研究材料，不代表任何机构观点。"@zh ;
+    ash:isExample true .
+
+# ===========================================================================
+# Companies and securities
+# ===========================================================================
+
+ashd:company-huachen a owl:NamedIndividual, ash:ListedCompany ;
+    ash:companyName "华辰智造股份有限公司" ;
+    ash:companyCode "HC001" ;
+    ash:isST false ;
+    ash:delistingRisk false ;
+    ash:primaryIndustry ashs:industry-advanced-manufacturing ;
+    ash:hasThemeExposure ashs:theme-ai, ashs:theme-low-altitude-economy, ashs:theme-semiconductor-localization ;
+    ash:hasSecurity ashd:sec-huachen-a ;
+    ash:hasFinancialReport ashd:report-huachen-2025 ;
+    ash:hasCorporateEvent ashd:event-huachen-dividend ;
+    ash:hasDisclosure ashd:disclosure-huachen-annual ;
+    rdfs:label "华辰智造"@zh, "Huachen Intelligent Manufacturing"@en ;
+    rdfs:comment "工业自动化与智能装备领域的合成示例公司。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "公司名称、代码和全部财务数据均为本体演示用合成数据。"@zh .
+
+ashd:company-ningyuan a owl:NamedIndividual, ash:ListedCompany ;
+    ash:companyName "宁源新能源股份有限公司" ;
+    ash:companyCode "NY002" ;
+    ash:isST false ;
+    ash:delistingRisk false ;
+    ash:primaryIndustry ashs:industry-new-energy ;
+    ash:hasThemeExposure ashs:theme-new-energy-vehicle, ashs:theme-energy-storage ;
+    ash:hasSecurity ashd:sec-ningyuan-a ;
+    ash:hasFinancialReport ashd:report-ningyuan-2025 ;
+    rdfs:label "宁源新能源"@zh, "Ningyuan New Energy"@en ;
+    rdfs:comment "动力电池与储能系统领域的合成示例公司。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "公司名称、代码和全部财务数据均为本体演示用合成数据。"@zh .
+
+ashd:company-jingkang a owl:NamedIndividual, ash:ListedCompany ;
+    ash:companyName "景康生物股份有限公司" ;
+    ash:companyCode "JK003" ;
+    ash:isST false ;
+    ash:delistingRisk false ;
+    ash:primaryIndustry ashs:industry-innovative-drug ;
+    ash:hasThemeExposure ashs:theme-innovative-drug-global ;
+    ash:hasSecurity ashd:sec-jingkang-a ;
+    ash:hasFinancialReport ashd:report-jingkang-2025 ;
+    rdfs:label "景康生物"@zh, "Jingkang Biotech"@en ;
+    rdfs:comment "创新药研发与商业化领域的合成示例公司。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "公司名称、代码和全部财务数据均为本体演示用合成数据。"@zh .
+
+ashd:company-st-demo a owl:NamedIndividual, ash:ListedCompany ;
+    ash:companyName "示例风险警示股份有限公司" ;
+    ash:companyCode "ST004" ;
+    ash:isST true ;
+    ash:delistingRisk true ;
+    ash:primaryIndustry ashs:industry-materials ;
+    ash:hasSecurity ashd:sec-st-demo ;
+    ash:hasFinancialReport ashd:report-st-demo-2025 ;
+    rdfs:label "示例 ST 公司"@zh, "Sample ST Company"@en ;
+    rdfs:comment "用于演示 ST 与退市风险排除规则的合成示例公司。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "仅用于规则测试，不代表任何真实上市公司。"@zh .
+
+ashd:sec-huachen-a a owl:NamedIndividual, ash:AShare ;
+    ash:securityName "华辰智造" ;
+    ash:securityCode "600000" ;
+    ash:isin "CN0000000001" ;
+    ash:listingDate "2010-06-18"^^xsd:date ;
+    ash:listedOn ashd:exchange-sse ;
+    ash:tradesOn ashd:segment-main ;
+    ash:issuedBy ashd:company-huachen ;
+    ash:isSuspended false ;
+    ash:isRestricted false ;
+    ash:hasMarketQuote ashd:quote-huachen-20261030 ;
+    ash:hasValuation ashd:val-huachen-20261030 ;
+    rdfs:label "华辰智造 A"@zh, "Huachen A"@en ;
+    rdfs:comment "合成 A 股证券实例，代码仅用于演示。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "证券代码、价格和估值均为合成数据。"@zh .
+
+ashd:sec-ningyuan-a a owl:NamedIndividual, ash:AShare ;
+    ash:securityName "宁源新能源" ;
+    ash:securityCode "300000" ;
+    ash:isin "CN0000000002" ;
+    ash:listingDate "2018-09-12"^^xsd:date ;
+    ash:listedOn ashd:exchange-szse ;
+    ash:tradesOn ashd:segment-chinext ;
+    ash:issuedBy ashd:company-ningyuan ;
+    ash:isSuspended false ;
+    ash:isRestricted false ;
+    ash:hasMarketQuote ashd:quote-ningyuan-20261030 ;
+    ash:hasValuation ashd:val-ningyuan-20261030 ;
+    rdfs:label "宁源新能源 A"@zh, "Ningyuan A"@en ;
+    rdfs:comment "合成 A 股证券实例，代码仅用于演示。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "证券代码、价格和估值均为合成数据。"@zh .
+
+ashd:sec-jingkang-a a owl:NamedIndividual, ash:AShare ;
+    ash:securityName "景康生物" ;
+    ash:securityCode "688000" ;
+    ash:isin "CN0000000003" ;
+    ash:listingDate "2021-03-05"^^xsd:date ;
+    ash:listedOn ashd:exchange-sse ;
+    ash:tradesOn ashd:segment-star ;
+    ash:issuedBy ashd:company-jingkang ;
+    ash:isSuspended false ;
+    ash:isRestricted false ;
+    ash:hasMarketQuote ashd:quote-jingkang-20261030 ;
+    ash:hasValuation ashd:val-jingkang-20261030 ;
+    rdfs:label "景康生物 A"@zh, "Jingkang A"@en ;
+    rdfs:comment "合成 A 股证券实例，代码仅用于演示。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "证券代码、价格和估值均为合成数据。"@zh .
+
+ashd:sec-st-demo a owl:NamedIndividual, ash:AShare ;
+    ash:securityName "示例 ST" ;
+    ash:securityCode "600001" ;
+    ash:listingDate "2005-01-04"^^xsd:date ;
+    ash:listedOn ashd:exchange-sse ;
+    ash:tradesOn ashd:segment-main ;
+    ash:issuedBy ashd:company-st-demo ;
+    ash:isSuspended false ;
+    ash:isRestricted true ;
+    rdfs:label "示例 ST A"@zh, "Sample ST A"@en ;
+    rdfs:comment "用于规则测试的合成证券。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "仅用于规则测试。"@zh .
+
+# ===========================================================================
+# Financial reports
+# ===========================================================================
+
+ashd:report-huachen-2025 a owl:NamedIndividual, ash:AnnualReport ;
+    ash:reportsOn ashd:company-huachen ;
+    ash:reportPeriod "2025"^^xsd:gYear ;
+    ash:fiscalYearEnd "2025-12-31"^^xsd:date ;
+    ash:revenue 18600000000 ;
+    ash:netProfit 2340000000 ;
+    ash:roe 18.2 ;
+    ash:roa 9.4 ;
+    ash:debtRatio 46.8 ;
+    ash:interestCoverage 8.4 ;
+    ash:operatingCashFlow 2900000000 ;
+    ash:revenueGrowth 21.5 ;
+    ash:profitGrowth 24.8 ;
+    ash:eps 1.82 ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "华辰智造 2025 年年报"@zh, "Huachen 2025 Annual Report"@en ;
+    ash:isExample true .
+
+ashd:report-ningyuan-2025 a owl:NamedIndividual, ash:AnnualReport ;
+    ash:reportsOn ashd:company-ningyuan ;
+    ash:reportPeriod "2025"^^xsd:gYear ;
+    ash:fiscalYearEnd "2025-12-31"^^xsd:date ;
+    ash:revenue 32400000000 ;
+    ash:netProfit 3100000000 ;
+    ash:roe 16.4 ;
+    ash:roa 6.8 ;
+    ash:debtRatio 64.2 ;
+    ash:interestCoverage 4.1 ;
+    ash:operatingCashFlow 4100000000 ;
+    ash:revenueGrowth 38.2 ;
+    ash:profitGrowth 31.5 ;
+    ash:eps 2.45 ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "宁源新能源 2025 年年报"@zh, "Ningyuan 2025 Annual Report"@en ;
+    ash:isExample true .
+
+ashd:report-jingkang-2025 a owl:NamedIndividual, ash:AnnualReport ;
+    ash:reportsOn ashd:company-jingkang ;
+    ash:reportPeriod "2025"^^xsd:gYear ;
+    ash:fiscalYearEnd "2025-12-31"^^xsd:date ;
+    ash:revenue 4200000000 ;
+    ash:netProfit 620000000 ;
+    ash:roe 11.8 ;
+    ash:roa 5.1 ;
+    ash:debtRatio 38.5 ;
+    ash:interestCoverage 6.2 ;
+    ash:operatingCashFlow 780000000 ;
+    ash:revenueGrowth 18.4 ;
+    ash:profitGrowth 12.1 ;
+    ash:eps 0.86 ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "景康生物 2025 年年报"@zh, "Jingkang 2025 Annual Report"@en ;
+    ash:isExample true .
+
+ashd:report-st-demo-2025 a owl:NamedIndividual, ash:AnnualReport ;
+    ash:reportsOn ashd:company-st-demo ;
+    ash:reportPeriod "2025"^^xsd:gYear ;
+    ash:fiscalYearEnd "2025-12-31"^^xsd:date ;
+    ash:revenue 1800000000 ;
+    ash:netProfit -240000000 ;
+    ash:roe -12.6 ;
+    ash:roa -4.2 ;
+    ash:debtRatio 78.4 ;
+    ash:interestCoverage 0.8 ;
+    ash:operatingCashFlow -120000000 ;
+    ash:revenueGrowth -18.2 ;
+    ash:profitGrowth -35.6 ;
+    ash:eps -0.31 ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "示例 ST 公司 2025 年年报"@zh, "Sample ST 2025 Annual Report"@en ;
+    ash:isExample true .
+
+# ===========================================================================
+# Market quotes and valuations
+# ===========================================================================
+
+ashd:quote-huachen-20261030 a owl:NamedIndividual, ash:MarketQuote ;
+    ash:quoteOf ashd:sec-huachen-a ;
+    ash:lastPrice 36.80 ;
+    ash:changePct 1.94 ;
+    ash:volume 18400000 ;
+    ash:turnoverRate 1.80 ;
+    ash:marketCap 47200000000 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "华辰智造 2026-10-30 行情"@zh ;
+    ash:isExample true .
+
+ashd:quote-ningyuan-20261030 a owl:NamedIndividual, ash:MarketQuote ;
+    ash:quoteOf ashd:sec-ningyuan-a ;
+    ash:lastPrice 52.60 ;
+    ash:changePct -0.72 ;
+    ash:volume 26300000 ;
+    ash:turnoverRate 2.40 ;
+    ash:marketCap 63100000000 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "宁源新能源 2026-10-30 行情"@zh ;
+    ash:isExample true .
+
+ashd:quote-jingkang-20261030 a owl:NamedIndividual, ash:MarketQuote ;
+    ash:quoteOf ashd:sec-jingkang-a ;
+    ash:lastPrice 28.40 ;
+    ash:changePct 0.35 ;
+    ash:volume 6800000 ;
+    ash:turnoverRate 0.46 ;
+    ash:marketCap 19800000000 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "景康生物 2026-10-30 行情"@zh ;
+    ash:isExample true .
+
+ashd:val-huachen-20261030 a owl:NamedIndividual, ash:Valuation ;
+    ash:valuationOf ashd:sec-huachen-a ;
+    ash:peTtm 19.8 ;
+    ash:pb 3.2 ;
+    ash:psTtm 2.5 ;
+    ash:dividendYield 1.4 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成估值（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "华辰智造 2026-10-30 估值"@zh ;
+    ash:isExample true .
+
+ashd:val-ningyuan-20261030 a owl:NamedIndividual, ash:Valuation ;
+    ash:valuationOf ashd:sec-ningyuan-a ;
+    ash:peTtm 34.5 ;
+    ash:pb 5.6 ;
+    ash:psTtm 1.9 ;
+    ash:dividendYield 0.6 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成估值（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "宁源新能源 2026-10-30 估值"@zh ;
+    ash:isExample true .
+
+ashd:val-jingkang-20261030 a owl:NamedIndividual, ash:Valuation ;
+    ash:valuationOf ashd:sec-jingkang-a ;
+    ash:peTtm 45.2 ;
+    ash:pb 4.1 ;
+    ash:psTtm 4.7 ;
+    ash:dividendYield 0.2 ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成估值（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "景康生物 2026-10-30 估值"@zh ;
+    ash:isExample true .
+
+# ===========================================================================
+# Macro context
+# ===========================================================================
+
+ashd:macro-lpr-1y-2026-10 a owl:NamedIndividual, ash:MacroIndicator ;
+    ash:indicatorCode "LPR_1Y" ;
+    ash:indicatorValue 2.90 ;
+    ash:indicatorPeriod "2026-10"^^xsd:gYearMonth ;
+    ash:indicatorUnit "%" ;
+    ash:dataAsOf "2026-10-20"^^xsd:date ;
+    rdfs:label "1 年期 LPR"@zh, "1-year LPR"@en ;
+    rdfs:comment "示例宏观数据，非真实值。"@zh ;
+    ash:isExample true .
+
+ashd:macro-pmi-2026-10 a owl:NamedIndividual, ash:MacroIndicator ;
+    ash:indicatorCode "PMI" ;
+    ash:indicatorValue 50.20 ;
+    ash:indicatorPeriod "2026-10"^^xsd:gYearMonth ;
+    ash:indicatorUnit "点" ;
+    ash:dataAsOf "2026-10-31"^^xsd:date ;
+    rdfs:label "制造业 PMI"@zh, "Manufacturing PMI"@en ;
+    rdfs:comment "示例宏观数据，非真实值。"@zh ;
+    ash:isExample true .
+
+ashd:macro-cpi-2026-09 a owl:NamedIndividual, ash:MacroIndicator ;
+    ash:indicatorCode "CPI" ;
+    ash:indicatorValue 0.40 ;
+    ash:indicatorPeriod "2026-09"^^xsd:gYearMonth ;
+    ash:indicatorUnit "%" ;
+    ash:dataAsOf "2026-10-15"^^xsd:date ;
+    rdfs:label "居民消费价格指数同比"@zh, "CPI year-on-year"@en ;
+    rdfs:comment "示例宏观数据，非真实值。"@zh ;
+    ash:isExample true .
+
+# ===========================================================================
+# Evidence and disclosures
+# ===========================================================================
+
+ashd:disclosure-huachen-annual a owl:NamedIndividual, ash:Disclosure ;
+    rdfs:label "华辰智造 2025 年年度报告公告"@zh ;
+    rdfs:comment "用于演示信息披露与证据链的合成公告。"@zh ;
+    ash:dataAsOf "2026-04-20"^^xsd:date ;
+    ash:dataSource "合成公告（示例）" ;
+    ash:isExample true .
+
+ashd:evidence-huachen-report a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "华辰智造 2025 年财务报告"@zh ;
+    rdfs:comment "ROE、净利润、负债率与现金流数据来源。"@zh ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:hasSource ashd:source-annual-report ;
+    ash:isExample true .
+
+ashd:evidence-huachen-quote a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "华辰智造 2026-10-30 收盘行情"@zh ;
+    rdfs:comment "目标价、止损价与估值比较的行情依据。"@zh ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    ash:isExample true .
+
+ashd:evidence-huachen-industry a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "工业自动化行业景气跟踪"@zh ;
+    rdfs:comment "用于说明需求端假设的合成行业研究笔记。"@zh ;
+    ash:dataAsOf "2026-10-15"^^xsd:date ;
+    ash:dataSource "合成行业研究（示例）" ;
+    ash:hasSource ashd:source-industry-research ;
+    ash:isExample true .
+
+# ===========================================================================
+# Risk factors and assessments
+# ===========================================================================
+
+ashd:factor-huachen-supply a owl:NamedIndividual, ash:RiskFactor ;
+    rdfs:label "供应链集中"@zh ;
+    rdfs:comment "核心控制器与精密减速器供应商集中度较高。"@zh ;
+    ash:isExample true .
+
+ashd:factor-huachen-customer a owl:NamedIndividual, ash:RiskFactor ;
+    rdfs:label "大客户依赖"@zh ;
+    rdfs:comment "前五大客户收入占比超过 40%，需求波动会放大业绩波动。"@zh ;
+    ash:isExample true .
+
+ashd:factor-ningyuan-tech a owl:NamedIndividual, ash:RiskFactor ;
+    rdfs:label "技术路线迭代"@zh ;
+    rdfs:comment "固态电池等新技术路线可能改变现有竞争格局。"@zh ;
+    ash:isExample true .
+
+ashd:factor-ningyuan-price a owl:NamedIndividual, ash:RiskFactor ;
+    rdfs:label "价格竞争"@zh ;
+    rdfs:comment "动力电池行业产能扩张导致价格与毛利率承压。"@zh ;
+    ash:isExample true .
+
+ashd:factor-jingkang-clinical a owl:NamedIndividual, ash:RiskFactor ;
+    rdfs:label "临床与注册失败"@zh ;
+    rdfs:comment "核心管线处于关键临床阶段，存在读数与注册不确定性。"@zh ;
+    ash:isExample true .
+
+ashd:risk-huachen a owl:NamedIndividual, ash:RiskAssessment ;
+    ash:assessesSecurity ashd:sec-huachen-a ;
+    ash:assessesDecision ashd:decision-huachen-2026q4 ;
+    ash:riskScore 42 ;
+    ash:hasRiskLevel ashd:risk-medium ;
+    ash:hasRiskFactor ashd:factor-huachen-supply, ashd:factor-huachen-customer ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    rdfs:label "华辰智造风险评估"@zh ;
+    rdfs:comment "中等风险：估值合理、盈利质量较好，但存在供应链和大客户集中度。"@zh ;
+    ash:isExample true .
+
+ashd:risk-ningyuan a owl:NamedIndividual, ash:RiskAssessment ;
+    ash:assessesSecurity ashd:sec-ningyuan-a ;
+    ash:assessesDecision ashd:decision-ningyuan-2026q4 ;
+    ash:riskScore 68 ;
+    ash:hasRiskLevel ashd:risk-high ;
+    ash:hasRiskFactor ashd:factor-ningyuan-tech, ashd:factor-ningyuan-price ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    rdfs:label "宁源新能源风险评估"@zh ;
+    rdfs:comment "高风险：成长性突出，但负债率、技术路线和价格竞争带来较大不确定性。"@zh ;
+    ash:isExample true .
+
+ashd:risk-jingkang a owl:NamedIndividual, ash:RiskAssessment ;
+    ash:assessesSecurity ashd:sec-jingkang-a ;
+    ash:assessesDecision ashd:decision-jingkang-2026q4 ;
+    ash:riskScore 55 ;
+    ash:hasRiskLevel ashd:risk-high ;
+    ash:hasRiskFactor ashd:factor-jingkang-clinical ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    rdfs:label "景康生物风险评估"@zh ;
+    rdfs:comment "高风险：核心管线临床与注册结果存在二元不确定性。"@zh ;
+    ash:isExample true .
+
+# ===========================================================================
+# Investor profile, strategy and portfolio
+# ===========================================================================
+
+ashd:profile-balanced a owl:NamedIndividual, ash:InvestorProfile ;
+    ash:riskTolerance "medium" ;
+    ash:maxSingleWeight 0.10 ;
+    rdfs:label "稳健均衡型投资者"@zh, "Balanced Investor"@en ;
+    rdfs:comment "中等风险承受能力，单票权重上限 10%，偏好 3—12 个月持有期。"@zh ;
+    ash:isExample true .
+
+ashd:investor-demo a owl:NamedIndividual, ash:Investor ;
+    ash:hasInvestorProfile ashd:profile-balanced ;
+    rdfs:label "示例机构投资者"@zh, "Sample Institutional Investor"@en ;
+    rdfs:comment "用于演示适当性与决策绑定关系的合成投资者。"@zh ;
+    ash:isExample true .
+
+ashd:strategy-quality-value a owl:NamedIndividual, ash:InvestmentStrategy ;
+    rdfs:label "质量价值策略"@zh, "Quality Value Strategy"@en ;
+    rdfs:comment "以高 ROE、合理估值、稳健现金流和低杠杆为核心的选股策略。"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo a owl:NamedIndividual, ash:Portfolio ;
+    ash:followsStrategy ashd:strategy-quality-value ;
+    ash:hasBenchmark ashd:index-csi300 ;
+    ash:holdsPosition ashd:position-huachen, ashd:position-ningyuan, ashd:position-jingkang ;
+    rdfs:label "示例质量价值组合"@zh, "Sample Quality Value Portfolio"@en ;
+    rdfs:comment "用于演示集中度、止损和决策链的合成组合。"@zh ;
+    ash:isExample true .
+
+ashd:position-huachen a owl:NamedIndividual, ash:Position ;
+    ash:positionOf ashd:portfolio-demo ;
+    ash:positionIn ashd:sec-huachen-a ;
+    ash:positionWeight 0.12 ;
+    ash:avgCost 31.20 ;
+    ash:quantity 120000 ;
+    rdfs:label "华辰智造持仓"@zh ;
+    ash:isExample true .
+
+ashd:position-ningyuan a owl:NamedIndividual, ash:Position ;
+    ash:positionOf ashd:portfolio-demo ;
+    ash:positionIn ashd:sec-ningyuan-a ;
+    ash:positionWeight 0.05 ;
+    ash:avgCost 48.00 ;
+    ash:quantity 30000 ;
+    rdfs:label "宁源新能源持仓"@zh ;
+    ash:isExample true .
+
+ashd:position-jingkang a owl:NamedIndividual, ash:Position ;
+    ash:positionOf ashd:portfolio-demo ;
+    ash:positionIn ashd:sec-jingkang-a ;
+    ash:positionWeight 0.03 ;
+    ash:avgCost 30.00 ;
+    ash:quantity 20000 ;
+    rdfs:label "景康生物持仓"@zh ;
+    ash:isExample true .
+
+# ===========================================================================
+# Corporate events
+# ===========================================================================
+
+ashd:event-huachen-dividend a owl:NamedIndividual, ash:DividendEvent ;
+    ash:eventOf ashd:company-huachen ;
+    ash:dataAsOf "2026-06-20"^^xsd:date ;
+    rdfs:label "2025 年度现金分红"@zh ;
+    rdfs:comment "每 10 股派发现金红利 3.50 元（合成示例）。"@zh ;
+    ash:isExample true .
+
+# ===========================================================================
+# Investment decisions
+# ===========================================================================
+
+ashd:decision-huachen-2026q4 a owl:NamedIndividual, ash:InvestmentDecision ;
+    ash:decisionId "DEC-2026-HC-001" ;
+    ash:aboutSecurity ashd:sec-huachen-a ;
+    ash:aboutCompany ashd:company-huachen ;
+    ash:hasRecommendation ashd:rec-buy ;
+    ash:hasRationale ashd:rationale-huachen ;
+    ash:hasRiskAssessment ashd:risk-huachen ;
+    ash:basedOn ashd:evidence-huachen-report, ashd:evidence-huachen-quote, ashd:evidence-huachen-industry ;
+    ash:generatedBy ashd:svc-ashare-decision ;
+    ash:governedBy ashd:policy-decision-use, ashd:policy-research-data ;
+    ash:decidedFor ashd:profile-balanced ;
+    ash:hasHorizon ashd:horizon-medium ;
+    ash:hasComplianceCheck ashd:check-huachen ;
+    ash:hasMacroContext ashd:macro-lpr-1y-2026-10, ashd:macro-pmi-2026-10 ;
+    ash:decisionDate "2026-10-31"^^xsd:date ;
+    ash:validUntil "2026-12-31"^^xsd:date ;
+    ash:confidence 0.78 ;
+    ash:targetPrice 45.00 ;
+    ash:stopLoss 30.50 ;
+    rdfs:label "华辰智造 2026 年四季度增持决策"@zh, "Huachen Q4 2026 Buy Decision"@en ;
+    rdfs:comment "示例投资决策，不构成投资建议。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "示例决策，用于展示 RDF—OWL—SWRL—OWL-S—ODRL 的贯通链路。"@zh .
+
+ashd:rationale-huachen a owl:NamedIndividual, ash:DecisionRationale ;
+    ash:rationaleText "公司在工业自动化与智能装备领域具备稳定的客户基础和高于行业的 ROE；当前 PE 低于过去三年中枢，估值与盈利质量匹配。目标价对应 2027 年约 22 倍 PE，止损价对应 2026 年约 17 倍 PE。" ;
+    ash:assumption "制造业资本开支温和复苏；公司核心产品毛利率维持在 35% 以上。" ;
+    ash:counterArgument "若大客户资本开支延后或供应链成本上升，盈利增速可能低于预期；12% 的组合权重已超过单票 10% 的约束，需先降仓再执行增持。" ;
+    ash:hasEvidence ashd:evidence-huachen-report, ashd:evidence-huachen-quote, ashd:evidence-huachen-industry ;
+    rdfs:label "华辰智造增持理由"@zh ;
+    ash:isExample true .
+
+ashd:check-huachen a owl:NamedIndividual, ash:ComplianceCheck ;
+    ash:checksDecision ashd:decision-huachen-2026q4 ;
+    ash:passed true ;
+    ash:checkNote "通过：证券不在限制名单，投资者画像匹配，但组合已有持仓权重超过单票上限，执行前须降至 10% 以下。" ;
+    rdfs:label "华辰智造决策合规检查"@zh ;
+    ash:isExample true .
+
+ashd:decision-ningyuan-2026q4 a owl:NamedIndividual, ash:InvestmentDecision ;
+    ash:decisionId "DEC-2026-NY-002" ;
+    ash:aboutSecurity ashd:sec-ningyuan-a ;
+    ash:aboutCompany ashd:company-ningyuan ;
+    ash:hasRecommendation ashd:rec-watch ;
+    ash:hasRationale ashd:rationale-ningyuan ;
+    ash:hasRiskAssessment ashd:risk-ningyuan ;
+    ash:basedOn ashd:evidence-ningyuan-report, ashd:evidence-ningyuan-quote ;
+    ash:generatedBy ashd:svc-ashare-decision ;
+    ash:governedBy ashd:policy-decision-use ;
+    ash:decidedFor ashd:profile-balanced ;
+    ash:hasHorizon ashd:horizon-medium ;
+    ash:hasComplianceCheck ashd:check-ningyuan ;
+    ash:hasMacroContext ashd:macro-pmi-2026-10 ;
+    ash:decisionDate "2026-10-31"^^xsd:date ;
+    ash:validUntil "2026-12-31"^^xsd:date ;
+    ash:confidence 0.64 ;
+    ash:targetPrice 58.00 ;
+    ash:stopLoss 44.00 ;
+    rdfs:label "宁源新能源 2026 年四季度观察决策"@zh ;
+    rdfs:comment "示例投资决策，不构成投资建议。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "示例决策，用于展示高风险证券的观察与复核逻辑。"@zh .
+
+ashd:rationale-ningyuan a owl:NamedIndividual, ash:DecisionRationale ;
+    ash:rationaleText "收入与利润增速较快，储能业务提供第二增长曲线；但资产负债率 64.2%、利息保障倍数 4.1 倍，且行业价格竞争激烈，当前估值缺乏足够安全边际，因此给予观察而非增持。" ;
+    ash:assumption "储能装机需求维持高增长；动力电池价格战在 2027 年缓和。" ;
+    ash:counterArgument "若固态电池技术路线快速商业化，现有产线可能面临减值；若价格战延续，毛利率可能继续下行。" ;
+    ash:hasEvidence ashd:evidence-ningyuan-report, ashd:evidence-ningyuan-quote ;
+    rdfs:label "宁源新能源观察理由"@zh ;
+    ash:isExample true .
+
+ashd:check-ningyuan a owl:NamedIndividual, ash:ComplianceCheck ;
+    ash:checksDecision ashd:decision-ningyuan-2026q4 ;
+    ash:passed true ;
+    ash:checkNote "通过：观察建议不涉及新增交易；若升级为买入，需触发高风险二次复核。" ;
+    rdfs:label "宁源新能源决策合规检查"@zh ;
+    ash:isExample true .
+
+ashd:decision-jingkang-2026q4 a owl:NamedIndividual, ash:InvestmentDecision ;
+    ash:decisionId "DEC-2026-JK-003" ;
+    ash:aboutSecurity ashd:sec-jingkang-a ;
+    ash:aboutCompany ashd:company-jingkang ;
+    ash:hasRecommendation ashd:rec-watch ;
+    ash:hasRationale ashd:rationale-jingkang ;
+    ash:hasRiskAssessment ashd:risk-jingkang ;
+    ash:basedOn ashd:evidence-jingkang-report ;
+    ash:generatedBy ashd:svc-ashare-decision ;
+    ash:governedBy ashd:policy-decision-use ;
+    ash:decidedFor ashd:profile-balanced ;
+    ash:hasHorizon ashd:horizon-long ;
+    ash:hasComplianceCheck ashd:check-jingkang ;
+    ash:decisionDate "2026-10-31"^^xsd:date ;
+    ash:validUntil "2027-03-31"^^xsd:date ;
+    ash:confidence 0.58 ;
+    ash:targetPrice 36.00 ;
+    ash:stopLoss 23.50 ;
+    rdfs:label "景康生物 2026 年四季度观察决策"@zh ;
+    rdfs:comment "示例投资决策，不构成投资建议。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "示例决策，用于展示长周期创新药资产的风险定价。"@zh .
+
+ashd:rationale-jingkang a owl:NamedIndividual, ash:DecisionRationale ;
+    ash:rationaleText "核心管线处于关键临床阶段，成功商业化将带来非线性增长；当前估值已计入部分成功概率，且临床读数存在二元风险，适合长期观察而非在当前价位建仓。" ;
+    ash:assumption "关键临床数据在 2027 年上半年读出；合作方具备海外商业化能力。" ;
+    ash:counterArgument "若临床终点未达到或注册延迟，估值可能大幅回撤；当前换手率偏低，流动性风险需要单独评估。" ;
+    ash:hasEvidence ashd:evidence-jingkang-report ;
+    rdfs:label "景康生物观察理由"@zh ;
+    ash:isExample true .
+
+ashd:check-jingkang a owl:NamedIndividual, ash:ComplianceCheck ;
+    ash:checksDecision ashd:decision-jingkang-2026q4 ;
+    ash:passed true ;
+    ash:checkNote "通过：观察建议；若转为买入，需补充临床数据尽调与流动性压力测试。" ;
+    rdfs:label "景康生物决策合规检查"@zh ;
+    ash:isExample true .
+
+ashd:evidence-ningyuan-report a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "宁源新能源 2025 年财务报告"@zh ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:hasSource ashd:source-annual-report ;
+    ash:isExample true .
+
+ashd:evidence-ningyuan-quote a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "宁源新能源 2026-10-30 行情"@zh ;
+    ash:dataAsOf "2026-10-30"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    ash:isExample true .
+
+ashd:evidence-jingkang-report a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "景康生物 2025 年财务报告"@zh ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年度报告（示例）" ;
+    ash:hasSource ashd:source-annual-report ;
+    ash:isExample true .

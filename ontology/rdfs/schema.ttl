@@ -1,0 +1,1155 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — RDFS vocabulary layer
+# ---------------------------------------------------------------------------
+# The vocabulary is declared with OWL-compatible class/property types so the
+# OWL layer can extend it without punning. RDFS reasoning only relies on
+# rdfs:subClassOf, rdfs:subPropertyOf, rdfs:domain and rdfs:range here.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix ashs:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/skos#> .
+@prefix ashd:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs>
+    a owl:Ontology ;
+    dcterms:title "A-Share Investment Decision Ontology — RDFS vocabulary"@en ;
+    dcterms:title "A 股投资决策本体 — RDFS 词汇层"@zh ;
+    dcterms:description "Class and property vocabulary, labels, definitions, domains and ranges for the A-share investment decision domain."@en ;
+    dcterms:description "A 股投资决策领域的类与属性词汇、标签、定义、定义域和值域。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
+    dcterms:source <https://spec.edmcouncil.org/fibo/> ;
+    rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
+    owl:versionInfo "1.0.0" .
+
+# ===========================================================================
+# Top-level classes
+# ===========================================================================
+
+ash:Entity a owl:Class ;
+    rdfs:label "实体"@zh, "Entity"@en ;
+    rdfs:comment "本体中所有具名实体的抽象顶层类，用于统一标注与治理。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:MarketParticipant a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "市场参与者"@zh, "Market Participant"@en ;
+    rdfs:comment "参与 A 股市场发行、投资、服务或监管的法人或自然人。"@zh .
+
+ash:FinancialInstrument a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "金融工具"@zh, "Financial Instrument"@en ;
+    rdfs:comment "可交易、可估值或可作为基准的金融工具。"@zh .
+
+ash:MarketStructure a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "市场结构"@zh, "Market Structure"@en ;
+    rdfs:comment "交易所、板块与交易机制等市场基础设施。"@zh .
+
+ash:InformationObject a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "信息对象"@zh, "Information Object"@en ;
+    rdfs:comment "报告、行情、估值、事件、公告、证据与宏观数据等信息载体。"@zh .
+
+ash:DecisionObject a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "决策对象"@zh, "Decision Object"@en ;
+    rdfs:comment "投资决策、风险评价、组合、持仓、策略与适当性等决策过程对象。"@zh .
+
+ash:Risk a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "风险"@zh, "Risk"@en ;
+    rdfs:comment "可能影响投资结果的不确定性来源。"@zh .
+
+ash:Signal a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "信号"@zh, "Signal"@en ;
+    rdfs:comment "由规则、模型或人工判断产生的机会或风险标记。"@zh .
+
+ash:AssessmentResult a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "评估结果"@zh, "Assessment Result"@en ;
+    rdfs:comment "对证券、公司、组合或决策进行结构化评估后得到的结果。"@zh .
+
+# ===========================================================================
+# Market participants
+# ===========================================================================
+
+ash:ListedCompany a owl:Class ;
+    rdfs:subClassOf ash:MarketParticipant ;
+    rdfs:label "上市公司"@zh, "Listed Company"@en ;
+    rdfs:comment "在证券交易所上市、发行股票并承担信息披露义务的股份有限公司。"@zh ;
+    ash:example "华辰智造股份有限公司（示例）"@zh .
+
+ash:Investor a owl:Class ;
+    rdfs:subClassOf ash:MarketParticipant ;
+    rdfs:label "投资者"@zh, "Investor"@en ;
+    rdfs:comment "作出投资决策并承担相应风险的机构或自然人。"@zh .
+
+ash:ServiceProvider a owl:Class ;
+    rdfs:subClassOf ash:MarketParticipant ;
+    rdfs:label "服务提供方"@zh, "Service Provider"@en ;
+    rdfs:comment "提供数据、研究、决策支持或交易服务的机构。"@zh .
+
+ash:DataProvider a owl:Class ;
+    rdfs:subClassOf ash:ServiceProvider ;
+    rdfs:label "数据提供方"@zh, "Data Provider"@en ;
+    rdfs:comment "提供行情、财务、公告或宏观数据的机构。"@zh .
+
+ash:Regulator a owl:Class ;
+    rdfs:subClassOf ash:MarketParticipant ;
+    rdfs:label "监管机构"@zh, "Regulator"@en ;
+    rdfs:comment "依法对 A 股市场实施监管的机构。"@zh .
+
+ash:QualifiedInvestor a owl:Class ;
+    rdfs:subClassOf ash:Investor ;
+    rdfs:label "合格投资者"@zh, "Qualified Investor"@en ;
+    rdfs:comment "符合适当性管理要求、可接收特定投资建议或产品的投资者。"@zh .
+
+# ===========================================================================
+# Instruments and market structure
+# ===========================================================================
+
+ash:Security a owl:Class ;
+    rdfs:subClassOf ash:FinancialInstrument ;
+    rdfs:label "证券"@zh, "Security"@en ;
+    rdfs:comment "在交易所挂牌、具有唯一证券代码的金融工具。"@zh .
+
+ash:Stock a owl:Class ;
+    rdfs:subClassOf ash:Security ;
+    rdfs:label "股票"@zh, "Stock"@en ;
+    rdfs:comment "代表公司所有权份额的证券。"@zh .
+
+ash:AShare a owl:Class ;
+    rdfs:subClassOf ash:Stock ;
+    rdfs:label "A 股"@zh, "A-Share"@en ;
+    rdfs:comment "在中国境内证券交易所上市、以人民币计价交易的普通股票。"@zh .
+
+ash:Index a owl:Class ;
+    rdfs:subClassOf ash:FinancialInstrument ;
+    rdfs:label "指数"@zh, "Index"@en ;
+    rdfs:comment "按既定方法编制的证券价格或收益指标，可作为业绩基准。"@zh .
+
+ash:Exchange a owl:Class ;
+    rdfs:subClassOf ash:MarketStructure ;
+    rdfs:label "证券交易所"@zh, "Exchange"@en ;
+    rdfs:comment "组织证券集中交易并制定交易规则的场所。"@zh .
+
+ash:MarketSegment a owl:Class ;
+    rdfs:subClassOf ash:MarketStructure ;
+    rdfs:label "市场板块"@zh, "Market Segment"@en ;
+    rdfs:comment "交易所内按发行条件、投资者适当性和交易规则划分的板块。"@zh .
+
+# ===========================================================================
+# Information objects
+# ===========================================================================
+
+ash:FinancialReport a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "财务报告"@zh, "Financial Report"@en ;
+    rdfs:comment "上市公司按报告期披露的财务数据集合，包括年报、半年报和季报。"@zh .
+
+ash:AnnualReport a owl:Class ;
+    rdfs:subClassOf ash:FinancialReport ;
+    rdfs:label "年度报告"@zh, "Annual Report"@en ;
+    rdfs:comment "覆盖完整会计年度的经审计财务报告。"@zh .
+
+ash:InterimReport a owl:Class ;
+    rdfs:subClassOf ash:FinancialReport ;
+    rdfs:label "中期报告"@zh, "Interim Report"@en ;
+    rdfs:comment "覆盖半年度或季度期间的财务报告。"@zh .
+
+ash:MarketQuote a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "行情快照"@zh, "Market Quote"@en ;
+    rdfs:comment "某一时点的价格、成交量和换手率等交易数据。"@zh .
+
+ash:Valuation a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "估值快照"@zh, "Valuation"@en ;
+    rdfs:comment "市盈率、市净率、市销率和股息率等估值指标。"@zh .
+
+ash:MacroIndicator a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "宏观指标"@zh, "Macro Indicator"@en ;
+    rdfs:comment "利率、PMI、CPI、M2 等宏观环境观测值。"@zh .
+
+ash:CorporateEvent a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "公司事件"@zh, "Corporate Event"@en ;
+    rdfs:comment "分红、回购、业绩预告、股东变动、监管处罚等公司层面的重要事件。"@zh .
+
+ash:DividendEvent a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "分红事件"@zh, "Dividend Event"@en ;
+    rdfs:comment "公司宣告或实施现金分红、送股或转增股本的事件。"@zh .
+
+ash:RegulatoryEvent a owl:Class ;
+    rdfs:subClassOf ash:CorporateEvent ;
+    rdfs:label "监管事件"@zh, "Regulatory Event"@en ;
+    rdfs:comment "监管问询、立案调查、行政处罚或退市风险警示等事件。"@zh .
+
+ash:Disclosure a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "信息披露"@zh, "Disclosure"@en ;
+    rdfs:comment "上市公司依法向市场公开发布的公告或定期报告。"@zh .
+
+ash:ResearchReport a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "研究报告"@zh, "Research Report"@en ;
+    rdfs:comment "券商、基金或独立研究机构发布的分析报告。"@zh .
+
+ash:NewsItem a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "新闻条目"@zh, "News Item"@en ;
+    rdfs:comment "与公司、行业或市场相关的公开新闻。"@zh .
+
+ash:Evidence a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "证据"@zh, "Evidence"@en ;
+    rdfs:comment "支持或反驳某项投资判断的可追溯信息来源。"@zh .
+
+# ===========================================================================
+# Decision objects
+# ===========================================================================
+
+ash:InvestmentDecision a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资决策"@zh, "Investment Decision"@en ;
+    rdfs:comment "在特定日期对特定证券作出的可审计投资建议或处置意见。"@zh ;
+    ash:example "2026-10-31 对华辰智造 A 给出增持建议（示例）"@zh .
+
+ash:DecisionRationale a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "决策理由"@zh, "Decision Rationale"@en ;
+    rdfs:comment "对决策依据、假设、反方观点和证据链的结构化说明。"@zh .
+
+ash:Recommendation a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资建议"@zh, "Recommendation"@en ;
+    rdfs:comment "增持、持有、减持、观察或回避等离散建议类型。"@zh .
+
+ash:InvestmentHorizon a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资期限"@zh, "Investment Horizon"@en ;
+    rdfs:comment "决策所对应的预期持有期限。"@zh .
+
+ash:RiskAssessment a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "风险评估"@zh, "Risk Assessment"@en ;
+    rdfs:comment "对证券或决策的风险来源、风险等级和风险分数的结构化评估。"@zh .
+
+ash:RiskLevel a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "风险等级"@zh, "Risk Level"@en ;
+    rdfs:comment "低、中、高、极高四个离散风险等级。"@zh .
+
+ash:RiskFactor a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "风险因子"@zh, "Risk Factor"@en ;
+    rdfs:comment "可被识别、跟踪和归因的具体风险来源。"@zh .
+
+ash:RiskSignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "风险信号"@zh, "Risk Signal"@en ;
+    rdfs:comment "由规则或模型推断出的风险状态标记。"@zh .
+
+ash:OpportunitySignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "机会信号"@zh, "Opportunity Signal"@en ;
+    rdfs:comment "由规则或模型推断出的机会状态标记。"@zh .
+
+ash:Portfolio a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资组合"@zh, "Portfolio"@en ;
+    rdfs:comment "由若干持仓、现金和约束条件组成的投资集合。"@zh .
+
+ash:Position a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "持仓"@zh, "Position"@en ;
+    rdfs:comment "组合中对某一证券的持有数量、成本和权重。"@zh .
+
+ash:InvestmentStrategy a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资策略"@zh, "Investment Strategy"@en ;
+    rdfs:comment "价值、成长、红利、质量、动量或低波等选股与配置方法。"@zh .
+
+ash:InvestorProfile a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资者画像"@zh, "Investor Profile"@en ;
+    rdfs:comment "投资目标、风险承受能力、期限和集中度约束等适当性信息。"@zh .
+
+ash:ComplianceCheck a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "合规检查"@zh, "Compliance Check"@en ;
+    rdfs:comment "对决策、交易或数据使用是否符合政策与适当性要求的检查记录。"@zh .
+
+ash:AuditRecord a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "审计记录"@zh, "Audit Record"@en ;
+    rdfs:comment "记录决策输入、规则版本、模型版本、人工复核与输出结果的审计轨迹。"@zh .
+
+# ===========================================================================
+# Supporting artifacts
+# ===========================================================================
+
+ash:DecisionService a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "决策服务"@zh, "Decision Service"@en ;
+    rdfs:comment "以 OWL-S 描述的可执行投资决策服务，包含输入、输出、流程与端点。"@zh .
+
+ash:DecisionPolicy a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "决策政策"@zh, "Decision Policy"@en ;
+    rdfs:comment "以 ODRL 表达的权限、禁止、义务与约束政策。"@zh .
+
+ash:RuleArtifact a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "规则工件"@zh, "Rule Artifact"@en ;
+    rdfs:comment "以 SWRL 表示的决策规则及其版本、责任人和生效信息。"@zh .
+
+ash:DataSource a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "数据源"@zh, "Data Source"@en ;
+    rdfs:comment "为证据提供数据的系统、文档或公开披露渠道。"@zh .
+
+ash:CompetencyQuestion a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "能力问题"@zh, "Competency Question"@en ;
+    rdfs:comment "用于验收本体表达能力与查询完整性的领域问题。"@zh .
+
+# ===========================================================================
+# Risk taxonomy
+# ===========================================================================
+
+ash:MarketRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "市场风险"@zh, "Market Risk"@en ;
+    rdfs:comment "价格、利率、汇率和市场波动导致损失的风险。"@zh .
+
+ash:CreditRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "信用风险"@zh, "Credit Risk"@en ;
+    rdfs:comment "发行人违约或信用质量下降导致损失的风险。"@zh .
+
+ash:LiquidityRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "流动性风险"@zh, "Liquidity Risk"@en ;
+    rdfs:comment "无法按合理价格及时成交或变现的风险。"@zh .
+
+ash:OperationalRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "操作风险"@zh, "Operational Risk"@en ;
+    rdfs:comment "流程、系统、人员或外部事件导致损失的风险。"@zh .
+
+ash:ComplianceRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "合规风险"@zh, "Compliance Risk"@en ;
+    rdfs:comment "违反法律法规、交易所规则或内部政策的风险。"@zh .
+
+ash:ConcentrationRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "集中度风险"@zh, "Concentration Risk"@en ;
+    rdfs:comment "单一证券、行业或因子暴露过高导致的风险。"@zh .
+
+ash:ModelRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "模型风险"@zh, "Model Risk"@en ;
+    rdfs:comment "模型假设、数据或实现错误导致错误决策的风险。"@zh .
+
+ash:ESGRisk a owl:Class ;
+    rdfs:subClassOf ash:Risk ;
+    rdfs:label "ESG 风险"@zh, "ESG Risk"@en ;
+    rdfs:comment "环境、社会或治理因素导致财务或声誉损失的风险。"@zh .
+
+# ===========================================================================
+# Rule-inferred classes
+# ===========================================================================
+
+ash:ValueCandidate a owl:Class ;
+    rdfs:subClassOf ash:OpportunitySignal, ash:ListedCompany ;
+    rdfs:label "价值候选"@zh, "Value Candidate"@en ;
+    rdfs:comment "满足 ROE、PE、盈利与 ST 约束，被规则标记为价值候选的公司。"@zh .
+
+ash:GrowthCandidate a owl:Class ;
+    rdfs:subClassOf ash:OpportunitySignal, ash:ListedCompany ;
+    rdfs:label "成长候选"@zh, "Growth Candidate"@en ;
+    rdfs:comment "收入与利润高增长、估值处于成长区间，被规则标记为成长候选的公司。"@zh .
+
+ash:HighFinancialRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "高财务风险"@zh, "High Financial Risk"@en ;
+    rdfs:comment "资产负债率过高且利息保障倍数不足的公司状态。"@zh .
+
+ash:ExcludedFromUniverse a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "排除出股票池"@zh, "Excluded from Universe"@en ;
+    rdfs:comment "因 ST、退市风险或其他硬约束而被排除出可投资股票池的状态。"@zh .
+
+ash:StopLossTriggered a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "止损触发"@zh, "Stop-Loss Triggered"@en ;
+    rdfs:comment "持仓价格跌破预设止损线时产生的风险信号。"@zh .
+
+ash:ConcentrationBreach a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "集中度超限"@zh, "Concentration Breach"@en ;
+    rdfs:comment "单一持仓权重超过组合约束时产生的风险信号。"@zh .
+
+ash:RequiresComplianceReview a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "需合规复核"@zh, "Requires Compliance Review"@en ;
+    rdfs:comment "决策涉及限制名单或敏感证券时必须人工复核的状态。"@zh .
+
+ash:IlliquidSecurity a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "低流动性证券"@zh, "Illiquid Security"@en ;
+    rdfs:comment "成交额或换手率过低、无法满足最低流动性要求的证券。"@zh .
+
+ash:RequiresSecondReview a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "需二次复核"@zh, "Requires Second Review"@en ;
+    rdfs:comment "高风险证券上给出买入建议时必须由第二人复核的状态。"@zh .
+
+ash:AuditableDecision a owl:Class ;
+    rdfs:subClassOf ash:InvestmentDecision ;
+    rdfs:label "可审计决策"@zh, "Auditable Decision"@en ;
+    rdfs:comment "具备风险评价、理由、证据和政策依据的完整决策。"@zh .
+
+# ===========================================================================
+# Object properties
+# ===========================================================================
+
+ash:hasSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:Security ;
+    rdfs:label "发行证券"@zh, "has security"@en ;
+    rdfs:comment "上市公司发行或控制的证券；一个公司可发行多个证券。"@zh .
+
+ash:issuedBy a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "发行人为"@zh, "issued by"@en ;
+    rdfs:comment "证券的发行主体。"@zh .
+
+ash:listedOn a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:Exchange ;
+    rdfs:label "上市于"@zh, "listed on"@en ;
+    rdfs:comment "证券挂牌交易的交易所。"@zh .
+
+ash:lists a owl:ObjectProperty ;
+    rdfs:domain ash:Exchange ;
+    rdfs:range ash:Security ;
+    rdfs:label "挂牌证券"@zh, "lists"@en ;
+    rdfs:comment "交易所挂牌的全部证券。"@zh .
+
+ash:tradesOn a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:MarketSegment ;
+    rdfs:label "交易于板块"@zh, "trades on segment"@en ;
+    rdfs:comment "证券所属的交易板块，例如主板、创业板、科创板或北交所。"@zh .
+
+ash:primaryIndustry a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range skos:Concept ;
+    rdfs:label "一级行业"@zh, "primary industry"@en ;
+    rdfs:comment "公司最主要的一级行业，取值来自 SKOS 行业概念方案。"@zh .
+
+ash:hasThemeExposure a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range skos:Concept ;
+    rdfs:label "主题暴露"@zh, "has theme exposure"@en ;
+    rdfs:comment "公司与投资主题或产业链概念的关联，取值来自 SKOS 主题方案。"@zh .
+
+ash:hasFinancialReport a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:FinancialReport ;
+    rdfs:label "披露财报"@zh, "has financial report"@en ;
+    rdfs:comment "公司披露的财务报告。"@zh .
+
+ash:reportsOn a owl:ObjectProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "报告主体"@zh, "reports on"@en ;
+    rdfs:comment "财务报告所描述的上市公司。"@zh .
+
+ash:hasMarketQuote a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:MarketQuote ;
+    rdfs:label "行情快照"@zh, "has market quote"@en ;
+    rdfs:comment "证券在某一时点的行情快照。"@zh .
+
+ash:quoteOf a owl:ObjectProperty ;
+    rdfs:domain ash:MarketQuote ;
+    rdfs:range ash:Security ;
+    rdfs:label "行情所属证券"@zh, "quote of"@en ;
+    rdfs:comment "行情快照对应的证券。"@zh .
+
+ash:hasValuation a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:Valuation ;
+    rdfs:label "估值快照"@zh, "has valuation"@en ;
+    rdfs:comment "证券在某一时点的估值指标。"@zh .
+
+ash:valuationOf a owl:ObjectProperty ;
+    rdfs:domain ash:Valuation ;
+    rdfs:range ash:Security ;
+    rdfs:label "估值所属证券"@zh, "valuation of"@en ;
+    rdfs:comment "估值快照对应的证券。"@zh .
+
+ash:hasCorporateEvent a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:CorporateEvent ;
+    rdfs:label "发生公司事件"@zh, "has corporate event"@en ;
+    rdfs:comment "公司发生的分红、回购、业绩预告或监管事件。"@zh .
+
+ash:eventOf a owl:ObjectProperty ;
+    rdfs:domain ash:CorporateEvent ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "事件主体"@zh, "event of"@en ;
+    rdfs:comment "公司事件所涉及的上市公司。"@zh .
+
+ash:hasDisclosure a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:Disclosure ;
+    rdfs:label "信息披露"@zh, "has disclosure"@en ;
+    rdfs:comment "公司依法披露的公告或报告。"@zh .
+
+ash:aboutSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:Security ;
+    rdfs:label "决策标的"@zh, "about security"@en ;
+    rdfs:comment "投资决策直接指向的证券。"@zh .
+
+ash:subjectOfDecision a owl:ObjectProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "决策指向"@zh, "subject of decision"@en ;
+    rdfs:comment "以该证券为标的的投资决策。"@zh .
+
+ash:aboutCompany a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "决策公司"@zh, "about company"@en ;
+    rdfs:comment "投资决策所涉及的上市公司。"@zh .
+
+ash:hasRecommendation a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:Recommendation ;
+    rdfs:label "投资建议"@zh, "has recommendation"@en ;
+    rdfs:comment "决策给出的离散投资建议。"@zh .
+
+ash:hasRationale a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:DecisionRationale ;
+    rdfs:label "决策理由"@zh, "has rationale"@en ;
+    rdfs:comment "决策的结构化理由与证据链。"@zh .
+
+ash:hasRiskAssessment a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:RiskAssessment ;
+    rdfs:label "风险评估"@zh, "has risk assessment"@en ;
+    rdfs:comment "决策所依据的风险评估。"@zh .
+
+ash:assessesDecision a owl:ObjectProperty ;
+    rdfs:domain ash:RiskAssessment ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "评估决策"@zh, "assesses decision"@en ;
+    rdfs:comment "风险评估所服务的投资决策。"@zh .
+
+ash:assessesSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:RiskAssessment ;
+    rdfs:range ash:Security ;
+    rdfs:label "评估证券"@zh, "assesses security"@en ;
+    rdfs:comment "风险评估所针对的证券。"@zh .
+
+ash:hasRiskFactor a owl:ObjectProperty ;
+    rdfs:domain ash:RiskAssessment ;
+    rdfs:range ash:RiskFactor ;
+    rdfs:label "风险因子"@zh, "has risk factor"@en ;
+    rdfs:comment "风险评估识别出的具体风险来源。"@zh .
+
+ash:hasRiskLevel a owl:ObjectProperty ;
+    rdfs:domain ash:RiskAssessment ;
+    rdfs:range ash:RiskLevel ;
+    rdfs:label "风险等级"@zh, "has risk level"@en ;
+    rdfs:comment "风险评估对应的离散风险等级。"@zh .
+
+ash:basedOn a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "依据证据"@zh, "based on"@en ;
+    rdfs:comment "支持投资决策的证据条目。"@zh .
+
+ash:hasEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionRationale ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "理由证据"@zh, "has evidence"@en ;
+    rdfs:comment "决策理由中引用的证据。"@zh .
+
+ash:generatedBy a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:DecisionService ;
+    rdfs:label "生成服务"@zh, "generated by"@en ;
+    rdfs:comment "生成该决策的 OWL-S 决策服务实例。"@zh .
+
+ash:governedBy a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:DecisionPolicy ;
+    rdfs:label "受政策治理"@zh, "governed by"@en ;
+    rdfs:comment "约束该决策的 ODRL 政策实例。"@zh .
+
+ash:decidedFor a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:InvestorProfile ;
+    rdfs:label "服务画像"@zh, "decided for"@en ;
+    rdfs:comment "决策所适配的投资者画像。"@zh .
+
+ash:hasHorizon a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:InvestmentHorizon ;
+    rdfs:label "投资期限"@zh, "has horizon"@en ;
+    rdfs:comment "决策建议的预期持有期限。"@zh .
+
+ash:hasComplianceCheck a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:ComplianceCheck ;
+    rdfs:label "合规检查"@zh, "has compliance check"@en ;
+    rdfs:comment "决策执行前必须通过的合规检查记录。"@zh .
+
+ash:checksDecision a owl:ObjectProperty ;
+    rdfs:domain ash:ComplianceCheck ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "检查决策"@zh, "checks decision"@en ;
+    rdfs:comment "合规检查所针对的投资决策。"@zh .
+
+ash:holdsPosition a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:Position ;
+    rdfs:label "持有仓位"@zh, "holds position"@en ;
+    rdfs:comment "投资组合中的持仓。"@zh .
+
+ash:positionOf a owl:ObjectProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "仓位所属组合"@zh, "position of"@en ;
+    rdfs:comment "持仓所属的投资组合。"@zh .
+
+ash:positionIn a owl:ObjectProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range ash:Security ;
+    rdfs:label "持仓证券"@zh, "position in"@en ;
+    rdfs:comment "持仓对应的证券。"@zh .
+
+ash:hasBenchmark a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:Index ;
+    rdfs:label "业绩基准"@zh, "has benchmark"@en ;
+    rdfs:comment "投资组合的业绩比较基准。"@zh .
+
+ash:followsStrategy a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:InvestmentStrategy ;
+    rdfs:label "遵循策略"@zh, "follows strategy"@en ;
+    rdfs:comment "组合所遵循的投资策略。"@zh .
+
+ash:hasInvestorProfile a owl:ObjectProperty ;
+    rdfs:domain ash:Investor ;
+    rdfs:range ash:InvestorProfile ;
+    rdfs:label "投资者画像"@zh, "has investor profile"@en ;
+    rdfs:comment "投资者对应的风险承受能力与约束画像。"@zh .
+
+ash:hasParentCompany a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "母公司"@zh, "has parent company"@en ;
+    rdfs:comment "上市公司的直接或间接控股母公司。"@zh .
+
+ash:hasSubsidiary a owl:ObjectProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "子公司"@zh, "has subsidiary"@en ;
+    rdfs:comment "上市公司控制的子公司。"@zh .
+
+ash:relatedParty a owl:ObjectProperty ;
+    rdfs:domain ash:Entity ;
+    rdfs:range ash:Entity ;
+    rdfs:label "关联方"@zh, "related party"@en ;
+    rdfs:comment "存在股权、交易、人员或控制关系的实体。"@zh .
+
+ash:hasMacroContext a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:MacroIndicator ;
+    rdfs:label "宏观背景"@zh, "has macro context"@en ;
+    rdfs:comment "决策所参考的宏观指标。"@zh .
+
+ash:hasSource a owl:ObjectProperty ;
+    rdfs:domain ash:Evidence ;
+    rdfs:range ash:DataSource ;
+    rdfs:label "证据来源"@zh, "has source"@en ;
+    rdfs:comment "证据所来自的数据源或文档。"@zh .
+
+ash:hasDecisionService a owl:ObjectProperty ;
+    rdfs:domain ash:Entity ;
+    rdfs:range ash:DecisionService ;
+    rdfs:label "决策服务"@zh, "has decision service"@en ;
+    rdfs:comment "实体所使用的 OWL-S 决策服务。"@zh .
+
+# ===========================================================================
+# Datatype properties
+# ===========================================================================
+
+ash:securityCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:string ;
+    rdfs:label "证券代码"@zh, "security code"@en ;
+    rdfs:comment "A 股六位证券代码，例如 600000。"@zh .
+
+ash:exchangeCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Exchange ;
+    rdfs:range xsd:string ;
+    rdfs:label "交易所代码"@zh, "exchange code"@en ;
+    rdfs:comment "交易所代码，例如 SSE、SZSE、BSE。"@zh .
+
+ash:securityName a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:string ;
+    rdfs:label "证券简称"@zh, "security name"@en ;
+    rdfs:comment "证券在交易系统中的简称。"@zh .
+
+ash:companyName a owl:DatatypeProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range xsd:string ;
+    rdfs:label "公司名称"@zh, "company name"@en ;
+    rdfs:comment "上市公司法定名称。"@zh .
+
+ash:companyCode a owl:DatatypeProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range xsd:string ;
+    rdfs:label "公司编码"@zh, "company code"@en ;
+    rdfs:comment "用于跨系统关联公司的稳定业务编码。"@zh .
+
+ash:isin a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:string ;
+    rdfs:label "ISIN"@zh, "ISIN"@en ;
+    rdfs:comment "国际证券识别码（如可得）。"@zh .
+
+ash:listingDate a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:date ;
+    rdfs:label "上市日期"@zh, "listing date"@en ;
+    rdfs:comment "证券首次挂牌交易的日期。"@zh .
+
+ash:delistingDate a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:date ;
+    rdfs:label "退市日期"@zh, "delisting date"@en ;
+    rdfs:comment "证券终止上市的日期（如适用）。"@zh .
+
+ash:isST a owl:DatatypeProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "ST 状态"@zh, "is ST"@en ;
+    rdfs:comment "公司是否处于 ST 或 *ST 风险警示状态。"@zh .
+
+ash:delistingRisk a owl:DatatypeProperty ;
+    rdfs:domain ash:ListedCompany ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "退市风险"@zh, "delisting risk"@en ;
+    rdfs:comment "公司是否存在退市风险警示或终止上市风险。"@zh .
+
+ash:isSuspended a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "停牌状态"@zh, "is suspended"@en ;
+    rdfs:comment "证券当前是否停牌。"@zh .
+
+ash:isRestricted a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "限制名单"@zh, "is restricted"@en ;
+    rdfs:comment "证券是否在限制交易、观察或禁投名单中。"@zh .
+
+ash:dataAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:InformationObject ;
+    rdfs:range xsd:date ;
+    rdfs:label "数据截止日"@zh, "data as of"@en ;
+    rdfs:comment "该信息对象所反映数据的截止日期。"@zh .
+
+ash:dataSource a owl:DatatypeProperty ;
+    rdfs:domain ash:InformationObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "数据来源"@zh, "data source"@en ;
+    rdfs:comment "数据来源说明，例如交易所披露、公司年报或研究机构。"@zh .
+
+ash:dataQualityFlag a owl:DatatypeProperty ;
+    rdfs:domain ash:InformationObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "数据质量标记"@zh, "data quality flag"@en ;
+    rdfs:comment "数据质量标记，例如 verified、estimated、missing。"@zh .
+
+ash:reportPeriod a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:gYear ;
+    rdfs:label "报告期"@zh, "report period"@en ;
+    rdfs:comment "财务报告覆盖的会计年度。"@zh .
+
+ash:fiscalYearEnd a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:date ;
+    rdfs:label "会计年度截止日"@zh, "fiscal year end"@en ;
+    rdfs:comment "财务报告会计年度的截止日期。"@zh .
+
+ash:revenue a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "营业收入"@zh, "revenue"@en ;
+    rdfs:comment "报告期营业收入，单位：人民币元。"@zh .
+
+ash:netProfit a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "净利润"@zh, "net profit"@en ;
+    rdfs:comment "报告期归属于母公司股东的净利润，单位：人民币元。"@zh .
+
+ash:roe a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "净资产收益率"@zh, "ROE"@en ;
+    rdfs:comment "加权平均净资产收益率，以百分数表示，例如 18.2。"@zh .
+
+ash:roa a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "总资产收益率"@zh, "ROA"@en ;
+    rdfs:comment "总资产收益率，以百分数表示。"@zh .
+
+ash:debtRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "资产负债率"@zh, "debt ratio"@en ;
+    rdfs:comment "总负债除以总资产，以百分数表示。"@zh .
+
+ash:interestCoverage a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "利息保障倍数"@zh, "interest coverage"@en ;
+    rdfs:comment "息税前利润除以利息费用，以倍数表示。"@zh .
+
+ash:operatingCashFlow a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "经营活动现金流"@zh, "operating cash flow"@en ;
+    rdfs:comment "报告期经营活动产生的现金流量净额，单位：人民币元。"@zh .
+
+ash:revenueGrowth a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "营收增速"@zh, "revenue growth"@en ;
+    rdfs:comment "营业收入同比增长率，以百分数表示。"@zh .
+
+ash:profitGrowth a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "净利润增速"@zh, "profit growth"@en ;
+    rdfs:comment "净利润同比增长率，以百分数表示。"@zh .
+
+ash:eps a owl:DatatypeProperty ;
+    rdfs:domain ash:FinancialReport ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "每股收益"@zh, "EPS"@en ;
+    rdfs:comment "基本每股收益，单位：人民币元/股。"@zh .
+
+ash:lastPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketQuote ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最新价"@zh, "last price"@en ;
+    rdfs:comment "行情快照的最新成交价，单位：人民币元/股。"@zh .
+
+ash:changePct a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketQuote ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "涨跌幅"@zh, "change percent"@en ;
+    rdfs:comment "相对前一交易日收盘价的涨跌幅，以百分数表示。"@zh .
+
+ash:volume a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketQuote ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成交量"@zh, "volume"@en ;
+    rdfs:comment "行情快照对应的成交量，单位：股。"@zh .
+
+ash:turnoverRate a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketQuote ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "换手率"@zh, "turnover rate"@en ;
+    rdfs:comment "成交量占流通股本的比例，以百分数表示。"@zh .
+
+ash:marketCap a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketQuote ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "总市值"@zh, "market capitalization"@en ;
+    rdfs:comment "证券总市值，单位：人民币元。"@zh .
+
+ash:peTtm a owl:DatatypeProperty ;
+    rdfs:domain ash:Valuation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "市盈率 TTM"@zh, "PE (TTM)"@en ;
+    rdfs:comment "滚动市盈率，以倍数表示。"@zh .
+
+ash:pb a owl:DatatypeProperty ;
+    rdfs:domain ash:Valuation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "市净率"@zh, "PB"@en ;
+    rdfs:comment "市净率，以倍数表示。"@zh .
+
+ash:psTtm a owl:DatatypeProperty ;
+    rdfs:domain ash:Valuation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "市销率 TTM"@zh, "PS (TTM)"@en ;
+    rdfs:comment "滚动市销率，以倍数表示。"@zh .
+
+ash:dividendYield a owl:DatatypeProperty ;
+    rdfs:domain ash:Valuation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "股息率"@zh, "dividend yield"@en ;
+    rdfs:comment "近十二个月现金分红除以最新市值，以百分数表示。"@zh .
+
+ash:indicatorCode a owl:DatatypeProperty ;
+    rdfs:domain ash:MacroIndicator ;
+    rdfs:range xsd:string ;
+    rdfs:label "指标代码"@zh, "indicator code"@en ;
+    rdfs:comment "宏观指标代码，例如 LPR_1Y、PMI、CPI。"@zh .
+
+ash:indicatorValue a owl:DatatypeProperty ;
+    rdfs:domain ash:MacroIndicator ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "指标值"@zh, "indicator value"@en ;
+    rdfs:comment "宏观指标在报告期的取值。"@zh .
+
+ash:indicatorPeriod a owl:DatatypeProperty ;
+    rdfs:domain ash:MacroIndicator ;
+    rdfs:range xsd:gYearMonth ;
+    rdfs:label "指标期间"@zh, "indicator period"@en ;
+    rdfs:comment "宏观指标对应的统计期间。"@zh .
+
+ash:indicatorUnit a owl:DatatypeProperty ;
+    rdfs:domain ash:MacroIndicator ;
+    rdfs:range xsd:string ;
+    rdfs:label "指标单位"@zh, "indicator unit"@en ;
+    rdfs:comment "宏观指标单位，例如 %、点。"@zh .
+
+ash:decisionId a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:string ;
+    rdfs:label "决策编号"@zh, "decision id"@en ;
+    rdfs:comment "用于审计追踪的稳定决策编号。"@zh .
+
+ash:decisionDate a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:date ;
+    rdfs:label "决策日期"@zh, "decision date"@en ;
+    rdfs:comment "投资决策形成或生效的日期。"@zh .
+
+ash:validUntil a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:date ;
+    rdfs:label "有效期至"@zh, "valid until"@en ;
+    rdfs:comment "决策建议的有效截止日期。"@zh .
+
+ash:confidence a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "置信度"@zh, "confidence"@en ;
+    rdfs:comment "模型或分析师对建议的置信度，取值 0—1。"@zh .
+
+ash:targetPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "目标价"@zh, "target price"@en ;
+    rdfs:comment "建议期限内的目标价格，单位：人民币元/股。"@zh .
+
+ash:stopLoss a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "止损价"@zh, "stop-loss"@en ;
+    rdfs:comment "触发风险复核或减仓的价格阈值，单位：人民币元/股。"@zh .
+
+ash:positionWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "持仓权重"@zh, "position weight"@en ;
+    rdfs:comment "持仓市值占组合总资产的比例，取值 0—1。"@zh .
+
+ash:avgCost a owl:DatatypeProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "持仓成本"@zh, "average cost"@en ;
+    rdfs:comment "持仓的平均成本，单位：人民币元/股。"@zh .
+
+ash:quantity a owl:DatatypeProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "持仓数量"@zh, "quantity"@en ;
+    rdfs:comment "持仓股数。"@zh .
+
+ash:riskScore a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "风险分数"@zh, "risk score"@en ;
+    rdfs:comment "归一化风险分数，0—100，分数越高风险越大。"@zh .
+
+ash:rationaleText a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRationale ;
+    rdfs:range xsd:string ;
+    rdfs:label "理由正文"@zh, "rationale text"@en ;
+    rdfs:comment "决策理由的自然语言说明。"@zh .
+
+ash:assumption a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRationale ;
+    rdfs:range xsd:string ;
+    rdfs:label "关键假设"@zh, "assumption"@en ;
+    rdfs:comment "决策成立所依赖的关键假设。"@zh .
+
+ash:counterArgument a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRationale ;
+    rdfs:range xsd:string ;
+    rdfs:label "反方观点"@zh, "counter argument"@en ;
+    rdfs:comment "与建议相反的证据或可能证伪建议的观点。"@zh .
+
+ash:actionCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Recommendation ;
+    rdfs:range xsd:string ;
+    rdfs:label "建议代码"@zh, "action code"@en ;
+    rdfs:comment "机器可读建议代码：BUY、HOLD、SELL、WATCH、AVOID。"@zh .
+
+ash:riskTolerance a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestorProfile ;
+    rdfs:range xsd:string ;
+    rdfs:label "风险承受能力"@zh, "risk tolerance"@en ;
+    rdfs:comment "投资者风险承受能力：low、medium、high。"@zh .
+
+ash:maxSingleWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestorProfile ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "单票上限"@zh, "max single weight"@en ;
+    rdfs:comment "单一证券在组合中的最大权重，取值 0—1。"@zh .
+
+ash:passed a owl:DatatypeProperty ;
+    rdfs:domain ash:ComplianceCheck ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "是否通过"@zh, "passed"@en ;
+    rdfs:comment "合规检查是否通过。"@zh .
+
+ash:checkNote a owl:DatatypeProperty ;
+    rdfs:domain ash:ComplianceCheck ;
+    rdfs:range xsd:string ;
+    rdfs:label "检查说明"@zh, "check note"@en ;
+    rdfs:comment "合规检查的结论说明与限制条件。"@zh .
+
+ash:ruleId a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则编号"@zh, "rule id"@en ;
+    rdfs:comment "SWRL 规则的稳定编号。"@zh .
+
+ash:severity a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "严重程度"@zh, "severity"@en ;
+    rdfs:comment "规则或风险信号的严重程度：low、medium、high。"@zh .
+
+ash:rulePriority a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:integer ;
+    rdfs:label "规则优先级"@zh, "rule priority"@en ;
+    rdfs:comment "数值越小优先级越高。"@zh .
+
+ash:ruleIf a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则条件"@zh, "rule if"@en ;
+    rdfs:comment "供人阅读的规则前件说明。"@zh .
+
+ash:ruleThen a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则结论"@zh, "rule then"@en ;
+    rdfs:comment "供人阅读的规则后件说明。"@zh .
+
+ash:ruleStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则状态"@zh, "rule status"@en ;
+    rdfs:comment "规则状态：active、draft、retired。"@zh .
+
+ash:ruleVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则版本"@zh, "rule version"@en ;
+    rdfs:comment "规则语义版本号。"@zh .
+
+ash:ruleOwner a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则责任人"@zh, "rule owner"@en ;
+    rdfs:comment "维护规则的责任团队或角色。"@zh .
+
+ash:ruleEffectiveFrom a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:date ;
+    rdfs:label "规则生效日"@zh, "rule effective from"@en ;
+    rdfs:comment "规则开始生效的日期。"@zh .
+
+ash:policyVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionPolicy ;
+    rdfs:range xsd:string ;
+    rdfs:label "政策版本"@zh, "policy version"@en ;
+    rdfs:comment "ODRL 政策的语义版本号。"@zh .
+
+ash:reviewDate a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionPolicy ;
+    rdfs:range xsd:date ;
+    rdfs:label "复核日期"@zh, "review date"@en ;
+    rdfs:comment "政策或规则下一次强制复核的日期。"@zh .
+
+ash:policyStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionPolicy ;
+    rdfs:range xsd:string ;
+    rdfs:label "政策状态"@zh, "policy status"@en ;
+    rdfs:comment "ODRL 政策状态：active、draft、retired。"@zh .
+
+ash:isExample a owl:DatatypeProperty ;
+    rdfs:domain ash:Entity ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "是否示例"@zh, "is example"@en ;
+    rdfs:comment "标记实例是否为仅供演示的合成数据。"@zh .
+
+ash:exampleNote a owl:DatatypeProperty ;
+    rdfs:domain ash:Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "示例说明"@zh, "example note"@en ;
+    rdfs:comment "对示例数据的来源、假设和非真实性说明。"@zh .
+
+ash:humanApprovalRequired a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionService ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "需人工批准"@zh, "human approval required"@en ;
+    rdfs:comment "服务输出在用于真实交易前是否需要人工批准。"@zh .
+
+ash:serviceVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionService ;
+    rdfs:range xsd:string ;
+    rdfs:label "服务版本"@zh, "service version"@en ;
+    rdfs:comment "OWL-S 服务描述的语义版本号。"@zh .
+
+ash:endpointStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionService ;
+    rdfs:range xsd:string ;
+    rdfs:label "端点状态"@zh, "endpoint status"@en ;
+    rdfs:comment "示意端点状态：illustrative、sandbox、production。"@zh .

@@ -1,0 +1,406 @@
+# ---------------------------------------------------------------------------
+# A-Share Investment Decision Ontology — SWRL rule layer
+# ---------------------------------------------------------------------------
+# SWRL (W3C Member Submission, 2004) is encoded with the RDF concrete syntax:
+# swrl:Imp / swrl:body / swrl:head / swrl:ClassAtom /
+# swrl:IndividualPropertyAtom / swrl:DatavaluedPropertyAtom /
+# swrl:BuiltinAtom / swrl:Variable and the swrlb: built-in library.
+#
+# The rules are declarative and side-effect free. A production engine must add
+# data-freshness, conflict handling and human-approval gates outside SWRL.
+# ---------------------------------------------------------------------------
+@prefix ash:     <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#> .
+@prefix ashd:    <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/data#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix swrl:    <http://www.w3.org/2003/11/swrl#> .
+@prefix swrlb:   <http://www.w3.org/2003/11/swrlb#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/swrl>
+    a owl:Ontology ;
+    owl:imports <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/owl> ;
+    dcterms:title "A-Share Investment Decision Ontology — SWRL rules"@en ;
+    dcterms:title "A 股投资决策本体 — SWRL 规则层"@zh ;
+    dcterms:description "Executable decision and risk rules encoded with the SWRL RDF concrete syntax."@en ;
+    dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
+    dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
+    rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
+    owl:versionInfo "1.0.0" ;
+    ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
+
+# ===========================================================================
+# Variables
+# ===========================================================================
+
+ashd:var-company a swrl:Variable ; rdfs:label "?company" .
+ashd:var-report a swrl:Variable ; rdfs:label "?report" .
+ashd:var-stock a swrl:Variable ; rdfs:label "?stock" .
+ashd:var-valuation a swrl:Variable ; rdfs:label "?valuation" .
+ashd:var-roe a swrl:Variable ; rdfs:label "?roe" .
+ashd:var-pe a swrl:Variable ; rdfs:label "?pe" .
+ashd:var-profit a swrl:Variable ; rdfs:label "?profit" .
+ashd:var-isst a swrl:Variable ; rdfs:label "?isST" .
+ashd:var-debtratio a swrl:Variable ; rdfs:label "?debtRatio" .
+ashd:var-interest a swrl:Variable ; rdfs:label "?interestCoverage" .
+ashd:var-portfolio a swrl:Variable ; rdfs:label "?portfolio" .
+ashd:var-position a swrl:Variable ; rdfs:label "?position" .
+ashd:var-averagecost a swrl:Variable ; rdfs:label "?avgCost" .
+ashd:var-quote a swrl:Variable ; rdfs:label "?quote" .
+ashd:var-price a swrl:Variable ; rdfs:label "?price" .
+ashd:var-threshold a swrl:Variable ; rdfs:label "?threshold" .
+ashd:var-weight a swrl:Variable ; rdfs:label "?weight" .
+ashd:var-decision a swrl:Variable ; rdfs:label "?decision" .
+ashd:var-security a swrl:Variable ; rdfs:label "?security" .
+ashd:var-risk a swrl:Variable ; rdfs:label "?risk" .
+ashd:var-rationale a swrl:Variable ; rdfs:label "?rationale" .
+ashd:var-evidence a swrl:Variable ; rdfs:label "?evidence" .
+ashd:var-policy a swrl:Variable ; rdfs:label "?policy" .
+ashd:var-turnover a swrl:Variable ; rdfs:label "?turnover" .
+ashd:var-marketcap a swrl:Variable ; rdfs:label "?marketCap" .
+ashd:var-revenuegrowth a swrl:Variable ; rdfs:label "?revenueGrowth" .
+ashd:var-profitgrowth a swrl:Variable ; rdfs:label "?profitGrowth" .
+ashd:var-recommendation a swrl:Variable ; rdfs:label "?recommendation" .
+ashd:var-action a swrl:Variable ; rdfs:label "?action" .
+ashd:var-score a swrl:Variable ; rdfs:label "?riskScore" .
+
+# ===========================================================================
+# R01 — Value candidate
+# ===========================================================================
+
+ashd:rule-value-candidate
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R01" ;
+    rdfs:label "价值候选筛选"@zh, "Value candidate screen"@en ;
+    rdfs:comment "当公司最近年报 ROE 不低于 15%、PE(TTM) 不高于 20、净利润为正且非 ST 时，推断为价值候选。"@zh ;
+    ash:ruleIf "公司最近年报 ROE ≥ 15%，PE(TTM) ≤ 20，净利润 > 0，且 isST = false"@zh ;
+    ash:ruleThen "公司被推断为 ash:ValueCandidate（机会信号）"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 20 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:ListedCompany ;
+    ash:ruleUses ash:roe, ash:peTtm, ash:netProfit, ash:isST ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-report ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasSecurity ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-stock ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasValuation ; swrl:argument1 ashd:var-stock ; swrl:argument2 ashd:var-valuation ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:roe ; swrl:argument1 ashd:var-report ; swrl:argument2 ashd:var-roe ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:peTtm ; swrl:argument1 ashd:var-valuation ; swrl:argument2 ashd:var-pe ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:netProfit ; swrl:argument1 ashd:var-report ; swrl:argument2 ashd:var-profit ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:isST ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-isst ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-roe "15.0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-pe "20.0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-profit "0.0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-isst "false"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ValueCandidate ; swrl:argument1 ashd:var-company ]
+    ) .
+
+# ===========================================================================
+# R02 — High financial risk
+# ===========================================================================
+
+ashd:rule-high-financial-risk
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R02" ;
+    rdfs:label "高财务风险识别"@zh, "High financial risk detection"@en ;
+    rdfs:comment "资产负债率不低于 70% 且利息保障倍数低于 2 的公司，推断为高财务风险。"@zh ;
+    ash:ruleIf "年报资产负债率 ≥ 70%，利息保障倍数 < 2"@zh ;
+    ash:ruleThen "公司被推断为 ash:HighFinancialRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 10 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:ListedCompany ;
+    ash:ruleUses ash:debtRatio, ash:interestCoverage ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-report ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:debtRatio ; swrl:argument1 ashd:var-report ; swrl:argument2 ashd:var-debtratio ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:interestCoverage ; swrl:argument1 ashd:var-report ; swrl:argument2 ashd:var-interest ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-debtratio "70.0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-interest "2.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:HighFinancialRisk ; swrl:argument1 ashd:var-company ]
+    ) .
+
+# ===========================================================================
+# R03 / R04 — Hard exclusions
+# ===========================================================================
+
+ashd:rule-st-exclusion
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R03" ;
+    rdfs:label "ST 股票池排除"@zh, "ST universe exclusion"@en ;
+    rdfs:comment "isST 为 true 的公司不得进入主动股票池。"@zh ;
+    ash:ruleIf "公司 isST = true"@zh ;
+    ash:ruleThen "公司被推断为 ash:ExcludedFromUniverse"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 1 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "合规部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:ListedCompany ;
+    ash:ruleUses ash:isST ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:isST ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-isst ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-isst "true"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExcludedFromUniverse ; swrl:argument1 ashd:var-company ]
+    ) .
+
+ashd:rule-delisting-exclusion
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R04" ;
+    rdfs:label "退市风险排除"@zh, "Delisting risk exclusion"@en ;
+    rdfs:comment "存在退市风险的公司不得进入主动股票池。"@zh ;
+    ash:ruleIf "公司 delistingRisk = true"@zh ;
+    ash:ruleThen "公司被推断为 ash:ExcludedFromUniverse"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 1 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "合规部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:ListedCompany ;
+    ash:ruleUses ash:delistingRisk ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:delistingRisk ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-isst ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-isst "true"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExcludedFromUniverse ; swrl:argument1 ashd:var-company ]
+    ) .
+
+# ===========================================================================
+# R05 — Stop-loss
+# ===========================================================================
+
+ashd:rule-stop-loss
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R05" ;
+    rdfs:label "持仓止损触发"@zh, "Position stop-loss trigger"@en ;
+    rdfs:comment "最新价不高于持仓成本乘以 0.8 时，推断为止损触发。"@zh ;
+    ash:ruleIf "持仓成本 × 0.8 ≥ 最新价"@zh ;
+    ash:ruleThen "持仓被推断为 ash:StopLossTriggered"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 5 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "组合管理部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:Position ;
+    ash:ruleUses ash:avgCost, ash:lastPrice ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-portfolio ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:holdsPosition ; swrl:argument1 ashd:var-portfolio ; swrl:argument2 ashd:var-position ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:positionIn ; swrl:argument1 ashd:var-position ; swrl:argument2 ashd:var-stock ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:avgCost ; swrl:argument1 ashd:var-position ; swrl:argument2 ashd:var-averagecost ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketQuote ; swrl:argument1 ashd:var-stock ; swrl:argument2 ashd:var-quote ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:lastPrice ; swrl:argument1 ashd:var-quote ; swrl:argument2 ashd:var-price ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:multiply ; swrl:arguments ( ashd:var-averagecost "0.8"^^xsd:decimal ashd:var-threshold ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-price ashd:var-threshold ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:StopLossTriggered ; swrl:argument1 ashd:var-position ]
+    ) .
+
+# ===========================================================================
+# R06 — Concentration
+# ===========================================================================
+
+ashd:rule-concentration
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R06" ;
+    rdfs:label "单票集中度超限"@zh, "Single-position concentration breach"@en ;
+    rdfs:comment "组合中任一持仓权重超过 10% 时，推断为集中度超限。"@zh ;
+    ash:ruleIf "组合中存在 positionWeight > 0.10 的持仓"@zh ;
+    ash:ruleThen "组合被推断为 ash:ConcentrationBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 6 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "组合管理部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:Portfolio ;
+    ash:ruleUses ash:positionWeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-portfolio ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:holdsPosition ; swrl:argument1 ashd:var-portfolio ; swrl:argument2 ashd:var-position ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:positionWeight ; swrl:argument1 ashd:var-position ; swrl:argument2 ashd:var-weight ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-weight "0.10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ConcentrationBreach ; swrl:argument1 ashd:var-portfolio ]
+    ) .
+
+# ===========================================================================
+# R07 — Restricted-list review
+# ===========================================================================
+
+ashd:rule-restricted-review
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R07" ;
+    rdfs:label "限制名单合规复核"@zh, "Restricted-list compliance review"@en ;
+    rdfs:comment "决策标的在限制名单中时，决策必须进入合规复核。"@zh ;
+    ash:ruleIf "决策 aboutSecurity 的证券 isRestricted = true"@zh ;
+    ash:ruleThen "决策被推断为 ash:RequiresComplianceReview"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 2 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "合规部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:InvestmentDecision ;
+    ash:ruleUses ash:aboutSecurity, ash:isRestricted ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:InvestmentDecision ; swrl:argument1 ashd:var-decision ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:aboutSecurity ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-security ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:isRestricted ; swrl:argument1 ashd:var-security ; swrl:argument2 ashd:var-isst ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-isst "true"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RequiresComplianceReview ; swrl:argument1 ashd:var-decision ]
+    ) .
+
+# ===========================================================================
+# R08 — Auditable decision
+# ===========================================================================
+
+ashd:rule-auditable-decision
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R08" ;
+    rdfs:label "可审计决策完整性"@zh, "Auditable decision completeness"@en ;
+    rdfs:comment "决策同时具备风险评价、理由、证据和政策依据时，推断为可审计决策。"@zh ;
+    ash:ruleIf "决策有风险评价、理由、至少一条证据和至少一项政策依据"@zh ;
+    ash:ruleThen "决策被推断为 ash:AuditableDecision"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 30 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:InvestmentDecision ;
+    ash:ruleUses ash:hasRiskAssessment, ash:hasRationale, ash:basedOn, ash:governedBy ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:InvestmentDecision ; swrl:argument1 ashd:var-decision ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRiskAssessment ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-risk ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRationale ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-rationale ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:basedOn ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-evidence ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:governedBy ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-policy ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:AuditableDecision ; swrl:argument1 ashd:var-decision ]
+    ) .
+
+# ===========================================================================
+# R09 — Illiquidity
+# ===========================================================================
+
+ashd:rule-illiquidity
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R09" ;
+    rdfs:label "低流动性证券识别"@zh, "Illiquid security detection"@en ;
+    rdfs:comment "换手率低于 0.5% 且总市值低于 50 亿元时，推断为低流动性证券。"@zh ;
+    ash:ruleIf "换手率 < 0.5% 且总市值 < 5,000,000,000 元"@zh ;
+    ash:ruleThen "证券被推断为 ash:IlliquidSecurity"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 8 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:turnoverRate, ash:marketCap ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketQuote ; swrl:argument1 ashd:var-security ; swrl:argument2 ashd:var-quote ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:turnoverRate ; swrl:argument1 ashd:var-quote ; swrl:argument2 ashd:var-turnover ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketCap ; swrl:argument1 ashd:var-quote ; swrl:argument2 ashd:var-marketcap ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-turnover "0.5"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-marketcap "5000000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:IlliquidSecurity ; swrl:argument1 ashd:var-security ]
+    ) .
+
+# ===========================================================================
+# R10 — Growth candidate
+# ===========================================================================
+
+ashd:rule-growth-candidate
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R10" ;
+    rdfs:label "成长候选筛选"@zh, "Growth candidate screen"@en ;
+    rdfs:comment "营收增速不低于 25%、净利润增速不低于 20%、PE(TTM) 高于 40 时，推断为成长候选。"@zh ;
+    ash:ruleIf "营收增速 ≥ 25%，净利润增速 ≥ 20%，PE(TTM) > 40"@zh ;
+    ash:ruleThen "公司被推断为 ash:GrowthCandidate"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 25 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:ListedCompany ;
+    ash:ruleUses ash:revenueGrowth, ash:profitGrowth, ash:peTtm ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-report ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasSecurity ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-stock ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasValuation ; swrl:argument1 ashd:var-stock ; swrl:argument2 ashd:var-valuation ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:revenueGrowth ; swrl:argument1 ashd:var-report ; swrl:argument2 ashd:var-revenuegrowth ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:profitGrowth ; swrl:argument1 ashd:var-report ; swrl:argument2 ashd:var-profitgrowth ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:peTtm ; swrl:argument1 ashd:var-valuation ; swrl:argument2 ashd:var-pe ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-revenuegrowth "25.0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-profitgrowth "20.0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-pe "40.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:GrowthCandidate ; swrl:argument1 ashd:var-company ]
+    ) .
+
+# ===========================================================================
+# R11 — Buy + high risk = second review
+# ===========================================================================
+
+ashd:rule-buy-high-risk-review
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R11" ;
+    rdfs:label "高风险买入二次复核"@zh, "High-risk buy second review"@en ;
+    rdfs:comment "风险分数不低于 60 的证券上给出 BUY 建议时，必须触发第二人复核。"@zh ;
+    ash:ruleIf "决策建议 actionCode = BUY 且风险评估 riskScore ≥ 60"@zh ;
+    ash:ruleThen "决策被推断为 ash:RequiresSecondReview"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 3 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.0.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
+    ash:appliesTo ash:InvestmentDecision ;
+    ash:ruleUses ash:actionCode, ash:riskScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:InvestmentDecision ; swrl:argument1 ashd:var-decision ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRecommendation ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-recommendation ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:actionCode ; swrl:argument1 ashd:var-recommendation ; swrl:argument2 ashd:var-action ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRiskAssessment ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-risk ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:riskScore ; swrl:argument1 ashd:var-risk ; swrl:argument2 ashd:var-score ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-action "BUY"^^xsd:string ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-score "60.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RequiresSecondReview ; swrl:argument1 ashd:var-decision ]
+    ) .
