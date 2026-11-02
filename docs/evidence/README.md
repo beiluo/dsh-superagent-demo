@@ -21,11 +21,14 @@ These captures document the browser work for the A-share ontology tickets.
 | `agent-answer.png` | Same merged branch head; question “分析华辰智造” | 1240 × 1061 | Summary card, ontology-grounded answer, R01/R06/R08 signals, decision chain and citations. |
 | `agent-summary.png` | Same state | 808 × 76 | Close-up of the structured conclusion card. |
 | `agent-mobile.png` | Same merged branch head; 390 px viewport | 390 × 1289 | Responsive Agent layout with no horizontal overflow. |
+| `real-data-before.png` | Merged `main` at `07ad134`, before this ticket; served by `uvicorn`, rules mode | 1440 × 1000 | Baseline: asking “分析贵州茅台” returns “没有找到对应公司”, and the footnote says the Agent only covers 4 synthetic companies. |
+| `real-data-after.png` | This ticket branch; same rules-mode server and scenario | 1440 × 1000 | The same question returns a real-data answer: source and dates, 2025 annual metrics, PE/PB, real-data summary card and evidence chips. |
 
 The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
 not a mockup. The after captures use the actual FastAPI backend and the real `index.html`; no LLM
 provider key was configured, so the screenshots show the deterministic **rules mode**. LLM mode and
 the tool loop are covered by `tests/test_llm.py` with a local OpenAI-compatible stub.
 
-The page was served by `uvicorn server.main:app`; screenshots were taken with Puppeteer/Chromium.
-All example content is synthetic; see the repository README for the disclaimer.
+The page was served by `uvicorn server.main:app`; screenshots were taken with Playwright/Chromium.
+All example content is synthetic; the `real-data-*` pair additionally shows a live public-data query
+against Eastmoney's anonymous JSON endpoints. See the repository README for the disclaimer.

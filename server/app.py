@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .agent import AgentService
 from .llm import LLMClient
+from .marketdata import EastmoneyProvider, MarketDataProvider
 from .ontology import OntologyStore
 from .security import SlidingWindowLimiter, client_ip
 from .settings import Settings
@@ -25,9 +26,12 @@ from .settings import Settings
 logger = logging.getLogger("ashare.agent.api")
 
 SERVICE_NAME = "ashare-ontology-agent"
-SERVICE_VERSION = "1.0.0"
+SERVICE_VERSION = "1.1.0"
 
-DISCLAIMER = "本服务只分析本体中的合成示例数据，不构成投资建议，不连接真实行情或交易通道。"
+DISCLAIMER = (
+    "示例公司数据为合成示例；真实 A 股数据来自公开行情与年报接口，可能延迟。"
+    "不构成投资建议，不连接交易通道。"
+)
 
 
 class HistoryItem(BaseModel):
@@ -76,9 +80,19 @@ def create_app(
     settings: Settings | None = None,
     store: OntologyStore | None = None,
     llm: LLMClient | None = None,
+    market_data: MarketDataProvider | None = None,
 ) -> FastAPI:
     settings = settings or Settings.from_env()
-    store = store or OntologyStore(settings.root)
+    if store is None:
+        if market_data is None and settings.market_data_enabled:
+            market_data = EastmoneyProvider(
+                timeout_seconds=settings.market_data_timeout_seconds,
+                quote_ttl_seconds=settings.market_data_quote_ttl_seconds,
+                financial_ttl_seconds=settings.market_data_financial_ttl_seconds,
+            )
+        store = OntologyStore(settings.root, market_data=market_data)
+    elif market_data is not None:
+        store.market_data = market_data
     service = AgentService(store, settings, llm=llm)
     limiter = SlidingWindowLimiter(
         per_minute=settings.rate_limit_per_minute,
@@ -203,6 +217,12 @@ def create_app(
                 "rules": len(store.rules()),
             },
             "companies": store.company_names(),
+            "marketData": {
+                "enabled": store.market_data is not None,
+                "provider": getattr(store.market_data, "source_label", None),
+                "scope": "真实 A 股（6 位证券代码或证券简称）",
+                "note": "公开行情与年报接口，可能延迟；不连接交易通道。",
+            },
             "disclaimer": DISCLAIMER,
             "keyHandling": "LLM_API_KEY 只存在于服务端环境变量；浏览器不会收到密钥。",
         }

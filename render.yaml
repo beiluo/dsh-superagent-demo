@@ -28,3 +28,5 @@ services:
         value: "300"
       - key: SERVE_STATIC
         value: "true"
+      - key: MARKET_DATA_ENABLED
+        value: "true"

@@ -56,6 +56,7 @@ def base_settings(store: OntologyStore) -> Settings:
         rate_limit_per_hour=100,
         daily_request_budget=100,
         max_request_bytes=24_000,
+        market_data_enabled=False,
     )
 
 

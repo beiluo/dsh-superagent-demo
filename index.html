@@ -169,8 +169,8 @@
           <h2 id="agent-title">让 Agent 用本体回答，而不是猜</h2>
         </div>
         <p class="section-lede">
-          Agent 先读取公司、财务、规则、决策与政策，再组织回答。LLM key 只放在服务端环境变量里；
-          GitHub Pages 上的静态页面永远不包含密钥。
+          示例公司走本体推理；真实 A 股可按 6 位代码或简称查询公开行情与年报，再映射进同一套本体。
+          LLM key 只放在服务端环境变量里；GitHub Pages 上的静态页面永远不包含密钥。
         </p>
       </div>
 
@@ -204,8 +204,8 @@
               <p class="agent-welcome-kicker">GROUNDED IN ASHARE ONTOLOGY</p>
               <h3>问一个关于本体的问题</h3>
               <p>
-                Agent 会先检索企业、规则、决策与政策，再生成回答。问题只发送到服务端；
-                演示数据全部为合成示例。
+                Agent 会先检索企业、规则、决策与政策，再生成回答。示例公司使用合成本体数据；
+                真实 A 股按代码或简称查询公开行情与年报数据。
               </p>
             </div>
           </div>
@@ -217,7 +217,7 @@
               id="agent-input"
               rows="1"
               maxlength="500"
-              placeholder="例如：华辰智造的基本面和规则信号怎么样？"
+              placeholder="例如：分析贵州茅台（600519）的基本面和规则信号？"
             ></textarea>
             <button class="agent-submit" id="agent-submit" type="submit">
               <span>分析</span>
@@ -225,7 +225,7 @@
             </button>
           </form>
           <div class="agent-foot">
-            <span id="agent-footnote">示例数据，不构成投资建议。Agent 只分析本体中的 4 家合成公司。</span>
+            <span id="agent-footnote">示例公司为本体合成数据；真实 A 股来自公开行情/年报接口，可能延迟，不构成投资建议。</span>
             <span id="agent-counter">0 / 500</span>
           </div>
         </div>

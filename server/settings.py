@@ -112,6 +112,10 @@ class Settings:
     max_concurrency: int = 4
     trust_proxy: bool = False
     serve_static: bool = True
+    market_data_enabled: bool = True
+    market_data_timeout_seconds: float = 8.0
+    market_data_quote_ttl_seconds: int = 60
+    market_data_financial_ttl_seconds: int = 21_600
 
     @property
     def configured(self) -> bool:
@@ -162,4 +166,10 @@ class Settings:
             max_concurrency=_env_int("MAX_CONCURRENCY", 4, minimum=1),
             trust_proxy=_env_bool("TRUST_PROXY", False),
             serve_static=_env_bool("SERVE_STATIC", True),
+            market_data_enabled=_env_bool("MARKET_DATA_ENABLED", True),
+            market_data_timeout_seconds=_env_float("MARKET_DATA_TIMEOUT_SECONDS", 8.0, minimum=2.0),
+            market_data_quote_ttl_seconds=_env_int("MARKET_DATA_QUOTE_TTL_SECONDS", 60, minimum=0),
+            market_data_financial_ttl_seconds=_env_int(
+                "MARKET_DATA_FINANCIAL_TTL_SECONDS", 21_600, minimum=300
+            ),
         )

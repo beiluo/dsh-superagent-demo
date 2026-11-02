@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
 from rdflib import Graph, Literal, RDF, RDFS, SKOS, URIRef
-from rdflib.namespace import DCTERMS, OWL
+from rdflib.namespace import DCTERMS, OWL, XSD
 
-from .namespaces import ASH, ASHD, ASHS, ODRL, ONTOLOGY_MODULES
+from .marketdata import MarketDataProvider, RealCompanySnapshot, SOURCE_LABEL, SOURCE_URL, industry_slug
+from .namespaces import ASH, ASHD, ASHS, ASHREAL, ODRL, ONTOLOGY_MODULES
 from .rules import RULE_THRESHOLDS, evaluate_company, evaluate_portfolio, fmt_money, fmt_pct, fmt_weight
 
 
@@ -43,8 +44,19 @@ class CompanyKnowledge:
     portfolio: dict[str, Any] | None
     macro: list[dict[str, Any]]
     citations: list[dict[str, str]]
+    data_mode: str = "example"
+    notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
+        if self.data_mode == "real":
+            note = (
+                "数据来自东方财富公开行情与年报接口，行情可能延迟；"
+                "规则阈值仍为本体演示常量，不构成投资建议。"
+            )
+            if self.notes:
+                note += " 部分数据缺失：" + "；".join(self.notes)
+        else:
+            note = "所有公司、财务、行情、决策、规则与政策均为本体中的合成示例，不构成投资建议。"
         return {
             "company": self.company,
             "security": self.security,
@@ -56,15 +68,17 @@ class CompanyKnowledge:
             "position": self.position,
             "portfolio": self.portfolio,
             "macro": self.macro,
-            "dataNote": "所有公司、财务、行情、决策、规则与政策均为本体中的合成示例，不构成投资建议。",
+            "dataMode": self.data_mode,
+            "dataNote": note,
         }
 
 
 class OntologyStore:
     """Loads the canonical Turtle modules and exposes compact fact sheets."""
 
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, market_data: MarketDataProvider | None = None):
         self.root = root
+        self.market_data = market_data
         self.graph = Graph()
         for module in ONTOLOGY_MODULES:
             path = root / "ontology" / module
@@ -76,6 +90,11 @@ class OntologyStore:
         self._rule_cache: dict[str, dict[str, Any]] | None = None
         self._policy_cache: list[dict[str, Any]] | None = None
         self._search_index: list[dict[str, Any]] | None = None
+        self._real_subjects: set[URIRef] = set()
+        self._real_companies: set[URIRef] = set()
+        self._real_entities: dict[str, set[URIRef]] = {}
+        self._real_notes: dict[str, list[str]] = {}
+        self._industry_labels: dict[str, URIRef] | None = None
 
     # ------------------------------------------------------------------
     # RDF helpers
@@ -192,7 +211,7 @@ class OntologyStore:
             "id": ref["id"],
             "iri": ref["iri"],
             "label": ref["label"],
-            "kind": ref["kind"],
+            "kind": "real" if subject in self._real_subjects else ref["kind"],
         }
 
     def _dedupe_citations(
@@ -265,6 +284,348 @@ class OntologyStore:
         matches = self.find_companies(text)
         return matches[0] if matches else None
 
+    # ------------------------------------------------------------------
+    # Real A-share snapshots mapped into the runtime graph
+    # ------------------------------------------------------------------
+
+    _INDUSTRY_ALIASES = {
+        "银行": "industry-bank",
+        "零售银行": "industry-retail-bank",
+        "白酒": "industry-baijiu",
+        "半导体": "industry-semiconductor",
+        "半导体设备": "industry-semiconductor-equipment",
+        "半导体材料": "industry-semiconductor-materials",
+        "证券": "industry-securities",
+        "证券经纪": "industry-securities-brokerage",
+        "保险": "industry-insurance",
+        "煤炭": "industry-coal",
+        "石油石化": "industry-oil-petrochemical",
+        "有色金属": "industry-nonferrous",
+        "基础化工": "industry-chemicals",
+        "钢铁": "industry-steel",
+        "电力": "industry-power",
+        "环保": "industry-environmental",
+        "房地产": "industry-real-estate",
+        "房地产开发": "industry-property-development",
+        "传媒": "industry-media",
+        "通信服务": "industry-communication-services",
+        "家用电器": "industry-home-appliance",
+        "汽车": "industry-auto",
+        "机械设备": "industry-machinery",
+        "国防军工": "industry-defense",
+        "电力设备": "industry-electric-equipment",
+        "新能源": "industry-new-energy",
+        "光伏设备": "industry-photovoltaic",
+        "储能电池": "industry-energy-storage",
+        "软件服务": "industry-software",
+        "通信设备": "industry-communication-equipment",
+        "信息技术": "industry-information-technology",
+        "医药健康": "industry-healthcare",
+        "创新药": "industry-innovative-drug",
+        "医疗器械": "industry-medical-device",
+        "医疗服务": "industry-medical-service",
+        "食品饮料": "industry-food-beverage",
+        "公用事业": "industry-utilities",
+        "材料": "industry-materials",
+        "能源": "industry-energy",
+        "金融": "industry-financials",
+        "消费": "industry-consumer",
+        "高端制造": "industry-advanced-manufacturing",
+        "交通运输": None,
+        "建筑装饰": "industry-real-estate",
+        "商贸零售": "industry-consumer",
+        "社会服务": "industry-consumer",
+        "纺织服饰": "industry-consumer",
+        "农林牧渔": "industry-consumer",
+    }
+
+    _INDUSTRY_KEYWORDS = (
+        ("白酒", "industry-baijiu"),
+        ("啤酒", "industry-food-beverage"),
+        ("食品", "industry-food-beverage"),
+        ("饮料", "industry-food-beverage"),
+        ("乳", "industry-food-beverage"),
+        ("调味", "industry-food-beverage"),
+        ("银行", "industry-bank"),
+        ("证券", "industry-securities"),
+        ("保险", "industry-insurance"),
+        ("半导体", "industry-semiconductor"),
+        ("软件", "industry-software"),
+        ("计算机", "industry-software"),
+        ("通信", "industry-communication-equipment"),
+        ("电子", "industry-information-technology"),
+        ("传媒", "industry-media"),
+        ("游戏", "industry-media"),
+        ("医药", "industry-healthcare"),
+        ("生物", "industry-healthcare"),
+        ("医疗", "industry-healthcare"),
+        ("电力设备", "industry-electric-equipment"),
+        ("机械", "industry-machinery"),
+        ("军工", "industry-defense"),
+        ("国防", "industry-defense"),
+        ("汽车", "industry-auto"),
+        ("家电", "industry-home-appliance"),
+        ("新能源", "industry-new-energy"),
+        ("光伏", "industry-photovoltaic"),
+        ("储能", "industry-energy-storage"),
+        ("煤炭", "industry-coal"),
+        ("石油", "industry-oil-petrochemical"),
+        ("油气", "industry-oil-petrochemical"),
+        ("有色", "industry-nonferrous"),
+        ("化工", "industry-chemicals"),
+        ("钢铁", "industry-steel"),
+        ("电力", "industry-power"),
+        ("燃气", "industry-utilities"),
+        ("水务", "industry-utilities"),
+        ("环保", "industry-environmental"),
+        ("房地产", "industry-real-estate"),
+        ("建筑", "industry-real-estate"),
+        ("交通", None),
+        ("物流", None),
+    )
+
+    def _add_aliases(self, subject: URIRef, aliases: Iterable[Any]) -> None:
+        for alias in aliases:
+            normalized = normalize_text(alias)
+            if not normalized or len(normalized) < 2:
+                continue
+            if normalized in {"示例", "公司", "股票", "标的"}:
+                continue
+            current = self._aliases.get(normalized)
+            if current is None:
+                self._aliases[normalized] = subject
+            elif current != subject:
+                # Ambiguous alias: never let one company steal another one's name.
+                self._aliases.pop(normalized, None)
+
+    def is_real_company(self, subject: Any) -> bool:
+        return isinstance(subject, URIRef) and subject in self._real_companies
+
+    def real_company(self, query: str) -> URIRef | None:
+        """Fetch a real A-share and map it into the runtime graph.
+
+        Returns ``None`` when the provider is disabled or the query does not
+        resolve to a listed A-share.  Network failures raise
+        :class:`~server.marketdata.MarketDataError`.
+        """
+
+        if self.market_data is None:
+            return None
+        snapshot = self.market_data.fetch(query)
+        if snapshot is None:
+            return None
+        return self.register_real_company(snapshot)
+
+    def register_real_company(self, snapshot: RealCompanySnapshot) -> URIRef:
+        """Map one public-data snapshot to ontology individuals (in memory)."""
+
+        security_ref = snapshot.security
+        code = security_ref.code
+        company = ASHREAL[f"company-{code}"]
+        security = ASHREAL[f"security-{code}"]
+        quote = ASHREAL[f"quote-{code}"]
+        valuation = ASHREAL[f"valuation-{code}"]
+        factory = {
+            "SSE": ASHREAL["exchange-sse"],
+            "SZSE": ASHREAL["exchange-szse"],
+            "BSE": ASHREAL["exchange-bse"],
+        }
+        exchange = factory.get(security_ref.exchange_code, ASHREAL["exchange-sse"])
+        segment = ASHREAL[f"segment-{security_ref.segment_code}"]
+        source = ASHREAL["source-eastmoney"]
+        as_of = snapshot.as_of()
+        notes = list(snapshot.notes)
+        company_name = security_ref.name or security_ref.code
+        is_st = bool(re.match(r"^(?:S?\*?ST|SST)", company_name.upper()))
+        delisting = "退" in company_name
+
+        previous = self._real_entities.pop(code, set())
+        for entity in previous:
+            self.graph.remove((entity, None, None))
+        self._knowledge_cache.pop(company, None)
+
+        # Shared market-structure and source individuals.
+        for entity, label, kind in (
+            (exchange, security_ref.exchange_label, ASH.Exchange),
+            (segment, security_ref.segment_label, ASH.MarketSegment),
+        ):
+            self.graph.add((entity, RDF.type, kind))
+            self.graph.add((entity, RDFS.label, Literal(label, lang="zh")))
+            self.graph.add((entity, ASH.isExample, Literal(False)))
+        self.graph.add((exchange, ASH.exchangeCode, Literal(security_ref.exchange_code)))
+        self.graph.add((source, RDF.type, ASH.DataSource))
+        self.graph.add((source, RDFS.label, Literal(SOURCE_LABEL, lang="zh")))
+        self.graph.add((source, DCTERMS.source, Literal(SOURCE_URL)))
+        self.graph.add((source, ASH.isExample, Literal(False)))
+
+        # Company.
+        self.graph.add((company, RDF.type, ASH.ListedCompany))
+        self.graph.add((company, RDFS.label, Literal(company_name, lang="zh")))
+        self.graph.add((company, ASH.companyName, Literal(company_name)))
+        self.graph.add((company, ASH.companyCode, Literal(code)))
+        self.graph.add((company, ASH.isST, Literal(is_st)))
+        self.graph.add((company, ASH.delistingRisk, Literal(delisting)))
+        self.graph.add((company, ASH.hasSecurity, security))
+        self.graph.add((company, ASH.isExample, Literal(False)))
+        self.graph.add((company, DCTERMS.source, Literal(SOURCE_LABEL)))
+        self.graph.add(
+            (
+                company,
+                RDFS.comment,
+                Literal(
+                    f"运行时从{SOURCE_LABEL}映射的真实 A 股公司；行情可能延迟，不构成投资建议。",
+                    lang="zh",
+                ),
+            )
+        )
+
+        # Security.
+        self.graph.add((security, RDF.type, ASH.AShare))
+        self.graph.add((security, RDFS.label, Literal(f"{company_name} A", lang="zh")))
+        self.graph.add((security, ASH.securityName, Literal(company_name)))
+        self.graph.add((security, ASH.securityCode, Literal(code)))
+        self.graph.add((security, ASH.listedOn, exchange))
+        self.graph.add((security, ASH.tradesOn, segment))
+        self.graph.add((security, ASH.issuedBy, company))
+        self.graph.add((security, ASH.isRestricted, Literal(False)))
+        self.graph.add((security, ASH.hasMarketQuote, quote))
+        self.graph.add((security, ASH.hasValuation, valuation))
+        self.graph.add((security, ASH.isExample, Literal(False)))
+        self.graph.add((security, DCTERMS.source, Literal(SOURCE_LABEL)))
+        if snapshot.quote.get("lastPrice") is None:
+            self.graph.add((security, ASH.isSuspended, Literal(True)))
+            notes.append("最新价为缺失值，证券可能停牌。")
+
+        # Market quote.
+        self.graph.add((quote, RDF.type, ASH.MarketQuote))
+        self.graph.add((quote, ASH.quoteOf, security))
+        for field_name, predicate in (
+            ("lastPrice", ASH.lastPrice),
+            ("changePct", ASH.changePct),
+            ("volume", ASH.volume),
+            ("turnoverRate", ASH.turnoverRate),
+            ("marketCap", ASH.marketCap),
+        ):
+            value = snapshot.quote.get(field_name)
+            if value is not None:
+                self.graph.add((quote, predicate, Literal(value)))
+        self.graph.add((quote, ASH.dataAsOf, Literal(as_of, datatype=XSD.date)))
+        self.graph.add((quote, ASH.dataSource, Literal(SOURCE_LABEL)))
+        self.graph.add((quote, ASH.dataQualityFlag, Literal("public-api")))
+        self.graph.add((quote, ASH.isExample, Literal(False)))
+        self.graph.add((quote, RDFS.label, Literal(f"{company_name} {as_of} 行情", lang="zh")))
+
+        # Valuation.
+        self.graph.add((valuation, RDF.type, ASH.Valuation))
+        self.graph.add((valuation, ASH.valuationOf, security))
+        for field_name, predicate in (
+            ("peTtm", ASH.peTtm),
+            ("pb", ASH.pb),
+            ("dividendYield", ASH.dividendYield),
+        ):
+            value = snapshot.valuation.get(field_name)
+            if value is not None:
+                self.graph.add((valuation, predicate, Literal(value)))
+        self.graph.add((valuation, ASH.dataAsOf, Literal(as_of, datatype=XSD.date)))
+        self.graph.add((valuation, ASH.dataSource, Literal(SOURCE_LABEL)))
+        self.graph.add((valuation, ASH.dataQualityFlag, Literal("public-api")))
+        self.graph.add((valuation, ASH.isExample, Literal(False)))
+        self.graph.add((valuation, RDFS.label, Literal(f"{company_name} {as_of} 估值", lang="zh")))
+
+        entities = {company, security, quote, valuation}
+
+        # Annual report.
+        financials = snapshot.financials or {}
+        if financials:
+            period = str(financials.get("period") or "")[:4]
+            report = ASHREAL[f"report-{code}-{period or 'latest'}"]
+            self.graph.add((report, RDF.type, ASH.AnnualReport))
+            self.graph.add((report, ASH.reportsOn, company))
+            if period:
+                self.graph.add((report, ASH.reportPeriod, Literal(period, datatype=XSD.gYear)))
+            fiscal_year_end = financials.get("fiscalYearEnd")
+            if fiscal_year_end:
+                self.graph.add((report, ASH.fiscalYearEnd, Literal(fiscal_year_end, datatype=XSD.date)))
+            for field_name, predicate in (
+                ("revenue", ASH.revenue),
+                ("netProfit", ASH.netProfit),
+                ("roe", ASH.roe),
+                ("roa", ASH.roa),
+                ("debtRatio", ASH.debtRatio),
+                ("interestCoverage", ASH.interestCoverage),
+                ("operatingCashFlow", ASH.operatingCashFlow),
+                ("revenueGrowth", ASH.revenueGrowth),
+                ("profitGrowth", ASH.profitGrowth),
+                ("eps", ASH.eps),
+            ):
+                value = financials.get(field_name)
+                if value is not None:
+                    self.graph.add((report, predicate, Literal(value)))
+            self.graph.add((report, ASH.dataAsOf, Literal(fiscal_year_end or as_of, datatype=XSD.date)))
+            self.graph.add((report, ASH.dataSource, Literal(SOURCE_LABEL)))
+            self.graph.add((report, ASH.dataQualityFlag, Literal("public-api")))
+            self.graph.add((report, ASH.isExample, Literal(False)))
+            self.graph.add(
+                (report, RDFS.label, Literal(f"{company_name} {period or ''} 年年报", lang="zh"))
+            )
+            self.graph.add((company, ASH.hasFinancialReport, report))
+            entities.add(report)
+
+        # Industry concept (existing SKOS concept when possible).
+        industry_label = snapshot.industry
+        if industry_label:
+            industry = self._map_industry(industry_label)
+            self.graph.add((company, ASH.primaryIndustry, industry))
+
+        self._real_entities[code] = entities
+        self._real_subjects.update(entities)
+        self._real_companies.add(company)
+        self._real_notes[code] = notes
+        suffix = {"SSE": "SH", "SZSE": "SZ", "BSE": "BJ"}.get(security_ref.exchange_code, "")
+        self._add_aliases(
+            company,
+            (
+                company_name,
+                code,
+                f"{code}.{suffix}" if suffix else code,
+                local_name(company),
+                str(company),
+            ),
+        )
+        return company
+
+    def _map_industry(self, label: str) -> URIRef:
+        canonical = normalize_text(label)
+        canonical = re.sub(r"(Ⅱ|Ⅲ|II|III|ii|iii)$", "", canonical)
+        if self._industry_labels is None:
+            self._industry_labels = {}
+            for subject in self.graph.subjects(RDF.type, SKOS.Concept):
+                if not isinstance(subject, URIRef):
+                    continue
+                for pref in self.graph.objects(subject, SKOS.prefLabel):
+                    self._industry_labels.setdefault(normalize_text(pref), subject)
+        existing = self._industry_labels.get(canonical)
+        if existing is not None:
+            return existing
+        alias = self._INDUSTRY_ALIASES.get(canonical)
+        if alias:
+            return ASHS[alias]
+        for keyword, concept in self._INDUSTRY_KEYWORDS:
+            if keyword in canonical and concept:
+                return ASHS[concept]
+        concept = ASHREAL[industry_slug(label)]
+        self.graph.add((concept, RDF.type, SKOS.Concept))
+        self.graph.add((concept, SKOS.prefLabel, Literal(label, lang="zh")))
+        self.graph.add((concept, SKOS.inScheme, ASHS["scheme-industry"]))
+        self.graph.add(
+            (concept, SKOS.definition, Literal(f"东方财富行业分类“{label}”的运行时映射，非官方行业分类。", lang="zh"))
+        )
+        self.graph.add((concept, ASH.isExample, Literal(False)))
+        self.graph.add((concept, DCTERMS.source, Literal(SOURCE_LABEL)))
+        self._real_subjects.add(concept)
+        self._industry_labels[canonical] = concept
+        return concept
+
     def company_names(self) -> list[dict[str, str]]:
         names = []
         for subject in self._company_subjects:
@@ -308,6 +669,7 @@ class OntologyStore:
         portfolio = self._first(position, ASH.positionOf) if isinstance(position, URIRef) else None
 
         company_ref = self._ref(subject) or {}
+        data_mode = "real" if subject in self._real_subjects else "example"
         company = {
             **company_ref,
             "labelEn": self._label_en(subject),
@@ -318,6 +680,7 @@ class OntologyStore:
             "delistingRisk": self._bool(subject, ASH.delistingRisk),
             "industry": self._ref(self._first(subject, ASH.primaryIndustry)),
             "themes": self._refs(subject, ASH.hasThemeExposure),
+            "dataMode": data_mode,
         }
 
         security_dict = None
@@ -417,6 +780,8 @@ class OntologyStore:
             portfolio=portfolio_dict,
             macro=macro,
             citations=citations,
+            data_mode=data_mode,
+            notes=self._real_notes.get(company.get("companyCode") or "", []),
         )
         self._knowledge_cache[subject] = knowledge
         return knowledge
