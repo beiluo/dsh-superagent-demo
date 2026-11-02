@@ -649,14 +649,15 @@ index.html + assets/js/app.js
 ### 14.2 信息架构
 
 1. 首屏：本体定位、七层徽章、示例决策卡、规模指标；
-2. 七层语义栈；
-3. Ontology Explorer：搜索、类型筛选、来源层筛选、实体详情；
-4. SKOS 概念树 + 概念详情；
-5. SWRL 规则卡；
-6. OWL-S 服务契约与流程；
-7. ODRL 政策矩阵；
-8. 决策样例（建议、风险、证据链、政策、合规）；
-9. W3C 对照表、下载、能力问题。
+2. Agent 对话区：服务端工具循环或规则模式，回答附带本体证据；
+3. 七层语义栈；
+4. Ontology Explorer：搜索、类型筛选、来源层筛选、实体详情；
+5. SKOS 概念树 + 概念详情；
+6. SWRL 规则卡；
+7. OWL-S 服务契约与流程；
+8. ODRL 政策矩阵；
+9. 决策样例（建议、风险、证据链、政策、合规）；
+10. W3C 对照表、下载、能力问题。
 
 ### 14.3 可访问性与响应式
 
@@ -665,6 +666,24 @@ index.html + assets/js/app.js
 - 尊重 `prefers-reduced-motion`；
 - 表格在小屏可横向滚动；
 - 页面无外部字体/CDN 依赖。
+
+### 14.4 Agent 层（服务端）
+
+Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物：
+
+- **前端**：`assets/js/agent.js` 只调用公开的 `POST /api/agent/analyze`；`agent-config.js`
+  只保存公开的 `apiBase`，不含任何密钥。
+- **本体访问**：`server/ontology.py` 用 rdflib 读取 `ontology/**/*.ttl`，构建公司、证券、财报、
+  行情估值、风险、决策、证据、合规、组合与政策的紧凑事实；不依赖浏览器快照。
+- **规则**：`server/rules.py` 对 R01—R11 做确定性评估；阈值与 `ontology/swrl/rules.ttl` 的示例常量
+  一致，`tests/test_rules.py` 直接从 SWRL body 提取字面量校验。
+- **工具循环**：`server/tools.py` 暴露 7 个只读工具；LLM 只能看到工具结果，不能访问环境变量。
+- **回退**：没有 `LLM_API_KEY` 或上游失败时，`server/agent.py` 用同一批工具生成确定性 Markdown，
+  页面明确显示“规则模式”，不会把上游错误或密钥返回浏览器。
+- **边界控制**：CORS 白名单、每 IP 分钟/小时限流、每日额度、请求体上限、并发上限、静态文件白名单；
+  静态服务只挂载 `assets/`、`ontology/`、`docs/` 与 `index.html`，不暴露 `.env`、`server/` 或 `.git`。
+
+部署、密钥轮换与 GitHub Pages 接入见 [`agent.md`](agent.md)。
 
 ---
 
