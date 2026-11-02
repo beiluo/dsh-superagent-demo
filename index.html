@@ -29,6 +29,7 @@
       <a href="#overview">概览</a>
       <a href="#stack">语义栈</a>
       <a href="#explorer">浏览</a>
+      <a href="#graph">图谱</a>
       <a href="#taxonomy">分类</a>
       <a href="#rules">规则</a>
       <a href="#services">服务</a>
@@ -250,12 +251,65 @@
     </section>
 
     <!-- ==================================================================
+         Ontology graph
+    =================================================================== -->
+    <section class="section graph-section" id="graph" aria-labelledby="graph-title">
+      <div class="section-head reveal">
+        <div>
+          <p class="section-index">03 / ONTOLOGY GRAPH</p>
+          <h2 id="graph-title">把本体当作一张图来看</h2>
+        </div>
+        <p class="section-lede">
+          节点是类或 SKOS 概念，连线是类层次与对象属性。颜色代表领域簇；支持缩放、平移和节点聚焦，点击节点可直接打开语义详情。
+        </p>
+      </div>
+
+      <div class="graph-shell reveal">
+        <div class="graph-toolbar">
+          <div class="graph-modes" id="graph-modes" role="tablist" aria-label="图谱模式">
+            <button class="graph-mode is-active" type="button" role="tab" aria-selected="true" data-graph-mode="overview">领域全景</button>
+            <button class="graph-mode" type="button" role="tab" aria-selected="false" data-graph-mode="decision">决策链</button>
+            <button class="graph-mode" type="button" role="tab" aria-selected="false" data-graph-mode="taxonomy">SKOS 分类</button>
+          </div>
+          <div class="graph-legend" id="graph-legend" aria-label="图例与领域筛选"></div>
+          <div class="graph-actions">
+            <button class="graph-action" id="graph-label-toggle" type="button" aria-pressed="true" title="显示/隐藏节点标签">标签</button>
+            <button class="graph-action" id="graph-zoom-out" type="button" aria-label="缩小">−</button>
+            <button class="graph-action" id="graph-zoom-in" type="button" aria-label="放大">+</button>
+            <button class="graph-action graph-reset" id="graph-reset" type="button">重置</button>
+          </div>
+        </div>
+
+        <div class="graph-body">
+          <div class="graph-stage" id="graph-stage">
+            <svg id="ontology-graph" role="img" aria-label="A 股投资决策本体的类与对象属性关系图"></svg>
+            <div class="graph-hint">滚轮缩放 · 拖拽平移 · 点击节点</div>
+            <div class="graph-tooltip" id="graph-tooltip" hidden></div>
+          </div>
+          <aside class="graph-inspector" id="graph-inspector" aria-live="polite">
+            <div class="graph-inspector-empty" id="graph-inspector-empty">
+              <p class="detail-kicker">GRAPH INSPECTOR</p>
+              <h3>从一个节点开始</h3>
+              <p>点击类节点查看定义、上下位关系、对象属性与规则引用；切换到 SKOS 分类后可以浏览概念层级。</p>
+              <div class="graph-inspector-keys">
+                <span>类</span><span>对象属性</span><span>SKOS</span><span>决策链</span>
+              </div>
+            </div>
+            <div id="graph-inspector-content" hidden></div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="graph-scale" id="graph-scale"></div>
+    </section>
+
+    <!-- ==================================================================
          Taxonomy
     =================================================================== -->
     <section class="section taxonomy-section" id="taxonomy" aria-labelledby="taxonomy-title">
       <div class="section-head reveal">
         <div>
-          <p class="section-index">03 / SKOS TAXONOMY</p>
+          <p class="section-index">04 / SKOS TAXONOMY</p>
           <h2 id="taxonomy-title">行业、主题与风格，三套概念方案</h2>
         </div>
         <p class="section-lede">
@@ -289,7 +343,7 @@
     <section class="section rule-section" id="rules" aria-labelledby="rules-title">
       <div class="section-head section-head-light reveal">
         <div>
-          <p class="section-index">04 / SWRL RULES</p>
+          <p class="section-index">05 / SWRL RULES</p>
           <h2 id="rules-title">把投资逻辑写成可执行的规则</h2>
         </div>
         <p class="section-lede">
@@ -317,7 +371,7 @@
     <section class="section service-section" id="services" aria-labelledby="services-title">
       <div class="section-head reveal">
         <div>
-          <p class="section-index">05 / OWL-S SERVICE</p>
+          <p class="section-index">06 / OWL-S SERVICE</p>
           <h2 id="services-title">决策不是一个黑箱，而是一份服务契约</h2>
         </div>
         <p class="section-lede">
@@ -374,7 +428,7 @@
     <section class="section policy-section" id="policies" aria-labelledby="policies-title">
       <div class="section-head reveal">
         <div>
-          <p class="section-index">06 / ODRL POLICIES</p>
+          <p class="section-index">07 / ODRL POLICIES</p>
           <h2 id="policies-title">权限、禁止、义务，都能被机器检查</h2>
         </div>
         <p class="section-lede">
@@ -394,7 +448,7 @@
     <section class="section example-section" id="examples" aria-labelledby="examples-title">
       <div class="section-head reveal">
         <div>
-          <p class="section-index">07 / WORKED EXAMPLE</p>
+          <p class="section-index">08 / WORKED EXAMPLE</p>
           <h2 id="examples-title">一条建议的完整来路</h2>
         </div>
         <p class="section-lede">
@@ -414,7 +468,7 @@
     <section class="section method-section" id="method" aria-labelledby="method-title">
       <div class="section-head reveal">
         <div>
-          <p class="section-index">08 / METHOD &amp; ARTIFACTS</p>
+          <p class="section-index">09 / METHOD &amp; ARTIFACTS</p>
           <h2 id="method-title">每一层都能落到一个文件</h2>
         </div>
         <p class="section-lede">

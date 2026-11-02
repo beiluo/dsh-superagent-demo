@@ -42,6 +42,44 @@
 
   const SEVERITY_LABELS = { high: "高", medium: "中", low: "低" };
 
+  const GRAPH_CLUSTERS = {
+    MarketParticipant: { label: "市场参与者", color: "#e26b5f" },
+    FinancialInstrument: { label: "金融工具", color: "#4fc1b3" },
+    MarketStructure: { label: "市场结构", color: "#d4a64b" },
+    InformationObject: { label: "信息对象", color: "#6aa9e9" },
+    DecisionObject: { label: "决策对象", color: "#b08ae6" },
+    Risk: { label: "风险", color: "#f08a5a" },
+    Governance: { label: "治理与工件", color: "#9aa6b2" },
+  };
+
+  const GRAPH_SCHEMES = {
+    "scheme-industry": { label: "行业分类", color: "#e26b5f" },
+    "scheme-theme": { label: "投资主题", color: "#4fc1b3" },
+    "scheme-style": { label: "投资风格", color: "#d4a64b" },
+  };
+
+  const GRAPH_DECISION_IDS = [
+    "InvestmentDecision",
+    "DecisionRationale",
+    "Recommendation",
+    "RiskAssessment",
+    "RiskFactor",
+    "RiskLevel",
+    "Evidence",
+    "ComplianceCheck",
+    "InvestorProfile",
+    "Portfolio",
+    "Position",
+    "Security",
+    "ListedCompany",
+    "FinancialReport",
+    "Valuation",
+    "MarketQuote",
+    "InvestmentHorizon",
+    "DecisionService",
+    "DecisionPolicy",
+  ];
+
   const TYPE_ORDER = {
     class: 0,
     objectProperty: 1,
@@ -64,6 +102,14 @@
     ruleSeverity: "all",
     policyId: null,
     exampleId: null,
+    graphMode: "overview",
+    graphSelected: null,
+    graphShowLabels: true,
+    graphHidden: new Set(),
+    graphTransform: { x: 0, y: 0, k: 1 },
+    graphNodes: [],
+    graphEdges: [],
+    graphPanning: null,
   };
 
   const esc = (value) =>
@@ -1200,6 +1246,678 @@
   }
 
 
+
+  /* ------------------------------------------------------------------------
+     Ontology graph
+  ------------------------------------------------------------------------ */
+
+  function mulberry32(seed) {
+    return function random() {
+      let t = (seed += 0x6d2b79f5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function clusterForClass(cls) {
+    const riskClasses = new Set([
+      "RiskAssessment", "RiskLevel", "RiskSignal", "HighFinancialRisk",
+      "ExcludedFromUniverse", "StopLossTriggered", "ConcentrationBreach",
+      "RequiresComplianceReview", "IlliquidSecurity", "RequiresSecondReview",
+    ]);
+    if (riskClasses.has(cls.id)) return "Risk";
+    const roots = new Set([
+      "MarketParticipant", "FinancialInstrument", "MarketStructure",
+      "InformationObject", "DecisionObject", "Risk",
+    ]);
+    let current = cls;
+    const seen = new Set();
+    while (current && !seen.has(current.id)) {
+      if (roots.has(current.id)) return current.id;
+      seen.add(current.id);
+      const parent = (current.superClasses || [])
+        .map((ref) => classById.get(ref.id))
+        .find(Boolean);
+      current = parent || null;
+    }
+    return "Governance";
+  }
+
+  function buildGraphData(mode, width, height) {
+    const nodes = [];
+    const edges = [];
+    const nodeKeys = new Set();
+    const clusterCounts = new Map();
+
+    const addNode = (node) => {
+      if (state.graphHidden.has(node.cluster)) return;
+      nodes.push(node);
+      nodeKeys.add(node.key);
+      clusterCounts.set(node.cluster, (clusterCounts.get(node.cluster) || 0) + 1);
+    };
+
+    const addEdge = (source, target, type, label = "") => {
+      if (!nodeKeys.has(source) || !nodeKeys.has(target) || source === target) return;
+      edges.push({
+        key: `${source}|${target}|${type}|${label}`,
+        source,
+        target,
+        type,
+        label,
+      });
+    };
+
+    if (mode === "taxonomy") {
+      DATA.concepts.forEach((concept) => {
+        const schemeId = concept.scheme ? concept.scheme.id : "scheme-industry";
+        addNode({
+          key: `concept:${concept.id}`,
+          id: concept.id,
+          entity: concept,
+          kind: "concept",
+          label: labelOf(concept),
+          shortLabel: truncate(labelOf(concept), 9),
+          cluster: schemeId,
+          color: (GRAPH_SCHEMES[schemeId] || GRAPH_SCHEMES["scheme-industry"]).color,
+          radius: 6,
+          degree: 0,
+        });
+      });
+      DATA.concepts.forEach((concept) => {
+        (concept.broader || []).forEach((parent) => {
+          addEdge(`concept:${parent.id}`, `concept:${concept.id}`, "taxonomy");
+        });
+      });
+    } else {
+      const selectedIds = mode === "decision" ? new Set(GRAPH_DECISION_IDS) : null;
+      DATA.classes.forEach((cls) => {
+        if (selectedIds && !selectedIds.has(cls.id)) return;
+        const cluster = clusterForClass(cls);
+        addNode({
+          key: `class:${cls.id}`,
+          id: cls.id,
+          entity: cls,
+          kind: "class",
+          label: labelOf(cls),
+          shortLabel: truncate(labelOf(cls), 9),
+          cluster,
+          color: (GRAPH_CLUSTERS[cluster] || GRAPH_CLUSTERS.Governance).color,
+          radius: 6,
+          degree: 0,
+        });
+      });
+      // Class hierarchy.
+      DATA.classes.forEach((cls) => {
+        (cls.superClasses || []).forEach((parent) => {
+          addEdge(`class:${cls.id}`, `class:${parent.id}`, "subclass");
+        });
+      });
+      // Object property edges. Inverse properties are skipped to avoid drawing
+      // every relation twice; the forward property still carries the meaning.
+      DATA.objectProperties.forEach((property) => {
+        if (property.inverseOf && property.inverseOf.length) return;
+        (property.domain || []).forEach((domain) => {
+          (property.range || []).forEach((range) => {
+            addEdge(`class:${domain.id}`, `class:${range.id}`, "property", labelOf(property));
+          });
+        });
+      });
+    }
+
+    const degree = new Map();
+    edges.forEach((edge) => {
+      degree.set(edge.source, (degree.get(edge.source) || 0) + 1);
+      degree.set(edge.target, (degree.get(edge.target) || 0) + 1);
+    });
+    nodes.forEach((node) => {
+      node.degree = degree.get(node.key) || 0;
+      node.radius = Math.max(6, Math.min(14, 5.2 + Math.sqrt(node.degree) * 2.2));
+    });
+
+    if (mode === "decision") {
+      layoutDecisionGraph(nodes, width, height);
+    } else {
+      layoutForceGraph(nodes, edges, width, height, mode);
+    }
+
+    let allClusters;
+    if (mode === "taxonomy") {
+      allClusters = Object.entries(GRAPH_SCHEMES).map(([key, meta]) => ({
+        key,
+        ...meta,
+        count: DATA.concepts.filter((concept) => concept.scheme && concept.scheme.id === key).length,
+      }));
+    } else {
+      allClusters = Object.entries(GRAPH_CLUSTERS).map(([key, meta]) => ({
+        key,
+        ...meta,
+        count: DATA.classes.filter((cls) => clusterForClass(cls) === key).length,
+      }));
+    }
+    const clusters = allClusters.filter((cluster) => clusterCounts.has(cluster.key));
+
+    return { nodes, edges, clusters, allClusters };
+  }
+
+  function layoutDecisionGraph(nodes, width, height) {
+    const positions = {
+      InvestmentDecision: [0.50, 0.50],
+      ListedCompany: [0.24, 0.25],
+      Security: [0.38, 0.44],
+      FinancialReport: [0.15, 0.10],
+      Valuation: [0.37, 0.12],
+      MarketQuote: [0.54, 0.17],
+      RiskAssessment: [0.72, 0.36],
+      RiskFactor: [0.87, 0.25],
+      RiskLevel: [0.84, 0.50],
+      Recommendation: [0.64, 0.66],
+      DecisionRationale: [0.44, 0.79],
+      Evidence: [0.27, 0.78],
+      ComplianceCheck: [0.60, 0.85],
+      InvestorProfile: [0.77, 0.73],
+      DecisionPolicy: [0.92, 0.60],
+      DecisionService: [0.12, 0.55],
+      Portfolio: [0.82, 0.10],
+      Position: [0.66, 0.08],
+      InvestmentHorizon: [0.72, 0.88],
+    };
+    nodes.forEach((node) => {
+      const point = positions[node.id];
+      if (point) {
+        node.x = point[0] * width;
+        node.y = point[1] * height;
+      } else {
+        node.x = width / 2;
+        node.y = height / 2;
+      }
+    });
+  }
+
+  function layoutForceGraph(nodes, edges, width, height, mode) {
+    if (!nodes.length) return;
+    const random = mulberry32(20261102);
+    const clusterKeys = Array.from(new Set(nodes.map((node) => node.cluster)));
+    const centers = new Map();
+    const radius = Math.min(width, height) * (clusterKeys.length <= 3 ? 0.24 : 0.31);
+    clusterKeys.forEach((key, index) => {
+      const angle = -Math.PI / 2 + (index * Math.PI * 2) / clusterKeys.length;
+      centers.set(key, {
+        x: width / 2 + Math.cos(angle) * radius,
+        y: height / 2 + Math.sin(angle) * radius,
+      });
+    });
+
+    nodes.forEach((node) => {
+      const center = centers.get(node.cluster) || { x: width / 2, y: height / 2 };
+      const angle = random() * Math.PI * 2;
+      const spread = 24 + random() * 55;
+      node.x = center.x + Math.cos(angle) * spread;
+      node.y = center.y + Math.sin(angle) * spread;
+      node.vx = 0;
+      node.vy = 0;
+    });
+
+    const iterations = mode === "overview" ? 430 : 320;
+    const margin = 54;
+    for (let step = 0; step < iterations; step += 1) {
+      // Cluster and center gravity.
+      nodes.forEach((node) => {
+        const center = centers.get(node.cluster) || { x: width / 2, y: height / 2 };
+        node.vx += (center.x - node.x) * 0.006;
+        node.vy += (center.y - node.y) * 0.006;
+        node.vx += (width / 2 - node.x) * 0.0007;
+        node.vy += (height / 2 - node.y) * 0.0007;
+      });
+
+      // Node repulsion.
+      for (let i = 0; i < nodes.length; i += 1) {
+        for (let j = i + 1; j < nodes.length; j += 1) {
+          const a = nodes[i];
+          const b = nodes[j];
+          let dx = a.x - b.x;
+          let dy = a.y - b.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 0.1) {
+            dx = (random() - 0.5) * 2;
+            dy = (random() - 0.5) * 2;
+            distance = 0.1;
+          }
+          const force = 2800 / (distance * distance);
+          const fx = (dx / distance) * force;
+          const fy = (dy / distance) * force;
+          a.vx += fx;
+          a.vy += fy;
+          b.vx -= fx;
+          b.vy -= fy;
+
+          const minDistance = a.radius + b.radius + 18;
+          if (distance < minDistance) {
+            const push = (minDistance - distance) * 0.045;
+            const px = (dx / distance) * push;
+            const py = (dy / distance) * push;
+            a.vx += px;
+            a.vy += py;
+            b.vx -= px;
+            b.vy -= py;
+          }
+        }
+      }
+
+      // Edge springs.
+      edges.forEach((edge) => {
+        const a = nodes.find((node) => node.key === edge.source);
+        const b = nodes.find((node) => node.key === edge.target);
+        if (!a || !b) return;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distance = Math.max(0.1, Math.sqrt(dx * dx + dy * dy));
+        const desired = edge.type === "subclass" ? 62 : 94;
+        const force = (distance - desired) * 0.011;
+        const fx = (dx / distance) * force;
+        const fy = (dy / distance) * force;
+        a.vx += fx;
+        a.vy += fy;
+        b.vx -= fx;
+        b.vy -= fy;
+      });
+
+      nodes.forEach((node) => {
+        node.vx *= 0.78;
+        node.vy *= 0.78;
+        node.x += node.vx;
+        node.y += node.vy;
+        node.x = Math.max(margin, Math.min(width - margin, node.x));
+        node.y = Math.max(margin, Math.min(height - margin, node.y));
+      });
+    }
+  }
+
+  function applyGraphTransform() {
+    const viewport = document.getElementById("graph-viewport");
+    if (!viewport) return;
+    const { x, y, k } = state.graphTransform;
+    viewport.setAttribute("transform", `translate(${x}, ${y}) scale(${k})`);
+  }
+
+  function graphZoom(factor, clientX, clientY) {
+    const svg = $("#ontology-graph");
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const transform = state.graphTransform;
+    const next = Math.max(0.55, Math.min(2.6, transform.k * factor));
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    transform.x = px - ((px - transform.x) * next) / transform.k;
+    transform.y = py - ((py - transform.y) * next) / transform.k;
+    transform.k = next;
+    applyGraphTransform();
+  }
+
+  function graphZoomCenter(factor) {
+    const svg = $("#ontology-graph");
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    graphZoom(factor, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  }
+
+  function graphReset() {
+    state.graphTransform = { x: 0, y: 0, k: 1 };
+    applyGraphTransform();
+  }
+
+  function graphNodeByKey(key) {
+    return state.graphNodes.find((node) => node.key === key) || null;
+  }
+
+  function applyGraphFocus(key) {
+    const focus = key || state.graphSelected;
+    const nodes = $$(".graph-node");
+    const edges = $$(".graph-edge");
+    if (!focus) {
+      nodes.forEach((node) => node.classList.remove("is-dimmed", "is-selected"));
+      edges.forEach((edge) => edge.classList.remove("is-dimmed", "is-focused"));
+      return;
+    }
+    const connected = new Set([focus]);
+    state.graphEdges.forEach((edge) => {
+      if (edge.source === focus) connected.add(edge.target);
+      if (edge.target === focus) connected.add(edge.source);
+    });
+    nodes.forEach((node) => {
+      node.classList.toggle("is-dimmed", !connected.has(node.dataset.key));
+      node.classList.toggle("is-selected", node.dataset.key === state.graphSelected);
+    });
+    edges.forEach((edge) => {
+      const active = edge.dataset.source === focus || edge.dataset.target === focus;
+      edge.classList.toggle("is-dimmed", !active);
+      edge.classList.toggle("is-focused", active);
+    });
+  }
+
+  function selectGraphNode(key) {
+    const node = graphNodeByKey(key);
+    if (!node) return;
+    state.graphSelected = key;
+    applyGraphFocus(key);
+    renderGraphInspector(node);
+  }
+
+  function clearGraphSelection() {
+    state.graphSelected = null;
+    applyGraphFocus(null);
+    const empty = $("#graph-inspector-empty");
+    const content = $("#graph-inspector-content");
+    if (empty) empty.hidden = false;
+    if (content) {
+      content.hidden = true;
+      content.innerHTML = "";
+    }
+  }
+
+  function renderGraphInspector(node) {
+    const empty = $("#graph-inspector-empty");
+    const content = $("#graph-inspector-content");
+    if (!empty || !content || !node) return;
+    empty.hidden = true;
+    content.hidden = false;
+    const entity = node.entity;
+    let body = detailHead(entity);
+    body += `<div class="detail-body">`;
+    if (entity.comment) body += `<p>${esc(entity.comment)}</p>`;
+    if (node.kind === "concept") {
+      body += detailSection("概念方案 / SCHEME", `<p>${esc(entity.scheme ? entity.scheme.label : "")}${entity.notation ? ` · <code>${esc(entity.notation)}</code>` : ""}</p>`);
+      body += detailSection("上位概念 / BROADER", refChips(entity.broader, "顶层概念"));
+      body += detailSection("下位概念 / NARROWER", refChips(entity.narrower, "叶子概念"));
+      body += detailSection("关联概念 / RELATED", refChips(entity.related, "无关联"));
+      body += `<div class="detail-actions"><button class="graph-open-btn" type="button" data-open-concept="${esc(node.id)}">在 SKOS 分类中查看</button></div>`;
+    } else {
+      body += detailSection("上位类 / SUPERCLASSES", refChips(entity.superClasses, "顶层类"));
+      body += detailSection("下位类 / SUBCLASSES", refChips(entity.subClasses, "当前没有下位类"));
+      if (entity.restrictions && entity.restrictions.length) {
+        body += detailSection(
+          "OWL 限制 / RESTRICTIONS",
+          `<ul class="detail-restrictions">${entity.restrictions.slice(0, 6).map((item) => `<li>${esc(item.summary)}</li>`).join("")}</ul>`
+        );
+      }
+      const propertyNames = (entity.properties || []).map((item) => item.label).filter(Boolean);
+      body += detailSection("直接关联属性 / PROPERTIES", chipList(propertyNames.slice(0, 10), "无直接属性"));
+      body += `<div class="detail-actions"><button class="graph-open-btn" type="button" data-open-entity="${esc(node.key)}">在 Explorer 中打开</button></div>`;
+    }
+    body += detailFooter(entity);
+    body += `</div>`;
+    content.innerHTML = body;
+  }
+
+  function renderGraphLegend(clusters) {
+    const target = $("#graph-legend");
+    if (!target) return;
+    if (!clusters.length) {
+      target.innerHTML = `<span class="graph-hint-inline">当前筛选下没有可见节点</span>`;
+      return;
+    }
+    target.innerHTML = clusters
+      .map(
+        (cluster) => `
+        <button type="button" class="${state.graphHidden.has(cluster.key) ? "is-off" : ""}" data-graph-cluster="${esc(cluster.key)}" aria-pressed="${!state.graphHidden.has(cluster.key)}">
+          <i style="--legend-color:${esc(cluster.color)}"></i>${esc(cluster.label)}<em>${number(cluster.count)}</em>
+        </button>`
+      )
+      .join("");
+  }
+
+  function renderGraphScale() {
+    const target = $("#graph-scale");
+    if (!target) return;
+    const modeCount = state.graphNodes.length;
+    const edgeCount = state.graphEdges.length;
+    target.innerHTML = `
+      <div class="graph-scale-stats">
+        <div><strong>${number(DATA.stats.classes)}</strong><span>类</span></div>
+        <div><strong>${number(DATA.stats.properties)}</strong><span>属性</span></div>
+        <div><strong>${number(DATA.stats.concepts)}</strong><span>SKOS 概念</span></div>
+        <div><strong>${number(DATA.stats.totalTriples)}</strong><span>三元组</span></div>
+      </div>
+      <p><strong>规模评估：</strong>当前是“可运行参考模型”规模——足以贯通七层并支撑一条完整决策链，但相对 FIBO 级行业本体仍偏小。扩展应优先补公司行为、基金/ETF、衍生品、交易执行、组合风险与合规等有业务含义的模块，而不是堆叠孤立节点。当前视图 ${number(modeCount)} 个节点 / ${number(edgeCount)} 条关系。<a href="docs/scale-assessment.md">完整规模评估 →</a></p>`;
+  }
+
+  function renderGraph(options = {}) {
+    const stage = $("#graph-stage");
+    const svg = $("#ontology-graph");
+    if (!stage || !svg) return;
+    const width = Math.max(300, stage.clientWidth || 900);
+    const height = Math.max(320, stage.clientHeight || 680);
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    const data = buildGraphData(state.graphMode, width, height);
+    state.graphNodes = data.nodes;
+    state.graphEdges = data.edges;
+    if (options.resetTransform !== false) state.graphTransform = { x: 0, y: 0, k: 1 };
+
+    $$("#graph-modes [data-graph-mode]").forEach((button) => {
+      const active = button.dataset.graphMode === state.graphMode;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+    $("#graph-label-toggle")?.setAttribute("aria-pressed", String(state.graphShowLabels));
+    svg.classList.toggle("hide-labels", !state.graphShowLabels);
+
+    if (state.graphSelected && !data.nodes.some((node) => node.key === state.graphSelected)) {
+      state.graphSelected = null;
+    }
+
+    const edgeMarkup = data.edges
+      .map((edge) => {
+        const source = graphNodeByKey(edge.source) || data.nodes.find((node) => node.key === edge.source);
+        const target = graphNodeByKey(edge.target) || data.nodes.find((node) => node.key === edge.target);
+        if (!source || !target) return "";
+        const label = edge.label && state.graphMode === "decision"
+          ? `<text class="graph-edge-label" x="${(source.x + target.x) / 2}" y="${(source.y + target.y) / 2 - 4}" text-anchor="middle">${esc(edge.label)}</text>`
+          : "";
+        return `<line class="graph-edge graph-edge--${edge.type}" data-source="${esc(edge.source)}" data-target="${esc(edge.target)}" x1="${source.x.toFixed(1)}" y1="${source.y.toFixed(1)}" x2="${target.x.toFixed(1)}" y2="${target.y.toFixed(1)}"/>${label}`;
+      })
+      .join("");
+
+    const nodeMarkup = [...data.nodes]
+      .sort((a, b) => a.degree - b.degree)
+      .map(
+        (node) => `
+        <g class="graph-node${node.key === state.graphSelected ? " is-selected" : ""}" data-key="${esc(node.key)}" data-kind="${esc(node.kind)}" transform="translate(${node.x.toFixed(1)}, ${node.y.toFixed(1)})" tabindex="0" role="button" aria-label="${esc(node.label)}，${esc(node.kind === "concept" ? "SKOS 概念" : "类")}">
+          <rect class="graph-node-hit" x="${(-node.radius - 2).toFixed(1)}" y="-12" width="${(node.radius * 2 + 10 + node.shortLabel.length * 9).toFixed(1)}" height="24" rx="3" fill="transparent"/>
+          <circle cx="0" cy="0" r="${node.radius}" fill="${esc(node.color)}"/>
+          <text class="graph-node-label" x="${node.radius + 4}" y="3">${esc(node.shortLabel)}</text>
+        </g>`
+      )
+      .join("");
+
+    svg.innerHTML = `
+      <g id="graph-viewport">
+        <g id="graph-edges">${edgeMarkup}</g>
+        <g id="graph-nodes">${nodeMarkup}</g>
+      </g>`;
+    applyGraphTransform();
+    renderGraphLegend(data.allClusters);
+    renderGraphScale();
+    if (state.graphSelected) {
+      const node = graphNodeByKey(state.graphSelected);
+      if (node) {
+        renderGraphInspector(node);
+        applyGraphFocus(state.graphSelected);
+      }
+    } else {
+      clearGraphSelection();
+    }
+  }
+
+  function showGraphTooltip(node, event) {
+    const tooltip = $("#graph-tooltip");
+    const stage = $("#graph-stage");
+    if (!tooltip || !stage) return;
+    const rect = stage.getBoundingClientRect();
+    const clusterLabel = node.kind === "concept"
+      ? (GRAPH_SCHEMES[node.cluster]?.label || node.cluster)
+      : (GRAPH_CLUSTERS[node.cluster]?.label || node.cluster);
+    tooltip.hidden = false;
+    tooltip.innerHTML = `<strong>${esc(node.label)}</strong><span>${esc(node.kind === "concept" ? "SKOS 概念" : "类")} · ${esc(clusterLabel)}</span>`;
+    const left = Math.min(event.clientX - rect.left + 14, rect.width - 220);
+    const top = Math.min(event.clientY - rect.top + 14, rect.height - 70);
+    tooltip.style.left = `${Math.max(8, left)}px`;
+    tooltip.style.top = `${Math.max(8, top)}px`;
+  }
+
+  function hideGraphTooltip() {
+    const tooltip = $("#graph-tooltip");
+    if (tooltip) tooltip.hidden = true;
+  }
+
+  let graphResizeTimer = 0;
+
+  function bindGraph() {
+    const modes = $("#graph-modes");
+    if (modes) {
+      modes.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-graph-mode]");
+        if (!button) return;
+        state.graphMode = button.dataset.graphMode;
+        state.graphSelected = null;
+        state.graphTransform = { x: 0, y: 0, k: 1 };
+        renderGraph();
+      });
+    }
+
+    const legend = $("#graph-legend");
+    if (legend) {
+      legend.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-graph-cluster]");
+        if (!button) return;
+        const key = button.dataset.graphCluster;
+        if (state.graphHidden.has(key)) state.graphHidden.delete(key);
+        else state.graphHidden.add(key);
+        state.graphSelected = null;
+        renderGraph();
+      });
+    }
+
+    const labelToggle = $("#graph-label-toggle");
+    if (labelToggle) {
+      labelToggle.addEventListener("click", () => {
+        state.graphShowLabels = !state.graphShowLabels;
+        $("#ontology-graph")?.classList.toggle("hide-labels", !state.graphShowLabels);
+        labelToggle.setAttribute("aria-pressed", String(state.graphShowLabels));
+      });
+    }
+
+    $("#graph-zoom-in")?.addEventListener("click", () => graphZoomCenter(1.22));
+    $("#graph-zoom-out")?.addEventListener("click", () => graphZoomCenter(0.82));
+    $("#graph-reset")?.addEventListener("click", graphReset);
+
+    const svg = $("#ontology-graph");
+    const stage = $("#graph-stage");
+    if (svg && stage) {
+      svg.addEventListener("pointerover", (event) => {
+        const nodeEl = event.target.closest(".graph-node");
+        if (!nodeEl) return;
+        const node = graphNodeByKey(nodeEl.dataset.key);
+        if (!node) return;
+        applyGraphFocus(node.key);
+        showGraphTooltip(node, event);
+      });
+      svg.addEventListener("pointermove", (event) => {
+        const nodeEl = event.target.closest(".graph-node");
+        if (!nodeEl) return;
+        const node = graphNodeByKey(nodeEl.dataset.key);
+        if (node) showGraphTooltip(node, event);
+      });
+      svg.addEventListener("pointerout", (event) => {
+        const nodeEl = event.target.closest(".graph-node");
+        if (!nodeEl) return;
+        if (nodeEl.contains(event.relatedTarget)) return;
+        hideGraphTooltip();
+        applyGraphFocus(state.graphSelected);
+      });
+      svg.addEventListener("click", (event) => {
+        const nodeEl = event.target.closest(".graph-node");
+        if (nodeEl) {
+          event.stopPropagation();
+          hideGraphTooltip();
+          selectGraphNode(nodeEl.dataset.key);
+          return;
+        }
+        if (!event.target.closest(".graph-node")) clearGraphSelection();
+      });
+      svg.addEventListener("keydown", (event) => {
+        const nodeEl = event.target.closest(".graph-node");
+        if (nodeEl && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          selectGraphNode(nodeEl.dataset.key);
+        }
+      });
+      svg.addEventListener("pointerdown", (event) => {
+        if (event.target.closest(".graph-node")) return;
+        state.graphPanning = {
+          clientX: event.clientX,
+          clientY: event.clientY,
+          startX: state.graphTransform.x,
+          startY: state.graphTransform.y,
+        };
+        stage.classList.add("is-panning");
+        svg.setPointerCapture?.(event.pointerId);
+      });
+      svg.addEventListener("pointermove", (event) => {
+        if (!state.graphPanning) return;
+        state.graphTransform.x = state.graphPanning.startX + (event.clientX - state.graphPanning.clientX);
+        state.graphTransform.y = state.graphPanning.startY + (event.clientY - state.graphPanning.clientY);
+        applyGraphTransform();
+      });
+      svg.addEventListener("pointerup", () => {
+        state.graphPanning = null;
+        stage.classList.remove("is-panning");
+      });
+      svg.addEventListener("pointercancel", () => {
+        state.graphPanning = null;
+        stage.classList.remove("is-panning");
+      });
+      svg.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        graphZoom(event.deltaY < 0 ? 1.12 : 0.89, event.clientX, event.clientY);
+      }, { passive: false });
+    }
+
+    const inspector = $("#graph-inspector");
+    if (inspector) {
+      inspector.addEventListener("click", (event) => {
+        const openEntity = event.target.closest("[data-open-entity]");
+        if (openEntity) {
+          const key = openEntity.dataset.openEntity;
+          const entity = entityByKey.get(key);
+          if (entity) {
+            state.filter = "all";
+            state.layer = "all";
+            state.query = "";
+            const search = $("#ontology-search");
+            if (search) search.value = "";
+            syncFilterChips();
+            renderEntityList();
+            selectEntity(key, { scroll: false });
+            $("#explorer")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+        const openConcept = event.target.closest("[data-open-concept]");
+        if (openConcept) {
+          selectConcept(openConcept.dataset.openConcept);
+          $("#taxonomy")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        if (event.target.closest("[data-copy]")) {
+          copyText(event.target.closest("[data-copy]").dataset.copy);
+        }
+      });
+    }
+
+    window.addEventListener("resize", () => {
+      window.clearTimeout(graphResizeTimer);
+      graphResizeTimer = window.setTimeout(() => renderGraph(), 180);
+    });
+  }
+
   /* ------------------------------------------------------------------------
      Interaction wiring
   ------------------------------------------------------------------------ */
@@ -1417,6 +2135,7 @@
   }
 
   function init() {
+    state.graphMode = window.innerWidth < 700 ? "decision" : "overview";
     state.schemeId = (DATA.schemes.find((scheme) => scheme.id === "scheme-industry") || DATA.schemes[0])?.id || null;
     state.conceptId = (DATA.schemes.find((scheme) => scheme.id === state.schemeId)?.topConcepts?.[0])?.id || null;
     state.policyId = DATA.policies[0]?.id || null;
@@ -1440,6 +2159,8 @@
     renderExampleSheet();
     renderCompetencyQuestions();
     renderSpecTable();
+    bindGraph();
+    renderGraph();
 
     bindExplorer();
     bindTaxonomy();
