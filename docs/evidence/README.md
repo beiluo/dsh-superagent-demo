@@ -1,16 +1,26 @@
 # Visual evidence
 
-These captures document the browser work for the A-share ontology ticket.
+These captures document the browser work for the A-share ontology tickets.
 
 | File | Revision / state | Viewport | What it shows |
 | --- | --- | --- | --- |
 | `before.png` | Initial branch `92d2b75` (repository had only `README.md`) | 1440 × 1000 | The root route served a directory listing; no ontology viewer existed. |
 | `before-graph.png` | Merged `main` at `83f4493` (PR #1) | 1440 × 1000 | The merged page before the graph follow-up; no "图谱" navigation item. |
-| `after.png` | Head of `agent/a-share-ontology-a9c9d9ebdae6` | 1440 × 1000 | The new browser: hero, decision object, seven-layer navigation, scale metrics. |
+| `after.png` | Head of `agent/a-share-ontology-a9c9d9ebdae6` (PR #2) | 1440 × 1000 | The ontology browser: hero, decision object, seven-layer navigation, graph entry and scale metrics. |
 | `after-explorer.png` | Same branch | 1440 × 1000 | Search for `InvestmentDecision`, filtered result, and the entity inspector with OWL restrictions. |
 | `after-graph.png` | Same branch | 1440 × 1000 | Domain overview graph: 72 class nodes, 96 hierarchy/property edges, cluster legend and scale assessment. |
 | `after-graph-decision.png` | Same branch | 1440 × 1000 | Decision-chain graph: 19 nodes, 15 labelled object-property edges. |
+| `agent-before.png` | Live GitHub Pages at `main` `7bc4064` (PR #2 merged, before this Agent PR) | 1440 × 1000 | Baseline: graph UI is present, but there is no Agent nav entry, no “问 Agent” action and no Agent section. |
+| `agent-after.png` | This Agent branch after merging `main`; served by `uvicorn` on `127.0.0.1:8010` | 1440 × 1000 | Same hero and graph-era header, plus the new Agent nav entry and “问 Agent” action. |
+| `agent-section.png` | Same merged branch head; rules mode, no server key | 1240 × 941 | New Agent section: status, starter questions, key-safety note, empty conversation. |
+| `agent-answer.png` | Same merged branch head; question “分析华辰智造” | 1240 × 1061 | Summary card, ontology-grounded answer, R01/R06/R08 signals, decision chain and citations. |
+| `agent-summary.png` | Same state | 808 × 76 | Close-up of the structured conclusion card. |
+| `agent-mobile.png` | Same merged branch head; 390 px viewport | 390 × 1289 | Responsive Agent layout with no horizontal overflow. |
 
-The baseline is a real capture of the repository before the page existed, not a mockup. The page was
-served with `python3 -m http.server 8000`; screenshots were taken with Playwright/Firefox. All example
-content is synthetic; see the repository README for the disclaimer.
+The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
+not a mockup. The after captures use the actual FastAPI backend and the real `index.html`; no LLM
+provider key was configured, so the screenshots show the deterministic **rules mode**. LLM mode and
+the tool loop are covered by `tests/test_llm.py` with a local OpenAI-compatible stub.
+
+The page was served by `uvicorn server.main:app`; screenshots were taken with Puppeteer/Chromium.
+All example content is synthetic; see the repository README for the disclaimer.

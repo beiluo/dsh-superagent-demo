@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A 股投资决策本体：覆盖 RDF、RDFS、OWL 2、SKOS、SWRL、OWL-S 与 ODRL 的模块化语义模型与浏览器。">
+  <meta name="description" content="A 股投资决策本体：覆盖 RDF、RDFS、OWL 2、SKOS、SWRL、OWL-S 与 ODRL 的模块化语义模型与浏览器；含基于本体、密钥仅在服务端的股票分析 Agent。">
   <meta name="theme-color" content="#f2ede3">
   <title>A 股投资决策本体 · A-Share Investment Decision Ontology</title>
   <link rel="stylesheet" href="assets/css/style.css">
@@ -27,6 +27,7 @@
 
     <nav class="site-nav" id="site-nav" aria-label="主导航">
       <a href="#overview">概览</a>
+      <a href="#agent">Agent</a>
       <a href="#stack">语义栈</a>
       <a href="#explorer">浏览</a>
       <a href="#graph">图谱</a>
@@ -75,6 +76,10 @@
         <div class="hero-actions">
           <a class="btn btn-primary" href="#explorer">
             浏览本体
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#agent">
+            问 Agent
             <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
           </a>
           <a class="btn btn-ghost" href="ontology/a-share.ttl" download>
@@ -153,6 +158,79 @@
         <span>RDF 1.1</span><i></i><span>RDFS</span><i></i><span>OWL 2 DL</span><i></i><span>SKOS</span><i></i><span>SWRL</span><i></i><span>OWL-S 1.2</span><i></i><span>ODRL 2.2</span><i></i><span>FIBO-INSPIRED MODULES</span><i></i>
       </div>
     </div>
+
+    <!-- ==================================================================
+         Ontology agent
+    =================================================================== -->
+    <section class="section agent-section" id="agent" aria-labelledby="agent-title">
+      <div class="section-head reveal">
+        <div>
+          <p class="section-index">AI / ONTOLOGY AGENT</p>
+          <h2 id="agent-title">让 Agent 用本体回答，而不是猜</h2>
+        </div>
+        <p class="section-lede">
+          Agent 先读取公司、财务、规则、决策与政策，再组织回答。LLM key 只放在服务端环境变量里；
+          GitHub Pages 上的静态页面永远不包含密钥。
+        </p>
+      </div>
+
+      <div class="agent-shell reveal">
+        <aside class="agent-rail">
+          <div class="agent-status" id="agent-status" data-state="checking" role="status" aria-live="polite">
+            <span class="agent-status-dot" aria-hidden="true"></span>
+            <span id="agent-status-text">正在检查 Agent 服务…</span>
+          </div>
+          <p class="agent-status-detail" id="agent-status-detail">
+            浏览器只连接公开 API；请求由服务端处理。
+          </p>
+          <button class="agent-retry" id="agent-retry" type="button">重新检查连接</button>
+
+          <div class="agent-suggestions" id="agent-suggestions" aria-label="示例问题"></div>
+
+          <div class="agent-keynote">
+            <span class="agent-keynote-label">KEY SAFETY</span>
+            <p>
+              静态页面没有 <code>LLM_API_KEY</code>，也不会向浏览器下发密钥。密钥由服务端在调用 LLM 时注入，
+              并受 CORS、频率限制与每日额度保护。
+            </p>
+          </div>
+          <a class="agent-docs-link" href="docs/agent.md">部署与密钥配置 <span aria-hidden="true">→</span></a>
+        </aside>
+
+        <div class="agent-main">
+          <noscript><p class="agent-noscript">Agent 需要 JavaScript 才能调用服务端 API。静态浏览和 Explorer 不受影响。</p></noscript>
+          <div class="agent-log" id="agent-log" aria-live="polite" aria-label="Agent 对话">
+            <div class="agent-welcome" id="agent-welcome">
+              <p class="agent-welcome-kicker">GROUNDED IN ASHARE ONTOLOGY</p>
+              <h3>问一个关于本体的问题</h3>
+              <p>
+                Agent 会先检索企业、规则、决策与政策，再生成回答。问题只发送到服务端；
+                演示数据全部为合成示例。
+              </p>
+            </div>
+          </div>
+
+          <form class="agent-form" id="agent-form">
+            <label class="sr-only" for="agent-input">问题</label>
+            <textarea
+              class="agent-input"
+              id="agent-input"
+              rows="1"
+              maxlength="500"
+              placeholder="例如：华辰智造的基本面和规则信号怎么样？"
+            ></textarea>
+            <button class="agent-submit" id="agent-submit" type="submit">
+              <span>分析</span>
+              <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+          </form>
+          <div class="agent-foot">
+            <span id="agent-footnote">示例数据，不构成投资建议。Agent 只分析本体中的 4 家合成公司。</span>
+            <span id="agent-counter">0 / 500</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ==================================================================
          Semantic stack
@@ -551,6 +629,7 @@
     <div class="footer-links">
       <a href="ontology/a-share.ttl">Turtle</a>
       <a href="docs/design.md">设计文档</a>
+      <a href="docs/agent.md">Agent</a>
       <a href="docs/competency-questions.rq">能力问题</a>
       <a href="https://www.w3.org/standards/semanticweb/" target="_blank" rel="noreferrer">W3C Semantic Web</a>
     </div>
@@ -561,5 +640,7 @@
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/agent-config.js"></script>
+  <script src="assets/js/agent.js"></script>
 </body>
 </html>

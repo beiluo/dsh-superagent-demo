@@ -1,0 +1,11 @@
+.git
+.gitignore
+.venv
+__pycache__
+.pytest_cache
+.env
+.env.*
+docs/evidence
+tests
+node_modules
+*.py[cod]

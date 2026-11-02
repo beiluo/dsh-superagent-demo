@@ -1,4 +1,14 @@
 .venv/
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+node_modules/
 .DS_Store
+
+# Local server secrets. Never commit a real key.
+.env
+.env.*
+!.env.example

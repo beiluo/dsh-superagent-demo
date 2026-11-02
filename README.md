@@ -12,7 +12,7 @@ SWRL 规则卡片、OWL-S 流程和 ODRL 政策矩阵。
 
 ## 1. 这是什么
 
-A 股投资决策涉及至少七类语义问题：
+A 股投资决策涉及至少八类语义问题：
 
 | 问题 | 语义层 | 本项目回答方式 |
 | --- | --- | --- |
@@ -23,6 +23,7 @@ A 股投资决策涉及至少七类语义问题：
 | 决策如何推理？ | SWRL | 11 条无副作用 Horn 规则，覆盖筛选、风险、止损、集中度与合规 |
 | 服务如何调用？ | OWL-S | Profile / Process Model / Grounding 三视角的七步决策服务 |
 | 政策如何治理？ | ODRL | 权限、禁止、义务、约束、冲突策略与 profile 扩展 |
+| 如何把语义链变成可对话分析？ | Agent | 服务端只读工具 + 本体规则 + 可选 LLM，回答带可追溯证据 |
 
 设计参考 **FIBO**（Financial Industry Business Ontology）的模块化、定义优先、可追溯与 OWL 2
 建模思路；领域内容为独立编写，**不复用 FIBO 本体文本，也不声称是 FIBO 的官方扩展**。
@@ -38,8 +39,22 @@ python3 -m http.server 8000
 # 打开 http://127.0.0.1:8000/
 ```
 
-页面不需要构建、不需要外部 CDN，也不需要后端。`index.html` 直接加载
+浏览页面不需要构建、不需要外部 CDN，也不需要后端。`index.html` 直接加载
 `assets/js/data.js`（由本体生成的数据快照）。
+
+### 运行 Agent
+
+Agent 需要一个小型服务端；LLM key 只放在服务端环境变量里，GitHub Pages 永远不会收到它。
+
+```bash
+make setup          # 创建 .venv 并安装依赖
+cp .env.example .env
+# 编辑 .env，填入 LLM_API_KEY；不填也能运行规则模式
+make agent          # 打开 http://127.0.0.1:8000/#agent
+```
+
+没有 key 时 Agent 使用本体规则模式；配置 key 后自动切换为 LLM 对话。部署、密钥配置和
+GitHub Pages 接入方式见 [`docs/agent.md`](docs/agent.md)。
 
 ### 校验本体
 
@@ -86,12 +101,27 @@ python3 scripts/build_data.py
 
 ```text
 .
-├── index.html                         # 本体浏览页面
+├── index.html                         # 本体浏览页面 + Agent 对话区
 ├── assets/
 │   ├── css/style.css                  # 页面样式
 │   ├── js/app.js                      # 检索、筛选、详情、概念树、规则/服务/政策渲染
+│   ├── js/agent.js                    # Agent 前端：只调用公开 API，不含密钥
+│   ├── js/agent-config.js             # 公开后端地址；绝不放密钥
 │   ├── js/data.js                     # 由 build_data.py 生成
 │   └── data/ontology.json             # 由 build_data.py 生成
+├── server/                            # Agent 服务端（FastAPI）
+│   ├── app.py                         # API、CORS、限流、静态白名单
+│   ├── agent.py                       # LLM 工具循环 + 规则模式回退
+│   ├── ontology.py                    # 读取 Turtle、构建企业/组合事实
+│   ├── rules.py                       # SWRL 阈值与确定性信号评估
+│   ├── tools.py                       # 7 个只读本体工具
+│   ├── llm.py                         # OpenAI-compatible 客户端（密钥只在服务端）
+│   └── settings.py                    # 环境变量配置
+├── tests/                             # 服务端、规则与密钥测试
+│   ├── test_api.py
+│   ├── test_llm.py
+│   ├── test_rules.py
+│   └── test_secrets.py
 ├── ontology/
 │   ├── a-share.ttl                    # 聚合入口，owl:imports 七层
 │   ├── rdf/instances.ttl              # RDF 实例层
@@ -103,12 +133,17 @@ python3 scripts/build_data.py
 │   └── odrl/policies.ttl              # ODRL 政策
 ├── docs/
 │   ├── design.md                      # 详细设计说明
+│   ├── agent.md                       # Agent 部署、密钥与安全边界
 │   ├── scale-assessment.md            # 节点规模评估与扩展路线
 │   ├── competency-questions.rq        # 10 条 SPARQL 能力问题
 │   └── evidence/                      # 浏览器前后对比截图
 ├── scripts/
 │   ├── build_data.py                  # Turtle -> 页面 JSON
+│   ├── check_no_secrets.py            # 扫描被 git 跟踪文件中的疑似密钥
 │   └── validate.py                    # 结构、规则、服务、政策与查询校验
+├── Dockerfile                         # 后端容器镜像
+├── render.yaml                        # Render Blueprint（密钥用平台 Secret）
+├── .env.example                       # 服务端配置模板（不含真实密钥）
 └── requirements.txt
 ```
 
@@ -197,8 +232,10 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 - **OWL-S 服务**：输入、输出、前置条件、七步流程、grounding 操作；
 - **ODRL 政策矩阵**：权限、禁止、义务三列，约束与补救措施；
 - **决策样例**：建议、目标价、止损、风险、理由、反方观点、证据链与政策；
+- **本体 Agent**：自然语言问题 → 服务端本体工具 → 带规则/决策/政策引用的回答；
+- **密钥边界**：静态页面不含 LLM key，Agent 通过公开 API 调用独立后端；
 - **响应式**：桌面、平板、手机；手机端实体详情为全屏抽屉；
-- **无外部依赖**：不依赖 CDN、图表库或前端框架。
+- **浏览页面无外部依赖**：不依赖 CDN、图表库或前端框架；Agent 需要单独部署的服务端。
 
 页面数据由 `scripts/build_data.py` 从 Turtle 生成；本体的规范源始终是 `ontology/**/*.ttl`。
 
@@ -212,7 +249,28 @@ FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是
 
 ---
 
-## 8. 校验覆盖与已知限制
+## 8. Agent：基于本体的股票分析
+
+[![Agent 区块](docs/evidence/agent-section.png)](docs/evidence/agent-section.png)
+
+Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读取本体：
+
+1. `get_company_analysis`：公司、证券、年报、行情估值、风险、决策、证据、合规与规则信号；
+2. `screen_companies`：按 SWRL 规则筛选全部合成公司；
+3. `get_portfolio_analysis`：R05 止损与 R06 单票集中度；
+4. `get_rule` / `get_policies` / `search_ontology`：规则、ODRL 政策与本体词汇。
+
+LLM 模式由服务端做工具循环；没有 key 或 LLM 调用失败时自动回退到确定性的规则模式。
+两种模式使用同一套本体事实和引用，回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。
+
+**密钥边界**：`LLM_API_KEY` 只存在于服务端环境变量；`assets/js/agent-config.js` 只保存公开
+的 `apiBase`。`scripts/check_no_secrets.py` 由 `make validate` 运行；CI 也可调用同一脚本。
+GitHub Pages 不能运行后端，因此在线 Agent 需要把静态页面接到单独部署的后端；完整步骤见
+[`docs/agent.md`](docs/agent.md)。
+
+[![Agent 回答](docs/evidence/agent-answer.png)](docs/evidence/agent-answer.png)
+
+## 9. 校验覆盖与已知限制
 
 `python3 scripts/validate.py` 覆盖：
 
@@ -227,6 +285,13 @@ FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是
 - 10 条 SPARQL 能力问题可解析；
 - OWL RL 闭包可运行（当前 2887 → 7991 三元组）。
 
+Agent 服务端测试：
+
+```bash
+make test          # 服务端测试：API、规则阈值、LLM 客户端、回退与密钥扫描
+make validate      # 本体结构校验 + 密钥扫描
+```
+
 **限制：**
 
 1. 未内置 OWL 2 DL 完整一致性证明器或 SWRL 推理引擎；规则语义由规范定义，执行需要外部引擎。
@@ -237,7 +302,7 @@ FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是
 
 ---
 
-## 9. 设计参考：FIBO 给了什么启发
+## 10. 设计参考：FIBO 给了什么启发
 
 FIBO 是 EDM Council 维护的金融行业本体，采用模块化领域架构、OWL 2、规范化标签与定义，并强调
 可追溯和可演进。本项目借鉴的是**方法**：
@@ -252,9 +317,10 @@ FIBO 资料：<https://spec.edmcouncil.org/fibo/> · <https://www.omg.org/spec/E
 
 ---
 
-## 10. 进一步阅读
+## 11. 进一步阅读
 
 - [详细设计说明](docs/design.md)
+- [Agent 部署与密钥配置](docs/agent.md)
 - [节点规模评估与扩展路线](docs/scale-assessment.md)
 - [10 条 SPARQL 能力问题](docs/competency-questions.rq)
 - [聚合入口 ontology/a-share.ttl](ontology/a-share.ttl)
