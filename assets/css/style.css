@@ -5057,6 +5057,243 @@ a.agent-citation:hover {
   font-style: normal;
 }
 
+.agent-execution {
+  margin-top: 14px;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+}
+
+.agent-execution-summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  color: var(--muted);
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9px;
+  user-select: none;
+}
+
+.agent-execution-summary::-webkit-details-marker,
+.agent-execution-result > summary::-webkit-details-marker,
+.agent-execution-raw > summary::-webkit-details-marker {
+  display: none;
+}
+
+.agent-execution-summary:hover {
+  color: var(--ink-2);
+}
+
+.agent-execution[open] > .agent-execution-summary {
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.agent-execution-caret {
+  color: var(--muted-2);
+  transition: transform 150ms ease;
+}
+
+.agent-execution[open] .agent-execution-caret {
+  transform: rotate(90deg);
+}
+
+.agent-execution-title {
+  color: var(--ink-2);
+  letter-spacing: 0.06em;
+}
+
+.agent-execution-meta {
+  margin-left: auto;
+  color: var(--muted-2);
+}
+
+.agent-execution-body {
+  padding: 10px 10px 12px;
+}
+
+.agent-execution-note {
+  margin: 0 0 9px;
+  color: var(--muted-2);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.agent-execution-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agent-execution-event {
+  padding: 8px 9px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--line-strong);
+}
+
+.agent-execution-event[data-role="user"] {
+  border-left-color: var(--ink-3);
+}
+
+.agent-execution-event[data-role="assistant"] {
+  border-left-color: var(--teal);
+}
+
+.agent-execution-event[data-role="tool"] {
+  border-left-color: var(--gold-2);
+}
+
+.agent-execution-event[data-status="error"] {
+  border-left-color: var(--red);
+}
+
+.agent-execution-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.agent-execution-role {
+  padding: 1px 5px;
+  color: var(--muted);
+  background: var(--paper-2);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+}
+
+.agent-execution-event[data-role="assistant"] .agent-execution-role {
+  color: var(--teal);
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.agent-execution-event[data-role="tool"] .agent-execution-role {
+  color: var(--gold);
+  background: rgba(168, 121, 44, 0.08);
+}
+
+.agent-execution-name {
+  color: var(--ink-2);
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.agent-execution-status {
+  margin-left: auto;
+  color: var(--teal);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.agent-execution-status[data-status="error"] {
+  color: var(--red);
+}
+
+.agent-execution-time {
+  color: var(--muted-2);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.agent-execution-text {
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.agent-execution-call {
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px dashed var(--line);
+}
+
+.agent-execution-call-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agent-execution-tool {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 8.5px;
+}
+
+.agent-execution-call-id {
+  min-width: 0;
+  color: var(--muted-2);
+  font-family: var(--mono);
+  font-size: 7px;
+  overflow-wrap: anywhere;
+}
+
+.agent-execution-json {
+  max-height: 240px;
+  margin: 5px 0 0;
+  padding: 7px 8px;
+  overflow: auto;
+  color: #dfe6ea;
+  background: #161d25;
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.55;
+  white-space: pre;
+  tab-size: 2;
+}
+
+.agent-execution-result {
+  margin-top: 6px;
+  border-top: 1px dashed var(--line);
+}
+
+.agent-execution-result > summary,
+.agent-execution-raw > summary {
+  padding-top: 6px;
+  color: var(--muted);
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.agent-execution-result > summary:hover,
+.agent-execution-raw > summary:hover {
+  color: var(--ink-2);
+}
+
+.agent-execution-result > summary::before,
+.agent-execution-raw > summary::before {
+  content: "›";
+  display: inline-block;
+  margin-right: 4px;
+  color: var(--muted-2);
+  transition: transform 150ms ease;
+}
+
+.agent-execution-result[open] > summary::before,
+.agent-execution-raw[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.agent-execution-raw {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.agent-execution-raw .agent-execution-json {
+  max-height: 300px;
+}
+
 .agent-bubble.agent-pending {
   display: inline-flex;
   gap: 4px;

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import httpx
 import pytest
@@ -132,6 +133,69 @@ def test_agent_tool_loop(client_factory):
     assert data["summary"]["recommendation"] == "增持"
     assert "华辰智造" in data["answer"]
     assert "不构成投资建议" in data["answer"]
+    assert FAKE_KEY not in response.text
+
+
+def test_agent_execution_trace_records_raw_messages(client_factory):
+    fake = FakeLLM(
+        [
+            tool_response("get_company_analysis", {"company": "华辰智造"}),
+            final_response("### 结论\n华辰智造触发 R01。"),
+        ]
+    )
+    client = client_factory({"llm_api_key": FAKE_KEY}, llm=fake)
+    response = client.post(
+        "/api/agent/analyze",
+        json={
+            "question": "分析华辰智造",
+            "history": [
+                {"role": "user", "content": "之前的问题"},
+                {"role": "assistant", "content": "之前的回答"},
+            ],
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    execution = data["execution"]
+    assert execution["mode"] == "llm"
+    assert execution["model"] == "fake-model"
+    assert execution["systemPrompt"]["hidden"] is True
+    assert execution["systemPrompt"]["chars"] > 0
+    assert "你是「ASHARE" not in response.text
+
+    messages = execution["messages"]
+    assert [item["role"] for item in messages] == [
+        "user",
+        "assistant",
+        "user",
+        "assistant",
+        "tool",
+        "assistant",
+    ]
+    assert messages[0]["content"] == "之前的问题"
+    assert messages[0]["history"] is True
+    assert messages[2]["content"] == "分析华辰智造"
+
+    decision = messages[3]
+    assert decision["round"] == 1
+    assert decision["toolCalls"] == [
+        {
+            "id": "call-test",
+            "name": "get_company_analysis",
+            "arguments": {"company": "华辰智造"},
+        }
+    ]
+
+    tool_message = messages[4]
+    assert tool_message["name"] == "get_company_analysis"
+    assert tool_message["label"] == "读取企业画像与规则信号"
+    assert tool_message["arguments"] == {"company": "华辰智造"}
+    assert tool_message["ok"] is True
+    assert tool_message["elapsedMs"] >= 0
+    assert json.loads(tool_message["content"])["ok"] is True
+    assert "华辰智造" in tool_message["content"]
+
+    assert messages[5]["content"].startswith("### 结论")
     assert FAKE_KEY not in response.text
 
 

@@ -228,10 +228,46 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
     {"id": "decision-huachen-2026q4", "iri": "…", "label": "…", "kind": "individual"}
   ],
   "steps": [{"tool": "get_company_analysis", "label": "读取企业画像与决策链", "status": "ok"}],
+  "execution": {
+    "mode": "llm",
+    "model": "deepseek-chat",
+    "systemPrompt": {"hidden": true, "chars": 858},
+    "messages": [
+      {"role": "user", "content": "分析华辰智造"},
+      {
+        "role": "assistant",
+        "content": "",
+        "toolCalls": [
+          {
+            "id": "call_1",
+            "name": "get_company_analysis",
+            "arguments": {"company": "华辰智造"}
+          }
+        ],
+        "round": 1
+      },
+      {
+        "role": "tool",
+        "toolCallId": "call_1",
+        "name": "get_company_analysis",
+        "label": "读取企业画像与规则信号",
+        "arguments": {"company": "华辰智造"},
+        "ok": true,
+        "elapsedMs": 12,
+        "content": "{\"ok\": true, \"data\": {…}}"
+      },
+      {"role": "assistant", "content": "…最终 Markdown 回答…"}
+    ]
+  },
   "notice": null,
   "elapsedMs": 1234
 }
 ```
+
+`execution` 是前端“执行详情”面板的数据源：按顺序给出用户/历史消息、LLM 的工具决策（工具名与参数）、
+发给 LLM 的工具结果原文，以及最终回答。工具结果与发给 LLM 的内容一致，过长时会被截断并标记。
+系统提示只返回隐藏标记与字符数，不把提示原文下发浏览器。规则模式下 `messages` 只包含用户消息
+和每次确定性工具调用/返回，没有 LLM 消息。
 
 `citations` 的 `kind:id` 可以直接映射到浏览器的 `#entity=kind:id`，点击后跳转到 Explorer 详情。
 真实 A 股结果额外带 `dataMode: "real"`；其运行时实体标记为 `kind: "real"`，不在静态
