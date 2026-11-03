@@ -116,6 +116,7 @@ class Settings:
     market_data_timeout_seconds: float = 8.0
     market_data_quote_ttl_seconds: int = 60
     market_data_financial_ttl_seconds: int = 21_600
+    market_data_short_term_ttl_seconds: int = 300
 
     @property
     def configured(self) -> bool:
@@ -171,5 +172,8 @@ class Settings:
             market_data_quote_ttl_seconds=_env_int("MARKET_DATA_QUOTE_TTL_SECONDS", 60, minimum=0),
             market_data_financial_ttl_seconds=_env_int(
                 "MARKET_DATA_FINANCIAL_TTL_SECONDS", 21_600, minimum=300
+            ),
+            market_data_short_term_ttl_seconds=_env_int(
+                "MARKET_DATA_SHORT_TERM_TTL_SECONDS", 300, minimum=30
             ),
         )

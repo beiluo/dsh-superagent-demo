@@ -229,13 +229,15 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 ### 6.1 真实 A 股（运行时扩展）
 
 Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代码或证券简称（如 `600519`、
-`贵州茅台`），服务端从东方财富公开 JSON 接口读取行情、估值与最近一期年报，在内存中映射为
-`ash:ListedCompany`、`ash:AShare`、`ash:AnnualReport`、`ash:MarketQuote`、`ash:Valuation`
-和 SKOS 行业概念，再复用同一套规则信号与回答链路。运行时实体使用独立 IRI 命名空间，
-**不会写入** `ontology/**/*.ttl`。
+`贵州茅台`），服务端从东方财富公开 JSON 接口读取行情、估值、最近一期年报和近 80 个交易日的
+日线，在内存中映射为 `ash:ListedCompany`、`ash:AShare`、`ash:AnnualReport`、`ash:MarketQuote`、
+`ash:Valuation`、`ash:LimitUpStreak`、`ash:ma20`/`ash:ma60` 和 SKOS 行业概念，再复用同一套规则
+信号与回答链路。因此除了 R01–R11 的长期/基本面规则，R16–R21 的短线/中短期规则（游资净买入、
+连板/炸板、短线过热、MA20/MA60 趋势、主题催化）也会参与分析；真实数据缺少的龙虎榜、封单和
+新闻催化字段会标为“无法评估”。运行时实体使用独立 IRI 命名空间，**不会写入** `ontology/**/*.ttl`。
 
 - 无需 API key；`MARKET_DATA_ENABLED=false` 可关闭，关闭后只保留示例公司。
-- 行情缓存 60 秒、财报缓存 6 小时；数据可能延迟、限流或接口变更。
+- 行情缓存 60 秒、财报缓存 6 小时、短线日线缓存 5 分钟；数据可能延迟、限流或接口变更。
 - 真实数据模式不生成目标价、止损价、评级或风险评分，只呈现公开事实与规则信号；
   `screen_companies` 仍只覆盖本体中已有的示例公司；真实横截面筛选使用
   `query_ontology` 的 `universe=real`（行情单页样本，仅行情/估值字段）。
@@ -297,9 +299,11 @@ Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读�
 7. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 
-真实 A 股查询走 `server/marketdata.py`：公开行情与年报先被规范化，再映射为运行时的 RDF
-事实，因此规则、引用和回答结构与示例公司一致；返回结果带 `dataMode=real`，前端据此展示
-“真实数据”标识而不是示例结论卡。
+真实 A 股查询走 `server/marketdata.py`：公开行情、年报和近 80 个交易日的日线先被规范化，
+再映射为运行时的 RDF 事实，因此规则、引用和回答结构与示例公司一致；返回结果带
+`dataMode=real`，前端据此展示“真实数据”标识而不是示例结论卡。`get_company_analysis` 的
+`shortTerm` 字段会带出 MA5/MA20/MA60、连板/炸板、龙虎榜净买入和主题热度（有则显示），
+并由规则引擎执行 R16–R21。
 
 LLM 模式由服务端做工具循环；没有 key 或 LLM 调用失败时自动回退到确定性的规则模式。
 两种模式使用同一套本体事实和引用，回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。

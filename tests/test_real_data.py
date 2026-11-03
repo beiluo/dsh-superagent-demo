@@ -267,3 +267,46 @@ def test_buy_advice_question_leaves_only_the_company_name():
     assert payload["dataMode"] == "real"
     assert provider.queries[0] == "贵州茅台"
     assert "不构成投资建议" in payload["answer"]
+
+
+def test_real_short_term_facts_are_mapped_and_evaluated():
+    snapshot = _snapshot()
+    snapshot.short_term = {
+        "ma5": 1480.0,
+        "ma20": 1450.0,
+        "ma60": 1400.0,
+        "limitUpDays": 0,
+        "brokenBoardCount": 0,
+        "sealAmount": None,
+        "dragonTigerNetBuy": None,
+        "hotMoneySeatCount": None,
+        "themeHeatScore": None,
+        "hasNewsCatalyst": None,
+        "asOf": "2026-11-02",
+        "source": SOURCE_LABEL,
+    }
+    store = _store(FakeProvider(snapshot))
+    result = call_tool(store, "get_company_analysis", {"company": "贵州茅台"})
+    assert result["ok"] is True
+    data = result["data"]
+    assert data["shortTerm"]["ma20"] == 1450.0
+    assert data["shortTerm"]["ma60"] == 1400.0
+    signals = {item["ruleId"]: item for item in data["signals"]}
+    assert signals["R18"]["status"] == "clear"
+    assert signals["R19"]["status"] == "clear"
+    assert signals["R20"]["status"] == "clear"
+    assert signals["R16"]["status"] == "unknown"
+    assert signals["R21"]["status"] == "unknown"
+
+
+def test_example_short_term_signals_appear_in_company_analysis():
+    store = OntologyStore(ROOT)
+    result = call_tool(store, "get_company_analysis", {"company": "游资科技"})
+    assert result["ok"] is True
+    assert result["data"]["shortTerm"]["ma20"] == 17.2
+    signals = {item["ruleId"]: item for item in result["data"]["signals"]}
+    assert signals["R16"]["status"] == "triggered"
+    assert signals["R17"]["status"] == "triggered"
+    assert signals["R18"]["status"] == "triggered"
+    assert signals["R20"]["status"] == "triggered"
+    assert signals["R21"]["status"] == "triggered"

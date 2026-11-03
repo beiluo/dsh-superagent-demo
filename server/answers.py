@@ -101,6 +101,23 @@ def compose_company(data: dict[str, Any]) -> str:
             quote_parts.append(f"股息率 {fmt_pct(valuation.get('dividendYield'))}")
         lines.append("**行情与估值**：" + " · ".join(quote_parts) + "。")
 
+    short = data.get("shortTerm") or {}
+    short_parts = []
+    if short.get("ma20") is not None or short.get("ma60") is not None:
+        short_parts.append(f"MA20 {fmt_num(short.get('ma20'))} / MA60 {fmt_num(short.get('ma60'))}")
+    if short.get("limitUpDays") is not None:
+        short_parts.append(f"连板 {int(short['limitUpDays'])} 天")
+    if short.get("brokenBoardCount") is not None:
+        short_parts.append(f"炸板 {int(short['brokenBoardCount'])} 次")
+    if short.get("sealAmount") is not None:
+        short_parts.append(f"封单 {fmt_money(short.get('sealAmount'))}")
+    if short.get("dragonTigerNetBuy") is not None:
+        short_parts.append(f"龙虎榜净买入 {fmt_money(short.get('dragonTigerNetBuy'))}")
+    if short.get("themeHeatScore") is not None:
+        short_parts.append(f"主题热度 {fmt_num(short.get('themeHeatScore'))}")
+    if short_parts:
+        lines.append("**中短期快照**：" + " · ".join(short_parts) + "。")
+
     triggered = [item for item in signals if item["status"] == "triggered"]
     lines.append("")
     lines.append("**规则信号**" + ("（阈值仍为演示常量）" if is_real else ""))
@@ -108,12 +125,22 @@ def compose_company(data: dict[str, Any]) -> str:
         lines.extend(_signal_lines(triggered))
     else:
         lines.append("- 当前没有 SWRL 规则触发。")
+    short_rule_ids = {"R16", "R17", "R18", "R19", "R20", "R21"}
+    short_clear = [
+        item for item in signals if item["ruleId"] in short_rule_ids and item["status"] == "clear"
+    ]
+    if short_clear:
+        lines.append("**中短期规则（未触发）**")
+        for item in short_clear:
+            label = item.get("label") or item["ruleId"]
+            lines.append(f"- `{item['ruleId']}` {label}：{item.get('detail', '')}")
+
     unknown = [item["ruleId"] for item in signals if item["status"] == "unknown"]
     if unknown:
         if is_real:
             lines.append(
                 f"- 另有 {len(unknown)} 条规则不适用或缺少数据：{', '.join(unknown)}"
-                "（组合仓位与决策类规则需要持仓或人工决策输入）。"
+                "（组合仓位、人工决策或短线字段缺少输入）。"
             )
         else:
             lines.append(f"- 另有 {len(unknown)} 条规则因缺少数据无法评估：{', '.join(unknown)}。")
@@ -177,7 +204,7 @@ def compose_screen(data: dict[str, Any]) -> str:
             for signal in company.get("signals") or []:
                 lines.append(f"  - {STATUS_LABELS.get(signal['status'], signal['status'])}：{signal.get('detail', '')}")
     lines.append("")
-    lines.append("**阈值来源**：R01（ROE ≥ 15%、PE ≤ 20、净利润 > 0、非 ST）、R02（负债率 ≥ 70%、利息保障 < 2）、R10（营收增速 ≥ 25%、净利增速 ≥ 20%、PE > 40）等，均为示例常量。")
+    lines.append("**阈值来源**：R01（ROE ≥ 15%、PE ≤ 20、净利润 > 0、非 ST）、R02（负债率 ≥ 70%、利息保障 < 2）、R10（营收增速 ≥ 25%、净利增速 ≥ 20%、PE > 40）、R16–R21（游资净买入、连板/炸板、MA20/MA60、主题热度）等，均为示例常量。")
     lines.append(BOUNDARY)
     return "\n".join(lines)
 

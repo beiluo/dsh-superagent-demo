@@ -119,3 +119,21 @@ def test_search_returns_class_and_rule(store):
     kinds = {item["kind"] for item in matches}
     assert "class" in kinds
     assert "rule" in kinds
+
+
+def test_short_term_rules_from_ontology(store):
+    youzi = store.find_company("游资科技")
+    assert youzi is not None
+    signals = {item["ruleId"]: item for item in evaluate_company(store.company_knowledge(youzi).to_dict())}
+    assert signals["R16"]["status"] == "triggered"
+    assert signals["R17"]["status"] == "triggered"
+    assert signals["R18"]["status"] == "triggered"
+    assert signals["R19"]["status"] == "clear"
+    assert signals["R20"]["status"] == "triggered"
+    assert signals["R21"]["status"] == "triggered"
+
+
+def test_short_term_rules_are_skipped_without_short_facts(store):
+    huachen = store.find_company("华辰智造")
+    signals = {item["ruleId"] for item in evaluate_company(store.company_knowledge(huachen).to_dict())}
+    assert not {f"R{i}" for i in range(16, 22)} & signals

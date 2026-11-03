@@ -46,6 +46,7 @@ class CompanyKnowledge:
     citations: list[dict[str, str]]
     data_mode: str = "example"
     notes: list[str] = field(default_factory=list)
+    short_term: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         if self.data_mode == "real":
@@ -68,6 +69,7 @@ class CompanyKnowledge:
             "position": self.position,
             "portfolio": self.portfolio,
             "macro": self.macro,
+            "shortTerm": self.short_term,
             "dataMode": self.data_mode,
             "dataNote": note,
         }
@@ -101,9 +103,13 @@ class OntologyStore:
     # ------------------------------------------------------------------
 
     def _first(self, subject: Any, predicate: Any) -> Any:
+        if subject is None:
+            return None
         return next(self.graph.objects(subject, predicate), None)
 
     def _all(self, subject: Any, predicate: Any) -> list[Any]:
+        if subject is None:
+            return []
         return list(self.graph.objects(subject, predicate))
 
     def _literal(self, subject: Any, predicate: Any) -> Any:
@@ -496,6 +502,16 @@ class OntologyStore:
             self.graph.add((security, ASH.isSuspended, Literal(True)))
             notes.append("最新价为缺失值，证券可能停牌。")
 
+        short = snapshot.short_term or {}
+        for field_name, predicate in (
+            ("ma5", ASH.ma5),
+            ("ma20", ASH.ma20),
+            ("ma60", ASH.ma60),
+        ):
+            value = short.get(field_name)
+            if value is not None:
+                self.graph.add((security, predicate, Literal(value)))
+
         # Market quote.
         self.graph.add((quote, RDF.type, ASH.MarketQuote))
         self.graph.add((quote, ASH.quoteOf, security))
@@ -533,6 +549,35 @@ class OntologyStore:
         self.graph.add((valuation, RDFS.label, Literal(f"{company_name} {as_of} 估值", lang="zh")))
 
         entities = {company, security, quote, valuation}
+
+        # Short-term limit-up streak (MA fields live on the security).
+        short_as_of = short.get("asOf") or as_of
+        if short.get("limitUpDays") is not None or short.get("brokenBoardCount") is not None:
+            streak = ASHREAL[f"streak-{code}"]
+            self.graph.add((streak, RDF.type, ASH.LimitUpStreak))
+            self.graph.add((security, ASH.hasLimitUpStreak, streak))
+            if short.get("limitUpDays") is not None:
+                self.graph.add((streak, ASH.limitUpDays, Literal(int(short["limitUpDays"]))))
+            if short.get("brokenBoardCount") is not None:
+                self.graph.add((streak, ASH.brokenBoardCount, Literal(int(short["brokenBoardCount"]))))
+            if short.get("sealAmount") is not None:
+                self.graph.add((streak, ASH.sealAmount, Literal(short["sealAmount"])))
+            self.graph.add((streak, ASH.dataAsOf, Literal(short_as_of, datatype=XSD.date)))
+            self.graph.add((streak, ASH.dataSource, Literal(SOURCE_LABEL)))
+            self.graph.add((streak, ASH.isExample, Literal(False)))
+            self.graph.add((streak, RDFS.label, Literal(f"{company_name} 连板快照", lang="zh")))
+            entities.add(streak)
+
+        if short.get("dragonTigerNetBuy") is not None:
+            dragon = ASHREAL[f"dragon-tiger-{code}"]
+            self.graph.add((dragon, RDF.type, ASH.DragonTigerList))
+            self.graph.add((security, ASH.hasDragonTigerList, dragon))
+            self.graph.add((dragon, ASH.dragonTigerNetBuy, Literal(short["dragonTigerNetBuy"])))
+            self.graph.add((dragon, ASH.dataAsOf, Literal(short_as_of, datatype=XSD.date)))
+            self.graph.add((dragon, ASH.dataSource, Literal(SOURCE_LABEL)))
+            self.graph.add((dragon, ASH.isExample, Literal(False)))
+            self.graph.add((dragon, RDFS.label, Literal(f"{company_name} 龙虎榜快照", lang="zh")))
+            entities.add(dragon)
 
         # Annual report.
         financials = snapshot.financials or {}
@@ -792,6 +837,7 @@ class OntologyStore:
         position_dict = self._position_dict(position, portfolio)
         portfolio_dict = self._portfolio_dict(portfolio)
         macro = self._refs(decision, ASH.hasMacroContext) if isinstance(decision, URIRef) else []
+        short_term, short_refs = self._short_term_dict(subject, security)
 
         citations = self._dedupe_citations(
             [
@@ -809,6 +855,7 @@ class OntologyStore:
                 [self._cite(item) for item in self._all(decision, ASH.basedOn)] if isinstance(decision, URIRef) else [],
                 [self._cite(item) for item in self._all(decision, ASH.governedBy)] if isinstance(decision, URIRef) else [],
                 [self._cite(item) for item in self._all(decision, ASH.hasMacroContext)] if isinstance(decision, URIRef) else [],
+                [self._cite(item) for item in short_refs],
                 [self._cite(self._first(subject, ASH.primaryIndustry))],
             ]
         )
@@ -827,6 +874,7 @@ class OntologyStore:
             citations=citations,
             data_mode=data_mode,
             notes=self._real_notes.get(company.get("companyCode") or "", []),
+            short_term=short_term,
         )
         self._knowledge_cache[subject] = knowledge
         return knowledge
@@ -867,6 +915,61 @@ class OntologyStore:
             (item for item in self.graph.subjects(ASH.positionIn, security) if isinstance(item, URIRef)),
             key=str,
         )
+
+    def _short_term_dict(
+        self, company: Any, security: Any
+    ) -> tuple[dict[str, Any], list[Any]]:
+        """Read short-term/medium-term facts for R16-R21 and citations."""
+
+        if not isinstance(security, URIRef):
+            return {}, []
+
+        streak = self._first(security, ASH.hasLimitUpStreak)
+        streak = streak if isinstance(streak, URIRef) else None
+        dragon = self._first(security, ASH.hasDragonTigerList)
+        dragon = dragon if isinstance(dragon, URIRef) else None
+        news = self._first(security, ASH.hasNewsCatalyst)
+        news = news if isinstance(news, URIRef) else None
+
+        hot_seats: list[Any] | None = None
+        if isinstance(dragon, URIRef):
+            hot_seats = [
+                seat
+                for seat in self._all(dragon, ASH.hasDragonTigerSeat)
+                if isinstance(seat, URIRef) and (self._text(seat, ASH.seatType) or "") == "hot-money"
+            ]
+
+        theme_heat: Any = None
+        theme_heat_score: float | int | None = None
+        for theme in self._all(company, ASH.hasThemeExposure):
+            heat = self._first(theme, ASH.hasThemeHeat)
+            score = self._num(heat, ASH.themeHeatScore)
+            if score is not None and (theme_heat_score is None or score > theme_heat_score):
+                theme_heat = heat
+                theme_heat_score = score
+
+        short: dict[str, Any] = {
+            "ma5": self._num(security, ASH.ma5),
+            "ma20": self._num(security, ASH.ma20),
+            "ma60": self._num(security, ASH.ma60),
+            "limitUpDays": self._num(streak, ASH.limitUpDays),
+            "brokenBoardCount": self._num(streak, ASH.brokenBoardCount),
+            "sealAmount": self._num(streak, ASH.sealAmount),
+            "dragonTigerNetBuy": self._num(dragon, ASH.dragonTigerNetBuy),
+            "hotMoneySeatCount": len(hot_seats) if hot_seats is not None else None,
+            "themeHeatScore": theme_heat_score,
+            "hasNewsCatalyst": True if news is not None else None,
+            "asOf": self._date(streak, ASH.dataAsOf)
+            or self._date(dragon, ASH.dataAsOf)
+            or self._date(theme_heat, ASH.dataAsOf),
+            "source": self._text(streak, ASH.dataSource)
+            or self._text(dragon, ASH.dataSource)
+            or self._text(theme_heat, ASH.dataSource)
+            or "",
+        }
+        refs = [item for item in (streak, dragon, theme_heat, news) if item is not None]
+        refs.extend(hot_seats or [])
+        return short, refs
 
     def _risk_dict(self, risk: Any) -> dict[str, Any] | None:
         if not isinstance(risk, URIRef):
