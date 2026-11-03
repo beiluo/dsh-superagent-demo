@@ -254,3 +254,15 @@ def test_app_can_disable_market_data():
     payload = response.json()
     assert payload["dataMode"] == "example"
     assert "未启用真实 A 股数据源" in payload["answer"]
+
+
+def test_buy_advice_question_leaves_only_the_company_name():
+    provider = FakeProvider(_snapshot())
+    store = _store(provider)
+    client = TestClient(create_app(settings=_settings(), store=store, market_data=provider))
+    response = client.post("/api/agent/analyze", json={"question": "分析贵州茅台适合买入吗？"})
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["dataMode"] == "real"
+    assert provider.queries[0] == "贵州茅台"
+    assert "不构成投资建议" in payload["answer"]
