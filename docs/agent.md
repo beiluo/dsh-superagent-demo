@@ -185,7 +185,7 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | 工具 | 作用 |
 | --- | --- |
 | `list_companies` | 列出本体中的合成公司与示例决策 |
-| `get_company_analysis` | 企业、证券、财报、行情估值、风险、决策、证据、合规与规则信号；支持真实 A 股 |
+| `get_company_analysis` | 企业、证券、财报、行情估值、风险、决策、证据、合规与规则信号；短线示例还含连板、龙虎榜、均线、主题热度与 R16–R21；支持真实 A 股 |
 | `screen_companies` | 对本体中已有公司执行 SWRL 规则筛选 |
 | `query_ontology` | 问题驱动的跨公司筛选：业务字段→属性路径、行业、规则条件、排序；`universe=real` 扫真实行情单页样本 |
 | `trace_evidence` | 从公司/决策/规则/政策展开证据链，保留数据日期、来源与版本 |
@@ -202,6 +202,8 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 
 服务端从 `ontology/**/*.ttl` 读取规范源（rdflib），规则阈值与
 `ontology/swrl/rules.ttl` 中的示例常量保持同步，并由 `tests/test_rules.py` 校验。
+`server/rules.py` 执行 R01–R11 以及短线/游资的 R16–R21（龙虎榜净买入、连板动量、短线过热、
+炸板风险、中期趋势、主题催化）；R12–R15 仍是基金/可转债/订单域的原型规则，不进入公司画像。
 
 真实 A 股查询先用 `server/marketdata.py` 的公开数据适配器取数，再把快照映射成运行时
 RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所以工具、规则和引用链路不需要分叉。

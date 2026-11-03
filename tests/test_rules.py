@@ -119,3 +119,32 @@ def test_search_returns_class_and_rule(store):
     kinds = {item["kind"] for item in matches}
     assert "class" in kinds
     assert "rule" in kinds
+
+
+def test_short_term_signals(store):
+    youzi = store.find_company("游资科技")
+    signals = {
+        item["ruleId"]: item
+        for item in evaluate_company(store.company_knowledge(youzi).to_dict())
+    }
+    assert signals["R16"]["status"] == "triggered"
+    assert signals["R17"]["status"] == "triggered"
+    assert signals["R18"]["status"] == "triggered"
+    assert signals["R19"]["status"] == "clear"
+    assert signals["R20"]["status"] == "triggered"
+    assert signals["R21"]["status"] == "triggered"
+    assert "龙虎榜净买入" in signals["R16"]["detail"]
+
+
+def test_short_term_facts_are_exposed(store):
+    knowledge = store.company_knowledge(store.find_company("游资科技"))
+    short = knowledge.short_term or {}
+    assert short["limitUp"]["limitUpDays"] == 4
+    assert short["limitUp"]["brokenBoardCount"] == 1
+    assert short["dragonTiger"]["netBuy"] == 85_000_000
+    assert short["dragonTiger"]["hasHotMoneySeat"] is True
+    assert short["movingAverage"]["ma20"] == 17.2
+    assert short["movingAverage"]["ma60"] == 15.8
+    assert short["themeHeat"]["score"] == 86
+    assert short["catalyst"]["label"]
+    assert knowledge.to_dict()["shortTerm"]["rsi14"] == 68
