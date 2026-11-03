@@ -552,6 +552,18 @@ def _rule_status(signals: list[dict[str, Any]]) -> dict[str, str]:
     return {item["ruleId"]: item["status"] for item in signals}
 
 
+def _triggered_details(signals: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "ruleId": item["ruleId"],
+            "label": item.get("label") or item["ruleId"],
+            "detail": item.get("detail") or "",
+        }
+        for item in signals
+        if item.get("status") == "triggered"
+    ]
+
+
 def _criteria_text(
     filters: list[FieldFilter],
     industry: str | None,
@@ -747,6 +759,7 @@ def _query_ontology(
                 },
                 "metrics": _company_metrics(data, metric_fields),
                 "matchedRules": [item["ruleId"] for item in signals if item["status"] == "triggered"],
+                "triggeredSignals": _triggered_details(signals),
                 "facts": facts,
             }
         )
@@ -906,6 +919,7 @@ def _query_real(
                 },
                 "metrics": _company_metrics(data, _dedupe([item.field for item in filters] + ["peTtm", "pb", "marketCap", "turnoverRate"])),
                 "matchedRules": [item["ruleId"] for item in signals if item["status"] == "triggered"],
+                "triggeredSignals": _triggered_details(signals),
                 "facts": facts,
             }
         )
@@ -1026,6 +1040,19 @@ EVIDENCE_PREDICATES: tuple[tuple[Any, str], ...] = (
     (ASH.generatedBy, "生成服务"),
     (ASH.hasMacroContext, "宏观背景"),
     (ASH.hasSource, "数据来源"),
+    (ASH.hasLimitUpStreak, "连板记录"),
+    (ASH.hasDragonTigerList, "龙虎榜"),
+    (ASH.hasDragonTigerSeat, "龙虎榜席位"),
+    (ASH.hasThemeExposure, "主题暴露"),
+    (ASH.hasThemeHeat, "主题热度"),
+    (ASH.hasThemeLifecycle, "主题生命周期"),
+    (ASH.hasNewsCatalyst, "新闻催化"),
+    (ASH.hasTechnicalIndicator, "技术指标"),
+    (ASH.hasTechnicalSignal, "技术信号"),
+    (ASH.hasMarketRegime, "市场状态"),
+    (ASH.hasMarketBreadth, "市场宽度"),
+    (ASH.hasPlaybook, "短线剧本"),
+    (ASH.hasEvidence, "理由证据"),
     (ASH.positionIn, "持仓证券"),
     (ASH.positionOf, "所属组合"),
     (ASH.holdsPosition, "持有仓位"),

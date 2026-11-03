@@ -101,6 +101,56 @@ def compose_company(data: dict[str, Any]) -> str:
             quote_parts.append(f"股息率 {fmt_pct(valuation.get('dividendYield'))}")
         lines.append("**行情与估值**：" + " · ".join(quote_parts) + "。")
 
+    short = data.get("shortTerm") or {}
+    if short:
+        lines.append("")
+        lines.append("**短线状态**" + ("（合成示例）" if not is_real else ""))
+        limit_up = short.get("limitUp") or {}
+        if limit_up:
+            lines.append(
+                f"- 连板 {fmt_num(limit_up.get('limitUpDays'))} 天 · "
+                f"炸板 {fmt_num(limit_up.get('brokenBoardCount'))} 次 · "
+                f"封单 {fmt_money(limit_up.get('sealAmount'))}"
+                + (f" · 首次涨停 {limit_up.get('firstLimitUpTime')}" if limit_up.get("firstLimitUpTime") else "")
+            )
+        dragon_tiger = short.get("dragonTiger") or {}
+        if dragon_tiger:
+            seats = [
+                item.get("name") or item.get("label") or ""
+                for item in dragon_tiger.get("seats") or []
+                if item.get("type") == "hot-money"
+            ]
+            lines.append(
+                f"- 龙虎榜净买入 {fmt_money(dragon_tiger.get('netBuy'))} · "
+                f"游资席位 {'有' if dragon_tiger.get('hasHotMoneySeat') else '无'}"
+                + (f"（{'、'.join(seats)}）" if seats else "")
+            )
+        moving_average = short.get("movingAverage") or {}
+        rsi14 = short.get("rsi14")
+        theme_heat = short.get("themeHeat") or {}
+        catalyst = short.get("catalyst") or {}
+        trend_parts = []
+        if moving_average:
+            trend_parts.append(
+                f"MA20 {fmt_num(moving_average.get('ma20'))} / MA60 {fmt_num(moving_average.get('ma60'))}"
+            )
+        if rsi14 is not None:
+            trend_parts.append(f"RSI14 {fmt_num(rsi14)}")
+        if theme_heat:
+            theme_label = (theme_heat.get("theme") or {}).get("label") or "主题"
+            trend_parts.append(f"{theme_label}热度 {fmt_num(theme_heat.get('score'))}")
+        if catalyst:
+            trend_parts.append(f"催化：{catalyst.get('label') or '有'}")
+        if trend_parts:
+            lines.append("- " + " · ".join(trend_parts))
+        playbook = decision.get("playbook") or {}
+        regime = decision.get("marketRegime") or {}
+        if playbook or regime:
+            lines.append(
+                "- 短线剧本："
+                f"{playbook.get('label') or '—'} · 市场状态：{regime.get('label') or '—'}"
+            )
+
     triggered = [item for item in signals if item["status"] == "triggered"]
     lines.append("")
     lines.append("**规则信号**" + ("（阈值仍为演示常量）" if is_real else ""))

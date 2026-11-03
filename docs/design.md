@@ -718,8 +718,10 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
   只保存公开的 `apiBase`，不含任何密钥。
 - **本体访问**：`server/ontology.py` 用 rdflib 读取 `ontology/**/*.ttl`，构建公司、证券、财报、
   行情估值、风险、决策、证据、合规、组合与政策的紧凑事实；不依赖浏览器快照。
-- **规则**：`server/rules.py` 对 R01—R11 做确定性评估；阈值与 `ontology/swrl/rules.ttl` 的示例常量
-  一致，`tests/test_rules.py` 直接从 SWRL body 提取字面量校验。
+- **规则**：`server/rules.py` 对 R01—R11 与短线/游资 R16—R21 做确定性评估；阈值与
+  `ontology/swrl/rules.ttl` 的示例常量一致，`tests/test_rules.py` 直接从 SWRL body 提取字面量校验。
+  公司画像会读取连板、龙虎榜、均线/RSI、主题热度与新闻催化；真实 A 股缺少这些字段时对应规则
+  返回“无法评估”，不会猜测。
 - **工具循环**：`server/tools.py` 暴露 11 个只读工具；LLM 只能看到工具结果，不能访问环境变量。
 - **问题驱动的查询**：`server/query.py` 把问题中的业务条件翻译成属性路径，支持跨公司筛选、
   证据链遍历、组合/ODRL 约束检查和 what-if 规则重算；每次工具调用返回 `queryPath`，前端据此

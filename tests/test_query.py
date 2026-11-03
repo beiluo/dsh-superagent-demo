@@ -393,3 +393,17 @@ def test_llm_agent_can_chain_query_and_evidence(client_factory):
         "trace_evidence",
     ]
     assert FAKE_KEY not in response.text
+
+
+def test_query_short_term_rule_and_evidence(store: OntologyStore):
+    result = run_query(store, {"rules_any": ["R16"]})
+    assert [item["company"]["label"] for item in result["matches"]] == ["游资科技"]
+    match = result["matches"][0]
+    assert "R16" in match["matchedRules"]
+    assert any("龙虎榜" in item["detail"] for item in match["triggeredSignals"])
+
+    evidence = trace_evidence(store, "游资科技")
+    labels = {node["label"] for node in evidence["nodes"]}
+    assert "游资科技四连板记录" in labels
+    assert "游资科技 2026-11-02 龙虎榜" in labels
+    assert "人工智能主题热度" in labels

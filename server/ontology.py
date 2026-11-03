@@ -43,6 +43,7 @@ class CompanyKnowledge:
     position: dict[str, Any] | None
     portfolio: dict[str, Any] | None
     macro: list[dict[str, Any]]
+    short_term: dict[str, Any] | None
     citations: list[dict[str, str]]
     data_mode: str = "example"
     notes: list[str] = field(default_factory=list)
@@ -68,6 +69,7 @@ class CompanyKnowledge:
             "position": self.position,
             "portfolio": self.portfolio,
             "macro": self.macro,
+            "shortTerm": self.short_term,
             "dataMode": self.data_mode,
             "dataNote": note,
         }
@@ -792,6 +794,7 @@ class OntologyStore:
         position_dict = self._position_dict(position, portfolio)
         portfolio_dict = self._portfolio_dict(portfolio)
         macro = self._refs(decision, ASH.hasMacroContext) if isinstance(decision, URIRef) else []
+        short_term, short_citations = self._short_term_dict(subject, security)
 
         citations = self._dedupe_citations(
             [
@@ -809,6 +812,9 @@ class OntologyStore:
                 [self._cite(item) for item in self._all(decision, ASH.basedOn)] if isinstance(decision, URIRef) else [],
                 [self._cite(item) for item in self._all(decision, ASH.governedBy)] if isinstance(decision, URIRef) else [],
                 [self._cite(item) for item in self._all(decision, ASH.hasMacroContext)] if isinstance(decision, URIRef) else [],
+                [self._cite(item) for item in self._all(decision, ASH.hasPlaybook)] if isinstance(decision, URIRef) else [],
+                [self._cite(item) for item in self._all(decision, ASH.hasMarketRegime)] if isinstance(decision, URIRef) else [],
+                short_citations,
                 [self._cite(self._first(subject, ASH.primaryIndustry))],
             ]
         )
@@ -824,6 +830,7 @@ class OntologyStore:
             position=position_dict,
             portfolio=portfolio_dict,
             macro=macro,
+            short_term=short_term,
             citations=citations,
             data_mode=data_mode,
             notes=self._real_notes.get(company.get("companyCode") or "", []),
@@ -958,6 +965,8 @@ class OntologyStore:
             "policies": policies,
             "compliance": compliance_dict,
             "service": self._ref(self._first(decision, ASH.generatedBy)),
+            "playbook": self._ref(self._first(decision, ASH.hasPlaybook)),
+            "marketRegime": self._ref(self._first(decision, ASH.hasMarketRegime)),
             "comment": self._comment(decision),
         }
 
@@ -971,6 +980,140 @@ class OntologyStore:
             "quantity": self._num(position, ASH.quantity),
             "portfolio": self._ref(portfolio),
         }
+
+    def _short_term_dict(
+        self, company: URIRef, security: URIRef | None
+    ) -> tuple[dict[str, Any] | None, list[dict[str, str] | None]]:
+        """Read short-term/hot-money facts used by R16–R21.
+
+        These facts are optional: real A-share snapshots (quote + annual report)
+        do not carry limit-up, Dragon-Tiger or theme-heat data, so the related
+        rules remain ``unknown`` instead of being guessed.
+        """
+
+        if not isinstance(security, URIRef):
+            return None, []
+
+        citations: list[dict[str, str] | None] = []
+        streak = self._first(security, ASH.hasLimitUpStreak)
+        limit_up = None
+        if isinstance(streak, URIRef):
+            limit_up = {
+                **(self._ref(streak) or {}),
+                "limitUpDays": self._num(streak, ASH.limitUpDays),
+                "brokenBoardCount": self._num(streak, ASH.brokenBoardCount),
+                "sealAmount": self._num(streak, ASH.sealAmount),
+                "firstLimitUpTime": self._text(streak, ASH.firstLimitUpTime) or "",
+                "asOf": self._date(streak, ASH.dataAsOf),
+            }
+            citations.append(self._cite(streak))
+
+        dragon_tiger = None
+        dragon_tiger_list = self._first(security, ASH.hasDragonTigerList)
+        if isinstance(dragon_tiger_list, URIRef):
+            seats = []
+            has_hot_money_seat = False
+            for seat in self._all(dragon_tiger_list, ASH.hasDragonTigerSeat):
+                if not isinstance(seat, URIRef):
+                    continue
+                seat_type = self._text(seat, ASH.seatType) or ""
+                if seat_type == "hot-money":
+                    has_hot_money_seat = True
+                seats.append(
+                    {
+                        **(self._ref(seat) or {}),
+                        "name": self._text(seat, ASH.seatName) or "",
+                        "type": seat_type,
+                        "netBuy": self._num(seat, ASH.seatNetBuy),
+                    }
+                )
+                citations.append(self._cite(seat))
+            dragon_tiger = {
+                **(self._ref(dragon_tiger_list) or {}),
+                "netBuy": self._num(dragon_tiger_list, ASH.dragonTigerNetBuy),
+                "seats": seats,
+                "hasHotMoneySeat": has_hot_money_seat,
+                "asOf": self._date(dragon_tiger_list, ASH.dataAsOf),
+            }
+            citations.append(self._cite(dragon_tiger_list))
+
+        indicators = [
+            item
+            for item in self._all(security, ASH.hasTechnicalIndicator)
+            if isinstance(item, URIRef)
+        ]
+        moving_average = None
+        ma_node = next(
+            (item for item in indicators if (item, RDF.type, ASH.MovingAverage) in self.graph),
+            None,
+        )
+        ma5 = self._num(security, ASH.ma5)
+        ma20 = self._num(security, ASH.ma20)
+        ma60 = self._num(security, ASH.ma60)
+        if isinstance(ma_node, URIRef):
+            ma5 = ma5 if ma5 is not None else self._num(ma_node, ASH.ma5)
+            ma20 = ma20 if ma20 is not None else self._num(ma_node, ASH.ma20)
+            ma60 = ma60 if ma60 is not None else self._num(ma_node, ASH.ma60)
+            citations.append(self._cite(ma_node))
+        if any(value is not None for value in (ma5, ma20, ma60)):
+            moving_average = {"ma5": ma5, "ma20": ma20, "ma60": ma60}
+
+        rsi_node = next(
+            (item for item in indicators if (item, RDF.type, ASH.RSIIndicator) in self.graph),
+            None,
+        )
+        rsi14 = self._num(security, ASH.rsi14)
+        if isinstance(rsi_node, URIRef):
+            rsi14 = rsi14 if rsi14 is not None else self._num(rsi_node, ASH.rsi14)
+            citations.append(self._cite(rsi_node))
+
+        theme_heats = []
+        for theme in self._all(company, ASH.hasThemeExposure):
+            if not isinstance(theme, URIRef):
+                continue
+            heat = self._first(theme, ASH.hasThemeHeat)
+            if not isinstance(heat, URIRef):
+                continue
+            lifecycle = self._first(heat, ASH.hasThemeLifecycle)
+            theme_heats.append(
+                {
+                    "theme": self._ref(theme),
+                    "score": self._num(heat, ASH.themeHeatScore),
+                    "asOf": self._date(heat, ASH.dataAsOf),
+                    "lifecycle": self._ref(lifecycle),
+                }
+            )
+            citations.append(self._cite(heat))
+        theme_heat = None
+        scored = [item for item in theme_heats if isinstance(item.get("score"), (int, float))]
+        if scored:
+            best = max(scored, key=lambda item: float(item["score"]))
+            theme_heat = {**best, "themes": theme_heats}
+
+        catalyst = None
+        catalyst_node = self._first(security, ASH.hasNewsCatalyst)
+        if isinstance(catalyst_node, URIRef):
+            catalyst = {
+                **(self._ref(catalyst_node) or {}),
+                "type": self._ref(self._first(catalyst_node, ASH.catalystType)),
+                "asOf": self._date(catalyst_node, ASH.dataAsOf),
+                "source": self._text(catalyst_node, ASH.dataSource) or "",
+            }
+            citations.append(self._cite(catalyst_node))
+
+        if not any(
+            item is not None
+            for item in (limit_up, dragon_tiger, moving_average, rsi14, theme_heat, catalyst)
+        ):
+            return None, []
+        return {
+            "limitUp": limit_up,
+            "dragonTiger": dragon_tiger,
+            "movingAverage": moving_average,
+            "rsi14": rsi14,
+            "themeHeat": theme_heat,
+            "catalyst": catalyst,
+        }, citations
 
     def _portfolio_dict(self, portfolio: Any) -> dict[str, Any] | None:
         if not isinstance(portfolio, URIRef):

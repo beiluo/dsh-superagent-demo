@@ -11,7 +11,8 @@ from __future__ import annotations
 from typing import Any
 
 # R01 value screen, R02 financial risk, R05 stop-loss, R06 concentration,
-# R09 illiquidity, R10 growth screen, R11 high-risk buy review.
+# R09 illiquidity, R10 growth screen, R11 high-risk buy review, and R16–R21
+# A-share short-term / hot-money signals.
 RULE_THRESHOLDS: dict[str, dict[str, float]] = {
     "R01": {"roe_min": 15.0, "pe_max": 20.0, "net_profit_min": 0.0},
     "R02": {"debt_ratio_min": 70.0, "interest_coverage_max": 2.0},
@@ -20,6 +21,16 @@ RULE_THRESHOLDS: dict[str, dict[str, float]] = {
     "R09": {"turnover_max": 0.5, "market_cap_max": 5_000_000_000.0},
     "R10": {"revenue_growth_min": 25.0, "profit_growth_min": 20.0, "pe_min": 40.0},
     "R11": {"risk_score_min": 60.0},
+    "R16": {"net_buy_min": 50_000_000.0},
+    "R17": {
+        "limit_up_days_min": 3.0,
+        "broken_board_max": 1.0,
+        "seal_amount_min": 50_000_000.0,
+    },
+    "R18": {"turnover_min": 15.0, "limit_up_days_min": 3.0},
+    "R19": {"broken_board_count_min": 2.0},
+    "R20": {"revenue_growth_min": 20.0},
+    "R21": {"theme_heat_min": 80.0},
 }
 
 SIGNAL_STATUS_LABELS = {
@@ -293,6 +304,118 @@ def evaluate_company(knowledge: dict[str, Any]) -> list[dict[str, str]]:
                 else f"建议 {action or '—'}，风险分数 {fmt_num(score)}；未同时满足 BUY 与 ≥ {fmt_num(RULE_THRESHOLDS['R11']['risk_score_min'])}"
             )
             signals.append(_signal("R11", "triggered" if ok else "clear", detail))
+
+    short = knowledge.get("shortTerm") or {}
+    limit_up = short.get("limitUp") or {}
+    dragon_tiger = short.get("dragonTiger") or {}
+    moving_average = short.get("movingAverage") or {}
+    theme_heat = short.get("themeHeat") or {}
+
+    net_buy = _num(dragon_tiger.get("netBuy"))
+    has_hot_money_seat = bool(dragon_tiger.get("hasHotMoneySeat"))
+    if net_buy is None:
+        signals.append(_signal("R16", "unknown", "缺少龙虎榜净买入或席位数据，无法识别游资流入。"))
+    else:
+        ok = (
+            net_buy > RULE_THRESHOLDS["R16"]["net_buy_min"]
+            and has_hot_money_seat
+        )
+        detail = (
+            f"龙虎榜净买入 {fmt_money(net_buy)}"
+            f"（要求 > {fmt_money(RULE_THRESHOLDS['R16']['net_buy_min'])}）；"
+            f"游资席位{'有' if has_hot_money_seat else '无'}"
+        )
+        signals.append(_signal("R16", "triggered" if ok else "clear", detail))
+
+    limit_up_days = _num(limit_up.get("limitUpDays"))
+    broken_boards = _num(limit_up.get("brokenBoardCount"))
+    seal_amount = _num(limit_up.get("sealAmount"))
+    if limit_up_days is None or broken_boards is None or seal_amount is None:
+        signals.append(_signal("R17", "unknown", "缺少连板天数、炸板次数或封单金额，无法识别连板动量。"))
+    else:
+        ok, detail = _conditions(
+            [
+                (
+                    f"连板 {fmt_num(limit_up_days)} 天",
+                    limit_up_days >= RULE_THRESHOLDS["R17"]["limit_up_days_min"],
+                    f"≥ {fmt_num(RULE_THRESHOLDS['R17']['limit_up_days_min'])}",
+                ),
+                (
+                    f"炸板 {fmt_num(broken_boards)} 次",
+                    broken_boards <= RULE_THRESHOLDS["R17"]["broken_board_max"],
+                    f"≤ {fmt_num(RULE_THRESHOLDS['R17']['broken_board_max'])}",
+                ),
+                (
+                    f"封单 {fmt_money(seal_amount)}",
+                    seal_amount > RULE_THRESHOLDS["R17"]["seal_amount_min"],
+                    f"> {fmt_money(RULE_THRESHOLDS['R17']['seal_amount_min'])}",
+                ),
+            ]
+        )
+        signals.append(_signal("R17", "triggered" if ok else "clear", detail))
+
+    if turnover is None or limit_up_days is None:
+        signals.append(_signal("R18", "unknown", "缺少换手率或连板天数，无法识别短线过热。"))
+    else:
+        ok, detail = _conditions(
+            [
+                (
+                    f"换手率 {fmt_pct(turnover)}",
+                    turnover > RULE_THRESHOLDS["R18"]["turnover_min"],
+                    f"> {fmt_pct(RULE_THRESHOLDS['R18']['turnover_min'])}",
+                ),
+                (
+                    f"连板 {fmt_num(limit_up_days)} 天",
+                    limit_up_days >= RULE_THRESHOLDS["R18"]["limit_up_days_min"],
+                    f"≥ {fmt_num(RULE_THRESHOLDS['R18']['limit_up_days_min'])}",
+                ),
+            ]
+        )
+        signals.append(_signal("R18", "triggered" if ok else "clear", detail))
+
+    if broken_boards is None:
+        signals.append(_signal("R19", "unknown", "缺少炸板次数，无法识别炸板风险。"))
+    else:
+        ok = broken_boards >= RULE_THRESHOLDS["R19"]["broken_board_count_min"]
+        detail = (
+            f"连板期间炸板 {fmt_num(broken_boards)} 次"
+            f"（要求 ≥ {fmt_num(RULE_THRESHOLDS['R19']['broken_board_count_min'])}）"
+        )
+        signals.append(_signal("R19", "triggered" if ok else "clear", detail))
+
+    ma20 = _num(moving_average.get("ma20"))
+    ma60 = _num(moving_average.get("ma60"))
+    if ma20 is None or ma60 is None or revenue_growth is None:
+        signals.append(_signal("R20", "unknown", "缺少 MA20/MA60 或营收增速，无法判断中期趋势。"))
+    else:
+        ok, detail = _conditions(
+            [
+                (
+                    f"MA20 {fmt_num(ma20)} > MA60 {fmt_num(ma60)}",
+                    ma20 > ma60,
+                    "MA20 > MA60",
+                ),
+                (
+                    f"营收增速 {fmt_pct(revenue_growth)}",
+                    revenue_growth >= RULE_THRESHOLDS["R20"]["revenue_growth_min"],
+                    f"≥ {fmt_pct(RULE_THRESHOLDS['R20']['revenue_growth_min'])}",
+                ),
+            ]
+        )
+        signals.append(_signal("R20", "triggered" if ok else "clear", detail))
+
+    heat_score = _num(theme_heat.get("score"))
+    catalyst = short.get("catalyst")
+    if heat_score is None or not catalyst:
+        signals.append(_signal("R21", "unknown", "缺少主题热度或新闻催化数据，无法识别事件驱动信号。"))
+    else:
+        ok = heat_score > RULE_THRESHOLDS["R21"]["theme_heat_min"]
+        detail = (
+            f"主题热度 {fmt_num(heat_score)}"
+            f"（要求 > {fmt_num(RULE_THRESHOLDS['R21']['theme_heat_min'])}）；"
+            f"新闻催化 {catalyst.get('label') or '有'}"
+        )
+        signals.append(_signal("R21", "triggered" if ok else "clear", detail))
 
     return signals
 

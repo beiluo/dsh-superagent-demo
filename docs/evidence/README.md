@@ -28,6 +28,12 @@ These captures document the browser work for the A-share ontology tickets.
 | `trace-before.png` | Merged `main` at `852e52c`, before the execution-trace change; rules mode, question “分析华辰智造” | 1440 × 1000 | Baseline: the answer ends with tool chips and ontology citations; there is no execution trace. |
 | `trace-after.png` | This ticket branch, same rules-mode server, question and scroll position | 1440 × 1000 | The same answer now ends with the expanded “执行详情” panel: USER message, TOOL call with arguments, collapsed raw tool data and raw JSON. |
 | `trace-after-detail.png` | Same state as `trace-after.png` | 808 × 299 | Close-up of the new execution-trace panel. |
+| `short-rules-before.png` | Stacked baseline `agent/ontology-native-query-4006e08edaef` at `91d0d90`; question “分析游资科技” | 1240 × 1276 | Before wiring R16–R21: no short-term block and only R01–R11 signals for the short-term example. |
+| `short-rules-after.png` | Rules branch head, same question and rules mode | 1240 × 1550 | The same company now shows limit-up/Dragon-Tiger/MA/RSI/theme facts and triggers R16, R17, R18, R20 and R21; R19 stays clear. |
+| `short-rule-r16-before.png` | Stacked baseline at `91d0d90`; question “R16 是什么规则？” | 1240 × 942 | Before wiring: R16 metadata renders, but “当前没有对象触发该规则”. |
+| `short-rule-r16-after.png` | Rules branch head, same question | 1240 × 1069 | R16 now reports 游资科技 as triggered with the Dragon-Tiger net-buy and hot-money-seat evidence. |
+| `short-query-before.png` | Stacked baseline at `91d0d90`; question “哪些公司触发了 R16？” | 1240 × 1020 | Before wiring: the rule-filtered screen shows every company with “触发规则：无”; R16 cannot match. |
+| `short-query-after.png` | Rules branch head, same question | 1240 × 1150 | The same screen reports 游资科技 triggering R16 and shows the Dragon-Tiger net-buy/hot-money-seat detail. |
 | `query-idle-before.png` | Merged `main` at `1a25a68`, before the ontology-query change; rules mode, no market data | 1240 × 942 | Baseline Agent section: fixed starter questions and the old “先检索企业、规则、决策与政策” welcome copy. |
 | `query-idle-after.png` | Ticket branch head, same server settings | 1240 × 942 | New starter questions for filters, evidence, constraints and what-if, plus welcome copy explaining that the question chooses the query path. |
 | `query-before.png` | Merged `main` at `1a25a68`; question “PE 低于 20 且 ROE 高于 15 的公司” | 1240 × 1153 | Baseline: the rules agent cannot turn the filter into a query and returns “没有找到对应公司” plus the company list. |
@@ -43,6 +49,11 @@ The `agent-before.png` baseline is a real capture of the deployed site before th
 not a mockup. The after captures use the actual FastAPI backend and the real `index.html`; no LLM
 provider key was configured, so the screenshots show the deterministic **rules mode**. LLM mode and
 the tool loop are covered by `tests/test_llm.py` with a local OpenAI-compatible stub.
+
+The `short-*` pair is stacked on the query branch: its baseline is that branch at `91d0d90` before
+the short-term rule wiring, and its after captures use the rules branch with the same server settings.
+To show the complete conversation, the `.agent-log` was expanded to full height and the sticky header
+was hidden for these screenshots; both sides use the same viewport, question and treatment.
 
 The `query-*`, `evidence-*`, `constraints-*` and `scenario-*` pairs use the same rules-mode server
 settings (`MARKET_DATA_ENABLED=false`, no LLM key): the baseline worktree is `main` at `1a25a68`

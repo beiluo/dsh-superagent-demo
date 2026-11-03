@@ -277,3 +277,23 @@ def test_analyze_response_never_contains_key(client_factory):
     assert response.status_code == 200
     assert FAKE_KEY not in response.text
     assert "Authorization" not in response.text
+
+
+def test_short_term_company_analysis(client_factory):
+    response = client_factory().post("/api/agent/analyze", json={"question": "分析游资科技"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["steps"][0]["tool"] == "get_company_analysis"
+    assert "短线状态" in data["answer"]
+    assert "龙虎榜" in data["answer"]
+    assert "R16" in data["answer"]
+    assert "R18" in data["answer"]
+
+
+def test_short_term_rule_explanation(client_factory):
+    response = client_factory().post("/api/agent/analyze", json={"question": "R16 是什么规则？"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["steps"][0]["tool"] == "get_rule"
+    assert "游资席位净买入" in data["answer"]
+    assert "游资科技" in data["answer"]
