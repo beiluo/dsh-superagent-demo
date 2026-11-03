@@ -40,6 +40,13 @@
     odrl: "ODRL",
   };
 
+  const VOICE_TYPE_LABELS = {
+    tactic: "手法",
+    principle: "原则",
+    warning: "风险提醒",
+    observation: "观察",
+  };
+
   const SEVERITY_LABELS = { high: "高", medium: "中", low: "低" };
 
   const GRAPH_CLUSTERS = {
@@ -1283,6 +1290,22 @@
       <div class="short-kpi"><span>风险分</span><strong class="hot">${esc(riskScore || "66")}</strong><small>RISK SCORE</small></div>`;
 
     const shortRules = DATA.rules.filter((rule) => ["R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23", "R24", "R25", "R26"].includes(rule.ruleId));
+    const voiceTarget = $("#short-voice-list");
+    if (voiceTarget) {
+      const voices = DATA.individuals
+        .filter((item) => item.types.some((type) => type.id === "TraderStatement"))
+        .slice(0, 4);
+      voiceTarget.innerHTML = voices
+        .map((voice) => {
+          const text = literalOf(firstFact(voice, "statementText"));
+          const speaker = literalOf(firstFact(voice, "statementSpeaker"));
+          const type = literalOf(firstFact(voice, "statementType"));
+          return `<article class="short-voice"><p>“${esc(truncate(text, 86))}”</p><footer><strong>${esc(speaker)}</strong><span>${esc(VOICE_TYPE_LABELS[type] || type || "摘录")}</span></footer></article>`;
+        })
+        .join("");
+    }
+
+
     rulesTarget.innerHTML = shortRules
       .map(
         (rule) => `

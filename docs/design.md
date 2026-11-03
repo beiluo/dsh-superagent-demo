@@ -1,6 +1,6 @@
 # A 股投资决策本体 — 设计说明
 
-> 版本：1.4.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
+> 版本：1.5.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
 
 本文说明本体“为什么这样建模”、每层使用了哪些 W3C 构造、跨层链路如何工作，以及当前实现的边界。
 1.1 的领域清单见 [expansion-1.1.md](expansion-1.1.md)。
@@ -166,7 +166,7 @@ FIBO 的官方扩展，也不受 FIBO 治理机构背书。
 
 ## 5. RDF 层：实例图
 
-文件：`ontology/rdf/instances.ttl`（8,692 条三元组）
+文件：`ontology/rdf/instances.ttl`（10,570 条三元组）
 
 ### 5.1 表达方式
 
@@ -217,7 +217,7 @@ ashd:decision-huachen-2026q4
 
 ## 6. RDFS 层：词汇与定义
 
-文件：`ontology/rdfs/schema.ttl`（3,543 条三元组）
+文件：`ontology/rdfs/schema.ttl`（3,573 条三元组）
 
 ### 6.1 类层次
 
@@ -269,8 +269,8 @@ ash:Entity
 
 ### 6.2 属性
 
-- 166 个对象属性；
-- 219 个数据属性；
+- 167 个对象属性；
+- 224 个数据属性；
 - 每个属性有 `rdfs:domain`、`rdfs:range` 和中英文标签；
 - 典型属性：
   - `ash:hasSecurity` / `ash:issuedBy`；
@@ -625,15 +625,15 @@ ODRL 政策是**声明式**的。本仓库：
 
 ```text
 modules: 7
-triples: 17153
-classes: 245
-object properties: 166
-data properties: 219
+triples: 19061
+classes: 246
+object properties: 167
+data properties: 224
 SKOS concepts: 147
 SWRL rules: 26
 OWL-S services: 1
 ODRL policies: 5
-OWL RL closure: 14569 -> 33415 triples (18846 inferred)
+OWL RL closure: 16477 -> 36442 triples (19965 inferred)
 warnings: 0
 ```
 
@@ -642,13 +642,13 @@ warnings: 0
 使用 Firefox + Playwright 做冒烟检查：
 
 - 页面标题与数据快照加载；
-- 1,837 个实体、26 条规则、7 个流程步骤、5 项政策渲染；
+- 1,988 个实体、26 条规则、7 个流程步骤、5 项政策渲染；
 - 搜索 `InvestmentDecision` 返回 1 条；
 - 点击实体详情显示 8 条 OWL 限制；
 - 规则严重程度筛选、政策 tab、概念树、示例 tab 交互正常；
 - 短线面板：6 个 KPI、4 步剧本、3 张方法论卡、情绪六阶段、R16–R26 规则、游资科技短线决策；
-- 技能目录：50 个技能、821 个章节、20 个主题可在 Explorer 检索；
-- 图谱四种模式：核心全景 51 节点、全部类 245 节点、决策链 19 节点/15 条带标签边、SKOS 147 节点；
+- 技能目录：50 个技能、821 个章节、20 个主题、144 条短原话可在 Explorer 检索；
+- 图谱四种模式：核心全景 51 节点、全部类 246 节点、决策链 19 节点/15 条带标签边、SKOS 147 节点；
 - 图谱缩放、图例隐藏/恢复、节点聚焦、跳转 Explorer/SKOS 均正常；
 - 桌面与 390px 手机视口无横向滚动、无 console error；
 - 截图见 `docs/evidence/`。
@@ -702,12 +702,12 @@ index.html + assets/js/app.js
 图谱使用原生 SVG 与自实现力导向布局，不引入 D3 或图表库：
 
 - **核心全景**：51 个核心类节点，保证可读性；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
-- **全部类**：245 个类节点，用于查看完整扩展域；
+- **全部类**：246 个类节点，用于查看完整扩展域；
 - **决策链**：19 个核心类的手工布局，边标签显示对象属性，适合讲解决策路径；
 - **SKOS 分类**：147 个概念，按九套 ConceptScheme 着色，边为 `broader`；
 - **交互**：滚轮缩放、拖拽平移、图例筛选、节点聚焦、`标签`开关；点击节点在右侧显示类/概念详情；
 - **联动**：详情中的“在 Explorer 中打开”跳转到实体浏览器；“在 SKOS 分类中查看”跳转到概念树；
-- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、245 节点全部类并缩放查看；
+- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、246 节点全部类并缩放查看；
 - **规模评估**：图谱下方固定展示类/属性/概念/三元组规模，并明确“参考实现而非 FIBO 级行业本体”。
 
 图谱节点与边全部来自 `DATA.classes`、`DATA.objectProperties`、`DATA.concepts`，没有手工维护的第二份图数据。

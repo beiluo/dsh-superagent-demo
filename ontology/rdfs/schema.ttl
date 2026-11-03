@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.4.0" .
+    owl:versionInfo "1.5.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -3587,3 +3587,16 @@ ash:skillUrl a owl:DatatypeProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range
 ash:skillOrder a owl:DatatypeProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range xsd:integer ; rdfs:label "技能序号"@zh .
 ash:sectionTitle a owl:DatatypeProperty ; rdfs:domain ash:SkillSection ; rdfs:range xsd:string ; rdfs:label "章节标题"@zh .
 ash:sectionOrder a owl:DatatypeProperty ; rdfs:domain ash:SkillSection ; rdfs:range xsd:integer ; rdfs:label "章节序号"@zh .
+ash:TraderStatement a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "游资原话摘录"@zh, "Trader Statement"@en ;
+    rdfs:comment "公开语料中的短句摘录/原则，标注说话者与来源；不代表本人确认，不构成投资建议。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+
+ash:hasStatement a owl:ObjectProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range ash:TraderStatement ; rdfs:label "包含原话"@zh .
+ash:statementText a owl:DatatypeProperty ; rdfs:domain ash:TraderStatement ; rdfs:range xsd:string ; rdfs:label "原话摘录"@zh .
+ash:statementSpeaker a owl:DatatypeProperty ; rdfs:domain ash:TraderStatement ; rdfs:range xsd:string ; rdfs:label "说话者"@zh .
+ash:statementType a owl:DatatypeProperty ; rdfs:domain ash:TraderStatement ; rdfs:range xsd:string ; rdfs:label "原话类型"@zh .
+ash:statementStatus a owl:DatatypeProperty ; rdfs:domain ash:TraderStatement ; rdfs:range xsd:string ; rdfs:label "原话状态"@zh .
+ash:statementOrder a owl:DatatypeProperty ; rdfs:domain ash:TraderStatement ; rdfs:range xsd:integer ; rdfs:label "原话序号"@zh .

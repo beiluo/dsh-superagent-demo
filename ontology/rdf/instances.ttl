@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.4.0" .
+    owl:versionInfo "1.5.0" .
 
 # ===========================================================================
 # Market structure
@@ -9210,3 +9210,1732 @@ ashd:skill-section-50-12 a owl:NamedIndividual, ash:SkillSection ;
     rdfs:label "经典语录库（引用时注明出处）"@zh ;
     ash:isExample true .
 ashd:skill-youzi-50 ash:hasSkillSection ashd:skill-section-50-12 .
+# ===== Trader voice excerpts 1.5 (short public excerpts; not full text) =====
+
+ashd:voice-youzi-001 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "25/27. 永不止盈永不止损：买入按逻辑体系买入不考虑止盈，上涨只看姿势和买卖者情绪，继续看好则持股、不看好则卖出；" ;
+    ash:statementSpeaker "炒股养家" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "炒股养家 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-03 ash:hasStatement ashd:voice-youzi-001 .
+
+ashd:voice-youzi-002 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "三要素：主线（当下最强题材）+人气核心（龙头已打出空间）+情绪逆转（分歧转一致，从水下/大跌直线拉板，\"暴力美学\"）。" ;
+    ash:statementSpeaker "著名刺客" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "著名刺客 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-14 ash:hasStatement ashd:voice-youzi-002 .
+
+ashd:voice-youzi-003 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "主升期：题材故事还能讲，就敢于在分歧时大胆介入龙头，\"看好，分歧，买入\"，打板低吸皆可；" ;
+    ash:statementSpeaker "92科比" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-leader ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "92科比 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-20 ash:hasStatement ashd:voice-youzi-003 .
+
+ashd:voice-youzi-004 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "不设止损止盈，买入机会卖出风险；" ;
+    ash:statementSpeaker "炒股养家" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "炒股养家 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-03 ash:hasStatement ashd:voice-youzi-004 .
+
+ashd:voice-youzi-005 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "封板手法：急速暴量扫货封板，利用资金优势万手大单排板，单笔买入通常5000万以上，参与风口龙头接力板，\"激发市场情绪，引导资金关注打造主线机会\"。" ;
+    ash:statementSpeaker "赵老哥" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-leader ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "赵老哥 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-05 ash:hasStatement ashd:voice-youzi-005 .
+
+ashd:voice-youzi-006 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "只做主升：\"一定不能参与调整段，一定要做主升，主升才是王道，而主升是低吸不来的，主升只能靠打板和追涨。" ;
+    ash:statementSpeaker "乔帮主" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-trend ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "乔帮主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-07 ash:hasStatement ashd:voice-youzi-006 .
+
+ashd:voice-youzi-007 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "风险信号：高位时一定不要做古北路的对手盘——高位他砸完了，基本上题材龙头离结束就不远了。" ;
+    ash:statementSpeaker "古北路" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "古北路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-38 ash:hasStatement ashd:voice-youzi-007 .
+
+ashd:voice-youzi-008 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "买入机会，卖出风险，只做对的交易，胜负交给概率，多一份淡定，少一分胜负心。" ;
+    ash:statementSpeaker "万狮虎" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万狮虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-16 ash:hasStatement ashd:voice-youzi-008 .
+
+ashd:voice-youzi-009 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "永不止损，永不止盈（只有买入与卖出，没有成本概念；" ;
+    ash:statementSpeaker "炒股养家" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-chip ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "炒股养家 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-03 ash:hasStatement ashd:voice-youzi-009 .
+
+ashd:voice-youzi-010 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "卖出法则：\"对我来说没有止损止盈，只有买入和卖出。" ;
+    ash:statementSpeaker "令胡冲" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "令胡冲 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-06 ash:hasStatement ashd:voice-youzi-010 .
+
+ashd:voice-youzi-011 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "买入机会，卖出不确定，出局就是出局，不管止损止盈。" ;
+    ash:statementSpeaker "万狮虎" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万狮虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-16 ash:hasStatement ashd:voice-youzi-011 .
+
+ashd:voice-youzi-012 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "买入机会卖出风险只做对交易胜负交概率。" ;
+    ash:statementSpeaker "炒股养家" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "炒股养家 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-03 ash:hasStatement ashd:voice-youzi-012 .
+
+ashd:voice-youzi-013 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "选股三方向：①连板龙头纳入自选(主升看分歧转一致，见顶后观察一月轮炒)②刚开板新股(观察一周)③板块中军股(观察热点风险，中军大跌=热点结束)。" ;
+    ash:statementSpeaker "游资通用方法论" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "游资通用方法论 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-01 ash:hasStatement ashd:voice-youzi-013 .
+
+ashd:voice-youzi-014 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "融资铁律：\"融资资金是不能补仓买入的\"\"当你决定要融资买入一个股票的时候，必须有100%的把握，99%都不行，否则宁可等待。" ;
+    ash:statementSpeaker "瑞鹤仙" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "瑞鹤仙 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-04 ash:hasStatement ashd:voice-youzi-014 .
+
+ashd:voice-youzi-015 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "转势灵魂板（快速反弹龙头）：平时空仓，大盘跌到位、恐慌情绪出现时，做率领市场人气率先涨停的票（大盘还没翻红它已涨停）；" ;
+    ash:statementSpeaker "孤独牛背" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "孤独牛背 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-19 ash:hasStatement ashd:voice-youzi-015 .
+
+ashd:voice-youzi-016 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "常见逻辑缺陷：选股无标准(如仅集合竞价高开≠好股票)、买入无时机概念(扫排不分)、卖出依据是上次结果(刻舟求剑)。" ;
+    ash:statementSpeaker "游资通用方法论" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "游资通用方法论 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-01 ash:hasStatement ashd:voice-youzi-016 .
+
+ashd:voice-youzi-017 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "主模式为超短打板（辅以低吸、半路），典型的隔日模式：当日打板/开盘买入，次日集合竞价或开盘5分钟内兑现；" ;
+    ash:statementSpeaker "退学炒股" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-auction ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "退学炒股 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-08 ash:hasStatement ashd:voice-youzi-017 .
+
+ashd:voice-youzi-018 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "卖出习惯：向上止盈止损（左侧挂单卖出）——上班时无法盯盘养成的习惯，资金做大后左侧也更合适；" ;
+    ash:statementSpeaker "乔帮主" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "乔帮主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-07 ash:hasStatement ashd:voice-youzi-018 .
+
+ashd:voice-youzi-019 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "卖出习惯：\"我一般不习惯在涨停板卖，喜欢涨停低一点就出，比较保险，剩下那点不要了！" ;
+    ash:statementSpeaker "独谷一箭" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "独谷一箭 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-30 ash:hasStatement ashd:voice-youzi-019 .
+
+ashd:voice-youzi-020 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "只在大盘起势、顺势阶段买入，了结阶段卖出，避免\"买在大盘卖点的高点\"。" ;
+    ash:statementSpeaker "凡倍无名" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "凡倍无名 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-09 ash:hasStatement ashd:voice-youzi-020 .
+
+ashd:voice-youzi-021 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "对题材深度、可发掘程度的预期，是你对龙头介入、持有和卖出的基础。" ;
+    ash:statementSpeaker "92科比" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "92科比 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-20 ash:hasStatement ashd:voice-youzi-021 .
+
+ashd:voice-youzi-022 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "补充：较少参与接力，一般选低位涨停板，次日止盈止损极其果断。" ;
+    ash:statementSpeaker "佛山系" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "佛山系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-21 ash:hasStatement ashd:voice-youzi-022 .
+
+ashd:voice-youzi-023 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "操作一致性：\"按什么准则买入，就按什么准则卖出\"；" ;
+    ash:statementSpeaker "乔帮主" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "乔帮主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-07 ash:hasStatement ashd:voice-youzi-023 .
+
+ashd:voice-youzi-024 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "弱势市场低吸埋伏、情绪向下只做人气股分歧低吸；" ;
+    ash:statementSpeaker "万狮虎" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万狮虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-16 ash:hasStatement ashd:voice-youzi-024 .
+
+ashd:voice-youzi-025 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "偏好主线题材龙头、风口板块接力板；" ;
+    ash:statementSpeaker "赵老哥" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "赵老哥 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-05 ash:hasStatement ashd:voice-youzi-025 .
+
+ashd:voice-youzi-026 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "高手买入龙头，超级高手卖出龙头。" ;
+    ash:statementSpeaker "万狮虎" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万狮虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-16 ash:hasStatement ashd:voice-youzi-026 .
+
+ashd:voice-youzi-027 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "天涯时代被誉为\"超短线之神\"、半年翻十倍的低吸流派开山鼻祖——满仓一只、隔日必走的极致超短：只做热点强势股，用\"题材+热点+好形态、5日线附近低吸\"吃强势股的上升惯性。" ;
+    ash:statementSpeaker "独谷一箭" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-theme ; ash:hasSkillTopic ashs:topic-technical ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "独谷一箭 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-30 ash:hasStatement ashd:voice-youzi-027 .
+
+ashd:voice-youzi-028 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "做无人竞争的冷门低吸洼地：\"选股标的，一般是目标个股往往当天没有重大题材利好，也就是我们复盘时候无法正常归类的个股行情，这点在弱势或者消息匮乏的市场上优势明显。" ;
+    ash:statementSpeaker "佛山系" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-review ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "佛山系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-21 ash:hasStatement ashd:voice-youzi-028 .
+
+ashd:voice-youzi-029 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "价值股主升浪滚动操作（其2012年word文档核心，自称\"滚动操作的升级版，主升浪非加速通道专用\"）：低吸重仓（60万以上）、高抛轻仓（30万），滚动推进；" ;
+    ash:statementSpeaker "瑞鹤仙" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-trend ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "瑞鹤仙 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-04 ash:hasStatement ashd:voice-youzi-029 .
+
+ashd:voice-youzi-030 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "吞吴破秦的对手盘理论（庄股、国家队、一字换手买一独大、龙头加速独食、弱势缩量板、情绪转折后反向加速为六类对手盘强大情形，规避之可避免80%以上大幅回撤）。" ;
+    ash:statementSpeaker "孤独牛背" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-leader ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "孤独牛背 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-19 ash:hasStatement ashd:voice-youzi-030 .
+
+ashd:voice-youzi-031 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "大题材（创投式：次日10多个一字、多股封单超自身流通盘）→\"能买到哪个直接买就好\"，竞价开得最高、板块内流通盘最小价格最低、稍有特色的直接干，不要犹豫。" ;
+    ash:statementSpeaker "欢乐海岸" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-one-day ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "欢乐海岸 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-11 ash:hasStatement ashd:voice-youzi-031 .
+
+ashd:voice-youzi-032 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "控制回撤篇同篇其他高手观点可作对照（非孤独牛背本人观点）：打板赚盒饭的仓位三等分法与\"大赚10个点以上强制降到3成以下\"、\"28（二八）分化仓位表\"；" ;
+    ash:statementSpeaker "孤独牛背" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "孤独牛背 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-19 ash:hasStatement ashd:voice-youzi-032 .
+
+ashd:voice-youzi-033 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "广发证券辽阳民主路——传说中东北猛男（赵庚禹）的席位，\"不要怂就是干\"的敢死队猎人：激进接力、重仓打加速临界点、锁仓拿到最后，今天吃大面明天照样干。" ;
+    ash:statementSpeaker "东北猛男" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "东北猛男 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-50 ash:hasStatement ashd:voice-youzi-033 .
+
+ashd:voice-youzi-034 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "超短体系化教学者、《超短百科全书》作者，用\"低吸、追涨、打板三类筹码接力轮回\"统一解释股价运行的全能型超短作手，自述以半路（追涨）为主模式。" ;
+    ash:statementSpeaker "凡倍无名" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-relay ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "凡倍无名 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-09 ash:hasStatement ashd:voice-youzi-034 .
+
+ashd:voice-youzi-035 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "龙虎榜应用提示（语料转述）：与其同席共存的打板资金次日有底仓利润跑得快，\"打板如果遇上了这个低吸的席位，考虑如何脱身比考虑赚多少更重要\"。" ;
+    ash:statementSpeaker "乔帮主" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "乔帮主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-07 ash:hasStatement ashd:voice-youzi-035 .
+
+ashd:voice-youzi-036 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "由于该营业部客户众多，资金较为分散，经常出现在新股的卖出席位上，而一般买入席位也很少超过千万手笔，该营业部团队应该都是各自为战。" ;
+    ash:statementSpeaker "泰然九路" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "泰然九路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-34 ash:hasStatement ashd:voice-youzi-036 .
+
+ashd:voice-youzi-037 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "个股必须结合大盘：\"重个股、轻指数这个观念是绝对错误的——如果你不能正确预测大盘，你就不能提前于别人买入，最终被大盘牵着鼻子走。" ;
+    ash:statementSpeaker "瑞鹤仙" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "瑞鹤仙 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-04 ash:hasStatement ashd:voice-youzi-037 .
+
+ashd:voice-youzi-038 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "以\"理解力才是王道\"为标签的一线游资心法辑录——不打固定模式，围绕\"热点中的热点\"做题材接力，把市场情绪与题材真伪置于技术之前。" ;
+    ash:statementSpeaker "榜中榜" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "榜中榜 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-33 ash:hasStatement ashd:voice-youzi-038 .
+
+ashd:voice-youzi-039 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "与本档案集《歌神》对照：温州帮是坐庄控盘流（对倒拉板、砸盘收割），歌神是打板接力流（首板买入、凌厉锁仓），两者资金性格相反。" ;
+    ash:statementSpeaker "温州帮" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "温州帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-31 ash:hasStatement ashd:voice-youzi-039 .
+
+ashd:voice-youzi-040 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "妖股必须10点前在板上换手）→妖股见顶（人气崩溃分时：一致看多转一致看空、心电图式巨幅波动、从涨停板直线掉落10%+）。" ;
+    ash:statementSpeaker "凡倍无名" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-technical ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "凡倍无名 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-09 ash:hasStatement ashd:voice-youzi-040 .
+
+ashd:voice-youzi-041 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "长期资金曲线不断上升的秘密就是回撤少\"：系统风险来临时，要么降低仓位，要么换入能逆市的品种，哪个概率大选哪个。" ;
+    ash:statementSpeaker "万法归宗" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万法归宗 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-13 ash:hasStatement ashd:voice-youzi-041 .
+
+ashd:voice-youzi-042 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "第二阶段·有效跌破颈线位离场：跌势形成后，一旦有效跌破颈线位，手中如有筹码坚决止损卖出，从此按熊市操作模式操作。" ;
+    ash:statementSpeaker "落升" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-chip ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "落升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-28 ash:hasStatement ashd:voice-youzi-042 .
+
+ashd:voice-youzi-043 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "体系第一义：打板是为了龙头，不是套利：\"打板是为了在最后确定的一瞬间买入市场上最强的个股，持有获取最大的利润。" ;
+    ash:statementSpeaker "著名刺客" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-fundamental ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "著名刺客 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-14 ash:hasStatement ashd:voice-youzi-043 .
+
+ashd:voice-youzi-044 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "第一时间买进，不追高（情绪极好时龙头例外）：\"必须第一时间买进，不可追太高（除非市场情绪很好，龙头可追）。" ;
+    ash:statementSpeaker "小鳄鱼" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "小鳄鱼 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-23 ash:hasStatement ashd:voice-youzi-044 .
+
+ashd:voice-youzi-045 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "规则：连板股竞价量同比超预期放大（如泰永长征四板竞价超8000手）=多空过度一致，风险大于收益不参与；" ;
+    ash:statementSpeaker "凡倍无名" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-account ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "凡倍无名 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-09 ash:hasStatement ashd:voice-youzi-045 .
+
+ashd:voice-youzi-046 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "A. 向\"左\"看齐卖出：大盘来到前期重要高点附近时，应该空仓（为避免踏空，等跌到颈线附近重新入场）。" ;
+    ash:statementSpeaker "落升" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "落升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-28 ash:hasStatement ashd:voice-youzi-046 .
+
+ashd:voice-youzi-047 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "本质作用：\"大波段持股解决了小散不敢重仓的问题\"——规避三类风险后，仓位、买卖的逻辑自然理顺。" ;
+    ash:statementSpeaker "万法归宗" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ; ash:hasSkillTopic ashs:topic-trend ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万法归宗 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-13 ash:hasStatement ashd:voice-youzi-047 .
+
+ashd:voice-youzi-048 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "打板的目的论：\"打板也好，低吸也好，追涨也好，目的就是要做到龙头个股，而不是简单的打板套利。" ;
+    ash:statementSpeaker "赵老哥" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-leader ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "赵老哥 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-05 ash:hasStatement ashd:voice-youzi-048 .
+
+ashd:voice-youzi-049 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "仓位风险控制极强：\"尽管拥有大资金优势，但很少买入超过1亿的资金，基本都是利用分仓滚动获利。" ;
+    ash:statementSpeaker "佛山系" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "佛山系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-21 ash:hasStatement ashd:voice-youzi-049 .
+
+ashd:voice-youzi-050 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "信息不足时列出需要用户补充什么（如个股位置、板块情绪、昨日涨停表现），不要凭空给结论。" ;
+    ash:statementSpeaker "瑞鹤仙" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "瑞鹤仙 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-04 ash:hasStatement ashd:voice-youzi-050 .
+
+ashd:voice-youzi-051 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "模式内的情绪转折亏损是必然，是用来提醒自己收缩仓位或空仓的信号，无需过分自责。" ;
+    ash:statementSpeaker "孤独牛背" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "孤独牛背 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-19 ash:hasStatement ashd:voice-youzi-051 .
+
+ashd:voice-youzi-052 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "非主流冷门自认为低风险而重仓——往往因为情绪转差时才往那里思考，反倒亏损很大；" ;
+    ash:statementSpeaker "涅盘重升" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "涅盘重升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-26 ash:hasStatement ashd:voice-youzi-052 .
+
+ashd:voice-youzi-053 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "竞价预期=对个股第二天开盘高度的预判=所有交易者一夜复盘思考情绪沉淀给出的正负溢价。" ;
+    ash:statementSpeaker "游资通用方法论" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-review ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "游资通用方法论 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-01 ash:hasStatement ashd:voice-youzi-053 .
+
+ashd:voice-youzi-054 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "宁波涨停敢死队主要在放量超过昨天六倍以上介入股票当天封涨停，第二天不管盈亏都卖出。" ;
+    ash:statementSpeaker "宁波敢死队" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "宁波敢死队 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-02 ash:hasStatement ashd:voice-youzi-054 .
+
+ashd:voice-youzi-055 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "打板3种方法：扫板(快涨停直接买)、排板(已涨停排队)、回封板(炸板后回封时买)。" ;
+    ash:statementSpeaker "游资通用方法论" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "游资通用方法论 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-01 ash:hasStatement ashd:voice-youzi-055 .
+
+ashd:voice-youzi-056 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "逆向卖点法：重仓股在研报一片看好、股价凌厉上涨时悄悄出局，卖出价屡屡是阶段顶部；" ;
+    ash:statementSpeaker "徐翔" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "徐翔 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-17 ash:hasStatement ashd:voice-youzi-056 .
+
+ashd:voice-youzi-057 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "锁仓条件：只对确认的主升龙头锁仓（万兴科技、安阳钢铁隔日锁仓T+2开板卖出）；" ;
+    ash:statementSpeaker "退学炒股" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-trend ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "退学炒股 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-08 ash:hasStatement ashd:voice-youzi-057 .
+
+ashd:voice-youzi-058 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "涨停砸板卖出你永远不知道后面还有多少个涨停，我一般等妖股大阴线跳水才会出局。" ;
+    ash:statementSpeaker "欢乐海岸" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "欢乐海岸 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-11 ash:hasStatement ashd:voice-youzi-058 .
+
+ashd:voice-youzi-059 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "因客户多、资金分散，经常出现在新股卖出席位上，一般买入席位很少超过千万手笔。" ;
+    ash:statementSpeaker "泰然九路" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "泰然九路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-34 ash:hasStatement ashd:voice-youzi-059 .
+
+ashd:voice-youzi-060 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "买入后下跌不能超过10%，否则无条件止损，不允许补仓（绝不让小亏变大亏）。" ;
+    ash:statementSpeaker "徐翔" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "徐翔 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-17 ash:hasStatement ashd:voice-youzi-060 .
+
+ashd:voice-youzi-061 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "若强势股分歧厉害有风险，则低风险走强点上仓位（例：3.20盘龙药业）。" ;
+    ash:statementSpeaker "涅盘重升" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "涅盘重升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-26 ash:hasStatement ashd:voice-youzi-061 .
+
+ashd:voice-youzi-062 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "选股：只追龙头，锁定市场主流题材的龙头股，专做高位接力板，不碰杂毛。" ;
+    ash:statementSpeaker "金田路" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "金田路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-47 ash:hasStatement ashd:voice-youzi-062 .
+
+ashd:voice-youzi-063 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "没爆量的都不能说是龙头，既然是领袖，必须爆量，接受群众的检验\"。" ;
+    ash:statementSpeaker "赵老哥" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-leader ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "赵老哥 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-05 ash:hasStatement ashd:voice-youzi-063 .
+
+ashd:voice-youzi-064 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "②低吸代替追涨、做超跌代替做强势（只做极度超跌反弹，且小仓位）；" ;
+    ash:statementSpeaker "万法归宗" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万法归宗 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-13 ash:hasStatement ashd:voice-youzi-064 .
+
+ashd:voice-youzi-065 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "整体板块情绪：龙头拉开空间、不是一日游题材、人气高、始终活跃。" ;
+    ash:statementSpeaker "涅盘重升" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-one-day ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "涅盘重升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-26 ash:hasStatement ashd:voice-youzi-065 .
+
+ashd:voice-youzi-066 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "打板必封死——用合力确保次日溢价，降低接力失败风险。" ;
+    ash:statementSpeaker "成都帮" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "成都帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-27 ash:hasStatement ashd:voice-youzi-066 .
+
+ashd:voice-youzi-067 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "第一阶段·向\"左\"看齐：大盘前期重要高点附近卖出股票空仓；" ;
+    ash:statementSpeaker "落升" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "落升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-28 ash:hasStatement ashd:voice-youzi-067 .
+
+ashd:voice-youzi-068 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "情绪量化休息线：昨日涨停平均溢价2%以下不打板。" ;
+    ash:statementSpeaker "欢乐海岸" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-one-day ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "欢乐海岸 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-11 ash:hasStatement ashd:voice-youzi-068 .
+
+ashd:voice-youzi-069 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "与本档案集《温州帮》对照：歌神打板接力、做情绪与人气；" ;
+    ash:statementSpeaker "歌神" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "歌神 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-32 ash:hasStatement ashd:voice-youzi-069 .
+
+ashd:voice-youzi-070 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "整体板块情绪强→龙头板给仓位（例：5.24海汽）。" ;
+    ash:statementSpeaker "涅盘重升" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "涅盘重升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-26 ash:hasStatement ashd:voice-youzi-070 .
+
+ashd:voice-youzi-071 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "在板块情绪转好、龙头打开空间时买入补涨/跟随标的。" ;
+    ash:statementSpeaker "歌神" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "歌神 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-32 ash:hasStatement ashd:voice-youzi-071 .
+
+ashd:voice-youzi-072 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "打板、低吸、接力只是形式，\"盈利不分贵贱\"。" ;
+    ash:statementSpeaker "退学炒股" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-relay ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "退学炒股 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-08 ash:hasStatement ashd:voice-youzi-072 .
+
+ashd:voice-youzi-073 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "先预测先下手：\"在股市里，买入传言，卖出消息。" ;
+    ash:statementSpeaker "落升" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "落升 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-28 ash:hasStatement ashd:voice-youzi-073 .
+
+ashd:voice-youzi-074 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "小幅高开（3%–7%）——低吸、打板、竞价；" ;
+    ash:statementSpeaker "小鳄鱼" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-auction ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "小鳄鱼 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-23 ash:hasStatement ashd:voice-youzi-074 .
+
+ashd:voice-youzi-075 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "小题材→接力前排个股，龙头买不到买龙二；" ;
+    ash:statementSpeaker "欢乐海岸" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "欢乐海岸 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-11 ash:hasStatement ashd:voice-youzi-075 .
+
+ashd:voice-youzi-076 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "不要在竞价阶段赌开盘承接力之外的东西。" ;
+    ash:statementSpeaker "榜中榜" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "榜中榜 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-33 ash:hasStatement ashd:voice-youzi-076 .
+
+ashd:voice-youzi-077 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "杀伐果断：对已淘汰的题材做反弹赶紧走，\"一旦不及预期的走势就赶紧割肉……超短就是做隔日，一旦不达预期就是走人，在里面干等不是合理的，更不应该套里面三四天\"。" ;
+    ash:statementSpeaker "92科比" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-auction ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "92科比 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-20 ash:hasStatement ashd:voice-youzi-077 .
+
+ashd:voice-youzi-078 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "预判与跟随的辩证：买入基于\"对明天市场的预判，这才是重中之重\"，但出手必须等市场确认——\"等市场确认起来强势时再出手，哪怕是追高，也永远比猜底中出手要明智得多。" ;
+    ash:statementSpeaker "令胡冲" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "令胡冲 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-06 ash:hasStatement ashd:voice-youzi-078 .
+
+ashd:voice-youzi-079 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "行情分级应对，而非一套打法打天下：\"我的交易框架里，对不同的行情有不同的手法，主要分为追板、分时点火、低吸潜伏、强势超跌反弹、波段搏主升、空仓。" ;
+    ash:statementSpeaker "小鳄鱼" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-trend ; ash:hasSkillTopic ashs:topic-technical ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "小鳄鱼 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-23 ash:hasStatement ashd:voice-youzi-079 .
+
+ashd:voice-youzi-080 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "交易明细显示单笔多为几十万至一千余万的小额分散进出（海得控制482万、上海新阳572万、中国人保卖出1510万等），印证\"各自为战、资金分散\"。" ;
+    ash:statementSpeaker "泰然九路" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "泰然九路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-34 ash:hasStatement ashd:voice-youzi-080 .
+
+ashd:voice-youzi-081 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "光大证券宁波解放南路——打板界\"开天辟地的祖师爷\"、宁波敢死队栖息之地（徐翔、马信琪、舒晨芳等大佬出身），手法八字诀：\"追求强势，追逐涨停\"。" ;
+    ash:statementSpeaker "打板祖师爷" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "打板祖师爷 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-45 ash:hasStatement ashd:voice-youzi-081 .
+
+ashd:voice-youzi-082 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "人称\"佛山无影脚\"的老牌打板游资，以大资金无征兆直线拉板、\"独食\"封死涨停、次日砸盘出局的一日游超短套利闻名，绝技是\"声东击西\"导演地天板。" ;
+    ash:statementSpeaker "佛山系" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-one-day ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "佛山系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-21 ash:hasStatement ashd:voice-youzi-082 .
+
+ashd:voice-youzi-083 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "仓位管理——回撤线法（其自创核心）：\"资金在回撤线之上则全仓，资金到了回撤线则分仓，回撤线根据资金最高点变动，大概10个点左右的幅度。" ;
+    ash:statementSpeaker "退学炒股" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "退学炒股 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-08 ash:hasStatement ashd:voice-youzi-083 .
+
+ashd:voice-youzi-084 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "体系第一义：牛熊周期是自然规律，调整一定会来：\"市场总会是牛熊交替，周期循环，这是自然规律……所以调整一定会来，再大的人物也挡不住。" ;
+    ash:statementSpeaker "丁一熊" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "丁一熊 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-29 ash:hasStatement ashd:voice-youzi-084 .
+
+ashd:voice-youzi-085 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "打板执行细节：不是看到封死再排队——\"确定封死的基本排不到，冲板的那一刻直接往涨停买，大多数情况下单时上面还有好多卖单没有被吃\"；" ;
+    ash:statementSpeaker "令胡冲" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "令胡冲 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-06 ash:hasStatement ashd:voice-youzi-085 .
+
+ashd:voice-youzi-086 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "【跟踪方案】 给出可执行的跟随方法：盘后看龙虎榜哪些字段、盘中盯什么信号（结合\"游资通用方法论\"技能的放量换手/接力原则）。" ;
+    ash:statementSpeaker "宁波敢死队" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "宁波敢死队 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-02 ash:hasStatement ashd:voice-youzi-086 .
+
+ashd:voice-youzi-087 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "买点确认制：\"买点慢，是因为我要确认它能涨停，至少要确定当天不能被套\"——一个多月的多笔交易只有一笔出现过当日被套。" ;
+    ash:statementSpeaker "职业炒手" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 1 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "职业炒手 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-15 ash:hasStatement ashd:voice-youzi-087 .
+
+ashd:voice-youzi-088 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "复盘与盘感训练：复盘不是看帖子——\"我复盘主要是看昨天的涨停板今天的赚钱效应，哪一类涨停股次日有肉，哪一类股持续有肉\"；" ;
+    ash:statementSpeaker "令胡冲" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-review ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "令胡冲 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-06 ash:hasStatement ashd:voice-youzi-088 .
+
+ashd:voice-youzi-089 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "任何交易系统只在某段时间或某种市场环境下有效，无人能保证长期稳定盈利——故须保持开放、随时归零，防系统失效风险。" ;
+    ash:statementSpeaker "浓汤野人" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "浓汤野人 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-18 ash:hasStatement ashd:voice-youzi-089 .
+
+ashd:voice-youzi-090 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "牛熊周期是自然规律，调整一定会来：\"市场总会是牛熊交替，周期循环，这是自然规律……所以调整一定会来，再大的人物也挡不住。" ;
+    ash:statementSpeaker "丁一熊" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-emotion ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "丁一熊 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-29 ash:hasStatement ashd:voice-youzi-090 .
+
+ashd:voice-youzi-091 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "凡是没有题材、市值较小的冷门股突破出现快速拉升，伴随天量、巨大换手，千万不要追——\"一不小心就成了温州帮的刀下亡魂\"。" ;
+    ash:statementSpeaker "温州帮" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "温州帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-31 ash:hasStatement ashd:voice-youzi-091 .
+
+ashd:voice-youzi-092 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "体系第一义：超短的核心是连板、主线、人气与顺势：\"超短的核心：连板、主线、超人气龙头主线，及重磅消息个股，顺势而为。" ;
+    ash:statementSpeaker "小鳄鱼" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "小鳄鱼 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-23 ash:hasStatement ashd:voice-youzi-092 .
+
+ashd:voice-youzi-093 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "在任何时候只要不让资金走势出现大幅回撤，同时在自己的周期内敞开盈利，市场迟早会奖励你的，可能并不是在这一次。" ;
+    ash:statementSpeaker "艾琳" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-account ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "艾琳 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-25 ash:hasStatement ashd:voice-youzi-093 .
+
+ashd:voice-youzi-094 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "知道的人越多溢价越低，打板溢价肯定变低（例：盘龙药业涨停后，成都帮没有参与九典制药和华森制药，因为规律已明）；" ;
+    ash:statementSpeaker "成都帮" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-one-day ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "成都帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-27 ash:hasStatement ashd:voice-youzi-094 .
+
+ashd:voice-youzi-095 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "跟单口诀：\"如果盘中缩量下跌，跌破上一日均价，则是逢低吸纳的机会，买入次日如果盘中开始拉升，则应该先获利了结。" ;
+    ash:statementSpeaker "山东帮" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-one-day ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "山东帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-44 ash:hasStatement ashd:voice-youzi-095 .
+
+ashd:voice-youzi-096 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "确认追涨先进半仓→当天涨停，次日加仓到全仓，让利润最大化→当天不能涨停，次日择高点先出，等回调做守株待兔；" ;
+    ash:statementSpeaker "Asking" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "Asking · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-10 ash:hasStatement ashd:voice-youzi-096 .
+
+ashd:voice-youzi-097 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "在中国，成长为一路游资最快最有用的方法是牢牢搞定全新题材和超级题材，啥也别说，哪怕是错了，只要止损就行；" ;
+    ash:statementSpeaker "榜中榜" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "榜中榜 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-33 ash:hasStatement ashd:voice-youzi-097 .
+
+ashd:voice-youzi-098 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "系统风险判断不靠均线死叉（\"几根均线全部死叉向下时，个股已跌30%了\"），靠资金是否愿意追高的市场情绪；" ;
+    ash:statementSpeaker "万法归宗" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-trend ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "万法归宗 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-13 ash:hasStatement ashd:voice-youzi-098 .
+
+ashd:voice-youzi-099 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "龙头和领涨我们不一定能把握，但板块行情应该不会错过\"——不做盘中跟风追强势股，而是打提前量，稳健选股。" ;
+    ash:statementSpeaker "职业炒手" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 2 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "职业炒手 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-15 ash:hasStatement ashd:voice-youzi-099 .
+
+ashd:voice-youzi-100 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "凡是没有题材、市值较小的冷门股突破出现快速拉升，伴随着天量，巨大的换手，这样的股票我们千万不要去追。" ;
+    ash:statementSpeaker "温州帮" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "温州帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-31 ash:hasStatement ashd:voice-youzi-100 .
+
+ashd:voice-youzi-101 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "散户称之为'割肉荣'，只要在龙虎榜上见到该营业部，小散们都不禁打一个寒颤……'奶奶的，今天又割肉了！" ;
+    ash:statementSpeaker "割肉荣" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "割肉荣 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-43 ash:hasStatement ashd:voice-youzi-101 .
+
+ashd:voice-youzi-102 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "反弹未确认（三信号未齐）坚决不重仓，宁可接受与最低点的N%差价，把N%当作购买确定性的代价。" ;
+    ash:statementSpeaker "明王" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "明王 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-22 ash:hasStatement ashd:voice-youzi-102 .
+
+ashd:voice-youzi-103 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "语料对其定义：嗅觉敏锐、发掘题材、发动行情，资金量常在数亿，能主导一只或多只股票涨停的超级短线资金。" ;
+    ash:statementSpeaker "金田路" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "金田路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-47 ash:hasStatement ashd:voice-youzi-103 .
+
+ashd:voice-youzi-104 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "【风险裁决】 明确指出该风格的主要风险点（一日游、出货手法、接力失败形态），并给出一句话风险提示。" ;
+    ash:statementSpeaker "宁波敢死队" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "宁波敢死队 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-02 ash:hasStatement ashd:voice-youzi-104 .
+
+ashd:voice-youzi-105 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "很喜欢去重仓介入加速临界点的板，对于模式内的个股，不看换手不看标的就是上，喜欢做加速四板的接力。" ;
+    ash:statementSpeaker "东北猛男" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "东北猛男 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-50 ash:hasStatement ashd:voice-youzi-105 .
+
+ashd:voice-youzi-106 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "我唯一确信的是，当你老了，你能记住的一定不是他们，而是那些孤独投机生涯里，那一剑剑的豪情与傲骨。" ;
+    ash:statementSpeaker "龙飞虎" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 3 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "龙飞虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-24 ash:hasStatement ashd:voice-youzi-106 .
+
+ashd:voice-youzi-107 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "参与后的最佳跟进方式：该席位参与之后，低吸的获利概率要比打板更大——即不追高，等回踩低吸。" ;
+    ash:statementSpeaker "北大街" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "北大街 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-40 ash:hasStatement ashd:voice-youzi-107 .
+
+ashd:voice-youzi-108 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "以超短板和热门题材的首板为主，盘中都是直线拉升涨停，引导资金合力封板，第二天有可能离场。" ;
+    ash:statementSpeaker "北一环" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "北一环 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-41 ash:hasStatement ashd:voice-youzi-108 .
+
+ashd:voice-youzi-109 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "自认改进方向是\"集中火力攻击目标股，同时用仓位控制风险\"，但这需要更强的判断力与控制力。" ;
+    ash:statementSpeaker "龙飞虎" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "龙飞虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-24 ash:hasStatement ashd:voice-youzi-109 .
+
+ashd:voice-youzi-110 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "讲纪律——\"长线不做成短线，短线不做成中长线，到了事先确定的止损位就一定要执行\"；" ;
+    ash:statementSpeaker "宁波敢死队" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "宁波敢死队 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-02 ash:hasStatement ashd:voice-youzi-110 .
+
+ashd:voice-youzi-111 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "不可能每天复盘全部股票，用板块功能每天只复盘100来只，自选股必须从板块股中筛选。" ;
+    ash:statementSpeaker "Asking" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-review ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "Asking · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-10 ash:hasStatement ashd:voice-youzi-111 .
+
+ashd:voice-youzi-112 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "逆向思维、独立思考：市场观点高度一致时拐点将至，最热门时警惕、涨停满屏时心生寒意。" ;
+    ash:statementSpeaker "徐翔" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "徐翔 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-17 ash:hasStatement ashd:voice-youzi-112 .
+
+ashd:voice-youzi-113 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "龙头的涨停从来是大阳线而非小气的涨停开盘式，\"有足够的心胸让所有跟它的人赚钱\"。" ;
+    ash:statementSpeaker "Asking" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-auction ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "Asking · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-10 ash:hasStatement ashd:voice-youzi-113 .
+
+ashd:voice-youzi-114 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "你看到古北路进的股票，你就要开始复盘看这个题材了……要是还在低位可以跟着上车；" ;
+    ash:statementSpeaker "古北路" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-review ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "古北路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-38 ash:hasStatement ashd:voice-youzi-114 .
+
+ashd:voice-youzi-115 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "同榜对手：国泰君安上海江苏路买入1115万级居前，显示当时各路一线游资同场接力。" ;
+    ash:statementSpeaker "东兴系" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "东兴系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-48 ash:hasStatement ashd:voice-youzi-115 .
+
+ashd:voice-youzi-116 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "冲高无量应该坚决卖出，但抱有幻想，没有遵守自己的原则，为此付出了惨重的代价。" ;
+    ash:statementSpeaker "独谷一箭" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "独谷一箭 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-30 ash:hasStatement ashd:voice-youzi-116 .
+
+ashd:voice-youzi-117 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "总体原则：保持动态5成上下的仓位，用品种与时机上的相对优势应对大盘随时风险；" ;
+    ash:statementSpeaker "龙飞虎" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "龙飞虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-24 ash:hasStatement ashd:voice-youzi-117 .
+
+ashd:voice-youzi-118 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "若已在高位，就去低吸同板块股票——\"古北路干完龙头，可能会杀回低位的跟风\"。" ;
+    ash:statementSpeaker "古北路" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "古北路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-38 ash:hasStatement ashd:voice-youzi-118 .
+
+ashd:voice-youzi-119 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "第一笔新仓追涨停封住，或低吸强势股低位后顺利拉起 → 寻找第2笔买进机会；" ;
+    ash:statementSpeaker "龙飞虎" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-low-buy ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "龙飞虎 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-24 ash:hasStatement ashd:voice-youzi-119 .
+
+ashd:voice-youzi-121 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "2018-10-26亦有两笔亿元级以下大额买入——典型大涨日重仓扫板。" ;
+    ash:statementSpeaker "打板祖师爷" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "打板祖师爷 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-45 ash:hasStatement ashd:voice-youzi-121 .
+
+ashd:voice-youzi-122 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "新晋游资系列（团伙型席位），擅长热点题材炒作，俗称\"龙头缔造者\"。" ;
+    ash:statementSpeaker "建国系" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "建国系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-49 ash:hasStatement ashd:voice-youzi-122 .
+
+ashd:voice-youzi-123 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "另一识别点：反复打开涨停造成\"烂板震仓\"，吸引市场资金关注接力。" ;
+    ash:statementSpeaker "上海超帮" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "上海超帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-46 ash:hasStatement ashd:voice-youzi-123 .
+
+ashd:voice-youzi-124 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "搞定全新题材和超级题材，哪怕错了只要止损就行，对了就发大财。" ;
+    ash:statementSpeaker "榜中榜" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "榜中榜 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-33 ash:hasStatement ashd:voice-youzi-124 .
+
+ashd:voice-youzi-125 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "龙头和领涨我们不一定能把握，但板块行情应该不会错过。" ;
+    ash:statementSpeaker "职业炒手" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 4 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "职业炒手 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-15 ash:hasStatement ashd:voice-youzi-125 .
+
+ashd:voice-youzi-126 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "新晋游资系列，擅长热点题材炒作，俗称'龙头缔造者'。" ;
+    ash:statementSpeaker "建国系" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-leader ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "建国系 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-49 ash:hasStatement ashd:voice-youzi-126 .
+
+ashd:voice-youzi-127 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "反复打开涨停造成烂板震仓，吸引市场资金关注接力。" ;
+    ash:statementSpeaker "上海超帮" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-board ; ash:hasSkillTopic ashs:topic-relay ; ash:hasSkillTopic ashs:topic-lockup ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "上海超帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-46 ash:hasStatement ashd:voice-youzi-127 .
+
+ashd:voice-youzi-128 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "获利超过10点，将止损移至开仓位（平推保护）。" ;
+    ash:statementSpeaker "艾琳" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-risk ; ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "艾琳 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-25 ash:hasStatement ashd:voice-youzi-128 .
+
+ashd:voice-youzi-129 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "止损60%/止盈20% → 亏损；" ;
+    ash:statementSpeaker "艾琳" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "艾琳 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-25 ash:hasStatement ashd:voice-youzi-129 .
+
+ashd:voice-youzi-130 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "交易做不好（与市场阶段不符、跟不上节奏）时：\"唯一摆脱这个尴尬局面的办法，就是逃出来在床上躺着不动\"——即彻底空仓，看市场跌下去，等新一轮上升确认后重新进场。" ;
+    ash:statementSpeaker "丁一熊" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "丁一熊 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-29 ash:hasStatement ashd:voice-youzi-130 .
+
+ashd:voice-youzi-131 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "与本档案集《落升》可对照：同持\"跌势离场、空仓等待、跌完买新强势股\"的生存逻辑，落升给出乖离率等量化触发，丁一熊给出\"放量上涨确认\"等定性触发，一量化一哲学。" ;
+    ash:statementSpeaker "丁一熊" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "丁一熊 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-29 ash:hasStatement ashd:voice-youzi-131 .
+
+ashd:voice-youzi-132 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "学习之后靠\"思\"和\"悟\"，用自己的道进入市场：\"以为搞懂了历史，就一定知道未来，那是一种美好的自我安慰……今天的你回到十年之前是高手，但在今天你什么都不是。" ;
+    ash:statementSpeaker "浓汤野人" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "浓汤野人 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-18 ash:hasStatement ashd:voice-youzi-132 .
+
+ashd:voice-youzi-133 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "协同席位遍布山东（兼及闽赣等地）、以国海证券两兄弟营业部为首的庄游资团伙——继温州帮之后崛起的\"造妖\"帮派：入驻次新做T高抛低吸、温和洗盘、与游资合力共处。" ;
+    ash:statementSpeaker "山东帮" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ; ash:hasSkillTopic ashs:topic-low-buy ; ash:hasSkillTopic ashs:topic-range ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "山东帮 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-44 ash:hasStatement ashd:voice-youzi-133 .
+
+ashd:voice-youzi-134 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "搞超短最核心的技术就是你的选股系统——必须有一种动态的快速选股系统，能迅速找到市场的热点标的一小撮（不是一个两个），而后跟踪进行综合确认选择动手的目标。" ;
+    ash:statementSpeaker "职业炒手" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-theme ; ash:hasSkillTopic ashs:topic-technical ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "职业炒手 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-15 ash:hasStatement ashd:voice-youzi-134 .
+
+ashd:voice-youzi-135 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "技术面与基本面背离的反向重仓：形式（技术图形）再好，若与基本面背离，即是最反向操作时机，可逆市开重仓——这是其棉花重仓的逻辑基础。" ;
+    ash:statementSpeaker "浓汤野人" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-fundamental ; ash:hasSkillTopic ashs:topic-technical ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "浓汤野人 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-18 ash:hasStatement ashd:voice-youzi-135 .
+
+ashd:voice-youzi-136 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "④一旦轻仓被套，不可贸然补仓——每轮高点下行通常是20%-30%一个波段，拉开空间之后再补，不可跌一点补一点把子弹早早打完；" ;
+    ash:statementSpeaker "明王" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-trend ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "明王 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-22 ash:hasStatement ashd:voice-youzi-136 .
+
+ashd:voice-youzi-137 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "下跌周期十一条经验（原文要点）：①不同板块下跌周期不一样，前期先表现先下跌，后面的会补跌（先入老元气，再入新元气板块）；" ;
+    ash:statementSpeaker "明王" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-emotion ; ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "明王 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-22 ash:hasStatement ashd:voice-youzi-137 .
+
+ashd:voice-youzi-138 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "技术面与基本面背离时反向重仓：\"技术面的形式再好，如果与基本面相背离，则反而是最好的反向操作时机，可以逆市开重仓。" ;
+    ash:statementSpeaker "浓汤野人" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-fundamental ; ash:hasSkillTopic ashs:topic-technical ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "浓汤野人 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-18 ash:hasStatement ashd:voice-youzi-138 .
+
+ashd:voice-youzi-139 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "只打有准备的\"狙击点\"：核心章题为\"大资金的重兵狙击点\"\"三个关键的狙击点\"，出手必须落在三类狙击点上。" ;
+    ash:statementSpeaker "章盟主" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 5 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "章盟主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-12 ash:hasStatement ashd:voice-youzi-139 .
+
+ashd:voice-youzi-140 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "【战法执行】 从\"战法手册\"中取出对应打法，给出步骤化动作（买什么、何时买、仓位多少、何时卖）。" ;
+    ash:statementSpeaker "章盟主" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 6 ;
+    ash:hasSkillTopic ashs:topic-position ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "章盟主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-12 ash:hasStatement ashd:voice-youzi-140 .
+
+ashd:voice-youzi-141 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "历史手法为公开语料的抽象提炼，实盘环境已变化，回答时必须结合当下盘面并声明局限。" ;
+    ash:statementSpeaker "章盟主" ;
+    ash:statementType "principle" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "章盟主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-12 ash:hasStatement ashd:voice-youzi-141 .
+
+ashd:voice-youzi-142 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "买入的个股第二天基本冲高回落，很少连板——一旦连板被市场认可，就有很大可能走牛。" ;
+    ash:statementSpeaker "季华六路" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-board ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "季华六路 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-36 ash:hasStatement ashd:voice-youzi-142 .
+
+ashd:voice-youzi-143 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "语料中未提及专门风控纪律，参考通用方法论：控制回撤优先、不满仓单一品种。" ;
+    ash:statementSpeaker "章建平" ;
+    ash:statementType "warning" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 7 ;
+    ash:hasSkillTopic ashs:topic-account ; ash:hasSkillTopic ashs:topic-risk ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "章建平 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-42 ash:hasStatement ashd:voice-youzi-143 .
+
+ashd:voice-youzi-144 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "第三个·迫击炮狙击点：买入即轮动——买在板块轮动节点，求买入即吃到轮动扩散。" ;
+    ash:statementSpeaker "章盟主" ;
+    ash:statementType "tactic" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-theme ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "章盟主 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-12 ash:hasStatement ashd:voice-youzi-144 .
+
+ashd:voice-youzi-145 a owl:NamedIndividual, ash:TraderStatement ;
+    ash:statementText "涉及通用龙虎榜解读时配合「游资通用方法论」技能使用；" ;
+    ash:statementSpeaker "章建平" ;
+    ash:statementType "observation" ;
+    ash:statementStatus "public-corpus-excerpt-unverified" ;
+    ash:statementOrder 8 ;
+    ash:hasSkillTopic ashs:topic-dragon-tiger ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "章建平 · 原话摘录"@zh ;
+    ash:isExample true .
+ashd:skill-youzi-42 ash:hasStatement ashd:voice-youzi-145 .

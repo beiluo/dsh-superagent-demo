@@ -25,7 +25,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
     rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.4.0" ;
+    owl:versionInfo "1.5.0" ;
     ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
 
 # ===========================================================================
@@ -37,7 +37,7 @@ ashd:odrl-profile a owl:Ontology ;
     dcterms:title "A 股投资决策 ODRL Profile"@zh ;
     dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.4.0" .
+    owl:versionInfo "1.5.0" .
 
 ashd:leftOperand-humanApproval a odrl:LeftOperand ;
     skos:prefLabel "人工批准状态"@zh, "human approval"@en ;

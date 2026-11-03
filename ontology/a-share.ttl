@@ -11,7 +11,7 @@
 
 <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share>
     a owl:Ontology ;
-    owl:versionIRI <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/1.4.0> ;
+    owl:versionIRI <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/1.5.0> ;
     owl:imports
         <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> ,
         <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/owl> ,
@@ -34,5 +34,5 @@
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
     rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
-    owl:versionInfo "1.4.0" ;
+    owl:versionInfo "1.5.0" ;
     ash:designNote "参考 FIBO 的模块化、定义优先和可追溯设计；本体的领域内容为独立编写，不复用 FIBO 本体文本。"@zh .
