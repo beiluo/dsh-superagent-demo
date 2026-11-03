@@ -22,6 +22,10 @@ STATUS_LABELS = {"triggered": "触发", "clear": "未触发", "unknown": "未知
 SEVERITY_LABELS = {"high": "高", "medium": "中", "low": "低"}
 
 BOUNDARY = "**边界**：以上全部为本体中的合成示例数据，不构成投资建议；本体不连接真实行情或交易通道。"
+BOUNDARY_REAL = (
+    "**边界**：真实行情与年报数据来自公开数据接口，可能存在延迟或口径差异；"
+    "规则阈值仍是本体演示常量，不构成投资建议，也不连接交易通道。"
+)
 
 
 def _pct(value: Any) -> str:
@@ -179,6 +183,67 @@ def compose_company(data: dict[str, Any]) -> str:
         )
     else:
         lines.append(BOUNDARY)
+    return "\n".join(lines)
+
+
+def compose_compare(data: dict[str, Any]) -> str:
+    companies = data.get("companies") or []
+    fields = data.get("fieldLabels") or []
+    lines = [f"### 多股对比（{len(companies)} 只）"]
+    if fields:
+        lines.append("同一套本体字段与 R01–R21 规则：" + "、".join(fields[:8]) + ("等。" if len(fields) > 8 else "。"))
+    lines.append("")
+    for item in companies:
+        company = item.get("company") or {}
+        text = item.get("metricText") or {}
+        rules = item.get("triggeredRules") or []
+        unknown = item.get("unknownRules") or []
+        rule_text = "、".join(rule.get("ruleId", "") for rule in rules) or "无触发"
+        if unknown:
+            rule_text += "（无法评估：" + "、".join(unknown) + "）"
+        parts = [
+            f"ROE {text.get('roe', '—')}",
+            f"PE(TTM) {text.get('peTtm', '—')}",
+            f"PB {text.get('pb', '—')}",
+            f"负债率 {text.get('debtRatio', '—')}",
+            f"营收增速 {text.get('revenueGrowth', '—')}",
+            f"市值 {text.get('marketCap', '—')}",
+            f"MA20/60 {text.get('ma20', '—')}/{text.get('ma60', '—')}",
+            f"连板/炸板 {text.get('limitUpDays', '—')}/{text.get('brokenBoardCount', '—')}",
+        ]
+        lines.append(
+            f"- **{company.get('label')}（{company.get('code') or '—'}）**："
+            + " · ".join(parts)
+            + f"；触发规则：{rule_text}。"
+        )
+    errors = data.get("errors") or []
+    if errors:
+        lines.append("")
+        lines.append("**未纳入对比**")
+        lines.extend(f"- {item}" for item in errors)
+    # Simple cross-company extremes from the same metrics, no hidden scoring.
+    metrics = [(item.get("company") or {}, item.get("metrics") or {}) for item in companies]
+    def extreme(field: str, largest: bool) -> str:
+        values = [(company.get("label"), values.get(field)) for company, values in metrics if isinstance(values.get(field), (int, float))]
+        if len(values) < 2:
+            return ""
+        label, _ = (max if largest else min)(values, key=lambda pair: pair[1])
+        return label
+    highs = [
+        ("PE 最高", extreme("peTtm", True)),
+        ("PE 最低", extreme("peTtm", False)),
+        ("ROE 最高", extreme("roe", True)),
+        ("营收增速最高", extreme("revenueGrowth", True)),
+        ("市值最大", extreme("marketCap", True)),
+    ]
+    high_text = "；".join(f"{label}：{name}" for label, name in highs if name)
+    if high_text:
+        lines.append("")
+        lines.append("**对比要点**：" + high_text + "。")
+    lines.append("")
+    lines.append(
+        BOUNDARY_REAL if data.get("dataMode") == "real" else BOUNDARY
+    )
     return "\n".join(lines)
 
 

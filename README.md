@@ -288,15 +288,17 @@ Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读�
 1. `query_ontology`：问题驱动的跨公司查询。`filters` 把 ROE、PE、负债率、营收增速、风险分数、
    市值、换手率、组合权重映射成本体属性路径；可叠加行业、规则条件和排序，返回每条命中的
    RDF 路径与触发规则。`universe=real` 会读取真实 A 股行情单页样本（仅行情/估值字段）；
-2. `get_company_analysis`：公司、证券、年报、行情估值、风险、决策、证据、合规与规则信号；
+2. `compare_companies`：2–5 只股票的本体同口径对比。统一读取 ROE/PE/PB/负债率/增速/市值/
+   换手率/MA20/MA60/连板/炸板，执行同一套 R01–R21，并返回每项指标的 RDF 属性路径与证据；
+3. `get_company_analysis`：公司、证券、年报、行情估值、风险、决策、证据、合规与规则信号；
    支持示例公司和真实 A 股（6 位代码或证券简称）；
-3. `screen_companies`：按 SWRL 规则扫描本体中已有公司；
-4. `trace_evidence`：从公司/决策/规则/政策沿 `aboutCompany`、`basedOn`、`governedBy`、
+4. `screen_companies`：按 SWRL 规则扫描本体中已有公司；
+5. `trace_evidence`：从公司/决策/规则/政策沿 `aboutCompany`、`basedOn`、`governedBy`、
    `hasSource` 等谓词展开证据链，保留数据日期、来源与版本；
-5. `check_constraints`：R06 集中度、R07 限制名单、R11 高风险买入复核，以及 ODRL
+6. `check_constraints`：R06 集中度、R07 限制名单、R11 高风险买入复核，以及 ODRL
    trade-guard 的人工批准与合规检查双前置条件；
-6. `simulate_scenario`：在内存事实副本上改 ROE/增速/PE/风险/权重等指标，重跑规则并对比前后状态；
-7. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
+7. `simulate_scenario`：在内存事实副本上改 ROE/增速/PE/风险/权重等指标，重跑规则并对比前后状态；
+8. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 
 真实 A 股查询走 `server/marketdata.py`：公开行情、年报和近 80 个交易日的日线先被规范化，

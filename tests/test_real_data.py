@@ -310,3 +310,71 @@ def test_example_short_term_signals_appear_in_company_analysis():
     assert signals["R18"]["status"] == "triggered"
     assert signals["R20"]["status"] == "triggered"
     assert signals["R21"]["status"] == "triggered"
+
+
+class MappingProvider:
+    source_label = "测试公开行情源"
+    source_url = "https://example.test/quote"
+
+    def __init__(self, snapshots):
+        self.snapshots = snapshots
+        self.queries = []
+
+    def fetch(self, query):
+        self.queries.append(query)
+        return self.snapshots.get(query)
+
+
+def _pingan_snapshot():
+    snapshot = _snapshot()
+    snapshot.security = SecurityRef(
+        code="601318",
+        name="中国平安",
+        secid="1.601318",
+        exchange_code="SSE",
+        exchange_label="上海证券交易所",
+        segment_code="main",
+        segment_label="主板",
+    )
+    snapshot.quote = {
+        **snapshot.quote,
+        "code": "601318",
+        "name": "中国平安",
+        "lastPrice": 53.12,
+        "marketCap": 961877942774,
+    }
+    snapshot.financials = {
+        **(snapshot.financials or {}),
+        "roe": 14.0,
+        "debtRatio": 89.8,
+        "revenueGrowth": 2.1,
+    }
+    snapshot.industry = "保险Ⅱ"
+    snapshot.short_term = {
+        "ma5": 52.8,
+        "ma20": 52.33,
+        "ma60": 53.17,
+        "limitUpDays": 0,
+        "brokenBoardCount": 0,
+        "asOf": "2026-11-02",
+        "source": SOURCE_LABEL,
+    }
+    return snapshot
+
+
+def test_compare_real_companies_api_rules_mode():
+    provider = MappingProvider({"贵州茅台": _snapshot(), "中国平安": _pingan_snapshot()})
+    store = OntologyStore(ROOT, market_data=provider)
+    client = TestClient(create_app(settings=_settings(), store=store, market_data=provider))
+    response = client.post(
+        "/api/agent/analyze",
+        json={"question": "对比贵州茅台和中国平安的估值和财务，哪个更值得关注？"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["dataMode"] == "real"
+    assert payload["steps"][0]["tool"] == "compare_companies"
+    assert "贵州茅台" in payload["answer"]
+    assert "中国平安" in payload["answer"]
+    assert "MA20/60" in payload["answer"]
+    assert "不构成投资建议" in payload["answer"]

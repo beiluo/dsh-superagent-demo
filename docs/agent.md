@@ -95,6 +95,7 @@ LLM_MODEL=deepseek-chat
 | `DAILY_REQUEST_BUDGET` | 否 | `300` | 进程级每日总请求上限 |
 | `MAX_QUESTION_CHARS` | 否 | `500` | 单次问题最大长度 |
 | `AGENT_MAX_STEPS` | 否 | `4` | LLM 工具调用最大轮数 |
+| `LLM_MAX_OUTPUT_TOKENS` | 否 | `1800` | 单次回答最大 token；多股对比需要更长输出 |
 | `MARKET_DATA_ENABLED` | 否 | `true` | 是否启用真实 A 股查询；关闭后只保留示例公司 |
 | `MARKET_DATA_TIMEOUT_SECONDS` | 否 | `8` | 真实行情请求超时 |
 | `MARKET_DATA_QUOTE_TTL_SECONDS` | 否 | `60` | 行情缓存秒数 |
@@ -188,6 +189,7 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | `list_companies` | 列出本体中的合成公司与示例决策 |
 | `get_company_analysis` | 企业、证券、财报、行情估值、短线快照、风险、决策、证据、合规与 R01–R21 规则信号；支持真实 A 股 |
 | `screen_companies` | 对本体中已有公司执行 SWRL 规则筛选 |
+| `compare_companies` | 2–5 只股票的本体同口径对比：统一字段 + R01–R21 + 指标 RDF 路径与证据 |
 | `query_ontology` | 问题驱动的跨公司筛选：业务字段→属性路径、行业、规则条件、排序；`universe=real` 扫真实行情单页样本 |
 | `trace_evidence` | 从公司/决策/规则/政策展开证据链，保留数据日期、来源与版本 |
 | `check_constraints` | R06/R07/R11 与 ODRL trade-guard 的人工批准、合规检查前置条件 |
