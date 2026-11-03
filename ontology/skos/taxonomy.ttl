@@ -21,7 +21,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
-    owl:versionInfo "1.1.0" .
+    owl:versionInfo "1.2.0" .
 
 # ===========================================================================
 # Concept schemes
@@ -929,3 +929,168 @@ ashs:factor-momentum skos:related ashs:style-momentum .
 ashs:factor-low-vol skos:related ashs:style-low-volatility .
 
 ashs:factor-dividend skos:related ashs:style-dividend .
+# ===== Short-term trading playbook scheme =====
+ashs:scheme-trading-playbook a skos:ConceptScheme ;
+    skos:prefLabel "A 股短线剧本与催化（示例）"@zh, "A-Share Short-Term Playbooks (illustrative)"@en ;
+    skos:definition "用于标注首板、连板、反包、低吸、退潮等短线剧本与政策/业绩/并购催化的概念方案。"@zh ;
+    skos:hasTopConcept
+        ashs:playbook-first-board,
+        ashs:playbook-second-board,
+        ashs:playbook-third-board,
+        ashs:playbook-leader,
+        ashs:playbook-reversal,
+        ashs:playbook-low-buy,
+        ashs:playbook-half-way,
+        ashs:playbook-seal,
+        ashs:playbook-relay,
+        ashs:playbook-divergence,
+        ashs:playbook-ebb,
+        ashs:playbook-freeze,
+        ashs:playbook-repair,
+        ashs:playbook-main-wave,
+        ashs:playbook-range,
+        ashs:playbook-defense,
+        ashs:catalyst-policy,
+        ashs:catalyst-earnings,
+        ashs:catalyst-ma,
+        ashs:catalyst-event .
+
+ashs:playbook-first-board a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "首板"@zh, "First Board"@en ;
+    skos:notation "PB-FIRST" ;
+    skos:definition "个股首次涨停，代表新题材或资金首次聚焦。"@zh .
+
+ashs:playbook-second-board a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "二板"@zh, "Second Board"@en ;
+    skos:notation "PB-SECOND" ;
+    skos:definition "首板后次日继续涨停，验证承接与题材延续。"@zh .
+
+ashs:playbook-third-board a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "三板以上"@zh, "Third Board Plus"@en ;
+    skos:notation "PB-THIRD" ;
+    skos:definition "连续三板及以上，进入高标与情绪核心区域。"@zh .
+
+ashs:playbook-leader a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "龙头"@zh, "Sector Leader"@en ;
+    skos:notation "PB-LEADER" ;
+    skos:definition "题材中涨幅、连板高度或成交额领先的核心标的。"@zh .
+
+ashs:playbook-reversal a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "反包"@zh, "Reversal"@en ;
+    skos:notation "PB-REVERSAL" ;
+    skos:definition "断板或调整后重新走强、收复失地的形态。"@zh .
+
+ashs:playbook-low-buy a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "低吸"@zh, "Buy the Dip"@en ;
+    skos:notation "PB-LOWBUY" ;
+    skos:definition "在分歧或回调时低吸，等待资金回流。"@zh .
+
+ashs:playbook-half-way a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "半路"@zh, "Half-Way Entry"@en ;
+    skos:notation "PB-HALFWAY" ;
+    skos:definition "在分时或盘中确认承接后介入，不追求最低点。"@zh .
+
+ashs:playbook-seal a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "打板"@zh, "Seal the Board"@en ;
+    skos:notation "PB-SEAL" ;
+    skos:definition "在涨停封板前买入，博弈次日溢价。"@zh .
+
+ashs:playbook-relay a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "接力"@zh, "Relay"@en ;
+    skos:notation "PB-RELAY" ;
+    skos:definition "在连板过程中接力，承担更高位的分歧风险。"@zh .
+
+ashs:playbook-divergence a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "分歧"@zh, "Divergence"@en ;
+    skos:notation "PB-DIVERGENCE" ;
+    skos:definition "市场对题材或个股产生分歧、换手放大的阶段。"@zh .
+
+ashs:playbook-ebb a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "退潮"@zh, "Ebb"@en ;
+    skos:notation "PB-EBB" ;
+    skos:definition "涨停减少、炸板率上升、赚钱效应下降的阶段。"@zh .
+
+ashs:playbook-freeze a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "冰点"@zh, "Freeze"@en ;
+    skos:notation "PB-FREEZE" ;
+    skos:definition "情绪与成交降至低位、亏钱效应显著的阶段。"@zh .
+
+ashs:playbook-repair a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "修复"@zh, "Repair"@en ;
+    skos:notation "PB-REPAIR" ;
+    skos:definition "冰点后出现首板或反包、情绪开始修复的阶段。"@zh .
+
+ashs:playbook-main-wave a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "主升"@zh, "Main Wave"@en ;
+    skos:notation "PB-MAIN" ;
+    skos:definition "题材或个股进入加速上涨的主升阶段。"@zh .
+
+ashs:playbook-range a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "震荡"@zh, "Range"@en ;
+    skos:notation "PB-RANGE" ;
+    skos:definition "指数或个股在区间内反复、方向不明的阶段。"@zh .
+
+ashs:playbook-defense a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "防守"@zh, "Defense"@en ;
+    skos:notation "PB-DEFENSE" ;
+    skos:definition "降低仓位、回避高位股的防守阶段。"@zh .
+
+ashs:catalyst-policy a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "政策催化"@zh, "Policy Catalyst"@en ;
+    skos:notation "CT-POLICY" ;
+    skos:definition "政策文件、会议或监管表态带来的催化。"@zh .
+
+ashs:catalyst-earnings a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "业绩催化"@zh, "Earnings Catalyst"@en ;
+    skos:notation "CT-EARNINGS" ;
+    skos:definition "业绩超预期、预告上修或订单增长带来的催化。"@zh .
+
+ashs:catalyst-ma a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "并购催化"@zh, "M&A Catalyst"@en ;
+    skos:notation "CT-MA" ;
+    skos:definition "并购重组、资产注入或控制权变更带来的催化。"@zh .
+
+ashs:catalyst-event a skos:Concept ;
+    skos:inScheme ashs:scheme-trading-playbook ;
+    skos:topConceptOf ashs:scheme-trading-playbook ;
+    skos:prefLabel "事件催化"@zh, "Event Catalyst"@en ;
+    skos:notation "CT-EVENT" ;
+    skos:definition "产品发布、技术突破、突发事件等催化。"@zh .
