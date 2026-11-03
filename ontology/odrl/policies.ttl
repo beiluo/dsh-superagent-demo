@@ -25,7 +25,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
     rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.1.0" ;
+    owl:versionInfo "1.2.0" ;
     ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
 
 # ===========================================================================
@@ -37,7 +37,7 @@ ashd:odrl-profile a owl:Ontology ;
     dcterms:title "A 股投资决策 ODRL Profile"@zh ;
     dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.1.0" .
+    owl:versionInfo "1.2.0" .
 
 ashd:leftOperand-humanApproval a odrl:LeftOperand ;
     skos:prefLabel "人工批准状态"@zh, "human approval"@en ;
@@ -393,3 +393,50 @@ ashd:policy-ai-analysis
     ] ;
     rdfs:label "AI 辅助分析使用政策"@zh ;
     rdfs:comment "AI 输出只能作为研究辅助，不得直接转化为交易执行。"@zh .
+# ===== Hot-money data policy =====
+ashd:asset-dragon-tiger-data a odrl:Asset, ash:InformationObject ;
+    rdfs:label "龙虎榜与游资席位数据"@zh ;
+    rdfs:comment "交易所龙虎榜、席位净买入与席位画像数据，仅用于研究。"@zh ;
+    odrl:hasPolicy ashd:policy-hot-money-data ;
+    ash:isExample true .
+
+ashd:policy-hot-money-data
+    a odrl:Set, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-hot-money-data ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "龙虎榜与游资数据使用政策"@zh ;
+    dcterms:description "龙虎榜和游资席位数据只用于短线研究；禁止据此自动下单；必须人工复核。"@zh ;
+    ash:policyVersion "1.0.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-03-31"^^xsd:date ;
+    ash:isExample true ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-data-provider ;
+        odrl:assignee ashd:party-investment-service ;
+        odrl:target ashd:asset-dragon-tiger-data ;
+        odrl:action odrl:read, odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ; odrl:leftOperand odrl:purpose ; odrl:operator odrl:eq ; odrl:rightOperand "hot-money-research"@en
+        ] , [
+            a odrl:Constraint ; odrl:leftOperand odrl:recipient ; odrl:operator odrl:isA ; odrl:rightOperand ash:QualifiedInvestor
+        ] ;
+        odrl:duty [
+            a odrl:Duty ; odrl:assignee ashd:party-investment-service ; odrl:action odrl:attribute ; odrl:target ashd:asset-source-notice
+        ] , [
+            a odrl:Duty ; odrl:assignee ashd:party-compliance ; odrl:action odrl:reviewPolicy ; odrl:target ashd:asset-audit-record
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-order-intent ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ; odrl:leftOperand ashd:leftOperand-humanApproval ; odrl:operator odrl:eq ; odrl:rightOperand false
+        ] ;
+        odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
+    ] ;
+    rdfs:label "龙虎榜与游资数据使用政策"@zh .

@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.1.0" ;
+    owl:versionInfo "1.2.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
@@ -746,3 +746,145 @@ ash:Order owl:hasKey ( ash:orderId ) .
 
 [] a owl:AllDisjointClasses ;
    owl:members ( ash:Order ash:Trade ) .
+# ===== Short-term / hot-money restrictions =====
+
+ash:LimitUpStreak rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:limitUpDays ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:brokenBoardCount ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:sealAmount ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:DragonTigerList rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:dragonTigerNetBuy ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:HotMoneySeat rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:seatName ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:seatType ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:seatNetBuy ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:seatWinRate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:ThemeHeat rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:themeHeatScore ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:AuctionSnapshot rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:auctionVolumeRatio ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:auctionPriceChange ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:TechnicalSignal rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:signalStrength ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:signalHorizon ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:NewsCatalyst rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:catalystType ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onClass skos:Concept ] .
+
+ash:relativeStrengthScore a owl:FunctionalProperty .
+
+ash:limitUpDays a owl:FunctionalProperty .
+
+ash:sealAmount a owl:FunctionalProperty .
+
+ash:brokenBoardCount a owl:FunctionalProperty .
+
+ash:firstLimitUpTime a owl:FunctionalProperty .
+
+ash:auctionVolumeRatio a owl:FunctionalProperty .
+
+ash:auctionPriceChange a owl:FunctionalProperty .
+
+ash:largeOrderNetBuy a owl:FunctionalProperty .
+
+ash:blockTradeDiscount a owl:FunctionalProperty .
+
+ash:dragonTigerNetBuy a owl:FunctionalProperty .
+
+ash:seatName a owl:FunctionalProperty .
+
+ash:seatType a owl:FunctionalProperty .
+
+ash:seatNetBuy a owl:FunctionalProperty .
+
+ash:seatWinRate a owl:FunctionalProperty .
+
+ash:themeHeatScore a owl:FunctionalProperty .
+
+ash:sentimentScore a owl:FunctionalProperty .
+
+ash:themeLifecycleStage a owl:FunctionalProperty .
+
+ash:marketBreadth a owl:FunctionalProperty .
+
+ash:northboundNetBuy a owl:FunctionalProperty .
+
+ash:marginBalance a owl:FunctionalProperty .
+
+ash:marginChangePct a owl:FunctionalProperty .
+
+ash:capitalFlowNet a owl:FunctionalProperty .
+
+ash:ma5 a owl:FunctionalProperty .
+
+ash:ma20 a owl:FunctionalProperty .
+
+ash:ma60 a owl:FunctionalProperty .
+
+ash:rsi14 a owl:FunctionalProperty .
+
+ash:macd a owl:FunctionalProperty .
+
+ash:atr14 a owl:FunctionalProperty .
+
+ash:bollingerPosition a owl:FunctionalProperty .
+
+ash:signalStrength a owl:FunctionalProperty .
+
+ash:signalHorizon a owl:FunctionalProperty .
+
+ash:followThroughRate a owl:FunctionalProperty .
+
+ash:overheatScore a owl:FunctionalProperty .
+
+ash:crowdingScore a owl:FunctionalProperty .
+
+ash:speculativeRiskLevel a owl:FunctionalProperty .
+
+ash:volumePriceDivergence a owl:FunctionalProperty .
+
+ash:tradingHeatScore a owl:FunctionalProperty .
+
+ash:turnoverRankPct a owl:FunctionalProperty .
+
+ash:limitUpOpenRate a owl:FunctionalProperty .
+
+ash:consecutiveBoardRate a owl:FunctionalProperty .
+
+ash:auctionStrengthScore a owl:FunctionalProperty .
+
+ash:intradayVolatilityPct a owl:FunctionalProperty .
+
+ash:playbookStage a owl:FunctionalProperty .
+
+
+[] a owl:AllDisjointClasses ; owl:members ( ash:BreakoutPattern ash:ConsolidationPattern ) .
+[] a owl:AllDisjointClasses ; owl:members ( ash:LimitUpEvent ash:LimitDownEvent ) .
+[] a owl:AllDisjointClasses ; owl:members ( ash:MomentumSignal ash:EventDrivenSignal ) .

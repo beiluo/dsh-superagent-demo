@@ -23,7 +23,13 @@ def test_status_reports_rules_mode_without_key(client_factory):
     assert data["llm"]["configured"] is False
     assert data["llm"]["model"] is None
     assert data["limits"]["maxQuestionChars"] == 500
-    assert len(data["companies"]) == 4
+    assert len(data["companies"]) >= 4
+    assert {
+        "company-huachen",
+        "company-ningyuan",
+        "company-jingkang",
+        "company-st-demo",
+    } <= {item["id"] for item in data["companies"]}
     assert "keyHandling" in data
 
 
