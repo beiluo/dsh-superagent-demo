@@ -12,6 +12,8 @@ Captured on **2026-11-03** with headless Firefox (Playwright 1.x, Firefox 148) o
 | `machine-after.jpg` | This site, `/bostarpack/machines/bosw.html` | BOSW detail page |
 | `mobile-after.jpg` | This site, `/bostarpack/` | Mobile home, 390 px |
 | `mobile-menu-after.jpg` | This site, `/bostarpack/` | Mobile navigation open |
+| `filter-before.jpg` | Live site at merge commit `d6197e5` | Catalogue with "Frozen" selected — all cards still visible (bug) |
+| `filter-after.jpg` | Fix branch | Catalogue with "Frozen" selected — only 6 matching cards |
 
 The source site is a Chinese CMS template. Its client-side product carousel did not render in the headless capture, so `products-before.jpg` (a fully rendered product listing) is used for the catalogue comparison.
 
