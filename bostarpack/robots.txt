@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://beiluo.github.io/dsh-superagent-demo/bostarpack/sitemap.xml
