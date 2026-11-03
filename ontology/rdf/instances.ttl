@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.2.0" .
+    owl:versionInfo "1.3.0" .
 
 # ===========================================================================
 # Market structure
@@ -1166,3 +1166,202 @@ ashd:decision-youzi-2026 a owl:NamedIndividual, ash:InvestmentDecision ;
     rdfs:label "游资科技短线决策"@zh ;
     ash:isExample true ;
     ash:exampleNote "短线示例，不构成投资建议。"@zh .
+# ===== Youzi methodology examples =====
+
+ashd:source-youzi-mdpt a owl:NamedIndividual, ash:KnowledgeSource ;
+    ash:sourceUrl "https://youzi.mdpt.cn/"^^xsd:anyURI ;
+    ash:sourceTitle "游资心法秘籍阁" ;
+    ash:retrievedAt "2026-11-03"^^xsd:date ;
+    ash:usageNote "公开站点；仅提炼概念、分类与判断原则，不复制原文、不转载语料。" ;
+    rdfs:label "游资心法秘籍阁（公开方法论来源）"@zh ;
+    ash:isExample true .
+
+ashd:principle-buy1 a owl:NamedIndividual, ash:PlaybookPrinciple ;
+    ash:principleText "龙虎榜买一资金应显著大于卖一；买一独大、买二买三差距过大时要防抛压。" ;
+    ash:principleCategory "龙虎榜" ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "买一卖一原则"@zh ;
+    ash:isExample true .
+
+ashd:principle-volume a owl:NamedIndividual, ash:PlaybookPrinciple ;
+    ash:principleText "放量换手板让短线筹码充分交换，成本更接近涨停价；缩量板浮盈集中，次日砸盘风险更高。" ;
+    ash:principleCategory "打板" ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "放量换手原则"@zh ;
+    ash:isExample true .
+
+ashd:principle-auction a owl:NamedIndividual, ash:PlaybookPrinciple ;
+    ash:principleText "竞价先形成预期，再用实际开盘与量能验证；预期差决定是跟随、放弃还是反向。" ;
+    ash:principleCategory "竞价" ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "竞价预期差原则"@zh ;
+    ash:isExample true .
+
+ashd:principle-emotion a owl:NamedIndividual, ash:PlaybookPrinciple ;
+    ash:principleText "先判断情绪周期阶段，再决定仓位和手法；高潮后期与冰点期的风险收益完全不同。" ;
+    ash:principleCategory "情绪周期" ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "情绪周期优先原则"@zh ;
+    ash:isExample true .
+
+ashd:principle-drawdown a owl:NamedIndividual, ash:PlaybookPrinciple ;
+    ash:principleText "账户回撤超过 10% 时先降仓和复盘，不用加仓或换手法来掩盖交易系统问题。" ;
+    ash:principleCategory "风控" ;
+    ash:derivedFromSource ashd:source-youzi-mdpt ;
+    rdfs:label "回撤控制原则"@zh ;
+    ash:isExample true .
+
+ashd:auction-phase-920 a owl:NamedIndividual, ash:AuctionPhase ;
+    rdfs:label "9:20–9:25 不可撤单阶段"@zh ;
+    ash:isExample true .
+
+ashd:auction-expectation-youzi a owl:NamedIndividual, ash:AuctionExpectation ;
+    ash:expectedPremium -2.0 ;
+    ash:actualPremium 3.2 ;
+    rdfs:label "游资科技竞价预期"@zh ;
+    ash:isExample true .
+
+ashd:auction-youzi-20261103 a owl:NamedIndividual, ash:AuctionSnapshot ;
+    ash:hasAuctionPhase ashd:auction-phase-920 ;
+    ash:hasAuctionExpectation ashd:auction-expectation-youzi ;
+    ash:auctionVolumeAmount 8000000 ;
+    ash:auctionSurpriseScore 5.2 ;
+    rdfs:label "游资科技 2026-11-03 竞价"@zh ;
+    ash:isExample true .
+
+ashd:sec-youzi-a ash:hasAuctionSnapshot ashd:auction-youzi-20261103 .
+
+ashd:consensus-youzi a owl:NamedIndividual, ash:DragonTigerConsensus ;
+    ash:consensusType "mixed" ;
+    rdfs:label "游资+机构混合共识"@zh ;
+    ash:isExample true .
+
+ashd:dtl-youzi ash:hasDragonTigerConsensus ashd:consensus-youzi ;
+    ash:buy1ToSell1Ratio 1.8 ;
+    ash:hasBuySellConcentration ashd:concentration-youzi .
+
+ashd:concentration-youzi a owl:NamedIndividual, ash:BuySellConcentration ;
+    ash:buyConcentration 0.42 ;
+    ash:sellConcentration 0.28 ;
+    rdfs:label "游资科技买卖集中度"@zh ;
+    ash:isExample true .
+
+ashd:seat-hot-demo ash:hasSeatStyle ashs:seat-style-one-day ;
+    ash:seatOneDayTripRate 0.70 ;
+    ash:hasSeatRank ashd:seat-rank-one .
+
+ashd:seat-rank-one a owl:NamedIndividual, ash:SeatRank ;
+    ash:seatRankNumber 1 ;
+    rdfs:label "买方第一席位"@zh ;
+    ash:isExample true .
+
+ashd:market-height-demo a owl:NamedIndividual, ash:MarketHeight ;
+    ash:marketHeight 2 ;
+    ash:limitUpCount 28 ;
+    ash:limitDownCount 12 ;
+    rdfs:label "市场高度快照"@zh ;
+    ash:isExample true .
+
+ashd:money-effect-demo a owl:NamedIndividual, ash:MoneyEffect ;
+    ash:moneyEffectScore 32 ;
+    rdfs:label "赚钱效应快照"@zh ;
+    ash:isExample true .
+
+ashd:loss-effect-demo a owl:NamedIndividual, ash:LossEffect ;
+    ash:lossEffectScore 68 ;
+    rdfs:label "亏钱效应快照"@zh ;
+    ash:isExample true .
+
+ashd:emotion-cycle-demo a owl:NamedIndividual, ash:SentimentCycle ;
+    ash:hasEmotionStage ashs:emotion-freeze ;
+    ash:emotionStageCode "freeze" ;
+    ash:hasMarketHeight ashd:market-height-demo ;
+    ash:hasMoneyEffect ashd:money-effect-demo ;
+    ash:hasLossEffect ashd:loss-effect-demo ;
+    rdfs:label "情绪冰点样例"@zh ;
+    ash:isExample true .
+
+ashd:regime-offense ash:hasSentimentCycle ashd:emotion-cycle-demo .
+
+ashd:floating-chips-youzi a owl:NamedIndividual, ash:FloatingChips ;
+    ash:floatingChipRatio 0.35 ;
+    ash:recentVolumePeak 95000000 ;
+    rdfs:label "游资科技浮动筹码"@zh ;
+    ash:isExample true .
+
+ashd:sec-youzi-a ash:hasFloatingChips ashd:floating-chips-youzi ;
+    ash:hasTPlusOneConstraint ashd:tplusone-rule ;
+    ash:hasStockCharacter ashd:stock-character-youzi ;
+    ash:hasChipConcentration ashd:chip-concentration-youzi .
+
+ashd:tplusone-rule a owl:NamedIndividual, ash:TPlusOneConstraint ;
+    ash:tPlusOneDays 1 ;
+    rdfs:label "A 股 T+1"@zh ;
+    ash:isExample true .
+
+ashd:disclosure-lag-demo a owl:NamedIndividual, ash:DisclosureLag ;
+    ash:disclosureLagDays 1 ;
+    rdfs:label "龙虎榜披露时滞"@zh ;
+    ash:isExample true .
+
+ashd:catalyst-youzi ash:hasDisclosureLag ashd:disclosure-lag-demo .
+
+ashd:stock-character-youzi a owl:NamedIndividual, ash:StockCharacter ;
+    ash:stockCharacter "高弹性、连板后波动大、炸板后回落快" ;
+    rdfs:label "游资科技股性"@zh ;
+    ash:isExample true .
+
+ashd:chip-concentration-youzi a owl:NamedIndividual, ash:ChipConcentration ;
+    ash:chipConcentration 0.58 ;
+    rdfs:label "游资科技筹码集中度"@zh ;
+    ash:isExample true .
+
+ashd:journal-youzi a owl:NamedIndividual, ash:TradingJournal ;
+    ash:journalDate "2026-11-03"^^xsd:date ;
+    ash:tradeCount 42 ;
+    ash:winRate 0.48 ;
+    ash:maxDrawdown 15.0 ;
+    rdfs:label "游资科技短线交易日志"@zh ;
+    ash:isExample true .
+
+ashd:investor-demo ash:hasTradingJournal ashd:journal-youzi ;
+    ash:hasReviewChecklist ashd:review-checklist-demo ;
+    ash:hasAccountDiagnosis ashd:diagnosis-youzi ;
+    ash:hasSelectionChecklist ashd:selection-checklist-demo ;
+    ash:hasTradeDiscipline ashd:discipline-demo .
+
+ashd:review-checklist-demo a owl:NamedIndividual, ash:ReviewChecklist ;
+    rdfs:label "每日复盘清单"@zh ;
+    ash:isExample true .
+
+ashd:diagnosis-youzi a owl:NamedIndividual, ash:AccountDiagnosis ;
+    ash:maxDrawdown 15.0 ;
+    ash:hasDrawdownControl ashd:drawdown-control-demo ;
+    rdfs:label "账户回撤诊断"@zh ;
+    ash:isExample true .
+
+ashd:drawdown-control-demo a owl:NamedIndividual, ash:DrawdownControl ;
+    rdfs:label "回撤 10% 降仓规则"@zh ;
+    ash:isExample true .
+
+ashd:selection-checklist-demo a owl:NamedIndividual, ash:StockSelectionChecklist ;
+    rdfs:label "游资短线选股清单"@zh ;
+    ash:isExample true .
+
+ashd:discipline-demo a owl:NamedIndividual, ash:TradeDiscipline ;
+    ash:disciplineScore 62 ;
+    rdfs:label "交易纪律评分"@zh ;
+    ash:isExample true .
+
+ashd:exit-rule-demo a owl:NamedIndividual, ash:ExitRule ;
+    rdfs:label "跌破分时均线退出"@zh ;
+    ash:isExample true .
+
+ashd:position-sizing-demo a owl:NamedIndividual, ash:PositionSizing ;
+    ash:positionSize 20 ;
+    ash:riskPerTrade 2 ;
+    rdfs:label "短线仓位规则"@zh ;
+    ash:isExample true .
+
+ashd:strategy-value ash:hasExitRule ashd:exit-rule-demo ;
+    ash:hasPositionSizing ashd:position-sizing-demo .

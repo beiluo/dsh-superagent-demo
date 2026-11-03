@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.2.0" ;
+    owl:versionInfo "1.3.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================
@@ -683,3 +683,151 @@ ashd:rule-theme-catalyst a swrl:Imp, ash:RuleArtifact ;
         [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-heatscore "80"^^xsd:decimal ) ]
     ) ;
     swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EventDrivenSignal ; swrl:argument1 ashd:var-st-security ] ) .
+# ===== Youzi methodology rules =====
+
+ashd:var-yz-security a swrl:Variable ; rdfs:label "?security" .
+ashd:var-yz-auction a swrl:Variable ; rdfs:label "?auction" .
+ashd:var-yz-expect a swrl:Variable ; rdfs:label "?expectation" .
+ashd:var-yz-expected a swrl:Variable ; rdfs:label "?expectedPremium" .
+ashd:var-yz-actual a swrl:Variable ; rdfs:label "?actualPremium" .
+ashd:var-yz-vol a swrl:Variable ; rdfs:label "?auctionVolume" .
+ashd:var-yz-list a swrl:Variable ; rdfs:label "?list" .
+ashd:var-yz-consensus a swrl:Variable ; rdfs:label "?consensus" .
+ashd:var-yz-ctype a swrl:Variable ; rdfs:label "?consensusType" .
+ashd:var-yz-net a swrl:Variable ; rdfs:label "?netBuy" .
+ashd:var-yz-cycle a swrl:Variable ; rdfs:label "?cycle" .
+ashd:var-yz-mheight a swrl:Variable ; rdfs:label "?marketHeight" .
+ashd:var-yz-height a swrl:Variable ; rdfs:label "?height" .
+ashd:var-yz-moneyobj a swrl:Variable ; rdfs:label "?moneyEffectObj" .
+ashd:var-yz-money a swrl:Variable ; rdfs:label "?moneyEffect" .
+ashd:var-yz-lossobj a swrl:Variable ; rdfs:label "?lossEffectObj" .
+ashd:var-yz-loss a swrl:Variable ; rdfs:label "?lossEffect" .
+ashd:var-yz-seat a swrl:Variable ; rdfs:label "?seat" .
+ashd:var-yz-odt a swrl:Variable ; rdfs:label "?oneDayTrip" .
+ashd:var-yz-journal a swrl:Variable ; rdfs:label "?journal" .
+ashd:var-yz-dd a swrl:Variable ; rdfs:label "?drawdown" .
+ashd:var-yz-investor a swrl:Variable ; rdfs:label "?investor" .
+
+ashd:rule-weak-to-strong a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R22" ;
+    rdfs:label "竞价弱转强"@zh, "Weak-to-strong auction"@en ;
+    rdfs:comment "预期溢价为负、实际溢价为正且竞价成交额超过 500 万时，推断为弱转强。"@zh ;
+    ash:ruleIf "expectedPremium < 0 且 actualPremium > 0 且 auctionVolumeAmount > 5,000,000"@zh ;
+    ash:ruleThen "证券被推断为 ash:WeakToStrong"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 27 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasAuctionSnapshot, ash:hasAuctionExpectation, ash:expectedPremium, ash:actualPremium, ash:auctionVolumeAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-yz-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasAuctionSnapshot ; swrl:argument1 ashd:var-yz-security ; swrl:argument2 ashd:var-yz-auction ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasAuctionExpectation ; swrl:argument1 ashd:var-yz-auction ; swrl:argument2 ashd:var-yz-expect ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:expectedPremium ; swrl:argument1 ashd:var-yz-expect ; swrl:argument2 ashd:var-yz-expected ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:actualPremium ; swrl:argument1 ashd:var-yz-expect ; swrl:argument2 ashd:var-yz-actual ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:auctionVolumeAmount ; swrl:argument1 ashd:var-yz-auction ; swrl:argument2 ashd:var-yz-vol ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-yz-expected "0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-actual "0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-vol "5000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:WeakToStrong ; swrl:argument1 ashd:var-yz-security ] ) .
+
+ashd:rule-dragon-tiger-consensus a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R23" ;
+    rdfs:label "龙虎榜混合共识"@zh, "Dragon-tiger mixed consensus"@en ;
+    rdfs:comment "龙虎榜净买超过 5000 万且游资/机构混合时，推断为资金共识。"@zh ;
+    ash:ruleIf "dragonTigerNetBuy > 50,000,000 且 consensusType = mixed"@zh ;
+    ash:ruleThen "证券被推断为 ash:HotMoneyInflow"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 28 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasDragonTigerList, ash:dragonTigerNetBuy, ash:hasDragonTigerConsensus, ash:consensusType ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-yz-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerList ; swrl:argument1 ashd:var-yz-security ; swrl:argument2 ashd:var-yz-list ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:dragonTigerNetBuy ; swrl:argument1 ashd:var-yz-list ; swrl:argument2 ashd:var-yz-net ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerConsensus ; swrl:argument1 ashd:var-yz-list ; swrl:argument2 ashd:var-yz-consensus ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:consensusType ; swrl:argument1 ashd:var-yz-consensus ; swrl:argument2 ashd:var-yz-ctype ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-net "50000000"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-yz-ctype "mixed"^^xsd:string ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyInflow ; swrl:argument1 ashd:var-yz-security ] ) .
+
+ashd:rule-emotion-freeze a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R24" ;
+    rdfs:label "情绪冰点"@zh, "Emotion freeze"@en ;
+    rdfs:comment "最高连板不超过 2 且亏钱效应高于赚钱效应时，推断为情绪冰点。"@zh ;
+    ash:ruleIf "marketHeight ≤ 2 且 lossEffectScore > moneyEffectScore"@zh ;
+    ash:ruleThen "情绪周期被推断为 ash:EmotionFreeze"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 10 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:SentimentCycle ;
+    ash:ruleUses ash:hasMarketHeight, ash:marketHeight, ash:hasMoneyEffect, ash:moneyEffectScore, ash:hasLossEffect, ash:lossEffectScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:SentimentCycle ; swrl:argument1 ashd:var-yz-cycle ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketHeight ; swrl:argument1 ashd:var-yz-cycle ; swrl:argument2 ashd:var-yz-mheight ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketHeight ; swrl:argument1 ashd:var-yz-mheight ; swrl:argument2 ashd:var-yz-height ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLossEffect ; swrl:argument1 ashd:var-yz-cycle ; swrl:argument2 ashd:var-yz-lossobj ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:lossEffectScore ; swrl:argument1 ashd:var-yz-lossobj ; swrl:argument2 ashd:var-yz-loss ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMoneyEffect ; swrl:argument1 ashd:var-yz-cycle ; swrl:argument2 ashd:var-yz-moneyobj ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:moneyEffectScore ; swrl:argument1 ashd:var-yz-moneyobj ; swrl:argument2 ashd:var-yz-money ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-yz-height "2"^^xsd:integer ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-loss ashd:var-yz-money ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionFreeze ; swrl:argument1 ashd:var-yz-cycle ] ) .
+
+ashd:rule-one-day-trip a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R25" ;
+    rdfs:label "一日游风险"@zh, "One-day-trip risk"@en ;
+    rdfs:comment "游资席位一日游比例高于 60% 时，推断为一日游风险。"@zh ;
+    ash:ruleIf "seatOneDayTripRate > 0.60"@zh ;
+    ash:ruleThen "证券被推断为 ash:OneDayTripRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 11 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasDragonTigerList, ash:hasDragonTigerSeat, ash:seatOneDayTripRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-yz-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerList ; swrl:argument1 ashd:var-yz-security ; swrl:argument2 ashd:var-yz-list ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerSeat ; swrl:argument1 ashd:var-yz-list ; swrl:argument2 ashd:var-yz-seat ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:seatOneDayTripRate ; swrl:argument1 ashd:var-yz-seat ; swrl:argument2 ashd:var-yz-odt ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-odt "0.60"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OneDayTripRisk ; swrl:argument1 ashd:var-yz-security ] ) .
+
+ashd:rule-drawdown-breach a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R26" ;
+    rdfs:label "回撤超限"@zh, "Drawdown breach"@en ;
+    rdfs:comment "账户最大回撤超过 10% 时，推断为回撤超限。"@zh ;
+    ash:ruleIf "maxDrawdown > 10"@zh ;
+    ash:ruleThen "投资者被推断为 ash:DrawdownBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 6 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "交易风控组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Investor ;
+    ash:ruleUses ash:hasTradingJournal, ash:maxDrawdown ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Investor ; swrl:argument1 ashd:var-yz-investor ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasTradingJournal ; swrl:argument1 ashd:var-yz-investor ; swrl:argument2 ashd:var-yz-journal ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxDrawdown ; swrl:argument1 ashd:var-yz-journal ; swrl:argument2 ashd:var-yz-dd ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-dd "10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:DrawdownBreach ; swrl:argument1 ashd:var-yz-investor ] ) .
