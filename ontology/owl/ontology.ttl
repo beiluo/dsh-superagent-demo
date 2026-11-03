@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.5.0" ;
+    owl:versionInfo "1.6.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
