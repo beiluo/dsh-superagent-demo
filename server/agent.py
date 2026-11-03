@@ -503,11 +503,26 @@ class AgentService:
         return "\n\n".join(lines)
 
     def _company_query_text(self, question: str) -> str:
-        query = question.strip()
+        query = question.strip().rstrip("？?。.!！")
         for prefix in ("分析一下", "请分析", "分析", "研究一下", "帮我看看", "看看", "查一下", "介绍一下", "介绍"):
             if query.startswith(prefix):
                 query = query[len(prefix) :].strip()
         for suffix in (
+            "适合买入吗",
+            "是否适合买入",
+            "适合买入",
+            "适合买吗",
+            "能买入吗",
+            "可以买入吗",
+            "能不能买入",
+            "值得买入吗",
+            "值得买吗",
+            "能买吗",
+            "可以买吗",
+            "该买吗",
+            "要不要买",
+            "是否值得买",
+            "适合投资吗",
             "怎么样",
             "如何",
             "的财务",
@@ -524,7 +539,7 @@ class AgentService:
         ):
             if query.endswith(suffix):
                 query = query[: -len(suffix)].strip()
-        return query or question.strip()
+        return query or question.strip().rstrip("？?。.!！")
 
     def _search_query(self, question: str) -> str:
         query = question.strip()
