@@ -59,6 +59,8 @@
     "scheme-asset-class": { label: "资产类别", color: "#6aa9e9" },
     "scheme-factor": { label: "投资因子", color: "#b08ae6" },
     "scheme-trading-playbook": { label: "短线剧本", color: "#e88a6a" },
+    "scheme-emotion-cycle": { label: "情绪周期", color: "#d97757" },
+    "scheme-seat-style": { label: "席位风格", color: "#8fb7a2" },
   };
 
   const CORE_GRAPH_IDS = [
@@ -1279,7 +1281,7 @@
       <div class="short-kpi"><span>RSI14</span><strong>${esc(rsiValue || "68")}</strong><small>TECHNICAL</small></div>
       <div class="short-kpi"><span>风险分</span><strong class="hot">${esc(riskScore || "66")}</strong><small>RISK SCORE</small></div>`;
 
-    const shortRules = DATA.rules.filter((rule) => ["R16", "R17", "R18", "R19", "R20", "R21"].includes(rule.ruleId));
+    const shortRules = DATA.rules.filter((rule) => ["R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23", "R24", "R25", "R26"].includes(rule.ruleId));
     rulesTarget.innerHTML = shortRules
       .map(
         (rule) => `

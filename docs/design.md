@@ -1,6 +1,6 @@
 # A 股投资决策本体 — 设计说明
 
-> 版本：1.2.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
+> 版本：1.3.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
 
 本文说明本体“为什么这样建模”、每层使用了哪些 W3C 构造、跨层链路如何工作，以及当前实现的边界。
 1.1 的领域清单见 [expansion-1.1.md](expansion-1.1.md)。
@@ -166,7 +166,7 @@ FIBO 的官方扩展，也不受 FIBO 治理机构背书。
 
 ## 5. RDF 层：实例图
 
-文件：`ontology/rdf/instances.ttl`（1,152 条三元组）
+文件：`ontology/rdf/instances.ttl`（1,342 条三元组）
 
 ### 5.1 表达方式
 
@@ -217,7 +217,7 @@ ashd:decision-huachen-2026q4
 
 ## 6. RDFS 层：词汇与定义
 
-文件：`ontology/rdfs/schema.ttl`（2,780 条三元组）
+文件：`ontology/rdfs/schema.ttl`（3,493 条三元组）
 
 ### 6.1 类层次
 
@@ -269,8 +269,8 @@ ash:Entity
 
 ### 6.2 属性
 
-- 124 个对象属性；
-- 168 个数据属性；
+- 163 个对象属性；
+- 214 个数据属性；
 - 每个属性有 `rdfs:domain`、`rdfs:range` 和中英文标签；
 - 典型属性：
   - `ash:hasSecurity` / `ash:issuedBy`；
@@ -303,11 +303,11 @@ RDFS 推断主要依赖：
 
 ## 7. OWL 2 层：公理与结构约束
 
-文件：`ontology/owl/ontology.ttl`（912 条三元组）
+文件：`ontology/owl/ontology.ttl`（1,030 条三元组）
 
 ### 7.1 类限制
 
-86 条 `owl:Restriction`，代表性约束：
+100 条 `owl:Restriction`，代表性约束：
 
 | 类 | 约束 |
 | --- | --- |
@@ -380,9 +380,9 @@ RDFS 推断主要依赖：
 
 ---
 
-## 8. SKOS 层：六套概念方案
+## 8. SKOS 层：八套概念方案
 
-文件：`ontology/skos/taxonomy.ttl`（1,020 条三元组）
+文件：`ontology/skos/taxonomy.ttl`（1,140 条三元组）
 
 ### 8.1 方案
 
@@ -394,8 +394,10 @@ RDFS 推断主要依赖：
 | `ashs:scheme-asset-class` | 21 | A 股、ETF/LOF、债券、衍生品、REITs、现金等资产类别 |
 | `ashs:scheme-factor` | 12 | 价值、成长、质量、动量、低波、红利、规模、盈利等因子 |
 | `ashs:scheme-trading-playbook` | 20 | 首板、连板、反包、低吸、退潮、政策/业绩/并购催化等短线剧本 |
+| `ashs:scheme-emotion-cycle` | 6 | 启动、发酵、高潮、结束、反复、冰点 |
+| `ashs:scheme-seat-style` | 8 | 营业部/机构、一日游/波段/锁仓/加码/做T/通道 |
 
-合计 113 个概念。
+合计 127 个概念。
 
 ### 8.2 构造
 
@@ -427,7 +429,7 @@ RDFS 推断主要依赖：
 
 ## 9. SWRL 层：规则
 
-文件：`ontology/swrl/rules.ttl`（1,449 条三元组）
+文件：`ontology/swrl/rules.ttl`（1,849 条三元组）
 
 ### 9.1 语法选择
 
@@ -468,6 +470,11 @@ SWRL 规范同时定义了抽象语法与 XML 具体语法；本仓库采用 RDF
 | R19 | 炸板风险 | 连板期间炸板 ≥ 2 次 | `BoardBreakRisk` | high |
 | R20 | 中期趋势向上 | MA20 > MA60 且营收增速 ≥ 20% | `MediumTermTrend` | medium |
 | R21 | 主题催化信号 | 主题热度 > 80 且存在新闻催化 | `EventDrivenSignal` | medium |
+| R22 | 竞价弱转强 | 预期溢价 < 0、实际溢价 > 0、竞价额 > 500 万 | `WeakToStrong` | medium |
+| R23 | 龙虎榜混合共识 | 净买 > 5000 万且游资/机构混合 | `HotMoneyInflow` | medium |
+| R24 | 情绪冰点 | 高度 ≤ 2 且亏钱效应 > 赚钱效应 | `EmotionFreeze` | high |
+| R25 | 一日游风险 | 游资席位一日游比例 > 60% | `OneDayTripRisk` | high |
+| R26 | 回撤超限 | 交易日志最大回撤 > 10% | `DrawdownBreach` | high |
 
 ### 9.3 规则边界
 
@@ -617,15 +624,15 @@ ODRL 政策是**声明式**的。本仓库：
 
 ```text
 modules: 7
-triples: 8048
-classes: 194
-object properties: 124
-data properties: 168
-SKOS concepts: 113
-SWRL rules: 21
+triples: 9589
+classes: 242
+object properties: 163
+data properties: 214
+SKOS concepts: 127
+SWRL rules: 26
 OWL-S services: 1
 ODRL policies: 5
-OWL RL closure: 5864 -> 16762 triples (10898 inferred)
+OWL RL closure: 7005 -> 19715 triples (12710 inferred)
 warnings: 0
 ```
 
@@ -634,12 +641,12 @@ warnings: 0
 使用 Firefox + Playwright 做冒烟检查：
 
 - 页面标题与数据快照加载；
-- 753 个实体、21 条规则、7 个流程步骤、5 项政策渲染；
+- 934 个实体、26 条规则、7 个流程步骤、5 项政策渲染；
 - 搜索 `InvestmentDecision` 返回 1 条；
 - 点击实体详情显示 8 条 OWL 限制；
 - 规则严重程度筛选、政策 tab、概念树、示例 tab 交互正常；
-- 短线面板：6 个 KPI、4 步剧本、6 条 R16–R21 规则、游资科技短线决策；
-- 图谱四种模式：核心全景 51 节点、全部类 194 节点、决策链 19 节点/15 条带标签边、SKOS 113 节点；
+- 短线面板：6 个 KPI、4 步剧本、3 张方法论卡、情绪六阶段、R16–R26 规则、游资科技短线决策；
+- 图谱四种模式：核心全景 51 节点、全部类 242 节点、决策链 19 节点/15 条带标签边、SKOS 127 节点；
 - 图谱缩放、图例隐藏/恢复、节点聚焦、跳转 Explorer/SKOS 均正常；
 - 桌面与 390px 手机视口无横向滚动、无 console error；
 - 截图见 `docs/evidence/`。
@@ -680,7 +687,7 @@ index.html + assets/js/app.js
 4. Ontology Explorer：搜索、类型筛选、来源层筛选、实体详情；
 5. 整体本体图谱：核心全景、全部类、决策链、SKOS 分类；
 6. SKOS 概念树 + 概念详情；
-7. 短线/游资面板：KPI、四步剧本、R16–R21 规则、短线决策样例；
+7. 短线/游资面板：KPI、四步剧本、龙虎榜/竞价/复盘方法卡、情绪六阶段、R16–R26 规则、短线决策样例；
 8. SWRL 规则卡；
 9. OWL-S 服务契约与流程；
 10. ODRL 政策矩阵；
@@ -692,12 +699,12 @@ index.html + assets/js/app.js
 图谱使用原生 SVG 与自实现力导向布局，不引入 D3 或图表库：
 
 - **核心全景**：51 个核心类节点，保证可读性；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
-- **全部类**：194 个类节点，用于查看完整扩展域；
+- **全部类**：242 个类节点，用于查看完整扩展域；
 - **决策链**：19 个核心类的手工布局，边标签显示对象属性，适合讲解决策路径；
-- **SKOS 分类**：113 个概念，按六套 ConceptScheme 着色，边为 `broader`；
+- **SKOS 分类**：127 个概念，按八套 ConceptScheme 着色，边为 `broader`；
 - **交互**：滚轮缩放、拖拽平移、图例筛选、节点聚焦、`标签`开关；点击节点在右侧显示类/概念详情；
 - **联动**：详情中的“在 Explorer 中打开”跳转到实体浏览器；“在 SKOS 分类中查看”跳转到概念树；
-- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、194 节点全部类并缩放查看；
+- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、242 节点全部类并缩放查看；
 - **规模评估**：图谱下方固定展示类/属性/概念/三元组规模，并明确“参考实现而非 FIBO 级行业本体”。
 
 图谱节点与边全部来自 `DATA.classes`、`DATA.objectProperties`、`DATA.concepts`，没有手工维护的第二份图数据。
