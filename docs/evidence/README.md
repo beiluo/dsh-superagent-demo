@@ -16,6 +16,7 @@ These captures document the browser work for the A-share ontology tickets.
 | `expansion-graph.png` | 1.3 branch | 1440 × 1000 | Core overview: 51 classes / 82 relations. |
 | `expansion-graph-all.png` | 1.3 branch | 1440 × 1000 | All-class overview: 242 classes / 378 relations. |
 | `short-before.png` | Merged `main` at `852e52c` (1.1) | 1440 × 1000 | Baseline before the short-term module: no 短线 nav item, fallback hero stats 136 classes / 6,253 triples. |
+| `youzi-before.png` | Merged `main` at `115eb98` (1.2) | 1440 × 1000 | Same 短线 section before 1.3: four-step playbook and R16–R21 only; no methodology cards or emotion cycle. |
 | `short-term.png` | 1.3 branch | 1440 × 1000 | Short-term/hot-money panel: 6 KPIs, four-step playbook, dragon-tiger/auction/review method cards, emotion cycle, R16–R26 signals and a short-term decision. |
 | `agent-before.png` | Live GitHub Pages at `main` `7bc4064` (PR #2 merged, before this Agent PR) | 1440 × 1000 | Baseline: graph UI is present, but there is no Agent nav entry, no “问 Agent” action and no Agent section. |
 | `agent-after.png` | This Agent branch after merging `main`; served by `uvicorn` on `127.0.0.1:8010` | 1440 × 1000 | Same hero and graph-era header, plus the new Agent nav entry and “问 Agent” action. |
