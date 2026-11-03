@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.1.0" .
+    owl:versionInfo "1.2.0" .
 
 # ===========================================================================
 # Market structure
@@ -919,3 +919,250 @@ ashd:lineage-huachen-report a owl:NamedIndividual, ash:DataLineage ;
     ash:isExample true .
 
 ashd:report-huachen-2025 ash:hasDataLineage ashd:lineage-huachen-report .
+# ===== Short-term / hot-money examples =====
+
+ashd:company-youzi a owl:NamedIndividual, ash:ListedCompany ;
+    ash:companyName "游资科技股份有限公司" ;
+    ash:companyCode "YZ001" ;
+    ash:isST false ;
+    ash:delistingRisk false ;
+    ash:primaryIndustry ashs:industry-information-technology ;
+    ash:hasThemeExposure ashs:theme-ai, ashs:theme-data-elements ;
+    ash:hasSecurity ashd:sec-youzi-a ;
+    ash:hasFinancialReport ashd:report-youzi-2025 ;
+    rdfs:label "游资科技"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "合成示例，用于短线/游资规则演示。"@zh .
+
+ashd:report-youzi-2025 a owl:NamedIndividual, ash:AnnualReport ;
+    ash:reportsOn ashd:company-youzi ;
+    ash:reportPeriod "2025"^^xsd:gYear ;
+    ash:fiscalYearEnd "2025-12-31"^^xsd:date ;
+    ash:revenue 3200000000 ;
+    ash:netProfit 410000000 ;
+    ash:roe 14.8 ;
+    ash:roa 7.2 ;
+    ash:debtRatio 42.0 ;
+    ash:interestCoverage 6.8 ;
+    ash:operatingCashFlow 380000000 ;
+    ash:revenueGrowth 28.0 ;
+    ash:profitGrowth 22.5 ;
+    ash:eps 0.52 ;
+    ash:dataAsOf "2025-12-31"^^xsd:date ;
+    ash:dataSource "合成年报（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "游资科技 2025 年报"@zh ;
+    ash:isExample true .
+
+ashd:sec-youzi-a a owl:NamedIndividual, ash:AShare ;
+    ash:securityName "游资科技" ;
+    ash:securityCode "300001" ;
+    ash:listedOn ashd:exchange-szse ;
+    ash:tradesOn ashd:segment-chinext ;
+    ash:issuedBy ashd:company-youzi ;
+    ash:isSuspended false ;
+    ash:isRestricted false ;
+    ash:ma5 18.1 ;
+    ash:ma20 17.2 ;
+    ash:ma60 15.8 ;
+    ash:hasMarketQuote ashd:quote-youzi-20261102 ;
+    ash:hasValuation ashd:val-youzi-20261102 ;
+    ash:hasLimitUpStreak ashd:streak-youzi ;
+    ash:hasDragonTigerList ashd:dtl-youzi ;
+    ash:hasNewsCatalyst ashd:catalyst-youzi ;
+    ash:hasTechnicalSignal ashd:signal-youzi-momentum ;
+    ash:hasTechnicalIndicator ashd:tech-ma-youzi, ashd:tech-rsi-youzi ;
+    rdfs:label "游资科技 A"@zh ;
+    ash:isExample true .
+
+ashd:quote-youzi-20261102 a owl:NamedIndividual, ash:MarketQuote ;
+    ash:quoteOf ashd:sec-youzi-a ;
+    ash:lastPrice 18.50 ;
+    ash:changePct 9.98 ;
+    ash:volume 120000000 ;
+    ash:turnoverRate 18.4 ;
+    ash:marketCap 8200000000 ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "游资科技 2026-11-02 行情"@zh ;
+    ash:isExample true .
+
+ashd:val-youzi-20261102 a owl:NamedIndividual, ash:Valuation ;
+    ash:valuationOf ashd:sec-youzi-a ;
+    ash:peTtm 65.0 ;
+    ash:pb 6.2 ;
+    ash:psTtm 4.8 ;
+    ash:dividendYield 0.1 ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    ash:dataSource "合成估值（示例）" ;
+    ash:dataQualityFlag "illustrative" ;
+    rdfs:label "游资科技 2026-11-02 估值"@zh ;
+    ash:isExample true .
+
+ashd:streak-youzi a owl:NamedIndividual, ash:LimitUpStreak ;
+    ash:limitUpDays 4 ;
+    ash:brokenBoardCount 1 ;
+    ash:sealAmount 120000000 ;
+    ash:firstLimitUpTime "09:32" ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    rdfs:label "游资科技四连板记录"@zh ;
+    ash:isExample true .
+
+ashd:dtl-youzi a owl:NamedIndividual, ash:DragonTigerList ;
+    ash:dragonTigerNetBuy 85000000 ;
+    ash:hasDragonTigerSeat ashd:seat-hot-demo, ashd:seat-inst-demo ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    rdfs:label "游资科技 2026-11-02 龙虎榜"@zh ;
+    ash:isExample true .
+
+ashd:seat-hot-demo a owl:NamedIndividual, ash:HotMoneySeat ;
+    ash:seatName "示例游资一号席位" ;
+    ash:seatType "hot-money" ;
+    ash:seatNetBuy 60000000 ;
+    ash:seatWinRate 0.62 ;
+    rdfs:label "示例游资席位"@zh ;
+    ash:isExample true .
+
+ashd:seat-inst-demo a owl:NamedIndividual, ash:DragonTigerSeat ;
+    ash:seatName "示例机构专用席位" ;
+    ash:seatType "institution" ;
+    ash:seatNetBuy 25000000 ;
+    rdfs:label "示例机构席位"@zh ;
+    ash:isExample true .
+
+ashd:theme-heat-ai a owl:NamedIndividual, ash:ThemeHeat ;
+    ash:themeHeatScore 86 ;
+    ash:hasThemeLifecycle ashd:theme-lifecycle-ai ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    rdfs:label "人工智能主题热度"@zh ;
+    ash:isExample true .
+
+ashs:theme-ai ash:hasThemeHeat ashd:theme-heat-ai .
+
+ashd:theme-lifecycle-ai a owl:NamedIndividual, ash:ThemeLifecycle ;
+    ash:themeLifecycleStage "主升" ;
+    rdfs:label "人工智能主题生命周期"@zh ;
+    ash:isExample true .
+
+ashd:catalyst-youzi a owl:NamedIndividual, ash:NewsCatalyst ;
+    ash:catalystType ashs:catalyst-policy ;
+    ash:dataAsOf "2026-11-01"^^xsd:date ;
+    ash:dataSource "合成新闻（示例）" ;
+    rdfs:label "人工智能政策催化（示例）"@zh ;
+    ash:isExample true .
+
+ashd:tech-ma-youzi a owl:NamedIndividual, ash:MovingAverage ;
+    ash:ma5 18.1 ;
+    ash:ma20 17.2 ;
+    ash:ma60 15.8 ;
+    rdfs:label "游资科技均线快照"@zh ;
+    ash:isExample true .
+
+ashd:tech-rsi-youzi a owl:NamedIndividual, ash:RSIIndicator ;
+    ash:rsi14 68.0 ;
+    rdfs:label "游资科技 RSI 快照"@zh ;
+    ash:isExample true .
+
+ashd:signal-youzi-momentum a owl:NamedIndividual, ash:MomentumSignal ;
+    ash:signalStrength 0.82 ;
+    ash:signalHorizon "SHORT" ;
+    rdfs:label "游资科技动量信号"@zh ;
+    ash:isExample true .
+
+ashd:regime-offense a owl:NamedIndividual, ash:MarketRegime ;
+    ash:hasMarketBreadth ashd:breadth-demo ;
+    rdfs:label "进攻型市场状态"@zh ;
+    ash:isExample true .
+
+ashd:breadth-demo a owl:NamedIndividual, ash:MarketBreadth ;
+    ash:marketBreadth 68.0 ;
+    rdfs:label "市场宽度快照"@zh ;
+    ash:isExample true .
+
+ashd:northbound-demo a owl:NamedIndividual, ash:NorthboundFlow ;
+    ash:northboundNetBuy 1260000000 ;
+    ash:capitalFlowNet 1260000000 ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    rdfs:label "北向资金净流入（示例）"@zh ;
+    ash:isExample true .
+
+ashd:margin-demo a owl:NamedIndividual, ash:MarginBalance ;
+    ash:marginBalance 1620000000000 ;
+    ash:marginChangePct 2.4 ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    rdfs:label "两融余额（示例）"@zh ;
+    ash:isExample true .
+
+ashd:risk-youzi a owl:NamedIndividual, ash:RiskAssessment ;
+    ash:assessesSecurity ashd:sec-youzi-a ;
+    ash:assessesDecision ashd:decision-youzi-2026 ;
+    ash:riskScore 66 ;
+    ash:hasRiskLevel ashd:risk-high ;
+    ash:hasRiskFactor ashd:factor-hotmoney ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    rdfs:label "游资科技短线风险评估"@zh ;
+    ash:isExample true .
+
+ashd:factor-hotmoney a owl:NamedIndividual, ash:RiskFactor ;
+    rdfs:label "游资退潮与炸板"@zh ;
+    rdfs:comment "连板高度、炸板率和席位净卖出可能快速反转。"@zh ;
+    ash:isExample true .
+
+ashd:evidence-youzi-quote a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "游资科技 2026-11-02 行情"@zh ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    ash:isExample true .
+
+ashd:evidence-youzi-dtl a owl:NamedIndividual, ash:Evidence ;
+    rdfs:label "游资科技 2026-11-02 龙虎榜"@zh ;
+    ash:dataAsOf "2026-11-02"^^xsd:date ;
+    ash:dataSource "合成龙虎榜（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    ash:isExample true .
+
+ashd:rationale-youzi a owl:NamedIndividual, ash:DecisionRationale ;
+    ash:rationaleText "AI 主题处于主升阶段，游资席位净买入 8500 万，四连板且首次涨停时间早，短线动量强；但换手率 18.4%、RSI 68，已进入过热区，只适合小仓位试错并严格止损。" ;
+    ash:assumption "主题热度维持在 80 以上，次日竞价量比不低于 2。" ;
+    ash:counterArgument "若高位炸板或龙虎榜游资净卖出，可能快速退潮；T+1 与涨跌停限制会放大流动性风险。" ;
+    ash:hasEvidence ashd:evidence-youzi-quote, ashd:evidence-youzi-dtl ;
+    rdfs:label "游资科技短线理由"@zh ;
+    ash:isExample true .
+
+ashd:check-youzi a owl:NamedIndividual, ash:ComplianceCheck ;
+    ash:checksDecision ashd:decision-youzi-2026 ;
+    ash:passed true ;
+    ash:checkNote "通过：仅作为研究信号，不自动下单；需人工确认。" ;
+    rdfs:label "游资科技短线合规检查"@zh ;
+    ash:isExample true .
+
+ashd:playbook-demo a owl:NamedIndividual, ash:ShortTermPlaybook ;
+    ash:playbookStage "连板主升" ;
+    rdfs:label "连板主升剧本"@zh ;
+    ash:isExample true .
+
+ashd:decision-youzi-2026 a owl:NamedIndividual, ash:InvestmentDecision ;
+    ash:decisionId "DEC-2026-YZ-001" ;
+    ash:aboutSecurity ashd:sec-youzi-a ;
+    ash:aboutCompany ashd:company-youzi ;
+    ash:hasRecommendation ashd:rec-buy ;
+    ash:hasRationale ashd:rationale-youzi ;
+    ash:hasRiskAssessment ashd:risk-youzi ;
+    ash:basedOn ashd:evidence-youzi-quote, ashd:evidence-youzi-dtl ;
+    ash:generatedBy ashd:svc-ashare-decision ;
+    ash:governedBy ashd:policy-decision-use, ashd:policy-hot-money-data ;
+    ash:decidedFor ashd:profile-balanced ;
+    ash:hasHorizon ashd:horizon-short ;
+    ash:hasComplianceCheck ashd:check-youzi ;
+    ash:hasMarketRegime ashd:regime-offense ;
+    ash:hasPlaybook ashd:playbook-demo ;
+    ash:decisionDate "2026-11-02"^^xsd:date ;
+    ash:validUntil "2026-11-16"^^xsd:date ;
+    ash:confidence 0.64 ;
+    ash:targetPrice 21.00 ;
+    ash:stopLoss 16.20 ;
+    rdfs:label "游资科技短线决策"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "短线示例，不构成投资建议。"@zh .

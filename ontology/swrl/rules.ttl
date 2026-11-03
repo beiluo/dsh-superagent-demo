@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.1.0" ;
+    owl:versionInfo "1.2.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================
@@ -512,3 +512,174 @@ ashd:rule-fund-outflow
     swrl:head (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:FundOutflowRisk ; swrl:argument1 ashd:var-fund ]
     ) .
+# ===== Short-term / hot-money rules =====
+
+ashd:var-st-security a swrl:Variable ; rdfs:label "?security" .
+ashd:var-st-list a swrl:Variable ; rdfs:label "?list" .
+ashd:var-st-netbuy a swrl:Variable ; rdfs:label "?netBuy" .
+ashd:var-st-seat a swrl:Variable ; rdfs:label "?seat" .
+ashd:var-st-seattype a swrl:Variable ; rdfs:label "?seatType" .
+ashd:var-st-streak a swrl:Variable ; rdfs:label "?streak" .
+ashd:var-st-days a swrl:Variable ; rdfs:label "?days" .
+ashd:var-st-broken a swrl:Variable ; rdfs:label "?broken" .
+ashd:var-st-seal a swrl:Variable ; rdfs:label "?seal" .
+ashd:var-st-quote a swrl:Variable ; rdfs:label "?quote" .
+ashd:var-st-turnover a swrl:Variable ; rdfs:label "?turnover" .
+ashd:var-st-ma20 a swrl:Variable ; rdfs:label "?ma20" .
+ashd:var-st-ma60 a swrl:Variable ; rdfs:label "?ma60" .
+ashd:var-st-company a swrl:Variable ; rdfs:label "?company" .
+ashd:var-st-report a swrl:Variable ; rdfs:label "?report" .
+ashd:var-st-growth a swrl:Variable ; rdfs:label "?revenueGrowth" .
+ashd:var-st-theme a swrl:Variable ; rdfs:label "?theme" .
+ashd:var-st-heat a swrl:Variable ; rdfs:label "?heat" .
+ashd:var-st-heatscore a swrl:Variable ; rdfs:label "?heatScore" .
+ashd:var-st-news a swrl:Variable ; rdfs:label "?news" .
+
+ashd:rule-hotmoney-inflow a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R16" ;
+    rdfs:label "游资席位净买入"@zh, "Hot-money seat inflow"@en ;
+    rdfs:comment "龙虎榜净买入超过 5000 万且存在游资席位时，推断为游资流入。"@zh ;
+    ash:ruleIf "龙虎榜净买入 > 50,000,000 且存在 seatType = hot-money 的席位"@zh ;
+    ash:ruleThen "证券被推断为 ash:HotMoneyInflow"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 22 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.2.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasDragonTigerList, ash:dragonTigerNetBuy, ash:hasDragonTigerSeat, ash:seatType ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerList ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-list ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:dragonTigerNetBuy ; swrl:argument1 ashd:var-st-list ; swrl:argument2 ashd:var-st-netbuy ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-netbuy "50000000"^^xsd:decimal ) ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerSeat ; swrl:argument1 ashd:var-st-list ; swrl:argument2 ashd:var-st-seat ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:seatType ; swrl:argument1 ashd:var-st-seat ; swrl:argument2 ashd:var-st-seattype ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-st-seattype "hot-money"^^xsd:string ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyInflow ; swrl:argument1 ashd:var-st-security ] ) .
+
+ashd:rule-limitup-streak a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R17" ;
+    rdfs:label "连板动量"@zh, "Limit-up momentum"@en ;
+    rdfs:comment "连板天数不少于 3、炸板不超过 1 次且封单大于 5000 万时，推断为动量信号。"@zh ;
+    ash:ruleIf "limitUpDays ≥ 3、brokenBoardCount ≤ 1、sealAmount > 50,000,000"@zh ;
+    ash:ruleThen "证券被推断为 ash:MomentumSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 23 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.2.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasLimitUpStreak, ash:limitUpDays, ash:brokenBoardCount, ash:sealAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLimitUpStreak ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-streak ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:limitUpDays ; swrl:argument1 ashd:var-st-streak ; swrl:argument2 ashd:var-st-days ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:brokenBoardCount ; swrl:argument1 ashd:var-st-streak ; swrl:argument2 ashd:var-st-broken ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:sealAmount ; swrl:argument1 ashd:var-st-streak ; swrl:argument2 ashd:var-st-seal ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-st-days "3"^^xsd:integer ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-st-broken "1"^^xsd:integer ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-seal "50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MomentumSignal ; swrl:argument1 ashd:var-st-security ] ) .
+
+ashd:rule-overheat a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R18" ;
+    rdfs:label "短线过热"@zh, "Short-term overheat"@en ;
+    rdfs:comment "换手率高于 15% 且连板天数不少于 3 时，推断为过热风险。"@zh ;
+    ash:ruleIf "turnoverRate > 15 且 limitUpDays ≥ 3"@zh ;
+    ash:ruleThen "证券被推断为 ash:OverheatRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 9 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.2.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasMarketQuote, ash:turnoverRate, ash:hasLimitUpStreak, ash:limitUpDays ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketQuote ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-quote ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:turnoverRate ; swrl:argument1 ashd:var-st-quote ; swrl:argument2 ashd:var-st-turnover ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLimitUpStreak ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-streak ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:limitUpDays ; swrl:argument1 ashd:var-st-streak ; swrl:argument2 ashd:var-st-days ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-turnover "15"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-st-days "3"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OverheatRisk ; swrl:argument1 ashd:var-st-security ] ) .
+
+ashd:rule-board-break a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R19" ;
+    rdfs:label "炸板风险"@zh, "Board-break risk"@en ;
+    rdfs:comment "连板期间炸板次数达到 2 次时，推断为炸板风险。"@zh ;
+    ash:ruleIf "brokenBoardCount ≥ 2"@zh ;
+    ash:ruleThen "证券被推断为 ash:BoardBreakRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 8 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.2.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:hasLimitUpStreak, ash:brokenBoardCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLimitUpStreak ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-streak ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:brokenBoardCount ; swrl:argument1 ashd:var-st-streak ; swrl:argument2 ashd:var-st-broken ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-st-broken "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BoardBreakRisk ; swrl:argument1 ashd:var-st-security ] ) .
+
+ashd:rule-medium-term-uptrend a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R20" ;
+    rdfs:label "中期趋势向上"@zh, "Medium-term uptrend"@en ;
+    rdfs:comment "20 日均线高于 60 日均线且营收增速不低于 20% 时，推断为中期趋势向上。"@zh ;
+    ash:ruleIf "MA20 > MA60 且 revenueGrowth ≥ 20"@zh ;
+    ash:ruleThen "证券被推断为 ash:MediumTermTrend"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 24 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.2.0" ;
+    ash:ruleOwner "策略研究组" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ma20, ash:ma60, ash:issuedBy, ash:hasFinancialReport, ash:revenueGrowth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma20 ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-ma20 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma60 ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-ma60 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-ma20 ashd:var-st-ma60 ) ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:issuedBy ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-company ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-st-company ; swrl:argument2 ashd:var-st-report ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:revenueGrowth ; swrl:argument1 ashd:var-st-report ; swrl:argument2 ashd:var-st-growth ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-st-growth "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MediumTermTrend ; swrl:argument1 ashd:var-st-security ] ) .
+
+ashd:rule-theme-catalyst a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R21" ;
+    rdfs:label "主题催化信号"@zh, "Theme catalyst signal"@en ;
+    rdfs:comment "公司所属主题热度高于 80 且证券存在新闻催化时，推断为事件驱动信号。"@zh ;
+    ash:ruleIf "主题热度 > 80 且证券存在新闻催化"@zh ;
+    ash:ruleThen "证券被推断为 ash:EventDrivenSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 26 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.2.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:issuedBy, ash:hasThemeExposure, ash:hasThemeHeat, ash:themeHeatScore, ash:hasNewsCatalyst ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:issuedBy ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-company ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasThemeExposure ; swrl:argument1 ashd:var-st-company ; swrl:argument2 ashd:var-st-theme ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasThemeHeat ; swrl:argument1 ashd:var-st-theme ; swrl:argument2 ashd:var-st-heat ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeHeatScore ; swrl:argument1 ashd:var-st-heat ; swrl:argument2 ashd:var-st-heatscore ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasNewsCatalyst ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-news ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-heatscore "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EventDrivenSignal ; swrl:argument1 ashd:var-st-security ] ) .

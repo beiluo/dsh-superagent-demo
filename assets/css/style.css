@@ -5502,3 +5502,339 @@ a.agent-citation:hover {
     max-width: 92%;
   }
 }
+
+/* ==========================================================================
+   Short-term / hot-money playbook
+   ========================================================================== */
+
+.short-section {
+  padding-top: 86px;
+}
+
+.short-shell {
+  padding: 22px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.short-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.short-kpi {
+  min-width: 0;
+  padding: 14px 13px 13px 0;
+  border-right: 1px solid var(--line);
+}
+
+.short-kpi:not(:first-child) {
+  padding-left: 13px;
+}
+
+.short-kpi:last-child {
+  border-right: 0;
+}
+
+.short-kpi span {
+  display: block;
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+}
+
+.short-kpi strong {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--display);
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.short-kpi strong.hot {
+  color: var(--red);
+}
+
+.short-kpi small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted-2);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.short-playbook {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.short-playbook article {
+  position: relative;
+  min-height: 150px;
+  padding: 16px 14px;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+}
+
+.short-playbook article > span {
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.short-playbook h3 {
+  margin: 11px 0 0;
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.short-playbook p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.75;
+}
+
+.short-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 315px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.short-rules-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.short-rules-head span:last-child {
+  color: var(--red);
+}
+
+.short-rule-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.short-rule {
+  padding: 11px 12px;
+  text-align: left;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  cursor: default;
+}
+
+.short-rule-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.short-rule-top span:first-child {
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.short-rule-severity {
+  padding: 2px 5px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.short-rule h3 {
+  margin: 6px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.short-rule p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 7.5px;
+  line-height: 1.6;
+}
+
+.short-decision {
+  padding: 21px 20px 17px;
+  color: var(--white);
+  background:
+    radial-gradient(circle at 100% 0, rgba(181, 42, 34, 0.3), transparent 32%),
+    #172029;
+}
+
+.short-decision .st-kicker {
+  color: var(--gold-2);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.09em;
+}
+
+.short-decision h3 {
+  margin: 7px 0 0;
+  font-family: var(--display);
+  font-size: 29px;
+  font-weight: 600;
+}
+
+.short-decision .st-signal {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 253, 248, 0.12);
+}
+
+.short-decision .st-signal strong {
+  color: #ef8376;
+  font-family: var(--display);
+  font-size: 40px;
+  line-height: 0.9;
+}
+
+.short-decision .st-signal span {
+  color: rgba(246, 239, 227, 0.45);
+  font-size: 8px;
+}
+
+.short-decision .st-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.short-decision .st-metrics span {
+  display: block;
+  color: rgba(246, 239, 227, 0.4);
+  font-size: 8px;
+}
+
+.short-decision .st-metrics strong {
+  display: block;
+  margin-top: 1px;
+  color: #f1e9db;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.short-decision p {
+  margin: 13px 0 0;
+  color: rgba(246, 239, 227, 0.55);
+  font-size: 9px;
+  line-height: 1.75;
+}
+
+.short-decision button {
+  margin-top: 14px;
+  padding: 7px 9px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--white);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.short-decision button:hover {
+  color: var(--white);
+  background: transparent;
+}
+
+.short-note {
+  margin: 12px 0 0;
+  color: var(--muted-2);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+@media (max-width: 960px) {
+  .short-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .short-kpi:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .short-kpi:nth-child(n + 4) {
+    border-top: 1px solid var(--line);
+  }
+
+  .short-playbook {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .short-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .short-shell {
+    padding: 15px;
+  }
+
+  .short-kpis {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .short-kpi:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .short-kpi:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .short-kpi:nth-child(3n) {
+    border-right: 1px solid var(--line);
+  }
+
+  .short-kpi:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .short-kpi strong {
+    font-size: 22px;
+  }
+
+  .short-playbook {
+    grid-template-columns: 1fr;
+  }
+
+  .short-playbook article {
+    min-height: 0;
+  }
+
+  .short-rule-list {
+    grid-template-columns: 1fr;
+  }
+}

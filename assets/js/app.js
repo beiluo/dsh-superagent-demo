@@ -58,6 +58,7 @@
     "scheme-style": { label: "投资风格", color: "#d4a64b" },
     "scheme-asset-class": { label: "资产类别", color: "#6aa9e9" },
     "scheme-factor": { label: "投资因子", color: "#b08ae6" },
+    "scheme-trading-playbook": { label: "短线剧本", color: "#e88a6a" },
   };
 
   const CORE_GRAPH_IDS = [
@@ -1224,6 +1225,113 @@
      Method table
   ------------------------------------------------------------------------ */
 
+
+  /* ------------------------------------------------------------------------
+     Short-term / hot-money playbook
+  ------------------------------------------------------------------------ */
+
+  function formatAmount(value) {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return String(value ?? "");
+    const abs = Math.abs(parsed);
+    if (abs >= 100000000) return `${(parsed / 100000000).toFixed(2)}亿`;
+    if (abs >= 10000) return `${(parsed / 10000).toFixed(0)}万`;
+    return parsed.toLocaleString("zh-CN");
+  }
+
+  function renderShortTerm() {
+    const decision = individualById.get("decision-youzi-2026");
+    const kpis = $("#short-kpis");
+    const rulesTarget = $("#short-rule-list");
+    const decisionTarget = $("#short-decision");
+    if (!decision || !kpis || !rulesTarget || !decisionTarget) return;
+
+    const security = valueOf(firstFact(decision, "aboutSecurity"));
+    const company = valueOf(firstFact(decision, "aboutCompany"));
+    const quote = security ? valueOf(firstFact(security, "hasMarketQuote")) : null;
+    const streak = security ? valueOf(firstFact(security, "hasLimitUpStreak")) : null;
+    const dragonTiger = security ? valueOf(firstFact(security, "hasDragonTigerList")) : null;
+    const risk = valueOf(firstFact(decision, "hasRiskAssessment"));
+    const rec = valueOf(firstFact(decision, "hasRecommendation"));
+    const horizon = valueOf(firstFact(decision, "hasHorizon"));
+    const riskLevel = risk ? valueOf(firstFact(risk, "hasRiskLevel")) : null;
+    const heat = individualById.get("theme-heat-ai");
+    const rsi = individualById.get("tech-rsi-youzi");
+
+    const turnover = literalOf(quote ? firstFact(quote, "turnoverRate") : null);
+    const limitUpDays = literalOf(streak ? firstFact(streak, "limitUpDays") : null);
+    const netBuy = literalOf(dragonTiger ? firstFact(dragonTiger, "dragonTigerNetBuy") : null);
+    const heatScore = literalOf(heat ? firstFact(heat, "themeHeatScore") : null);
+    const rsiValue = literalOf(rsi ? firstFact(rsi, "rsi14") : null);
+    const riskScore = literalOf(risk ? firstFact(risk, "riskScore") : null);
+    const confidence = literalOf(firstFact(decision, "confidence"));
+    const target = literalOf(firstFact(decision, "targetPrice"));
+    const stop = literalOf(firstFact(decision, "stopLoss"));
+    const decisionId = literalOf(firstFact(decision, "decisionId"));
+    const rationale = valueOf(firstFact(decision, "hasRationale"));
+    const rationaleText = rationale ? literalOf(firstFact(rationale, "rationaleText")) : "";
+
+    kpis.innerHTML = `
+      <div class="short-kpi"><span>换手率</span><strong class="hot">${esc(turnover || "18.4")}%</strong><small>TURNOVER</small></div>
+      <div class="short-kpi"><span>连板高度</span><strong>${esc(limitUpDays || "4")} 天</strong><small>LIMIT-UP STREAK</small></div>
+      <div class="short-kpi"><span>龙虎榜净买</span><strong class="hot">${esc(formatAmount(netBuy || 85000000))}</strong><small>DRAGON-TIGER</small></div>
+      <div class="short-kpi"><span>主题热度</span><strong>${esc(heatScore || "86")}</strong><small>THEME HEAT</small></div>
+      <div class="short-kpi"><span>RSI14</span><strong>${esc(rsiValue || "68")}</strong><small>TECHNICAL</small></div>
+      <div class="short-kpi"><span>风险分</span><strong class="hot">${esc(riskScore || "66")}</strong><small>RISK SCORE</small></div>`;
+
+    const shortRules = DATA.rules.filter((rule) => ["R16", "R17", "R18", "R19", "R20", "R21"].includes(rule.ruleId));
+    rulesTarget.innerHTML = shortRules
+      .map(
+        (rule) => `
+        <article class="short-rule">
+          <div class="short-rule-top">
+            <span>${esc(rule.ruleId)}</span>
+            <span class="short-rule-severity">${esc(SEVERITY_LABELS[rule.severity] || rule.severity)}</span>
+          </div>
+          <h3>${esc(labelOf(rule))}</h3>
+          <p>IF ${esc(rule.ruleIf)}</p>
+          <p>THEN ${esc(rule.ruleThen)}</p>
+        </article>`
+      )
+      .join("");
+
+    decisionTarget.innerHTML = `
+      <p class="st-kicker">SHORT-TERM DECISION / ${esc(decisionId)}</p>
+      <h3>${esc(company ? labelOf(company) : "游资科技")}</h3>
+      <div class="st-signal">
+        <strong>${esc(rec ? labelOf(rec) : "增持")}</strong>
+        <span>置信度 ${esc(confidence ? Math.round(Number(confidence) * 100) : "—")}%<br>${esc(horizonShort(horizon))} · ${esc(riskLevel ? labelOf(riskLevel) : "高")}风险</span>
+      </div>
+      <div class="st-metrics">
+        <div><span>目标价</span><strong>¥${esc(target || "21.00")}</strong></div>
+        <div><span>止损价</span><strong>¥${esc(stop || "16.20")}</strong></div>
+        <div><span>风险分</span><strong>${esc(riskScore || "66")}</strong></div>
+        <div><span>龙虎榜净买</span><strong>${esc(formatAmount(netBuy || 85000000))}</strong></div>
+      </div>
+      <p>${esc(truncate(rationaleText, 150))}</p>
+      <button type="button" data-short-open="individual:decision-youzi-2026">在 Explorer 中查看完整决策</button>`;
+  }
+
+  function bindShortTerm() {
+    const decision = $("#short-decision");
+    if (!decision) return;
+    decision.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-short-open]");
+      if (!button) return;
+      const entity = entityByKey.get(button.dataset.shortOpen);
+      if (!entity) return;
+      state.filter = "all";
+      state.layer = "all";
+      state.query = "";
+      const search = $("#ontology-search");
+      if (search) search.value = "";
+      syncFilterChips();
+      renderEntityList();
+      selectEntity(button.dataset.shortOpen, { scroll: false });
+      $("#explorer")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   function renderCompetencyQuestions() {
     const target = $("#cq-list");
     if (!target) return;
@@ -2176,12 +2284,14 @@
     renderPolicyDetail();
     renderExampleNav();
     renderExampleSheet();
+    renderShortTerm();
     renderCompetencyQuestions();
     renderSpecTable();
     bindGraph();
     renderGraph();
 
     bindExplorer();
+    bindShortTerm();
     bindTaxonomy();
     bindRules();
     bindNav();
