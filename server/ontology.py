@@ -641,6 +641,51 @@ class OntologyStore:
             )
         return names
 
+    def all_company_subjects(self, *, include_real: bool = True) -> list[URIRef]:
+        """Return static example companies plus real companies already loaded."""
+
+        subjects = list(self._company_subjects)
+        if include_real:
+            subjects.extend(
+                sorted(self._real_companies, key=lambda item: self._label(item))
+            )
+        return subjects
+
+    def industry_labels(self) -> list[str]:
+        """SKOS industry labels, longest first, for question-to-filter matching."""
+
+        scheme = ASHS["scheme-industry"]
+        labels: set[str] = set()
+        for subject in self.graph.subjects(RDF.type, SKOS.Concept):
+            if (subject, SKOS.inScheme, scheme) not in self.graph:
+                continue
+            for value in self.graph.objects(subject, SKOS.prefLabel):
+                if isinstance(value, Literal):
+                    text = _clean(value)
+                    if text:
+                        labels.add(text)
+        return sorted(labels, key=len, reverse=True)
+
+    def market_candidates(
+        self, *, limit: int = 120, sort: str = "marketCap"
+    ) -> list[RealCompanySnapshot] | None:
+        """Bounded quote/valuation sample from the market-data provider.
+
+        Returns ``None`` when real market data is disabled or the provider does
+        not implement cross-company screening.
+        """
+
+        if self.market_data is None:
+            return None
+        screener = getattr(self.market_data, "screen", None)
+        if screener is None:
+            return None
+        return screener(limit=limit, sort=sort)
+
+    def company_decision(self, subject: Any) -> URIRef | None:
+        decisions = self._all_decisions(subject) if isinstance(subject, URIRef) else []
+        return decisions[0] if decisions else None
+
     def company_knowledge(self, subject: URIRef) -> CompanyKnowledge:
         cached = self._knowledge_cache.get(subject)
         if cached:

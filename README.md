@@ -53,7 +53,8 @@ cp .env.example .env
 make agent          # 打开 http://127.0.0.1:8000/#agent
 ```
 
-没有 key 时 Agent 使用本体规则模式；配置 key 后自动切换为 LLM 对话。除 4 家示例公司外，
+没有 key 时 Agent 使用本体规则模式；配置 key 后自动切换为 LLM 对话。问题会决定查询路径：
+可以按业务条件跨公司筛选、追踪决策证据链、检查组合与 ODRL 约束，或在事实副本上做情景模拟；
 也可以按 6 位代码或证券简称查询真实 A 股（公开行情与年报接口，需要联网）。部署、密钥配置和
 GitHub Pages 接入方式见 [`docs/agent.md`](docs/agent.md)。
 
@@ -116,7 +117,8 @@ python3 scripts/build_data.py
 │   ├── ontology.py                    # 读取 Turtle、映射真实 A 股快照、构建企业/组合事实
 │   ├── marketdata.py                  # 真实 A 股公开行情/年报适配器（可替换）
 │   ├── rules.py                       # SWRL 阈值与确定性信号评估
-│   ├── tools.py                       # 7 个只读本体工具
+│   ├── tools.py                       # 11 个只读本体工具
+│   ├── query.py                       # 问题驱动的属性路径查询、证据链、约束与情景模拟
 │   ├── llm.py                         # OpenAI-compatible 客户端（密钥只在服务端）
 │   └── settings.py                    # 环境变量配置
 ├── tests/                             # 服务端、规则与密钥测试
@@ -214,18 +216,19 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 
 ## 6. 示例数据
 
-下列 4 家示例公司的名称、证券代码、价格、财务数据、决策和建议均为**合成示例**，仅用于本体、规则与页面演示：
+下列示例公司的名称、证券代码、价格、财务数据、决策和建议均为**合成示例**，仅用于本体、规则与页面演示：
 
 - 华辰智造（600000，示例 A 股）：价值候选、增持、目标价 45.00、止损 30.50；
 - 宁源新能源（300000，示例 A 股）：高风险、观察；
 - 景康生物（688000，示例 A 股）：临床二元风险、长期观察；
+- 游资科技（300001，示例 A 股）：短线/成长候选与高风险复核；
 - 示例 ST 公司（600001）：用于演示 ST/退市风险排除。
 
 它们不对应任何真实证券，也不构成投资建议。
 
 ### 6.1 真实 A 股（运行时扩展）
 
-Agent 也支持查询 4 家示例公司之外的真实 A 股：输入 6 位证券代码或证券简称（如 `600519`、
+Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代码或证券简称（如 `600519`、
 `贵州茅台`），服务端从东方财富公开 JSON 接口读取行情、估值与最近一期年报，在内存中映射为
 `ash:ListedCompany`、`ash:AShare`、`ash:AnnualReport`、`ash:MarketQuote`、`ash:Valuation`
 和 SKOS 行业概念，再复用同一套规则信号与回答链路。运行时实体使用独立 IRI 命名空间，
@@ -234,7 +237,8 @@ Agent 也支持查询 4 家示例公司之外的真实 A 股：输入 6 位证�
 - 无需 API key；`MARKET_DATA_ENABLED=false` 可关闭，关闭后只保留示例公司。
 - 行情缓存 60 秒、财报缓存 6 小时；数据可能延迟、限流或接口变更。
 - 真实数据模式不生成目标价、止损价、评级或风险评分，只呈现公开事实与规则信号；
-  `screen_companies` 仍只覆盖 4 家示例公司，不做全市场筛选。
+  `screen_companies` 仍只覆盖本体中已有的示例公司；真实横截面筛选使用
+  `query_ontology` 的 `universe=real`（行情单页样本，仅行情/估值字段）。
 - 这是演示用的公开网页接口，不是授权行情源；生产环境应替换为持牌数据商。适配器隔离在
   `server/marketdata.py` 的 `MarketDataProvider` 接口后。
 
@@ -279,11 +283,19 @@ FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是
 
 Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读取本体：
 
-1. `get_company_analysis`：公司、证券、年报、行情估值、风险、决策、证据、合规与规则信号；
+1. `query_ontology`：问题驱动的跨公司查询。`filters` 把 ROE、PE、负债率、营收增速、风险分数、
+   市值、换手率、组合权重映射成本体属性路径；可叠加行业、规则条件和排序，返回每条命中的
+   RDF 路径与触发规则。`universe=real` 会读取真实 A 股行情单页样本（仅行情/估值字段）；
+2. `get_company_analysis`：公司、证券、年报、行情估值、风险、决策、证据、合规与规则信号；
    支持示例公司和真实 A 股（6 位代码或证券简称）；
-2. `screen_companies`：按 SWRL 规则筛选 4 家合成示例公司（不做全市场筛选）；
-3. `get_portfolio_analysis`：R05 止损与 R06 单票集中度；
-4. `get_rule` / `get_policies` / `search_ontology`：规则、ODRL 政策与本体词汇。
+3. `screen_companies`：按 SWRL 规则扫描本体中已有公司；
+4. `trace_evidence`：从公司/决策/规则/政策沿 `aboutCompany`、`basedOn`、`governedBy`、
+   `hasSource` 等谓词展开证据链，保留数据日期、来源与版本；
+5. `check_constraints`：R06 集中度、R07 限制名单、R11 高风险买入复核，以及 ODRL
+   trade-guard 的人工批准与合规检查双前置条件；
+6. `simulate_scenario`：在内存事实副本上改 ROE/增速/PE/风险/权重等指标，重跑规则并对比前后状态；
+7. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
+   组合、规则、ODRL 政策、本体词汇与公司列表。
 
 真实 A 股查询走 `server/marketdata.py`：公开行情与年报先被规范化，再映射为运行时的 RDF
 事实，因此规则、引用和回答结构与示例公司一致；返回结果带 `dataMode=real`，前端据此展示
@@ -292,9 +304,12 @@ Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读�
 LLM 模式由服务端做工具循环；没有 key 或 LLM 调用失败时自动回退到确定性的规则模式。
 两种模式使用同一套本体事实和引用，回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。
 
-每次回答下方都有可展开的 **“执行详情”**：按顺序展示用户/历史消息、LLM 的工具决策（工具名与参数）、
-发给 LLM 的工具结果原文和最终回答，也可以查看原始 JSON。系统提示按安全边界不下发浏览器。
-规则模式同样展示确定性工具调用与返回，便于对照本体事实如何进入回答。
+回答会同时给出 **“本体查询路径”**：把本次使用的工具、范围选择、属性路径、过滤条件和规则复核
+串成可读步骤；问题不同，路径也不同。下方还可展开 **“执行详情”**，按顺序展示用户/历史消息、
+LLM 的工具决策（工具名与参数）、发给 LLM 的工具结果原文和最终回答，也可以查看原始 JSON。
+系统提示按安全边界不下发浏览器。规则模式同样展示确定性工具调用与返回，便于对照本体事实如何进入回答。
+
+[![问题驱动的本体查询路径](docs/evidence/query-after.png)](docs/evidence/query-after.png)
 
 [![Agent 执行详情](docs/evidence/trace-after-detail.png)](docs/evidence/trace-after.png)
 
@@ -323,7 +338,7 @@ GitHub Pages 不能运行后端，因此在线 Agent 需要把静态页面接到
 Agent 服务端测试：
 
 ```bash
-make test          # 服务端测试：API、规则阈值、LLM 客户端、回退与密钥扫描
+make test          # 服务端测试：API、规则阈值、查询/证据/约束/情景、LLM 客户端、回退与密钥扫描
 make validate      # 本体结构校验 + 密钥扫描
 ```
 

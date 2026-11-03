@@ -720,11 +720,35 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
   行情估值、风险、决策、证据、合规、组合与政策的紧凑事实；不依赖浏览器快照。
 - **规则**：`server/rules.py` 对 R01—R11 做确定性评估；阈值与 `ontology/swrl/rules.ttl` 的示例常量
   一致，`tests/test_rules.py` 直接从 SWRL body 提取字面量校验。
-- **工具循环**：`server/tools.py` 暴露 7 个只读工具；LLM 只能看到工具结果，不能访问环境变量。
+- **工具循环**：`server/tools.py` 暴露 11 个只读工具；LLM 只能看到工具结果，不能访问环境变量。
+- **问题驱动的查询**：`server/query.py` 把问题中的业务条件翻译成属性路径，支持跨公司筛选、
+  证据链遍历、组合/ODRL 约束检查和 what-if 规则重算；每次工具调用返回 `queryPath`，前端据此
+  展示本次实际走的查询路径，而不是固定报表流程。
 - **回退**：没有 `LLM_API_KEY` 或上游失败时，`server/agent.py` 用同一批工具生成确定性 Markdown，
   页面明确显示“规则模式”，不会把上游错误或密钥返回浏览器。
 - **边界控制**：CORS 白名单、每 IP 分钟/小时限流、每日额度、请求体上限、并发上限、静态文件白名单；
   静态服务只挂载 `assets/`、`ontology/`、`docs/` 与 `index.html`，不暴露 `.env`、`server/` 或 `.git`。
+
+### 14.6 问题驱动的本体查询原型
+
+单股问答很容易退化成固定报表；本版本把“用本体”扩展为按问题选择查询路径：
+
+- **跨公司筛选**：`query_ontology` 接收字段/运算符/阈值，映射到
+  `hasFinancialReport→roe`、`hasSecurity→hasValuation→peTtm` 等属性路径，叠加行业与 SWRL 规则条件；
+  筛选结果保留每条命中的属性路径。`universe=real` 用真实 A 股行情单页样本做横截面筛选，
+  只覆盖行情/估值字段，不伪装成年报级全市场扫描。
+- **证据链**：`trace_evidence` 从公司/决策/规则/政策沿 `aboutCompany`、`basedOn`、`governedBy`、
+  `hasRiskAssessment`、`hasSource` 等显式谓词遍历，输出节点、边、数据日期、来源和版本；反向遍历
+  只用于 `aboutCompany` 等逆关系，避免通过共享政策把其他决策混进同一证据链。
+- **组合与政策约束**：`check_constraints` 读取 R06/R07/R11 阈值与 ODRL trade-guard 约束，
+  对拟议权重、人工批准、合规检查逐项给出通过/未通过/待确认状态。
+- **what-if**：`simulate_scenario` 在内存事实副本上修改指标并重跑确定性规则，对比前后状态；
+  不写回 Turtle，也不声称是预测。
+- **查询路径**：每次工具结果带 `queryPath`，`AgentResult.queryPath` 汇总工具、范围、属性路径、
+  过滤与规则复核步骤；前端“本体查询路径”面板直接展示。
+
+这些是原型：真实筛选只读取行情单页样本；ODRL 检查只覆盖政策中已显式建模的上下文约束；
+证据链不推断未建模的因果关系。
 
 部署、密钥轮换与 GitHub Pages 接入见 [`agent.md`](agent.md)。
 

@@ -20,13 +20,14 @@ from .agent import AgentService
 from .llm import LLMClient
 from .marketdata import EastmoneyProvider, MarketDataProvider
 from .ontology import OntologyStore
+from .query import METRIC_FIELDS
 from .security import SlidingWindowLimiter, client_ip
 from .settings import Settings
 
 logger = logging.getLogger("ashare.agent.api")
 
 SERVICE_NAME = "ashare-ontology-agent"
-SERVICE_VERSION = "1.1.0"
+SERVICE_VERSION = "1.2.0"
 
 DISCLAIMER = (
     "示例公司数据为合成示例；真实 A 股数据来自公开行情与年报接口，可能延迟。"
@@ -217,6 +218,17 @@ def create_app(
                 "rules": len(store.rules()),
             },
             "companies": store.company_names(),
+            "query": {
+                "tools": [
+                    "query_ontology",
+                    "trace_evidence",
+                    "check_constraints",
+                    "simulate_scenario",
+                ],
+                "metrics": list(METRIC_FIELDS),
+                "realScreening": store.market_data is not None,
+                "realScreeningScope": "东方财富行情接口单页样本（最多 200 只），仅行情/估值字段",
+            },
             "marketData": {
                 "enabled": store.market_data is not None,
                 "provider": getattr(store.market_data, "source_label", None),

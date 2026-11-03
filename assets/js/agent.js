@@ -40,11 +40,21 @@
   if (!el.form || !el.input || !el.log) return;
 
   const SUGGESTIONS = [
-    "分析贵州茅台（600519）",
     "分析华辰智造",
-    "哪些公司是价值候选？",
-    "组合的集中度风险如何？",
+    "PE 低于 20 且 ROE 高于 15 的公司",
+    "华辰智造的决策证据链",
+    "如果加仓华辰智造到 15%，组合约束允许吗？",
+    "如果华辰智造 ROE 下降 5 个百分点会怎样？",
   ];
+
+  const QUERY_KIND_LABELS = {
+    select: "定位",
+    scan: "扫描",
+    filter: "过滤",
+    traverse: "遍历",
+    verify: "校验",
+    result: "结果",
+  };
 
   const KIND_LABELS = {
     class: "类",
@@ -329,6 +339,8 @@
       message.appendChild(steps);
     }
 
+    appendQueryPath(message, payload.queryPath);
+
     if (Array.isArray(payload.citations) && payload.citations.length) {
       const citations = document.createElement("div");
       citations.className = "agent-citations";
@@ -472,6 +484,59 @@
 
     if (item.content) appendExecutionText(node, item.content);
     return node;
+  }
+
+  function appendQueryPath(message, groups) {
+    if (!Array.isArray(groups) || !groups.length) return;
+    const wrap = document.createElement("div");
+    wrap.className = "agent-query-path";
+
+    const label = document.createElement("div");
+    label.className = "agent-query-path-label";
+    label.textContent = "本体查询路径";
+    wrap.appendChild(label);
+
+    for (const group of groups) {
+      if (!group || !Array.isArray(group.steps) || !group.steps.length) continue;
+      const block = document.createElement("div");
+      block.className = "agent-query-group";
+
+      const head = document.createElement("div");
+      head.className = "agent-query-group-head";
+      head.textContent = `${group.label || group.tool || "工具"} · ${group.tool || ""}`;
+      block.appendChild(head);
+
+      const list = document.createElement("ol");
+      list.className = "agent-query-steps";
+      for (const step of group.steps) {
+        if (!step || typeof step !== "object") continue;
+        const item = document.createElement("li");
+        item.className = "agent-query-step";
+        item.dataset.kind = step.kind || "traverse";
+
+        const kind = document.createElement("span");
+        kind.className = "agent-query-kind";
+        kind.textContent = QUERY_KIND_LABELS[step.kind] || step.kind || "步骤";
+        item.appendChild(kind);
+
+        const text = document.createElement("span");
+        text.className = "agent-query-step-text";
+        const title = document.createElement("strong");
+        title.textContent = step.label || "";
+        text.appendChild(title);
+        if (step.detail) {
+          const detail = document.createElement("span");
+          detail.className = "agent-query-detail";
+          detail.textContent = step.detail;
+          text.appendChild(detail);
+        }
+        item.appendChild(text);
+        list.appendChild(item);
+      }
+      block.appendChild(list);
+      wrap.appendChild(block);
+    }
+    message.appendChild(wrap);
   }
 
   function appendExecution(message, execution) {

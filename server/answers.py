@@ -327,10 +327,179 @@ def compose_comparison(analyses: list[dict[str, Any]]) -> str:
 __all__ = [
     "compose_company",
     "compose_comparison",
+    "compose_constraints",
+    "compose_evidence",
     "compose_list",
     "compose_policies",
     "compose_portfolio",
+    "compose_query",
     "compose_rule",
+    "compose_scenario",
     "compose_screen",
     "compose_search",
 ]
+
+
+def _fact_path(fact: dict[str, Any]) -> str:
+    path = fact.get("path") or []
+    if not path:
+        return ""
+    parts = [path[0]["from"].get("label") or ""]
+    for edge in path:
+        parts.append(f"—{edge.get('predicateLabel') or edge.get('predicate')}→")
+        parts.append(edge["to"].get("label") or "")
+    return " ".join(part for part in parts if part)
+
+
+def compose_query(data: dict[str, Any]) -> str:
+    matches = data.get("matches") or []
+    criteria = data.get("criteria") or []
+    universe = data.get("universe") or "ontology"
+    lines = ["### 本体查询 · 跨公司筛选"]
+    if universe == "real":
+        lines.append("**查询范围**：真实 A 股行情单页样本（非全市场扫描）。")
+    else:
+        lines.append("**查询范围**：本体中的示例公司与本次运行已加载的真实 A 股。")
+    lines.append("")
+    lines.append("**查询条件**：" + ("；".join(criteria) if criteria else "无显式条件，列出范围内全部公司"))
+    lines.append(
+        f"**结果**：{data.get('totalMatches', len(matches))} / {data.get('evaluatedCount', 0)} 家公司命中。"
+    )
+    if not matches:
+        lines.append("")
+        lines.append("没有公司满足全部条件。")
+        for item in data.get("excluded") or []:
+            company = item.get("company") or {}
+            reasons = "；".join(item.get("reasons") or [])
+            lines.append(f"- {company.get('label') or '—'}：{reasons}")
+    for match in matches[:8]:
+        company = match.get("company") or {}
+        metrics = match.get("metrics") or {}
+        code = company.get("code") or "—"
+        industry = company.get("industry") or "—"
+        lines.append("")
+        lines.append(f"- **{company.get('label') or '—'}（{code}，{industry}）**")
+        metric_text = " · ".join(
+            f"{label} {_metric_text(field, metrics.get(field))}"
+            for field, label in (
+                ("roe", "ROE"),
+                ("peTtm", "PE(TTM)"),
+                ("debtRatio", "负债率"),
+                ("revenueGrowth", "营收增速"),
+                ("riskScore", "风险分"),
+                ("marketCap", "总市值"),
+                ("positionWeight", "权重"),
+            )
+            if metrics.get(field) is not None
+        )
+        if metric_text:
+            lines.append(f"  - 指标：{metric_text}")
+        if match.get("matchedRules"):
+            lines.append(f"  - 触发规则：{'、'.join(match['matchedRules'])}")
+        for fact in (match.get("facts") or [])[:4]:
+            path = _fact_path(fact)
+            suffix = f"；路径：{path}" if path else ""
+            date_text = f"；数据日期 {fact['asOf']}" if fact.get("asOf") else ""
+            lines.append(f"  - 依据 {fact.get('label')} {fact.get('display')}{date_text}{suffix}")
+    lines.append("")
+    lines.append(f"**说明**：{data.get('dataNote') or ''}")
+    return "\n".join(lines)
+
+
+def _metric_text(field: str, value: Any) -> str:
+    number = value if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+    if number is None:
+        return "—"
+    if field == "marketCap":
+        return fmt_money(number)
+    if field in {"peTtm", "pb"}:
+        return fmt_num(number)
+    if field == "positionWeight":
+        return fmt_weight(number)
+    if field == "riskScore":
+        return fmt_num(number)
+    return fmt_pct(number)
+
+
+def compose_evidence(data: dict[str, Any]) -> str:
+    subject = data.get("subject") or {}
+    nodes = data.get("nodes") or []
+    chain = data.get("chain") or []
+    lines = [f"### 证据链 · {subject.get('label') or '—'}"]
+    lines.append("")
+    lines.append(f"**起点**：{subject.get('label') or '—'}（{subject.get('kind') or 'entity'}）")
+    if data.get("rule"):
+        rule = data["rule"]
+        lines.append(f"**附加规则**：{rule.get('ruleId')} · {rule.get('label')}")
+    lines.append("")
+    lines.append("**可读证据链**")
+    if chain:
+        for item in chain[:12]:
+            lines.append(f"- {item}")
+        if len(chain) > 12:
+            lines.append(f"- 其余 {len(chain) - 12} 条路径见执行详情。")
+    else:
+        lines.append("- 本体中没有可继续展开的证据关系。")
+    provenance = []
+    for node in nodes:
+        facts = node.get("provenance") or []
+        if not facts:
+            continue
+        text = " · ".join(f"{item['label']} {item['value']}" for item in facts[:3])
+        provenance.append(f"- {node.get('label')}：{text}")
+    if provenance:
+        lines.append("")
+        lines.append("**来源与版本**")
+        lines.extend(provenance[:8])
+    lines.append("")
+    lines.append(f"**说明**：{data.get('dataNote') or ''}")
+    return "\n".join(lines)
+
+
+def compose_constraints(data: dict[str, Any]) -> str:
+    target = data.get("target") or {}
+    checks = data.get("checks") or []
+    status_labels = {"pass": "通过", "fail": "未通过", "unknown": "待确认"}
+    lines = [f"### 约束检查 · {target.get('label') or '组合'}"]
+    lines.append("")
+    lines.append(f"**结论**：{data.get('summary') or '—'}")
+    if data.get("proposedWeight") is not None:
+        lines.append(
+            f"**拟议权重**：{fmt_weight(data.get('proposedWeight'))} · **动作**：{data.get('action') or '—'}"
+        )
+    lines.append("")
+    for check in checks:
+        status = status_labels.get(check.get("status"), check.get("status") or "—")
+        lines.append(f"- **{status}** `{check.get('id')}` {check.get('label')}：{check.get('detail')}")
+    blocking = data.get("blocking") or []
+    if blocking:
+        lines.append("")
+        lines.append("**阻断或待补充项**")
+        for check in blocking:
+            lines.append(f"- {check.get('label')}：{check.get('detail')}")
+    lines.append("")
+    lines.append(f"**说明**：{data.get('dataNote') or ''}")
+    return "\n".join(lines)
+
+
+def compose_scenario(data: dict[str, Any]) -> str:
+    company = data.get("company") or {}
+    changed = data.get("changed") or []
+    lines = [f"### 情景模拟 · {company.get('label') or '—'}"]
+    lines.append("")
+    lines.append(f"**假设**：{data.get('scenario') or '—'}")
+    lines.append("")
+    if changed:
+        lines.append("**规则状态变化**")
+        for item in changed:
+            before = STATUS_LABELS.get(item.get("before"), item.get("before") or "—")
+            after = STATUS_LABELS.get(item.get("after"), item.get("after") or "—")
+            lines.append(f"- `{item.get('ruleId')}` {item.get('label')}：{before} → {after}")
+            detail = item.get("afterDetail")
+            if detail:
+                lines.append(f"  - 情景后：{detail}")
+    else:
+        lines.append("上述假设没有改变现有规则状态。")
+    lines.append("")
+    lines.append(f"**说明**：{data.get('dataNote') or ''}")
+    return "\n".join(lines)

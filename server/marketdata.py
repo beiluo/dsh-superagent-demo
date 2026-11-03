@@ -29,10 +29,24 @@ SHANGHAI_TZ = timezone(timedelta(hours=8))
 
 SEARCH_ENDPOINT = "https://searchapi.eastmoney.com/api/suggest/get"
 QUOTE_ENDPOINT = "https://push2.eastmoney.com/api/qt/stock/get"
+SCREEN_ENDPOINT = "https://push2.eastmoney.com/api/qt/clist/get"
 REPORT_ENDPOINT = "https://datacenter-web.eastmoney.com/api/data/v1/get"
 INDICATOR_ENDPOINT = "https://datacenter.eastmoney.com/securities/api/data/v1/get"
 
 QUOTE_FIELDS = "f43,f47,f48,f57,f58,f60,f86,f116,f162,f163,f164,f167,f168,f170,f173"
+
+# One-page cross-company scan used by the ontology query prototype.  The
+# endpoint only exposes quote/valuation fields; annual-report metrics still
+# require a per-company lookup and are deliberately not faked here.
+SCREEN_FIELDS = "f2,f3,f8,f9,f12,f14,f20,f23,f100"
+SCREEN_SORTS = {
+    "marketCap": "f20",
+    "peTtm": "f9",
+    "pb": "f23",
+    "turnoverRate": "f8",
+}
+SCREEN_MARKETS = "m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23"
+SCREEN_MAX_ROWS = 200
 
 CODE_PATTERN = re.compile(r"^(?:(?:sh|sz|bj)[.\s-]?)?(\d{6})(?:\.(?:sh|sz|bj))?$", re.IGNORECASE)
 A_SHARE_CLASSIFICATIONS = {"AStock", "NEEQ"}
@@ -83,6 +97,14 @@ class MarketDataProvider(Protocol):
 
     def fetch(self, query: str) -> RealCompanySnapshot | None:
         """Resolve ``query`` to one A-share and return a snapshot, or None."""
+
+    def screen(
+        self, *, limit: int = 120, sort: str = "marketCap"
+    ) -> list[RealCompanySnapshot]:
+        """Return a bounded cross-company quote/valuation sample, or [].
+
+        ``sort`` accepts an optional ``+``/``-`` prefix to choose the direction.
+        """
 
 
 def _num(value: Any, *, divide: float = 1.0, digits: int = 2) -> float | None:
@@ -353,6 +375,111 @@ class EastmoneyProvider:
     # ------------------------------------------------------------------
     # Endpoint parsing
     # ------------------------------------------------------------------
+
+    def screen(
+        self, *, limit: int = 120, sort: str = "marketCap"
+    ) -> list[RealCompanySnapshot]:
+        """Scan one page of the public quote list for cross-company screening.
+
+        This is intentionally a bounded prototype: one page of at most
+        :data:`SCREEN_MAX_ROWS` rows, sorted by one quote/valuation field.  It
+        is not an exhaustive market scan, and it does not fetch annual reports.
+        """
+
+        size = max(1, min(int(limit), SCREEN_MAX_ROWS))
+        raw_sort = str(sort or "").strip()
+        descending = not raw_sort.startswith("+")
+        if raw_sort[:1] in {"+", "-"}:
+            raw_sort = raw_sort[1:]
+        sort_field = SCREEN_SORTS.get(raw_sort, SCREEN_SORTS["marketCap"])
+        payload = self._get_json(
+            SCREEN_ENDPOINT,
+            {
+                "pn": "1",
+                "pz": str(size),
+                "po": "1" if descending else "0",
+                "np": "1",
+                "fltt": "2",
+                "invt": "2",
+                "fid": sort_field,
+                "fs": SCREEN_MARKETS,
+                "fields": SCREEN_FIELDS,
+            },
+        )
+        data = payload.get("data") or {}
+        rows = data.get("diff") or []
+        if isinstance(rows, dict):
+            rows = list(rows.values())
+
+        now = datetime.now(tz=SHANGHAI_TZ)
+        snapshots: list[RealCompanySnapshot] = []
+        for row in rows if isinstance(rows, list) else []:
+            if not isinstance(row, dict):
+                continue
+            code = str(row.get("f12") or "").strip()
+            name = str(row.get("f14") or "").strip()
+            if not re.fullmatch(r"\d{6}", code) or not name:
+                continue
+            last_price = _num(row.get("f2"))
+            if last_price is None:
+                continue
+            market, exchange_code = _market_from_code(code)
+            exchange_label = {
+                "SSE": "上海证券交易所",
+                "SZSE": "深圳证券交易所",
+                "BSE": "北京证券交易所",
+            }[exchange_code]
+            segment_code, segment_label = _segment_from(code, exchange_code)
+            security = SecurityRef(
+                code=code,
+                name=name,
+                secid=f"{'1' if market == 'SH' else '0'}.{code}",
+                exchange_code=exchange_code,
+                exchange_label=exchange_label,
+                segment_code=segment_code,
+                segment_label=segment_label,
+            )
+            pe_ttm = _num(row.get("f9"))
+            pb = _num(row.get("f23"))
+            if pe_ttm is not None and pe_ttm <= 0:
+                pe_ttm = None
+            if pb is not None and pb <= 0:
+                pb = None
+            quote = {
+                "code": code,
+                "name": name,
+                "lastPrice": last_price,
+                "changePct": _num(row.get("f3")),
+                "turnoverRate": _num(row.get("f8")),
+                "marketCap": _num(row.get("f20"), digits=0),
+                "asOf": now.date().isoformat(),
+                "source": SOURCE_LABEL,
+                "quality": "public-api",
+            }
+            industry = str(row.get("f100") or "").strip()
+            if industry in {"-", "--", "null", "None"}:
+                industry = None
+            valuation = {
+                "peTtm": pe_ttm,
+                "pb": pb,
+                "asOf": quote["asOf"],
+                "source": SOURCE_LABEL,
+                "quality": "public-api",
+            }
+            snapshots.append(
+                RealCompanySnapshot(
+                    security=security,
+                    quote=quote,
+                    valuation=valuation,
+                    financials=None,
+                    industry=industry,
+                    fetched_at=now,
+                    notes=[
+                        "全市场筛选只读取行情与估值单页，未拉取年报数据；PE 为行情接口动态口径。"
+                    ],
+                )
+            )
+        return snapshots
 
     def _quote(self, security: SecurityRef) -> tuple[dict[str, Any], datetime]:
         cached = self._cache_get(self._quote_cache, security.code, self.quote_ttl_seconds)

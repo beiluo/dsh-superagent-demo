@@ -11,6 +11,14 @@ from typing import Any
 
 from .marketdata import MarketDataError
 from .ontology import CompanyKnowledge, OntologyStore, local_name
+from .query import (
+    METRIC_FIELDS,
+    QueryError,
+    check_constraints,
+    run_query,
+    simulate_scenario,
+    trace_evidence,
+)
 from .rules import evaluate_company
 
 TOOL_LABELS = {
@@ -21,6 +29,10 @@ TOOL_LABELS = {
     "get_rule": "解释 SWRL 规则",
     "get_policies": "读取 ODRL 政策",
     "search_ontology": "检索本体词汇",
+    "query_ontology": "问题驱动的本体查询",
+    "trace_evidence": "追踪决策证据链",
+    "check_constraints": "检查组合与政策约束",
+    "simulate_scenario": "模拟情景下的规则变化",
 }
 
 TOOLS: list[dict[str, Any]] = [
@@ -28,7 +40,7 @@ TOOLS: list[dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "list_companies",
-            "description": "列出本体中的 4 家合成示例公司，以及每家公司当前的示例决策。真实 A 股请改用 get_company_analysis。",
+            "description": "列出本体中的合成示例公司，以及每家公司当前的示例决策。真实 A 股请改用 get_company_analysis 或 query_ontology。",
             "parameters": {"type": "object", "properties": {}, "additionalProperties": False},
         },
     },
@@ -58,7 +70,7 @@ TOOLS: list[dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "screen_companies",
-            "description": "对本体中的 4 家合成示例公司执行 SWRL 筛选，返回触发/未触发/无法评估的规则信号和关键指标。只覆盖示例公司，不做全市场筛选；真实 A 股请用 get_company_analysis 逐只分析。",
+            "description": "对本体中的合成示例公司执行 SWRL 规则筛选，返回触发/未触发/无法评估的规则信号和关键指标。只覆盖本体中已有的公司；按业务指标筛选或跨真实 A 股样本筛选请用 query_ontology。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -119,6 +131,188 @@ TOOLS: list[dict[str, Any]] = [
                     }
                 },
                 "required": ["query"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "query_ontology",
+            "description": (
+                "问题驱动的本体查询：按业务条件跨公司筛选、横向比较。filters 把 ROE、PE、负债率、"
+                "营收增速、风险分数、市值、换手率、组合权重映射到本体属性路径，返回命中公司、"
+                "命中依据的 RDF 路径、命中的 SWRL 规则和引用。universe=ontology 覆盖本体示例公司及"
+                "本次运行已加载的真实 A 股；universe=real 扫描真实 A 股行情单页样本，仅支持行情/估值字段，"
+                "年报指标需要先缩小范围再逐只分析。筛选类问题优先使用本工具，可替代固定规则筛选。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "universe": {
+                        "type": "string",
+                        "enum": ["ontology", "real"],
+                        "description": "ontology（默认）查本体已有公司；real 扫真实 A 股行情样本。",
+                    },
+                    "filters": {
+                        "type": "array",
+                        "description": "多个条件按 AND 组合。positionWeight 用 0-1 小数（0.12 = 12%）。",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "field": {"type": "string", "enum": list(METRIC_FIELDS)},
+                                "op": {
+                                    "type": "string",
+                                    "enum": ["gte", "lte", "gt", "lt", "eq", "between"],
+                                },
+                                "value": {"type": "number"},
+                                "value2": {"type": "number"},
+                            },
+                            "required": ["field", "op", "value"],
+                            "additionalProperties": False,
+                        },
+                    },
+                    "industry": {"type": "string", "description": "行业标签，例如 半导体、银行、新能源。"},
+                    "rules_any": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "任一规则触发才保留，例如 R01。",
+                    },
+                    "rules_all": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "全部规则触发才保留。",
+                    },
+                    "rules_exclude": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "这些规则均未触发才保留。",
+                    },
+                    "sort": {
+                        "type": "string",
+                        "description": "排序字段，前缀 - 表示降序，例如 -roe、peTtm。",
+                    },
+                    "limit": {"type": "integer", "description": "最多返回多少家公司，默认 10。"},
+                    "sample": {
+                        "type": "integer",
+                        "description": "universe=real 时读取的行情样本数，默认 120，最大 200。",
+                    },
+                    "include_evidence": {
+                        "type": "boolean",
+                        "description": "是否返回每条命中事实的 RDF 属性路径，默认 true。",
+                    },
+                },
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "trace_evidence",
+            "description": (
+                "从公司、决策、规则或政策出发，沿本体中显式建模的证据谓词（aboutCompany、basedOn、"
+                "governedBy、hasRationale、hasRiskAssessment、hasSource、dataSource 等）逐层遍历，"
+                "返回证据链节点、边、数据来源/日期/版本。适合“为什么”“证据”“溯源”“审计”类问题。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "subject": {
+                        "type": "string",
+                        "description": "公司名、决策编号（DEC-...）、规则编号（R01）或政策 uid。",
+                    },
+                    "depth": {"type": "integer", "description": "遍历深度 1-4，默认 3。"},
+                    "limit": {"type": "integer", "description": "节点上限，默认 40，最大 60。"},
+                    "rule_id": {
+                        "type": "string",
+                        "description": "可选，把某条规则的解释节点附到证据链上。",
+                    },
+                },
+                "required": ["subject"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_constraints",
+            "description": (
+                "检查一个拟议仓位或当前组合是否满足组合约束与 ODRL 政策：R06 单票集中度、R07 限制名单、"
+                "R11 高风险买入复核，以及 trade-guard 的人工批准与合规检查双前置条件。适合“能不能买/加仓”"
+                "“权重是否超限”“为什么被拦截”类问题。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company": {"type": "string", "description": "可选；不传则检查当前示例组合。"},
+                    "weight": {
+                        "type": "number",
+                        "description": "拟议组合权重，0-1 小数（0.15 = 15%）；不传则用当前持仓权重。",
+                    },
+                    "action": {
+                        "type": "string",
+                        "enum": ["buy", "sell", "hold"],
+                        "description": "拟议动作，默认 buy。",
+                    },
+                    "human_approval": {
+                        "type": "boolean",
+                        "description": "是否已取得人工批准；不传表示未知。",
+                    },
+                    "compliance_passed": {
+                        "type": "boolean",
+                        "description": "合规检查是否通过；不传表示未知。",
+                    },
+                },
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "simulate_scenario",
+            "description": (
+                "what-if 情景模拟：在内存中的公司事实副本上修改财务、估值、风险或持仓指标，重新执行全部"
+                "确定性 SWRL 规则并对比前后状态。支持 roe、debtRatio、interestCoverage、revenueGrowth、"
+                "profitGrowth、peTtm、pb、riskScore、lastPrice、avgCost、positionWeight。不写回本体，也不是预测。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company": {"type": "string", "description": "公司名、证券简称或代码。"},
+                    "changes": {
+                        "type": "array",
+                        "description": "假设变化列表。delta 是相对变化，value 是绝对设定；至少给一个。",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "field": {
+                                    "type": "string",
+                                    "enum": [
+                                        "roe",
+                                        "debtRatio",
+                                        "interestCoverage",
+                                        "revenueGrowth",
+                                        "profitGrowth",
+                                        "peTtm",
+                                        "pb",
+                                        "riskScore",
+                                        "lastPrice",
+                                        "avgCost",
+                                        "positionWeight",
+                                    ],
+                                },
+                                "delta": {"type": "number"},
+                                "value": {"type": "number"},
+                            },
+                            "required": ["field"],
+                            "additionalProperties": False,
+                        },
+                    },
+                },
+                "required": ["company", "changes"],
                 "additionalProperties": False,
             },
         },
@@ -347,6 +541,91 @@ def _search(store: OntologyStore, query: str) -> dict[str, Any]:
     }
 
 
+def _query(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    try:
+        data = run_query(store, arguments)
+    except QueryError as exc:
+        return _error("query_ontology", exc.code, exc.message, **exc.extra)
+    except MarketDataError as exc:
+        return _error("query_ontology", exc.code, exc.message)
+    return {
+        "ok": True,
+        "tool": "query_ontology",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
+def _trace(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    try:
+        data = trace_evidence(
+            store,
+            str(arguments.get("subject", "")),
+            depth=int(arguments.get("depth") or 3),
+            limit=int(arguments.get("limit") or 40),
+            rule_id=(
+                str(arguments.get("rule_id"))
+                if arguments.get("rule_id")
+                else None
+            ),
+        )
+    except QueryError as exc:
+        return _error("trace_evidence", exc.code, exc.message, **exc.extra)
+    except (TypeError, ValueError):
+        return _error("trace_evidence", "invalid_arguments", "depth/limit 必须是整数。")
+    return {
+        "ok": True,
+        "tool": "trace_evidence",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
+def _constraints(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    try:
+        data = check_constraints(
+            store,
+            company=(
+                str(arguments.get("company"))
+                if arguments.get("company")
+                else None
+            ),
+            weight=arguments.get("weight"),
+            action=str(arguments.get("action") or "buy"),
+            human_approval=arguments.get("human_approval"),
+            compliance_passed=arguments.get("compliance_passed"),
+        )
+    except QueryError as exc:
+        return _error("check_constraints", exc.code, exc.message, **exc.extra)
+    return {
+        "ok": True,
+        "tool": "check_constraints",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
+def _scenario(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    company = str(arguments.get("company", ""))
+    changes = arguments.get("changes")
+    if not company:
+        return _error("simulate_scenario", "missing_company", "请提供要模拟的公司。")
+    try:
+        data = simulate_scenario(store, company=company, changes=changes)
+    except QueryError as exc:
+        return _error("simulate_scenario", exc.code, exc.message, **exc.extra)
+    return {
+        "ok": True,
+        "tool": "simulate_scenario",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
 def _list(store: OntologyStore) -> dict[str, Any]:
     companies = []
     citations = []
@@ -379,15 +658,19 @@ def _list(store: OntologyStore) -> dict[str, Any]:
         "data": {
             "companies": companies,
             "exampleQuestions": [
-                "分析贵州茅台",
                 "分析华辰智造",
-                "哪些公司是价值候选？",
-                "组合的集中度风险如何？",
+                "PE 低于 20 且 ROE 高于 15 的公司",
+                "华辰智造的决策证据链",
+                "如果加仓华辰智造到 15%，组合约束允许吗？",
+                "如果华辰智造 ROE 下降 5 个百分点会怎样？",
             ],
             "realData": {
                 "enabled": store.market_data is not None,
                 "provider": getattr(store.market_data, "source_label", ""),
-                "note": "真实 A 股请在 get_company_analysis 中按 6 位代码或证券简称查询。",
+                "note": (
+                    "单只真实 A 股请在 get_company_analysis 中按 6 位代码或证券简称查询；"
+                    "真实市场横截面样本可用 query_ontology 的 universe=real。"
+                ),
             },
             "dataNote": (
                 "这里只列出本体中的 4 家合成示例公司；真实 A 股可按代码或简称单独查询，"
@@ -434,6 +717,14 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
             return _policies(store)
         if name == "search_ontology":
             return _search(store, str(arguments.get("query", "")))
+        if name == "query_ontology":
+            return _query(store, arguments)
+        if name == "trace_evidence":
+            return _trace(store, arguments)
+        if name == "check_constraints":
+            return _constraints(store, arguments)
+        if name == "simulate_scenario":
+            return _scenario(store, arguments)
     except Exception as exc:  # noqa: BLE001 - tool boundary must not crash the agent
         return _error(name, "tool_failed", f"工具执行失败：{type(exc).__name__}")
     return _error(name, "unknown_tool", "未知工具。", available=list(TOOL_LABELS))
