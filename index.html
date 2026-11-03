@@ -205,7 +205,8 @@
               <p class="agent-welcome-kicker">GROUNDED IN ASHARE ONTOLOGY</p>
               <h3>问一个关于本体的问题</h3>
               <p>
-                Agent 会先检索企业、规则、决策与政策，再生成回答。示例公司使用合成本体数据；
+                问题先决定查询路径：Agent 会把业务条件映射成本体属性路径，跨公司筛选、追踪决策证据链、
+                检查组合与 ODRL 约束，或在事实副本上做情景模拟。示例公司使用合成本体数据；
                 真实 A 股按代码或简称查询公开行情与年报数据。
               </p>
             </div>
@@ -218,7 +219,7 @@
               id="agent-input"
               rows="1"
               maxlength="500"
-              placeholder="例如：分析贵州茅台（600519）的基本面和规则信号？"
+              placeholder="例如：PE 低于 20 且 ROE 高于 15 的公司，或华辰智造的决策证据链"
             ></textarea>
             <button class="agent-submit" id="agent-submit" type="submit">
               <span>分析</span>

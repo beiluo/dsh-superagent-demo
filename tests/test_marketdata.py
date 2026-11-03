@@ -224,3 +224,61 @@ def test_annual_report_failure_is_partial_not_fatal():
     assert snapshot.financials is None
     assert snapshot.quote["lastPrice"] == 1439.1
     assert snapshot.notes
+
+
+def test_eastmoney_screen_reads_quote_page():
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen["path"] = request.url.path
+        seen["params"] = dict(request.url.params)
+        return httpx.Response(
+            200,
+            json={
+                "data": {
+                    "total": 2,
+                    "diff": [
+                        {
+                            "f12": "600036",
+                            "f14": "招商银行",
+                            "f2": 38.5,
+                            "f3": 1.2,
+                            "f8": 0.6,
+                            "f9": 6.1,
+                            "f20": 972_000_000_000,
+                            "f23": 0.9,
+                            "f100": "银行",
+                        },
+                        {
+                            "f12": "000001",
+                            "f14": "平安银行",
+                            "f2": 11.2,
+                            "f3": -0.4,
+                            "f8": 0.8,
+                            "f9": -3.0,
+                            "f20": 217_000_000_000,
+                            "f23": 0.5,
+                            "f100": "银行",
+                        },
+                    ],
+                }
+            },
+        )
+
+    provider = EastmoneyProvider(timeout_seconds=3, transport=httpx.MockTransport(handler))
+    try:
+        snapshots = provider.screen(limit=2, sort="+peTtm")
+    finally:
+        provider.close()
+
+    assert seen["path"].endswith("/api/qt/clist/get")
+    assert seen["params"]["fid"] == "f9"
+    assert seen["params"]["po"] == "0"
+    assert seen["params"]["pz"] == "2"
+    assert [item.security.code for item in snapshots] == ["600036", "000001"]
+    assert snapshots[0].valuation["peTtm"] == 6.1
+    assert snapshots[1].valuation["peTtm"] is None  # negative PE is not meaningful
+    assert snapshots[0].industry == "银行"
+    assert snapshots[0].financials is None
+    assert snapshots[0].quote["marketCap"] == 972_000_000_000
+    assert snapshots[0].notes

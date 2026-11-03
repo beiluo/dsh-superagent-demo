@@ -95,7 +95,7 @@ LLM_MODEL=deepseek-chat
 | `DAILY_REQUEST_BUDGET` | 否 | `300` | 进程级每日总请求上限 |
 | `MAX_QUESTION_CHARS` | 否 | `500` | 单次问题最大长度 |
 | `AGENT_MAX_STEPS` | 否 | `4` | LLM 工具调用最大轮数 |
-| `MARKET_DATA_ENABLED` | 否 | `true` | 是否启用真实 A 股查询；关闭后只保留 4 家示例公司 |
+| `MARKET_DATA_ENABLED` | 否 | `true` | 是否启用真实 A 股查询；关闭后只保留示例公司 |
 | `MARKET_DATA_TIMEOUT_SECONDS` | 否 | `8` | 真实行情请求超时 |
 | `MARKET_DATA_QUOTE_TTL_SECONDS` | 否 | `60` | 行情缓存秒数 |
 | `MARKET_DATA_FINANCIAL_TTL_SECONDS` | 否 | `21600` | 年报/财务指标缓存秒数 |
@@ -184,13 +184,21 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 
 | 工具 | 作用 |
 | --- | --- |
-| `list_companies` | 列出 4 家合成公司与示例决策 |
+| `list_companies` | 列出本体中的合成公司与示例决策 |
 | `get_company_analysis` | 企业、证券、财报、行情估值、风险、决策、证据、合规与规则信号；支持真实 A 股 |
-| `screen_companies` | 只对 4 家示例公司执行 SWRL 筛选，不做全市场筛选 |
+| `screen_companies` | 对本体中已有公司执行 SWRL 规则筛选 |
+| `query_ontology` | 问题驱动的跨公司筛选：业务字段→属性路径、行业、规则条件、排序；`universe=real` 扫真实行情单页样本 |
+| `trace_evidence` | 从公司/决策/规则/政策展开证据链，保留数据日期、来源与版本 |
+| `check_constraints` | R06/R07/R11 与 ODRL trade-guard 的人工批准、合规检查前置条件 |
+| `simulate_scenario` | 在内存事实副本上改指标并重跑规则，对比 what-if 前后状态 |
 | `get_portfolio_analysis` | 组合持仓、R05 止损、R06 集中度 |
 | `get_rule` | 规则 IF/THEN、阈值、责任人、当前触发对象 |
 | `get_policies` | ODRL 权限/禁止/义务 |
 | `search_ontology` | 类、属性、个体、概念、规则、政策、服务检索 |
+
+`query_ontology` 的多条筛选条件按 AND 组合，`positionWeight` 用 0-1 小数；`universe=real` 时只接受
+`peTtm`、`pb`、`marketCap`、`turnoverRate`、`changePct`，读取行情接口单页最多 200 只，不做全市场
+年报级扫描。命中结果会映射到运行时 RDF 图，因此每条筛选依据都能给出属性路径。
 
 服务端从 `ontology/**/*.ttl` 读取规范源（rdflib），规则阈值与
 `ontology/swrl/rules.ttl` 中的示例常量保持同步，并由 `tests/test_rules.py` 校验。
@@ -228,6 +236,9 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
     {"id": "decision-huachen-2026q4", "iri": "…", "label": "…", "kind": "individual"}
   ],
   "steps": [{"tool": "get_company_analysis", "label": "读取企业画像与决策链", "status": "ok"}],
+  "queryPath": [
+    {"tool": "get_company_analysis", "label": "读取企业画像与规则信号", "steps": []}
+  ],
   "execution": {
     "mode": "llm",
     "model": "deepseek-chat",
@@ -264,6 +275,9 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
 }
 ```
 
+`queryPath` 汇总本次实际调用的工具及其查询步骤（范围选择、属性路径、过滤、规则复核、结果），
+前端渲染为“本体查询路径”。问题不同，工具组合与路径也不同。
+
 `execution` 是前端“执行详情”面板的数据源：按顺序给出用户/历史消息、LLM 的工具决策（工具名与参数）、
 发给 LLM 的工具结果原文，以及最终回答。工具结果与发给 LLM 的内容一致，过长时会被截断并标记。
 系统提示只返回隐藏标记与字符数，不把提示原文下发浏览器。规则模式下 `messages` 只包含用户消息
@@ -286,9 +300,10 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
 要点：
 
 - 运行时 IRI 位于 `.../a-share/real#`，不写回 Turtle 文件；
-- 行情缓存 60 秒、财报缓存 6 小时；`screen_companies` 不包含真实公司；
+- 行情缓存 60 秒、财报缓存 6 小时；`screen_companies` 不包含真实公司，真实横截面请用
+  `query_ontology` 的 `universe=real`；
 - 数据来自东方财富公开网页接口，可能延迟、限流或改版；生产环境应替换为持牌数据源；
-- `MARKET_DATA_ENABLED=false` 可完全关闭真实数据查询；关闭后 Agent 只分析 4 家示例公司。
+- `MARKET_DATA_ENABLED=false` 可完全关闭真实数据查询；关闭后 Agent 只分析示例公司。
 
 ---
 
