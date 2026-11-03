@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.3.0" .
+    owl:versionInfo "1.4.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -3558,3 +3558,32 @@ ash:stockCharacter a owl:DatatypeProperty ;
     rdfs:domain ash:StockCharacter ;
     rdfs:range xsd:string ;
     rdfs:label "股性描述"@zh, "stock character"@en .
+# ===== Skill catalog expansion 1.4 =====
+
+ash:SkillCatalog a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "技能目录"@zh, "Skill Catalog"@en ;
+    rdfs:comment "外部方法论技能的目录与章节索引。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:SkillArtifact a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "技能文档"@zh, "Skill Artifact"@en ;
+    rdfs:comment "一份可引用的交易方法论技能文档。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:SkillSection a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "技能章节"@zh, "Skill Section"@en ;
+    rdfs:comment "技能文档中的章节标题与主题索引，不包含原文正文。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+
+ash:hasSkill a owl:ObjectProperty ; rdfs:domain ash:SkillCatalog ; rdfs:range ash:SkillArtifact ; rdfs:label "包含技能"@zh .
+ash:hasSkillSection a owl:ObjectProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range ash:SkillSection ; rdfs:label "包含章节"@zh .
+ash:hasSkillTopic a owl:ObjectProperty ; rdfs:domain ash:InformationObject ; rdfs:range skos:Concept ; rdfs:label "技能主题"@zh .
+ash:skillTitle a owl:DatatypeProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range xsd:string ; rdfs:label "技能标题"@zh .
+ash:skillUrl a owl:DatatypeProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range xsd:anyURI ; rdfs:label "技能地址"@zh .
+ash:skillOrder a owl:DatatypeProperty ; rdfs:domain ash:SkillArtifact ; rdfs:range xsd:integer ; rdfs:label "技能序号"@zh .
+ash:sectionTitle a owl:DatatypeProperty ; rdfs:domain ash:SkillSection ; rdfs:range xsd:string ; rdfs:label "章节标题"@zh .
+ash:sectionOrder a owl:DatatypeProperty ; rdfs:domain ash:SkillSection ; rdfs:range xsd:integer ; rdfs:label "章节序号"@zh .

@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.3.0" ;
+    owl:versionInfo "1.4.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================

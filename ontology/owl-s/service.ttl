@@ -31,7 +31,7 @@
     dcterms:description "可审计 A 股投资决策服务的 OWL-S Profile、流程模型与 WSDL Grounding。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/OWL-S/> ;
     rdfs:seeAlso <https://www.daml.org/services/owl-s/1.2/overview/> ;
-    owl:versionInfo "1.3.0" ;
+    owl:versionInfo "1.4.0" ;
     ash:designNote "OWL-S 是 W3C Member Submission；服务端点、WSDL 文档和操作名均为示意，不指向生产系统。"@zh .
 
 # ===========================================================================

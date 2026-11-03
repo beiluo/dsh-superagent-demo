@@ -61,6 +61,7 @@
     "scheme-trading-playbook": { label: "短线剧本", color: "#e88a6a" },
     "scheme-emotion-cycle": { label: "情绪周期", color: "#d97757" },
     "scheme-seat-style": { label: "席位风格", color: "#8fb7a2" },
+    "scheme-skill-topic": { label: "技能主题", color: "#a58cc9" },
   };
 
   const CORE_GRAPH_IDS = [
