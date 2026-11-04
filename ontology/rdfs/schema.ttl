@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.8.0" .
+    owl:versionInfo "1.9.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -4200,3 +4200,1466 @@ ash:ruleBasis a owl:DatatypeProperty ;
     rdfs:label "规则依据"@zh, "rule basis"@en .
 
 ash:ruleBasis a owl:DatatypeProperty ; rdfs:domain ash:RuleArtifact ; rdfs:range xsd:string ; rdfs:label "规则依据"@zh .
+
+
+# ===========================================================================
+# Domain expansion 1.3 — decision lifecycle
+# ===========================================================================
+# Account and position state, portfolio risk budget, trade point / position
+# sizing linkage, and the execution-to-review feedback loop. These classes
+# make the decision itself a layered object instead of a single recommendation.
+
+# ---------------------------------------------------------------------------
+# 1.3 — account, position and cash state
+# ---------------------------------------------------------------------------
+
+ash:Account a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "投资账户"@zh, "Investment Account"@en ;
+    rdfs:comment "记录资金、证券持仓、可用额度、账户状态与所属组合的投资账户。"@zh .
+
+ash:SecuritiesAccount a owl:Class ;
+    rdfs:subClassOf ash:Account ;
+    rdfs:label "证券账户"@zh, "Securities Account"@en ;
+    rdfs:comment "用于持有 A 股、基金、债券等证券并记录可用数量的证券账户。"@zh .
+
+ash:AccountState a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "账户状态快照"@zh, "Account State"@en ;
+    rdfs:comment "某一时点的现金、可用资金、购买力、总资产与冻结资金快照。"@zh .
+
+ash:PositionState a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "持仓状态快照"@zh, "Position State"@en ;
+    rdfs:comment "某一时点的持仓数量、可卖数量、成本、市值、浮盈亏与权重快照。"@zh .
+
+ash:PositionLot a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "持仓批次"@zh, "Position Lot"@en ;
+    rdfs:comment "按建仓日期和成本拆分的持仓批次，用于 FIFO、分批止盈与税务处理。"@zh .
+
+ash:CashMovement a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "资金流水"@zh, "Cash Movement"@en ;
+    rdfs:comment "入金、出金、买入、卖出、分红与费用等账户资金变动记录。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.3 — portfolio risk budget and risk state
+# ---------------------------------------------------------------------------
+
+ash:RiskBudget a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "组合风险预算"@zh, "Portfolio Risk Budget"@en ;
+    rdfs:comment "组合可承担的总风险资本、单笔风险、单票与行业上限、回撤和 VaR 限额。"@zh .
+
+ash:RiskBudgetAllocation a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "风险预算分配"@zh, "Risk Budget Allocation"@en ;
+    rdfs:comment "把组合风险预算分配到证券、策略或行业的额度与使用情况。"@zh .
+
+ash:RiskLimit a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "风险限额"@zh, "Risk Limit"@en ;
+    rdfs:comment "单票权重、单笔风险、回撤、VaR 或行业暴露的硬/软限额。"@zh .
+
+ash:RiskUtilization a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "风险预算使用率"@zh, "Risk Utilization"@en ;
+    rdfs:comment "某一时点风险预算或风险限额的使用比例与状态快照。"@zh .
+
+ash:RiskContribution a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "风险贡献"@zh, "Risk Contribution"@en ;
+    rdfs:comment "单一持仓、行业或因子对组合总风险的贡献与边际贡献。"@zh .
+
+ash:PortfolioRiskSnapshot a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "组合风险快照"@zh, "Portfolio Risk Snapshot"@en ;
+    rdfs:comment "组合波动率、VaR、预期损失、Beta、跟踪误差、回撤与集中度快照。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.3 — trade point, sizing and order intent
+# ---------------------------------------------------------------------------
+
+ash:TradePlan a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "交易计划"@zh, "Trade Plan"@en ;
+    rdfs:comment "把决策转换为买点、卖点、止损、目标、仓位、风险金额与有效期的一体化计划。"@zh .
+
+ash:EntryPlan a owl:Class ;
+    rdfs:subClassOf ash:TradePlan ;
+    rdfs:label "买入计划"@zh, "Entry Plan"@en ;
+    rdfs:comment "规定买入触发条件、买点、止损、目标与计划仓位的交易计划。"@zh .
+
+ash:ExitPlan a owl:Class ;
+    rdfs:subClassOf ash:TradePlan ;
+    rdfs:label "卖出计划"@zh, "Exit Plan"@en ;
+    rdfs:comment "规定止盈、止损、减仓或清仓触发条件与可卖数量的交易计划。"@zh .
+
+ash:PriceLevel a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "价格点位"@zh, "Price Level"@en ;
+    rdfs:comment "买点、止损价或目标价及其计算依据。"@zh .
+
+ash:EntryPrice a owl:Class ;
+    rdfs:subClassOf ash:PriceLevel ;
+    rdfs:label "买点"@zh, "Entry Price"@en ;
+    rdfs:comment "计划建仓或加仓的价格区间或触发价。"@zh .
+
+ash:StopPrice a owl:Class ;
+    rdfs:subClassOf ash:PriceLevel ;
+    rdfs:label "止损价"@zh, "Stop Price"@en ;
+    rdfs:comment "触发减仓或退出的价格阈值。"@zh .
+
+ash:TargetPrice a owl:Class ;
+    rdfs:subClassOf ash:PriceLevel ;
+    rdfs:label "目标价"@zh, "Target Price"@en ;
+    rdfs:comment "计划止盈或重估的目标价格。"@zh .
+
+ash:TradeTrigger a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "交易触发条件"@zh, "Trade Trigger"@en ;
+    rdfs:comment "价格、技术、基本面、时间或再平衡等触发买卖的条件。"@zh .
+
+ash:EntryTrigger a owl:Class ;
+    rdfs:subClassOf ash:TradeTrigger ;
+    rdfs:label "买入触发条件"@zh, "Entry Trigger"@en ;
+    rdfs:comment "允许执行买入计划的前置触发条件。"@zh .
+
+ash:ExitTrigger a owl:Class ;
+    rdfs:subClassOf ash:TradeTrigger ;
+    rdfs:label "卖出触发条件"@zh, "Exit Trigger"@en ;
+    rdfs:comment "允许执行卖出、减仓或清仓计划的前置触发条件。"@zh .
+
+ash:OrderIntent a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "订单意图"@zh, "Order Intent"@en ;
+    rdfs:comment "交易计划生成、等待人工确认的订单意图，不直接触发真实交易。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.3 — execution, outcome and review feedback loop
+# ---------------------------------------------------------------------------
+
+ash:ExecutionQuality a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "执行质量"@zh, "Execution Quality"@en ;
+    rdfs:comment "成交滑点、成交率、延迟与市场冲击等执行质量指标。"@zh .
+
+ash:DecisionOutcome a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "决策结果"@zh, "Decision Outcome"@en ;
+    rdfs:comment "决策执行后的已实现收益、持有期、最大不利与有利偏移及结果状态。"@zh .
+
+ash:PostTradeReview a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "交易后复盘"@zh, "Post-Trade Review"@en ;
+    rdfs:comment "对决策、计划、执行与结果进行结构化的过程与结果复盘。"@zh .
+
+ash:ReviewFinding a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "复盘发现"@zh, "Review Finding"@en ;
+    rdfs:comment "复盘识别出的规则、流程、执行或判断问题及其建议。"@zh .
+
+ash:LessonLearned a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "经验教训"@zh, "Lesson Learned"@en ;
+    rdfs:comment "从复盘沉淀出的可执行改进项、责任人与状态。"@zh .
+
+ash:PerformanceAttribution a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "绩效归因"@zh, "Performance Attribution"@en ;
+    rdfs:comment "把决策结果分解为配置、选择、择时、成本或运气等来源。"@zh .
+
+ash:RuleRevision a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "规则修订"@zh, "Rule Revision"@en ;
+    rdfs:comment "由复盘发现触发、对 SWRL 规则或阈值的修订记录。"@zh .
+
+ash:DecisionCycle a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "决策周期"@zh, "Decision Cycle"@en ;
+    rdfs:comment "把账户状态、风险预算、决策、计划、执行、结果与复盘串成一个可追溯周期。"@zh .
+
+ash:DecisionContext a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "决策上下文"@zh, "Decision Context"@en ;
+    rdfs:comment "决策时点的账户状态、风险预算、组合风险快照与市场状态。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.3 — rule-inferred lifecycle states
+# ---------------------------------------------------------------------------
+
+ash:RiskBudgetExceeded a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "风险预算超限"@zh, "Risk Budget Exceeded"@en ;
+    rdfs:comment "风险预算使用率或风险限额使用率达到或超过 100% 的状态。"@zh .
+
+ash:PositionSizingBreach a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "单笔风险超限"@zh, "Position Sizing Breach"@en ;
+    rdfs:comment "计划风险金额超过组合单笔风险预算的状态。"@zh .
+
+ash:BuyingPowerInsufficient a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "购买力不足"@zh, "Buying Power Insufficient"@en ;
+    rdfs:comment "计划买入金额超过账户可用资金或购买力的状态。"@zh .
+
+ash:EntryBlocked a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "买入受阻"@zh, "Entry Blocked"@en ;
+    rdfs:comment "预计权重、风险预算、购买力或合规条件不满足，买入计划不能执行的状态。"@zh .
+
+ash:ExitRequired a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "需要减仓"@zh, "Exit Required"@en ;
+    rdfs:comment "风险预算、集中度或硬限额超限，必须降低暴露的状态。"@zh .
+
+ash:StopPriceBreached a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "止损价触发"@zh, "Stop Price Breached"@en ;
+    rdfs:comment "最新价跌破计划止损价、需要减仓或退出的状态。"@zh .
+
+ash:TakeProfitReached a owl:Class ;
+    rdfs:subClassOf ash:ExitSignal ;
+    rdfs:label "目标价到达"@zh, "Take Profit Reached"@en ;
+    rdfs:comment "最新价达到或超过计划目标价、进入止盈评估的状态。"@zh .
+
+ash:ExecutionSlippageBreach a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "执行滑点超限"@zh, "Execution Slippage Breach"@en ;
+    rdfs:comment "成交滑点超过执行质量阈值、需要复盘执行过程的状态。"@zh .
+
+ash:ReviewOverdue a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "复盘逾期"@zh, "Review Overdue"@en ;
+    rdfs:comment "交易后复盘超过规定时限仍未完成的状态。"@zh .
+
+ash:RuleRevisionRequired a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "需要规则修订"@zh, "Rule Revision Required"@en ;
+    rdfs:comment "同类高严重度复盘发现重复出现，需要修订规则或阈值的状态。"@zh .
+
+ash:TradingHalted a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "暂停交易"@zh, "Trading Halted"@en ;
+    rdfs:comment "硬性风险限额被突破、必须暂停新增风险敞口的状态。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.3 — object properties
+# ---------------------------------------------------------------------------
+
+ash:hasAccount a owl:ObjectProperty ;
+    rdfs:domain ash:Investor ;
+    rdfs:range ash:Account ;
+    rdfs:label "拥有账户"@zh, "has account"@en ;
+    rdfs:comment "投资者开立或管理的投资账户。"@zh .
+
+ash:accountOf a owl:ObjectProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range ash:Investor ;
+    rdfs:label "账户所属投资者"@zh, "account of"@en ;
+    rdfs:comment "投资账户所属的投资者。"@zh .
+
+ash:holdsPortfolio a owl:ObjectProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "账户持有组合"@zh, "holds portfolio"@en ;
+    rdfs:comment "账户下管理或记录的投资组合。"@zh .
+
+ash:portfolioHeldByAccount a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:Account ;
+    rdfs:label "组合所属账户"@zh, "portfolio held by account"@en ;
+    rdfs:comment "投资组合所属的账户。"@zh .
+
+ash:hasAccountState a owl:ObjectProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range ash:AccountState ;
+    rdfs:label "账户状态快照"@zh, "has account state"@en ;
+    rdfs:comment "账户在某一时点的资金与购买力状态。"@zh .
+
+ash:accountStateOf a owl:ObjectProperty ;
+    rdfs:domain ash:AccountState ;
+    rdfs:range ash:Account ;
+    rdfs:label "状态所属账户"@zh, "account state of"@en ;
+    rdfs:comment "账户状态快照所描述的账户。"@zh .
+
+ash:hasPositionState a owl:ObjectProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range ash:PositionState ;
+    rdfs:label "持仓状态快照"@zh, "has position state"@en ;
+    rdfs:comment "持仓在某一时点的数量、可卖数量、市值与浮盈亏。"@zh .
+
+ash:positionStateOf a owl:ObjectProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range ash:Position ;
+    rdfs:label "状态所属持仓"@zh, "position state of"@en ;
+    rdfs:comment "持仓状态快照所描述的持仓。"@zh .
+
+ash:hasPositionLot a owl:ObjectProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range ash:PositionLot ;
+    rdfs:label "持仓批次"@zh, "has position lot"@en ;
+    rdfs:comment "持仓拆分的建仓批次。"@zh .
+
+ash:lotOfPosition a owl:ObjectProperty ;
+    rdfs:domain ash:PositionLot ;
+    rdfs:range ash:Position ;
+    rdfs:label "批次所属持仓"@zh, "lot of position"@en ;
+    rdfs:comment "持仓批次所属的持仓。"@zh .
+
+ash:hasCashMovement a owl:ObjectProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range ash:CashMovement ;
+    rdfs:label "资金流水"@zh, "has cash movement"@en ;
+    rdfs:comment "账户发生的资金变动记录。"@zh .
+
+ash:cashMovementOf a owl:ObjectProperty ;
+    rdfs:domain ash:CashMovement ;
+    rdfs:range ash:Account ;
+    rdfs:label "流水所属账户"@zh, "cash movement of"@en ;
+    rdfs:comment "资金流水所属的账户。"@zh .
+
+ash:hasRiskBudget a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:RiskBudget ;
+    rdfs:label "风险预算"@zh, "has risk budget"@en ;
+    rdfs:comment "组合使用的风险预算。"@zh .
+
+ash:riskBudgetOf a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "预算所属组合"@zh, "risk budget of"@en ;
+    rdfs:comment "风险预算所属的投资组合。"@zh .
+
+ash:hasRiskAllocation a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range ash:RiskBudgetAllocation ;
+    rdfs:label "风险预算分配"@zh, "has risk allocation"@en ;
+    rdfs:comment "风险预算向证券、策略或行业分配的额度。"@zh .
+
+ash:riskAllocationOf a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudgetAllocation ;
+    rdfs:range ash:RiskBudget ;
+    rdfs:label "分配所属预算"@zh, "risk allocation of"@en ;
+    rdfs:comment "风险预算分配所属的组合风险预算。"@zh .
+
+ash:allocationToSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudgetAllocation ;
+    rdfs:range ash:Security ;
+    rdfs:label "分配至证券"@zh, "allocation to security"@en ;
+    rdfs:comment "风险预算分配所对应的证券。"@zh .
+
+ash:allocationToStrategy a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudgetAllocation ;
+    rdfs:range ash:InvestmentStrategy ;
+    rdfs:label "分配至策略"@zh, "allocation to strategy"@en ;
+    rdfs:comment "风险预算分配所对应的投资策略。"@zh .
+
+ash:hasRiskLimit a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range ash:RiskLimit ;
+    rdfs:label "风险限额"@zh, "has risk limit"@en ;
+    rdfs:comment "组合风险预算中的一项风险限额。"@zh .
+
+ash:riskLimitOf a owl:ObjectProperty ;
+    rdfs:domain ash:RiskLimit ;
+    rdfs:range ash:RiskBudget ;
+    rdfs:label "限额所属预算"@zh, "risk limit of"@en ;
+    rdfs:comment "风险限额所属的风险预算。"@zh .
+
+ash:riskLimitAppliesTo a owl:ObjectProperty ;
+    rdfs:domain ash:RiskLimit ;
+    rdfs:range ash:Entity ;
+    rdfs:label "限额适用对象"@zh, "risk limit applies to"@en ;
+    rdfs:comment "风险限额约束的组合、证券、策略或账户。"@zh .
+
+ash:hasRiskUtilization a owl:ObjectProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range ash:RiskUtilization ;
+    rdfs:label "风险使用率"@zh, "has risk utilization"@en ;
+    rdfs:comment "风险预算在某一时点的使用率快照。"@zh .
+
+ash:riskUtilizationOf a owl:ObjectProperty ;
+    rdfs:domain ash:RiskUtilization ;
+    rdfs:range ash:RiskBudget ;
+    rdfs:label "使用率所属预算"@zh, "risk utilization of"@en ;
+    rdfs:comment "风险使用率快照所属的风险预算。"@zh .
+
+ash:utilizationOfLimit a owl:ObjectProperty ;
+    rdfs:domain ash:RiskUtilization ;
+    rdfs:range ash:RiskLimit ;
+    rdfs:label "使用率对应限额"@zh, "utilization of limit"@en ;
+    rdfs:comment "风险使用率所对应的具体风险限额。"@zh .
+
+ash:hasRiskContribution a owl:ObjectProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range ash:RiskContribution ;
+    rdfs:label "风险贡献"@zh, "has risk contribution"@en ;
+    rdfs:comment "组合风险快照中的持仓或行业风险贡献。"@zh .
+
+ash:riskContributionOf a owl:ObjectProperty ;
+    rdfs:domain ash:RiskContribution ;
+    rdfs:range ash:PortfolioRiskSnapshot ;
+    rdfs:label "贡献所属快照"@zh, "risk contribution of"@en ;
+    rdfs:comment "风险贡献所属的组合风险快照。"@zh .
+
+ash:riskContributionFor a owl:ObjectProperty ;
+    rdfs:domain ash:RiskContribution ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "贡献对应组合"@zh, "risk contribution for"@en ;
+    rdfs:comment "风险贡献所对应的投资组合。"@zh .
+
+ash:hasPortfolioRiskSnapshot a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:PortfolioRiskSnapshot ;
+    rdfs:label "组合风险快照"@zh, "has portfolio risk snapshot"@en ;
+    rdfs:comment "组合在某一时点的风险指标快照。"@zh .
+
+ash:portfolioRiskSnapshotOf a owl:ObjectProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "快照所属组合"@zh, "portfolio risk snapshot of"@en ;
+    rdfs:comment "组合风险快照所描述的投资组合。"@zh .
+
+ash:hasTradePlan a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "交易计划"@zh, "has trade plan"@en ;
+    rdfs:comment "由投资决策生成或关联的买入、卖出或再平衡计划。"@zh .
+
+ash:tradePlanOfDecision a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "计划所属决策"@zh, "trade plan of decision"@en ;
+    rdfs:comment "交易计划所执行的投资决策。"@zh .
+
+ash:planForSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:Security ;
+    rdfs:label "计划标的"@zh, "plan for security"@en ;
+    rdfs:comment "交易计划所针对的证券。"@zh .
+
+ash:planForPortfolio a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "计划所属组合"@zh, "plan for portfolio"@en ;
+    rdfs:comment "交易计划所影响的投资组合。"@zh .
+
+ash:planForAccount a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:Account ;
+    rdfs:label "计划执行账户"@zh, "plan for account"@en ;
+    rdfs:comment "执行交易计划的投资账户。"@zh .
+
+ash:hasEntryPrice a owl:ObjectProperty ;
+    rdfs:domain ash:EntryPlan ;
+    rdfs:range ash:EntryPrice ;
+    rdfs:label "买点"@zh, "has entry price"@en ;
+    rdfs:comment "买入计划规定的买点或价格区间。"@zh .
+
+ash:entryPriceOf a owl:ObjectProperty ;
+    rdfs:domain ash:EntryPrice ;
+    rdfs:range ash:EntryPlan ;
+    rdfs:label "买点所属计划"@zh, "entry price of"@en ;
+    rdfs:comment "买点所属的买入计划。"@zh .
+
+ash:hasStopPrice a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:StopPrice ;
+    rdfs:label "止损价"@zh, "has stop price"@en ;
+    rdfs:comment "交易计划规定的止损价格点位。"@zh .
+
+ash:stopPriceOf a owl:ObjectProperty ;
+    rdfs:domain ash:StopPrice ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "止损价所属计划"@zh, "stop price of"@en ;
+    rdfs:comment "止损价所属的交易计划。"@zh .
+
+ash:hasTargetPrice a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:TargetPrice ;
+    rdfs:label "目标价"@zh, "has target price"@en ;
+    rdfs:comment "交易计划规定的止盈或重估目标价。"@zh .
+
+ash:targetPriceOf a owl:ObjectProperty ;
+    rdfs:domain ash:TargetPrice ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "目标价所属计划"@zh, "target price of"@en ;
+    rdfs:comment "目标价所属的交易计划。"@zh .
+
+ash:hasPriceLevel a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:PriceLevel ;
+    rdfs:label "价格点位"@zh, "has price level"@en ;
+    rdfs:comment "交易计划关联的任一价格点位。"@zh .
+
+ash:priceLevelOf a owl:ObjectProperty ;
+    rdfs:domain ash:PriceLevel ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "点位所属计划"@zh, "price level of"@en ;
+    rdfs:comment "价格点位所属的交易计划。"@zh .
+
+ash:hasEntryTrigger a owl:ObjectProperty ;
+    rdfs:domain ash:EntryPlan ;
+    rdfs:range ash:EntryTrigger ;
+    rdfs:label "买入触发条件"@zh, "has entry trigger"@en ;
+    rdfs:comment "买入计划的前置触发条件。"@zh .
+
+ash:entryTriggerOf a owl:ObjectProperty ;
+    rdfs:domain ash:EntryTrigger ;
+    rdfs:range ash:EntryPlan ;
+    rdfs:label "触发条件所属计划"@zh, "entry trigger of"@en ;
+    rdfs:comment "买入触发条件所属的买入计划。"@zh .
+
+ash:hasExitTrigger a owl:ObjectProperty ;
+    rdfs:domain ash:ExitPlan ;
+    rdfs:range ash:ExitTrigger ;
+    rdfs:label "卖出触发条件"@zh, "has exit trigger"@en ;
+    rdfs:comment "卖出计划的前置触发条件。"@zh .
+
+ash:exitTriggerOf a owl:ObjectProperty ;
+    rdfs:domain ash:ExitTrigger ;
+    rdfs:range ash:ExitPlan ;
+    rdfs:label "触发条件所属计划"@zh, "exit trigger of"@en ;
+    rdfs:comment "卖出触发条件所属的卖出计划。"@zh .
+
+ash:hasTradeSizing a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:PositionSizing ;
+    rdfs:label "交易计划仓位测算"@zh, "has trade sizing"@en ;
+    rdfs:comment "交易计划的数量、权重与风险金额测算。"@zh .
+
+ash:sizingForPlan a owl:ObjectProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "测算所属计划"@zh, "sizing for plan"@en ;
+    rdfs:comment "仓位测算所属的交易计划。"@zh .
+
+ash:hasOrderIntent a owl:ObjectProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range ash:OrderIntent ;
+    rdfs:label "订单意图"@zh, "has order intent"@en ;
+    rdfs:comment "交易计划生成的订单意图。"@zh .
+
+ash:orderIntentOf a owl:ObjectProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "意图所属计划"@zh, "order intent of"@en ;
+    rdfs:comment "订单意图所属的交易计划。"@zh .
+
+ash:intentRealizedBy a owl:ObjectProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range ash:Order ;
+    rdfs:label "意图对应订单"@zh, "intent realized by"@en ;
+    rdfs:comment "订单意图实际提交的委托订单。"@zh .
+
+ash:realizesIntent a owl:ObjectProperty ;
+    rdfs:domain ash:Order ;
+    rdfs:range ash:OrderIntent ;
+    rdfs:label "订单实现意图"@zh, "realizes intent"@en ;
+    rdfs:comment "委托订单所实现的订单意图。"@zh .
+
+ash:exitPlanForPosition a owl:ObjectProperty ;
+    rdfs:domain ash:ExitPlan ;
+    rdfs:range ash:Position ;
+    rdfs:label "退出计划对应持仓"@zh, "exit plan for position"@en ;
+    rdfs:comment "止损、止盈或减仓计划所针对的持仓。"@zh .
+
+ash:exitPlanOfPosition a owl:ObjectProperty ;
+    rdfs:domain ash:Position ;
+    rdfs:range ash:ExitPlan ;
+    rdfs:label "持仓退出计划"@zh, "exit plan of position"@en ;
+    rdfs:comment "持仓关联的退出计划。"@zh .
+
+ash:hasExecutionQuality a owl:ObjectProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range ash:ExecutionQuality ;
+    rdfs:label "执行质量"@zh, "has execution quality"@en ;
+    rdfs:comment "成交对应的滑点、成交率与延迟记录。"@zh .
+
+ash:executionQualityOf a owl:ObjectProperty ;
+    rdfs:domain ash:ExecutionQuality ;
+    rdfs:range ash:Trade ;
+    rdfs:label "执行质量所属成交"@zh, "execution quality of"@en ;
+    rdfs:comment "执行质量记录所对应的成交。"@zh .
+
+ash:hasOutcome a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:DecisionOutcome ;
+    rdfs:label "决策结果"@zh, "has outcome"@en ;
+    rdfs:comment "决策执行后的收益、持有期与结果状态。"@zh .
+
+ash:outcomeOf a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "结果所属决策"@zh, "outcome of"@en ;
+    rdfs:comment "决策结果所对应的投资决策。"@zh .
+
+ash:outcomeFromTrade a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range ash:Trade ;
+    rdfs:label "结果来源成交"@zh, "outcome from trade"@en ;
+    rdfs:comment "决策结果所依据的成交记录。"@zh .
+
+ash:hasPostTradeReview a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:PostTradeReview ;
+    rdfs:label "交易后复盘"@zh, "has post-trade review"@en ;
+    rdfs:comment "对决策与执行结果进行的结构化复盘。"@zh .
+
+ash:reviewsDecision a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "复盘决策"@zh, "reviews decision"@en ;
+    rdfs:comment "复盘所针对的投资决策。"@zh .
+
+ash:reviewsTrade a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:Trade ;
+    rdfs:label "复盘成交"@zh, "reviews trade"@en ;
+    rdfs:comment "复盘所针对的成交记录。"@zh .
+
+ash:hasReviewFinding a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:ReviewFinding ;
+    rdfs:label "复盘发现"@zh, "has review finding"@en ;
+    rdfs:comment "复盘识别出的问题与建议。"@zh .
+
+ash:findingOfReview a owl:ObjectProperty ;
+    rdfs:domain ash:ReviewFinding ;
+    rdfs:range ash:PostTradeReview ;
+    rdfs:label "发现所属复盘"@zh, "finding of review"@en ;
+    rdfs:comment "复盘发现所属的交易后复盘。"@zh .
+
+ash:hasLesson a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:LessonLearned ;
+    rdfs:label "经验教训"@zh, "has lesson"@en ;
+    rdfs:comment "复盘沉淀出的改进项。"@zh .
+
+ash:lessonOfReview a owl:ObjectProperty ;
+    rdfs:domain ash:LessonLearned ;
+    rdfs:range ash:PostTradeReview ;
+    rdfs:label "经验所属复盘"@zh, "lesson of review"@en ;
+    rdfs:comment "经验教训所属的交易后复盘。"@zh .
+
+ash:hasAttribution a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:PerformanceAttribution ;
+    rdfs:label "绩效归因"@zh, "has attribution"@en ;
+    rdfs:comment "复盘使用的绩效归因。"@zh .
+
+ash:attributionOfReview a owl:ObjectProperty ;
+    rdfs:domain ash:PerformanceAttribution ;
+    rdfs:range ash:PostTradeReview ;
+    rdfs:label "归因所属复盘"@zh, "attribution of review"@en ;
+    rdfs:comment "绩效归因所属的交易后复盘。"@zh .
+
+ash:resultsInRevision a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:RuleRevision ;
+    rdfs:label "触发规则修订"@zh, "results in revision"@en ;
+    rdfs:comment "复盘发现触发的规则修订。"@zh .
+
+ash:revisionFromReview a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRevision ;
+    rdfs:range ash:PostTradeReview ;
+    rdfs:label "修订来源复盘"@zh, "revision from review"@en ;
+    rdfs:comment "规则修订所来源的交易后复盘。"@zh .
+
+ash:revisionOfRule a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRevision ;
+    rdfs:range ash:RuleArtifact ;
+    rdfs:label "修订规则"@zh, "revision of rule"@en ;
+    rdfs:comment "规则修订所针对的 SWRL 规则。"@zh .
+
+ash:ruleRevisedBy a owl:ObjectProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range ash:RuleRevision ;
+    rdfs:label "规则修订记录"@zh, "rule revised by"@en ;
+    rdfs:comment "规则对应的修订记录。"@zh .
+
+ash:hasDecisionCycle a owl:ObjectProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range ash:DecisionCycle ;
+    rdfs:label "决策周期"@zh, "has decision cycle"@en ;
+    rdfs:comment "组合中一个完整的决策、执行与复盘周期。"@zh .
+
+ash:cycleOfPortfolio a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range ash:Portfolio ;
+    rdfs:label "周期所属组合"@zh, "cycle of portfolio"@en ;
+    rdfs:comment "决策周期所属的投资组合。"@zh .
+
+ash:hasCycleDecision a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "周期决策"@zh, "has cycle decision"@en ;
+    rdfs:comment "决策周期中的投资决策。"@zh .
+
+ash:decisionCycleOf a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:DecisionCycle ;
+    rdfs:label "决策所属周期"@zh, "decision cycle of"@en ;
+    rdfs:comment "投资决策所属的决策周期。"@zh .
+
+ash:hasCycleExecution a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range ash:Trade ;
+    rdfs:label "周期成交"@zh, "has cycle execution"@en ;
+    rdfs:comment "决策周期中的成交记录。"@zh .
+
+ash:executionCycleOf a owl:ObjectProperty ;
+    rdfs:domain ash:Trade ;
+    rdfs:range ash:DecisionCycle ;
+    rdfs:label "成交所属周期"@zh, "execution cycle of"@en ;
+    rdfs:comment "成交记录所属的决策周期。"@zh .
+
+ash:hasCycleReview a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range ash:PostTradeReview ;
+    rdfs:label "周期复盘"@zh, "has cycle review"@en ;
+    rdfs:comment "决策周期中的交易后复盘。"@zh .
+
+ash:reviewCycleOf a owl:ObjectProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range ash:DecisionCycle ;
+    rdfs:label "复盘所属周期"@zh, "review cycle of"@en ;
+    rdfs:comment "交易后复盘所属的决策周期。"@zh .
+
+ash:cycleForSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range ash:Security ;
+    rdfs:label "周期标的"@zh, "cycle for security"@en ;
+    rdfs:comment "决策周期所针对的证券。"@zh .
+
+ash:hasDecisionContext a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:DecisionContext ;
+    rdfs:label "决策上下文"@zh, "has decision context"@en ;
+    rdfs:comment "决策时点的账户、预算、组合风险与市场状态。"@zh .
+
+ash:contextOfDecision a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionContext ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "上下文所属决策"@zh, "context of decision"@en ;
+    rdfs:comment "决策上下文所对应的投资决策。"@zh .
+
+ash:contextAccountState a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionContext ;
+    rdfs:range ash:AccountState ;
+    rdfs:label "上下文账户状态"@zh, "context account state"@en ;
+    rdfs:comment "决策上下文采用的账户状态快照。"@zh .
+
+ash:contextRiskBudget a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionContext ;
+    rdfs:range ash:RiskBudget ;
+    rdfs:label "上下文风险预算"@zh, "context risk budget"@en ;
+    rdfs:comment "决策上下文采用的风险预算。"@zh .
+
+ash:contextRiskSnapshot a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionContext ;
+    rdfs:range ash:PortfolioRiskSnapshot ;
+    rdfs:label "上下文风险快照"@zh, "context risk snapshot"@en ;
+    rdfs:comment "决策上下文采用的组合风险快照。"@zh .
+
+ash:hasDecisionLevel a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range skos:Concept ;
+    rdfs:label "决策层级"@zh, "has decision level"@en ;
+    rdfs:comment "决策属于战略配置、战术配置、交易执行还是复盘迭代层级。"@zh .
+
+ash:usesSizingMethod a owl:ObjectProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range skos:Concept ;
+    rdfs:label "仓位测算方法"@zh, "uses sizing method"@en ;
+    rdfs:comment "仓位测算采用的固定比例、ATR、等权或凯利上限方法。"@zh .
+
+ash:hasLifecycleStage a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range skos:Concept ;
+    rdfs:label "生命周期阶段"@zh, "has lifecycle stage"@en ;
+    rdfs:comment "决策周期当前所处的账户快照、风险预算、计划、执行或复盘阶段。"@zh .
+
+ash:supersedesDecision a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "替代决策"@zh, "supersedes decision"@en ;
+    rdfs:comment "新决策替代或修订的旧决策，用于形成可追溯的决策版本链。"@zh .
+
+ash:supersededByDecision a owl:ObjectProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "被替代决策"@zh, "superseded by decision"@en ;
+    rdfs:comment "旧决策被哪个新决策替代。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.3 — data properties
+# ---------------------------------------------------------------------------
+
+ash:accountCode a owl:DatatypeProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range xsd:string ;
+    rdfs:label "账户编号"@zh, "account code"@en ;
+    rdfs:comment "投资账户的稳定业务编号。"@zh .
+
+ash:accountStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range xsd:string ;
+    rdfs:label "账户状态"@zh, "account status"@en ;
+    rdfs:comment "账户状态：active、frozen、closed 或 restricted。"@zh .
+
+ash:baseCurrency a owl:DatatypeProperty ;
+    rdfs:domain ash:Account ;
+    rdfs:range xsd:string ;
+    rdfs:label "基础币种"@zh, "base currency"@en ;
+    rdfs:comment "账户记账与风险预算使用的基础币种，例如 CNY。"@zh .
+
+ash:cashBalance a owl:DatatypeProperty ;
+    rdfs:domain ash:AccountState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "现金余额"@zh, "cash balance"@en ;
+    rdfs:comment "账户现金余额，单位：人民币元。"@zh .
+
+ash:availableCash a owl:DatatypeProperty ;
+    rdfs:domain ash:AccountState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "可用资金"@zh, "available cash"@en ;
+    rdfs:comment "可用于买入或提现的资金，单位：人民币元。"@zh .
+
+ash:frozenCash a owl:DatatypeProperty ;
+    rdfs:domain ash:AccountState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "冻结资金"@zh, "frozen cash"@en ;
+    rdfs:comment "挂单、交收或风控冻结的资金，单位：人民币元。"@zh .
+
+ash:buyingPower a owl:DatatypeProperty ;
+    rdfs:domain ash:AccountState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "购买力"@zh, "buying power"@en ;
+    rdfs:comment "账户当前可用于新增买入的额度，单位：人民币元。"@zh .
+
+ash:totalEquity a owl:DatatypeProperty ;
+    rdfs:domain ash:AccountState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "账户总资产"@zh, "total equity"@en ;
+    rdfs:comment "现金与证券市值合计的账户总资产，单位：人民币元。"@zh .
+
+ash:positionStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:string ;
+    rdfs:label "持仓状态"@zh, "position status"@en ;
+    rdfs:comment "持仓状态：OPEN、ADD、REDUCE、CLOSED 或 FROZEN。"@zh .
+
+ash:availableQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "可卖数量"@zh, "available quantity"@en ;
+    rdfs:comment "考虑 T+1 与冻结后可卖出的证券数量。"@zh .
+
+ash:frozenQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "冻结数量"@zh, "frozen quantity"@en ;
+    rdfs:comment "挂单、交收或风控冻结的证券数量。"@zh .
+
+ash:marketValue a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "持仓市值"@zh, "market value"@en ;
+    rdfs:comment "持仓按最新价计算的市值，单位：人民币元。"@zh .
+
+ash:stateLastPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "状态最新价"@zh, "state last price"@en ;
+    rdfs:comment "持仓状态快照采用的最新价格，单位：人民币元/股。"@zh .
+
+ash:unrealizedPnl a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "浮动盈亏"@zh, "unrealized PnL"@en ;
+    rdfs:comment "持仓未实现盈亏，单位：人民币元。"@zh .
+
+ash:unrealizedPnlPct a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "浮动盈亏率"@zh, "unrealized PnL percent"@en ;
+    rdfs:comment "持仓未实现盈亏占成本的比例，以百分数表示。"@zh .
+
+ash:realizedPnl a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "已实现盈亏"@zh, "realized PnL"@en ;
+    rdfs:comment "持仓已实现盈亏，单位：人民币元。"@zh .
+
+ash:holdingDays a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionState ;
+    rdfs:range xsd:integer ;
+    rdfs:label "持有天数"@zh, "holding days"@en ;
+    rdfs:comment "持仓从建仓到状态日的自然日或交易日天数。"@zh .
+
+ash:lotQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionLot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "批次数量"@zh, "lot quantity"@en ;
+    rdfs:comment "建仓批次的证券数量。"@zh .
+
+ash:lotCost a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionLot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "批次成本"@zh, "lot cost"@en ;
+    rdfs:comment "建仓批次的单位成本，单位：人民币元/股。"@zh .
+
+ash:lotOpenDate a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionLot ;
+    rdfs:range xsd:date ;
+    rdfs:label "批次建仓日"@zh, "lot open date"@en ;
+    rdfs:comment "建仓批次的成交日期。"@zh .
+
+ash:cashMovementType a owl:DatatypeProperty ;
+    rdfs:domain ash:CashMovement ;
+    rdfs:range xsd:string ;
+    rdfs:label "资金变动类型"@zh, "cash movement type"@en ;
+    rdfs:comment "DEPOSIT、WITHDRAW、BUY、SELL、DIVIDEND 或 FEE。"@zh .
+
+ash:cashMovementAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:CashMovement ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "资金变动金额"@zh, "cash movement amount"@en ;
+    rdfs:comment "资金变动金额，单位：人民币元。"@zh .
+
+ash:cashMovementDate a owl:DatatypeProperty ;
+    rdfs:domain ash:CashMovement ;
+    rdfs:range xsd:date ;
+    rdfs:label "资金变动日期"@zh, "cash movement date"@en ;
+    rdfs:comment "资金变动发生的日期。"@zh .
+
+ash:riskBudgetTotal a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "风险预算总额"@zh, "risk budget total"@en ;
+    rdfs:comment "组合可承担的风险资本总额，单位：人民币元。"@zh .
+
+ash:riskBudgetUsed a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "已用风险预算"@zh, "risk budget used"@en ;
+    rdfs:comment "当前持仓已占用的风险预算，单位：人民币元。"@zh .
+
+ash:riskBudgetRemaining a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "剩余风险预算"@zh, "risk budget remaining"@en ;
+    rdfs:comment "尚未被占用的风险预算，单位：人民币元。"@zh .
+
+ash:riskBudgetUtilization a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "风险预算使用率"@zh, "risk budget utilization"@en ;
+    rdfs:comment "已用风险预算占总额的百分比。"@zh .
+
+ash:riskPerTradeLimit a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "单笔风险预算"@zh, "risk per-trade limit"@en ;
+    rdfs:comment "组合允许单一交易承担的最大风险金额，单位：人民币元。"@zh .
+
+ash:maxPortfolioLoss a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "组合最大亏损"@zh, "max portfolio loss"@en ;
+    rdfs:comment "组合在压力情景下允许的最大亏损，单位：人民币元。"@zh .
+
+ash:maxGrossExposure a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大总敞口"@zh, "max gross exposure"@en ;
+    rdfs:comment "组合总敞口上限，以总资产比例表示。"@zh .
+
+ash:maxSectorWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "行业权重上限"@zh, "max sector weight"@en ;
+    rdfs:comment "单一行业最大权重，取值 0—1。"@zh .
+
+ash:maxDrawdownLimit a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大回撤限额"@zh, "max drawdown limit"@en ;
+    rdfs:comment "组合允许的最大回撤，以百分数表示。"@zh .
+
+ash:varLimit a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "VaR 限额"@zh, "VaR limit"@en ;
+    rdfs:comment "组合 VaR 限额，以总资产百分比表示。"@zh .
+
+ash:riskBudgetAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:date ;
+    rdfs:label "风险预算日期"@zh, "risk budget as of"@en ;
+    rdfs:comment "风险预算生效或快照的日期。"@zh .
+
+ash:budgetAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudgetAllocation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "分配额度"@zh, "budget amount"@en ;
+    rdfs:comment "分配给证券、策略或行业的风险预算额度，单位：人民币元。"@zh .
+
+ash:budgetUsed a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudgetAllocation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "已用额度"@zh, "budget used"@en ;
+    rdfs:comment "分配额度中已被持仓占用的金额，单位：人民币元。"@zh .
+
+ash:budgetUtilization a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudgetAllocation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "额度使用率"@zh, "budget utilization"@en ;
+    rdfs:comment "已用额度占分配额度的百分比。"@zh .
+
+ash:riskLimitType a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskLimit ;
+    rdfs:range xsd:string ;
+    rdfs:label "限额类型"@zh, "risk limit type"@en ;
+    rdfs:comment "SINGLE_NAME_WEIGHT、RISK_PER_TRADE、MAX_DRAWDOWN、VAR 或 SECTOR_WEIGHT。"@zh .
+
+ash:riskLimitThreshold a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskLimit ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "限额阈值"@zh, "risk limit threshold"@en ;
+    rdfs:comment "风险限额的阈值；权重为 0—1，金额单位为人民币元，比率为百分数。"@zh .
+
+ash:riskLimitHard a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskLimit ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "硬性限额"@zh, "hard limit"@en ;
+    rdfs:comment "为 true 时突破后必须阻断或暂停交易；为 false 时进入人工复核。"@zh .
+
+ash:riskUtilizationPct a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskUtilization ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "限额使用率"@zh, "risk utilization percent"@en ;
+    rdfs:comment "当前使用量占风险限额的百分比。"@zh .
+
+ash:riskUtilizationStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskUtilization ;
+    rdfs:range xsd:string ;
+    rdfs:label "限额状态"@zh, "risk utilization status"@en ;
+    rdfs:comment "NORMAL、WARNING、BREACH 或 HALT。"@zh .
+
+ash:riskContributionPct a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskContribution ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "风险贡献占比"@zh, "risk contribution percent"@en ;
+    rdfs:comment "该持仓或行业对组合总风险的贡献百分比。"@zh .
+
+ash:marginalRiskContribution a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskContribution ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "边际风险贡献"@zh, "marginal risk contribution"@en ;
+    rdfs:comment "增加一单位权重带来的边际风险变化。"@zh .
+
+ash:portfolioVolatility a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "组合波动率"@zh, "portfolio volatility"@en ;
+    rdfs:comment "组合年化波动率，以百分数表示。"@zh .
+
+ash:portfolioVar95 a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "组合 VaR95"@zh, "portfolio VaR 95"@en ;
+    rdfs:comment "95% 置信水平下的组合 VaR，以总资产百分比表示。"@zh .
+
+ash:expectedShortfall a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "预期损失"@zh, "expected shortfall"@en ;
+    rdfs:comment "尾部 5% 情景下的预期损失，以总资产百分比表示。"@zh .
+
+ash:portfolioBeta a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "组合 Beta"@zh, "portfolio beta"@en ;
+    rdfs:comment "组合相对基准的市场敏感度。"@zh .
+
+ash:portfolioTrackingError a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "组合跟踪误差"@zh, "portfolio tracking error"@en ;
+    rdfs:comment "组合相对基准的跟踪误差，以百分数表示。"@zh .
+
+ash:concentrationHhi a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "集中度 HHI"@zh, "concentration HHI"@en ;
+    rdfs:comment "持仓权重平方和，用于衡量组合集中度。"@zh .
+
+ash:portfolioMaxDrawdown a owl:DatatypeProperty ;
+    rdfs:domain ash:PortfolioRiskSnapshot ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "组合历史最大回撤"@zh, "portfolio max drawdown"@en ;
+    rdfs:comment "组合历史最大回撤，以百分数表示。"@zh .
+
+ash:planId a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:string ;
+    rdfs:label "计划编号"@zh, "plan id"@en ;
+    rdfs:comment "交易计划的稳定业务编号。"@zh .
+
+ash:planSide a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:string ;
+    rdfs:label "计划方向"@zh, "plan side"@en ;
+    rdfs:comment "计划方向：BUY 或 SELL。"@zh .
+
+ash:planStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:string ;
+    rdfs:label "计划状态"@zh, "plan status"@en ;
+    rdfs:comment "DRAFT、READY、PENDING_APPROVAL、PENDING_REDUCTION、ACTIVE、FILLED、CANCELLED 或 BLOCKED。"@zh .
+
+ash:planAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:date ;
+    rdfs:label "计划日期"@zh, "plan as of"@en ;
+    rdfs:comment "交易计划生成或生效的日期。"@zh .
+
+ash:planValidUntil a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:date ;
+    rdfs:label "计划有效期"@zh, "plan valid until"@en ;
+    rdfs:comment "交易计划失效日期。"@zh .
+
+ash:plannedQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "计划数量"@zh, "planned quantity"@en ;
+    rdfs:comment "计划买入或卖出的证券数量。"@zh .
+
+ash:plannedNotional a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "计划金额"@zh, "planned notional"@en ;
+    rdfs:comment "计划成交金额，单位：人民币元。"@zh .
+
+ash:plannedWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "计划权重变化"@zh, "planned weight"@en ;
+    rdfs:comment "计划执行后相对组合总资产的权重变化，取值 0—1。"@zh .
+
+ash:projectedWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "预计权重"@zh, "projected weight"@en ;
+    rdfs:comment "执行计划后该证券在组合中的预计权重，取值 0—1。"@zh .
+
+ash:riskAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "计划风险金额"@zh, "risk amount"@en ;
+    rdfs:comment "按买点与止损距离计算的计划风险金额，单位：人民币元。"@zh .
+
+ash:rewardRiskRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:TradePlan ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "盈亏比"@zh, "reward-risk ratio"@en ;
+    rdfs:comment "目标价与买点的潜在收益相对止损风险的倍数。"@zh .
+
+ash:priceLevelValue a owl:DatatypeProperty ;
+    rdfs:domain ash:PriceLevel ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "价格点位值"@zh, "price level value"@en ;
+    rdfs:comment "买点、止损价或目标价的价格，单位：人民币元/股。"@zh .
+
+ash:priceLevelBasis a owl:DatatypeProperty ;
+    rdfs:domain ash:PriceLevel ;
+    rdfs:range xsd:string ;
+    rdfs:label "点位依据"@zh, "price level basis"@en ;
+    rdfs:comment "价格点位的计算依据，例如估值、技术位或 ATR 倍数。"@zh .
+
+ash:triggerType a owl:DatatypeProperty ;
+    rdfs:domain ash:TradeTrigger ;
+    rdfs:range xsd:string ;
+    rdfs:label "触发类型"@zh, "trigger type"@en ;
+    rdfs:comment "PRICE、TECHNICAL、FUNDAMENTAL、TIME 或 REBALANCE。"@zh .
+
+ash:triggerCondition a owl:DatatypeProperty ;
+    rdfs:domain ash:TradeTrigger ;
+    rdfs:range xsd:string ;
+    rdfs:label "触发条件"@zh, "trigger condition"@en ;
+    rdfs:comment "触发交易计划的自然语言或表达式条件。"@zh .
+
+ash:sizingQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "测算数量"@zh, "sizing quantity"@en ;
+    rdfs:comment "按风险预算与止损距离计算的数量。"@zh .
+
+ash:sizingWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "测算权重变化"@zh, "sizing weight"@en ;
+    rdfs:comment "仓位测算对应的权重变化，取值 0—1。"@zh .
+
+ash:sizingRiskAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "测算风险金额"@zh, "sizing risk amount"@en ;
+    rdfs:comment "仓位测算得到的计划风险金额，单位：人民币元。"@zh .
+
+ash:sizingAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:PositionSizing ;
+    rdfs:range xsd:date ;
+    rdfs:label "测算日期"@zh, "sizing as of"@en ;
+    rdfs:comment "仓位测算采用的行情与预算日期。"@zh .
+
+ash:orderIntentId a owl:DatatypeProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range xsd:string ;
+    rdfs:label "意图编号"@zh, "order intent id"@en ;
+    rdfs:comment "订单意图的稳定业务编号。"@zh .
+
+ash:orderIntentSide a owl:DatatypeProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range xsd:string ;
+    rdfs:label "意图方向"@zh, "order intent side"@en ;
+    rdfs:comment "订单意图方向：BUY 或 SELL。"@zh .
+
+ash:orderIntentQuantity a owl:DatatypeProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "意图数量"@zh, "order intent quantity"@en ;
+    rdfs:comment "订单意图的证券数量。"@zh .
+
+ash:orderIntentPrice a owl:DatatypeProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "意图价格"@zh, "order intent price"@en ;
+    rdfs:comment "订单意图的参考价格，单位：人民币元/股。"@zh .
+
+ash:orderIntentStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:OrderIntent ;
+    rdfs:range xsd:string ;
+    rdfs:label "意图状态"@zh, "order intent status"@en ;
+    rdfs:comment "DRAFT、PENDING_APPROVAL、APPROVED、SENT、FILLED 或 CANCELLED。"@zh .
+
+ash:slippageBps a owl:DatatypeProperty ;
+    rdfs:domain ash:ExecutionQuality ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成交滑点"@zh, "slippage bps"@en ;
+    rdfs:comment "成交价相对计划价的滑点，以基点表示。"@zh .
+
+ash:fillRate a owl:DatatypeProperty ;
+    rdfs:domain ash:ExecutionQuality ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成交率"@zh, "fill rate"@en ;
+    rdfs:comment "实际成交数量占委托数量的比例，取值 0—1。"@zh .
+
+ash:executionLatencyMs a owl:DatatypeProperty ;
+    rdfs:domain ash:ExecutionQuality ;
+    rdfs:range xsd:integer ;
+    rdfs:label "执行延迟"@zh, "execution latency"@en ;
+    rdfs:comment "从下单到成交回报的毫秒数。"@zh .
+
+ash:marketImpactBps a owl:DatatypeProperty ;
+    rdfs:domain ash:ExecutionQuality ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "市场冲击"@zh, "market impact bps"@en ;
+    rdfs:comment "成交对市场价格造成的冲击，以基点表示。"@zh .
+
+ash:realizedReturn a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "已实现收益率"@zh, "realized return"@en ;
+    rdfs:comment "决策执行后的已实现收益率，以百分数表示。"@zh .
+
+ash:realizedPnlAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "已实现盈亏金额"@zh, "realized PnL amount"@en ;
+    rdfs:comment "决策执行后的已实现盈亏，单位：人民币元。"@zh .
+
+ash:holdingPeriodDays a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range xsd:integer ;
+    rdfs:label "持有期"@zh, "holding period days"@en ;
+    rdfs:comment "从建仓到退出的持有天数。"@zh .
+
+ash:maxAdverseExcursion a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大不利偏移"@zh, "max adverse excursion"@en ;
+    rdfs:comment "持有期内相对建仓价的最大不利变动，以百分数表示。"@zh .
+
+ash:maxFavorableExcursion a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大有利偏移"@zh, "max favorable excursion"@en ;
+    rdfs:comment "持有期内相对建仓价的最大有利变动，以百分数表示。"@zh .
+
+ash:outcomeStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionOutcome ;
+    rdfs:range xsd:string ;
+    rdfs:label "结果状态"@zh, "outcome status"@en ;
+    rdfs:comment "PROFIT、LOSS、FLAT、STOPPED 或 OPEN。"@zh .
+
+ash:reviewVerdict a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:string ;
+    rdfs:label "复盘结论"@zh, "review verdict"@en ;
+    rdfs:comment "PROCESS_OK、PROCESS_IMPROVE、RULE_REVISE、OUTCOME_LUCK 或 OUTCOME_SKILL。"@zh .
+
+ash:reviewScore a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "复盘综合分"@zh, "review score"@en ;
+    rdfs:comment "复盘综合评分，0—100。"@zh .
+
+ash:processScore a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "过程评分"@zh, "process score"@en ;
+    rdfs:comment "决策与执行过程质量评分，0—100。"@zh .
+
+ash:outcomeScore a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "结果评分"@zh, "outcome score"@en ;
+    rdfs:comment "结果质量评分，0—100；需与过程评分分开以避免结果偏见。"@zh .
+
+ash:reviewCompletedDate a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:date ;
+    rdfs:label "复盘完成日"@zh, "review completed date"@en ;
+    rdfs:comment "复盘实际完成的日期。"@zh .
+
+ash:reviewDueDate a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:date ;
+    rdfs:label "复盘截止日"@zh, "review due date"@en ;
+    rdfs:comment "复盘要求完成的截止日期。"@zh .
+
+ash:reviewOverdueDays a owl:DatatypeProperty ;
+    rdfs:domain ash:PostTradeReview ;
+    rdfs:range xsd:integer ;
+    rdfs:label "复盘逾期天数"@zh, "review overdue days"@en ;
+    rdfs:comment "超过复盘截止日的天数，0 表示未逾期。"@zh .
+
+ash:findingType a owl:DatatypeProperty ;
+    rdfs:domain ash:ReviewFinding ;
+    rdfs:range xsd:string ;
+    rdfs:label "发现类型"@zh, "finding type"@en ;
+    rdfs:comment "RULE_GAP、PROCESS_GAP、EXECUTION_GAP、DATA_GAP 或 JUDGEMENT_GAP。"@zh .
+
+ash:findingSeverity a owl:DatatypeProperty ;
+    rdfs:domain ash:ReviewFinding ;
+    rdfs:range xsd:string ;
+    rdfs:label "发现严重程度"@zh, "finding severity"@en ;
+    rdfs:comment "high、medium 或 low。"@zh .
+
+ash:findingRecommendation a owl:DatatypeProperty ;
+    rdfs:domain ash:ReviewFinding ;
+    rdfs:range xsd:string ;
+    rdfs:label "改进建议"@zh, "finding recommendation"@en ;
+    rdfs:comment "针对复盘发现的具体改进建议。"@zh .
+
+ash:findingOccurrenceCount a owl:DatatypeProperty ;
+    rdfs:domain ash:ReviewFinding ;
+    rdfs:range xsd:integer ;
+    rdfs:label "重复出现次数"@zh, "finding occurrence count"@en ;
+    rdfs:comment "同类发现在一段时间内出现的次数。"@zh .
+
+ash:lessonText a owl:DatatypeProperty ;
+    rdfs:domain ash:LessonLearned ;
+    rdfs:range xsd:string ;
+    rdfs:label "经验内容"@zh, "lesson text"@en ;
+    rdfs:comment "从复盘沉淀出的经验或教训。"@zh .
+
+ash:lessonAction a owl:DatatypeProperty ;
+    rdfs:domain ash:LessonLearned ;
+    rdfs:range xsd:string ;
+    rdfs:label "改进行动"@zh, "lesson action"@en ;
+    rdfs:comment "为落实经验而采取的流程、规则或数据改进行动。"@zh .
+
+ash:lessonStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:LessonLearned ;
+    rdfs:range xsd:string ;
+    rdfs:label "改进状态"@zh, "lesson status"@en ;
+    rdfs:comment "OPEN、IN_PROGRESS、DONE 或 DROPPED。"@zh .
+
+ash:attributionEffect a owl:DatatypeProperty ;
+    rdfs:domain ash:PerformanceAttribution ;
+    rdfs:range xsd:string ;
+    rdfs:label "归因来源"@zh, "attribution effect"@en ;
+    rdfs:comment "ALLOCATION、SELECTION、TIMING、COST 或 LUCK。"@zh .
+
+ash:attributionPct a owl:DatatypeProperty ;
+    rdfs:domain ash:PerformanceAttribution ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "归因贡献"@zh, "attribution percent"@en ;
+    rdfs:comment "该来源对结果的贡献百分比。"@zh .
+
+ash:revisionId a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "修订编号"@zh, "revision id"@en ;
+    rdfs:comment "规则修订的稳定业务编号。"@zh .
+
+ash:revisionRationale a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "修订理由"@zh, "revision rationale"@en ;
+    rdfs:comment "规则修订所依据的复盘发现与理由。"@zh .
+
+ash:revisionEffectiveFrom a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleRevision ;
+    rdfs:range xsd:date ;
+    rdfs:label "修订生效日"@zh, "revision effective from"@en ;
+    rdfs:comment "规则修订生效日期。"@zh .
+
+ash:revisionStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "修订状态"@zh, "revision status"@en ;
+    rdfs:comment "PROPOSED、REVIEWING、ADOPTED 或 REJECTED。"@zh .
+
+ash:cycleId a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range xsd:string ;
+    rdfs:label "周期编号"@zh, "cycle id"@en ;
+    rdfs:comment "决策周期的稳定业务编号。"@zh .
+
+ash:cycleNumber a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range xsd:integer ;
+    rdfs:label "周期序号"@zh, "cycle number"@en ;
+    rdfs:comment "同一组合或证券的决策周期序号。"@zh .
+
+ash:cycleStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionCycle ;
+    rdfs:range xsd:string ;
+    rdfs:label "周期状态"@zh, "cycle status"@en ;
+    rdfs:comment "OPEN、EXECUTED、REVIEWED 或 CLOSED。"@zh .
+
+ash:contextAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionContext ;
+    rdfs:range xsd:date ;
+    rdfs:label "上下文日期"@zh, "context as of"@en ;
+    rdfs:comment "决策上下文快照的日期。"@zh .
+
+ash:marketRegime a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionContext ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场状态"@zh, "market regime"@en ;
+    rdfs:comment "决策时点的市场状态，例如 trend、range、risk-off 或 event-driven。"@zh .
+
+ash:maxSingleNameWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskBudget ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "单票权重上限"@zh, "max single-name weight"@en ;
+    rdfs:comment "风险预算允许的单一证券最大权重，取值 0—1；与投资者画像的单票上限分别治理。"@zh .

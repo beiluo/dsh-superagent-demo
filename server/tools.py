@@ -17,6 +17,7 @@ from .acquisition import (
     AcquisitionError,
     AcquisitionService,
 )
+from .decision import DecisionError, evaluate_trade
 from .marketdata import MarketDataError
 from .ontology import CompanyKnowledge, OntologyStore, SUPPORTED_MERGE_FIELDS, local_name
 from .query import (
@@ -48,6 +49,7 @@ TOOL_LABELS = {
     "query_ontology": "问题驱动的本体查询",
     "trace_evidence": "追踪决策证据链",
     "check_constraints": "检查组合与政策约束",
+    "evaluate_trade": "检查买卖点、仓位与风险预算",
     "simulate_scenario": "模拟情景下的规则变化",
 }
 
@@ -442,6 +444,33 @@ TOOLS: list[dict[str, Any]] = [
                     "compliance_passed": {
                         "type": "boolean",
                         "description": "合规检查是否通过；不传表示未知。",
+                    },
+                },
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "evaluate_trade",
+            "description": (
+                "检查一只证券的买入/卖出计划是否可执行：账户现金与购买力、组合风险预算与使用率、"
+                "单笔风险、预计单票权重、买点/止损/目标价、T+1 可卖数量、人工审批，以及执行质量、"
+                "结果和复盘闭环。回答“买点是什么”“能不能买”“卖点是什么”“买多少”“仓位多少”"
+                "“风险预算还剩多少”“执行复盘”类问题时优先使用。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company": {
+                        "type": "string",
+                        "description": "公司名、证券简称或 6 位代码；不传则使用本体中第一个有交易计划的示例公司。",
+                    },
+                    "side": {
+                        "type": "string",
+                        "enum": ["buy", "sell", "both"],
+                        "description": "关注方向，默认 both。",
                     },
                 },
                 "additionalProperties": False,
@@ -1286,6 +1315,22 @@ def _constraints(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, A
     }
 
 
+def _trade(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    company = str(arguments.get("company")) if arguments.get("company") else None
+    side = str(arguments.get("side") or "both")
+    try:
+        data = evaluate_trade(store, company=company, side=side)
+    except DecisionError as exc:
+        return _error("evaluate_trade", exc.code, exc.message, **exc.extra)
+    return {
+        "ok": True,
+        "tool": "evaluate_trade",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
 def _scenario(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
     company = str(arguments.get("company", ""))
     changes = arguments.get("changes")
@@ -1411,6 +1456,8 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
             return _trace(store, arguments)
         if name == "check_constraints":
             return _constraints(store, arguments)
+        if name == "evaluate_trade":
+            return _trade(store, arguments)
         if name == "simulate_scenario":
             return _scenario(store, arguments)
     except Exception as exc:  # noqa: BLE001 - tool boundary must not crash the agent

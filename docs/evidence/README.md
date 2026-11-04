@@ -47,6 +47,13 @@ These captures document the browser work for the A-share ontology tickets.
 | `scenario-after.png` | Ticket branch head; same question | 1240 × 1132 | `simulate_scenario` changes ROE in an in-memory copy and shows R01 moving from triggered to clear, without writing back to the ontology. |
 | `open-query-before.png` | Merged `main` at `9530cab`, before this ticket; live LLM (`deepseek-flash`), question “哪些投资决策缺少风险评估？” | 1240 × 2068 | Baseline: no graph-query tool. The agent can only call fixed tools, here six `trace_evidence` walks, and has to assemble the negative-condition answer from those results. |
 | `open-query-after.png` | Ticket branch head; same server settings, question, model and viewport | 1240 × 2689 | `describe_ontology` plus multiple generated `sparql_query` calls: the query path shows the actual `SELECT` statements, including a `FILTER NOT EXISTS` check for missing risk assessments and a `GROUP BY` aggregation. |
+| `decision-layer-before-page.png` | `main` at `0474f89` (1.8), before the 1.9 decision-layer branch; rules-mode server on `127.0.0.1:8013` | 1440 × 1000 | Baseline hero: 294 classes, 40,574 triples, 151 rules, 147 concepts; version v1.8.0. |
+| `decision-layer-after-page.png` | 1.9 ticket branch, same server settings on `127.0.0.1:8012` | 1440 × 1000 | Hero after the expansion: 337 classes, 44,372 triples, 161 rules, 173 concepts; version v1.9.0. |
+| `decision-layer-before-graph.png` | Same baseline, “决策链” graph mode | 1440 × 1000 | Baseline decision chain: 19 curated classes. |
+| `decision-layer-after-graph.png` | 1.9 branch, same graph mode, viewport and mouse position | 1440 × 1000 | Expanded decision chain: account, position state, risk budget, trade plan, sizing, order intent, execution quality, outcome, review and rule revision nodes around the same decision core. |
+| `decision-layer-before-agent.png` | Same baseline, rules mode, question “华辰智造的买点、卖点和仓位限制是什么？” | 1240 × 1062 | Baseline: the question is treated as ordinary company analysis; R06 is reported but there is no account, risk-budget, sizing or buy/sell limit answer. |
+| `decision-layer-after-agent.png` | 1.9 branch, same rules-mode server, question, viewport and scroll position | 1240 × 1062 | `evaluate_trade` reads the account, position, 77.5% risk-budget utilization, 10% single-name cap and blocked entry plan; shows the buy/sell limits and approval gate. |
+| `decision-layer-after-review.png` | Same 1.9 answer, scrolled to the bottom | 1240 × 1062 | Closed loop: 12 bps slippage, 15.8% realized return, PROCESS_IMPROVE review, recurring finding and rule revision RR-2026-001; query path shows R152–R161. |
 
 The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
 not a mockup. Most after captures use the actual FastAPI backend and the real `index.html`; no LLM
@@ -61,6 +68,13 @@ on both sides. The baseline has no graph-query tool, so it can only chain fixed 
 (`trace_evidence` per company); the after agent calls `describe_ontology` and then generates
 `sparql_query` statements that appear in the query-path panel. The provider key is not committed and
 does not appear in the captures.
+
+The `decision-layer-*` pair uses the same rules-mode server settings (`MARKET_DATA_ENABLED=false`,
+no LLM key): the baseline is a detached worktree at `0474f89` served on `127.0.0.1:8013`, and the
+after captures are the ticket branch on `127.0.0.1:8012`. The page and graph shots use the same
+1440 × 1000 viewport and mouse position; the Agent shots use the same 1240 × 1062 section capture and
+question, with the log scrolled to the top on both sides. The `decision-layer-after-review.png`
+additionally shows the review/rule-revision tail of the same answer.
 
 The `query-*`, `evidence-*`, `constraints-*` and `scenario-*` pairs use the same rules-mode server
 settings (`MARKET_DATA_ENABLED=false`, no LLM key): the baseline worktree is `main` at `1a25a68`

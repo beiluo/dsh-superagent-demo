@@ -21,7 +21,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
-    owl:versionInfo "1.8.0" .
+    owl:versionInfo "1.9.0" .
 
 # ===========================================================================
 # Concept schemes
@@ -1380,3 +1380,241 @@ ashs:topic-regulatory a skos:Concept ;
     skos:prefLabel "监管"@zh, "Regulatory"@en ;
     skos:notation "SK-REG" ;
     skos:definition "监管、处罚与操纵风险。"@zh .
+
+
+# ===========================================================================
+# Domain expansion 1.3 — decision lifecycle schemes
+# ===========================================================================
+
+ashs:scheme-decision-stage a skos:ConceptScheme ;
+    skos:prefLabel "决策生命周期阶段（示例）"@zh, "Decision Lifecycle Stages (illustrative)"@en ;
+    skos:definition "把投资决策拆成账户快照、风险预算、买点计划、仓位测算、约束检查、执行、复盘与规则迭代八个可推理阶段。"@zh ;
+    skos:hasTopConcept
+        ashs:stage-account-snapshot ,
+        ashs:stage-risk-budget ,
+        ashs:stage-entry-plan ,
+        ashs:stage-position-sizing ,
+        ashs:stage-constraint-check ,
+        ashs:stage-execution ,
+        ashs:stage-review ,
+        ashs:stage-revision .
+
+ashs:stage-account-snapshot a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "账户与持仓快照"@zh, "Account & Position Snapshot"@en ;
+    skos:notation "ST-ACCOUNT" ;
+    skos:definition "读取账户现金、购买力与持仓可卖数量、成本、市值和浮盈亏。"@zh .
+
+ashs:stage-risk-budget a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "组合风险预算"@zh, "Portfolio Risk Budget"@en ;
+    skos:notation "ST-BUDGET" ;
+    skos:definition "检查组合总风险资本、单笔风险、单票上限、回撤与 VaR 限额。"@zh .
+
+ashs:stage-entry-plan a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "买点与卖点计划"@zh, "Entry & Exit Plan"@en ;
+    skos:notation "ST-PLAN" ;
+    skos:definition "把买点、止损、目标与触发条件写入交易计划。"@zh .
+
+ashs:stage-position-sizing a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "仓位测算"@zh, "Position Sizing"@en ;
+    skos:notation "ST-SIZING" ;
+    skos:definition "按风险金额、止损距离与预计权重计算可买数量。"@zh .
+
+ashs:stage-constraint-check a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "约束与审批"@zh, "Constraint & Approval"@en ;
+    skos:notation "ST-CONSTRAINT" ;
+    skos:definition "检查预计权重、购买力、限制名单、适当性与人工批准。"@zh .
+
+ashs:stage-execution a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "执行与成交"@zh, "Execution & Fill"@en ;
+    skos:notation "ST-EXECUTION" ;
+    skos:definition "把订单意图转为委托与成交，并记录滑点、成交率和延迟。"@zh .
+
+ashs:stage-review a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "结果与复盘"@zh, "Outcome & Review"@en ;
+    skos:notation "ST-REVIEW" ;
+    skos:definition "比较决策结果与过程，识别规则、流程、执行或判断问题。"@zh .
+
+ashs:stage-revision a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-stage ;
+    skos:topConceptOf ashs:scheme-decision-stage ;
+    skos:prefLabel "规则迭代"@zh, "Rule Iteration"@en ;
+    skos:notation "ST-REVISION" ;
+    skos:definition "把复盘发现转化为规则或阈值修订，并进入下一轮决策。"@zh .
+
+ashs:scheme-position-status a skos:ConceptScheme ;
+    skos:prefLabel "持仓状态（示例）"@zh, "Position Status (illustrative)"@en ;
+    skos:definition "描述持仓处于开仓、加仓、减仓、冻结或已平仓状态。"@zh ;
+    skos:hasTopConcept
+        ashs:position-open ,
+        ashs:position-add ,
+        ashs:position-reduce ,
+        ashs:position-closed ,
+        ashs:position-frozen .
+
+ashs:position-open a skos:Concept ;
+    skos:inScheme ashs:scheme-position-status ;
+    skos:topConceptOf ashs:scheme-position-status ;
+    skos:prefLabel "持有"@zh, "Open"@en ;
+    skos:notation "POS-OPEN" ;
+    skos:definition "已建仓且未进入减仓或平仓流程的持仓。"@zh .
+
+ashs:position-add a skos:Concept ;
+    skos:inScheme ashs:scheme-position-status ;
+    skos:topConceptOf ashs:scheme-position-status ;
+    skos:prefLabel "加仓"@zh, "Add"@en ;
+    skos:notation "POS-ADD" ;
+    skos:definition "在已有持仓基础上继续买入、提高权重的状态。"@zh .
+
+ashs:position-reduce a skos:Concept ;
+    skos:inScheme ashs:scheme-position-status ;
+    skos:topConceptOf ashs:scheme-position-status ;
+    skos:prefLabel "减仓"@zh, "Reduce"@en ;
+    skos:notation "POS-REDUCE" ;
+    skos:definition "部分卖出、降低权重或风险敞口的状态。"@zh .
+
+ashs:position-closed a skos:Concept ;
+    skos:inScheme ashs:scheme-position-status ;
+    skos:topConceptOf ashs:scheme-position-status ;
+    skos:prefLabel "已平仓"@zh, "Closed"@en ;
+    skos:notation "POS-CLOSED" ;
+    skos:definition "持仓已全部卖出、数量归零的状态。"@zh .
+
+ashs:position-frozen a skos:Concept ;
+    skos:inScheme ashs:scheme-position-status ;
+    skos:topConceptOf ashs:scheme-position-status ;
+    skos:prefLabel "冻结"@zh, "Frozen"@en ;
+    skos:notation "POS-FROZEN" ;
+    skos:definition "因挂单、交收、质押或风控而暂时不可卖出的状态。"@zh .
+
+ashs:scheme-sizing-method a skos:ConceptScheme ;
+    skos:prefLabel "仓位测算方法（示例）"@zh, "Sizing Methods (illustrative)"@en ;
+    skos:definition "按单笔风险预算和止损距离计算仓位的可选方法。"@zh ;
+    skos:hasTopConcept
+        ashs:sizing-fixed-fractional ,
+        ashs:sizing-atr ,
+        ashs:sizing-equal-weight ,
+        ashs:sizing-kelly-capped .
+
+ashs:sizing-fixed-fractional a skos:Concept ;
+    skos:inScheme ashs:scheme-sizing-method ;
+    skos:topConceptOf ashs:scheme-sizing-method ;
+    skos:prefLabel "固定比例风险"@zh, "Fixed Fractional"@en ;
+    skos:notation "SZ-FF" ;
+    skos:definition "以固定比例的组合风险预算除以每股风险计算仓位。"@zh .
+
+ashs:sizing-atr a skos:Concept ;
+    skos:inScheme ashs:scheme-sizing-method ;
+    skos:topConceptOf ashs:scheme-sizing-method ;
+    skos:prefLabel "ATR 波动率"@zh, "ATR-Based"@en ;
+    skos:notation "SZ-ATR" ;
+    skos:definition "用 ATR 倍数作为止损距离、按风险预算计算仓位。"@zh .
+
+ashs:sizing-equal-weight a skos:Concept ;
+    skos:inScheme ashs:scheme-sizing-method ;
+    skos:topConceptOf ashs:scheme-sizing-method ;
+    skos:prefLabel "等权"@zh, "Equal Weight"@en ;
+    skos:notation "SZ-EQ" ;
+    skos:definition "在风险预算内对候选标的分配相同权重。"@zh .
+
+ashs:sizing-kelly-capped a skos:Concept ;
+    skos:inScheme ashs:scheme-sizing-method ;
+    skos:topConceptOf ashs:scheme-sizing-method ;
+    skos:prefLabel "凯利上限"@zh, "Capped Kelly"@en ;
+    skos:notation "SZ-KELLY" ;
+    skos:definition "按估计胜率与赔率计算凯利比例，并用单票上限截断。"@zh .
+
+ashs:scheme-review-verdict a skos:ConceptScheme ;
+    skos:prefLabel "复盘结论（示例）"@zh, "Review Verdicts (illustrative)"@en ;
+    skos:definition "区分过程质量、结果质量、规则修订与运气成分的复盘结论。"@zh ;
+    skos:hasTopConcept
+        ashs:verdict-process-ok ,
+        ashs:verdict-process-improve ,
+        ashs:verdict-rule-revise ,
+        ashs:verdict-outcome-luck ,
+        ashs:verdict-outcome-skill .
+
+ashs:verdict-process-ok a skos:Concept ;
+    skos:inScheme ashs:scheme-review-verdict ;
+    skos:topConceptOf ashs:scheme-review-verdict ;
+    skos:prefLabel "过程正确"@zh, "Process OK"@en ;
+    skos:notation "RV-PROCESS-OK" ;
+    skos:definition "决策与执行过程符合规则，结果好坏不改变过程评价。"@zh .
+
+ashs:verdict-process-improve a skos:Concept ;
+    skos:inScheme ashs:scheme-review-verdict ;
+    skos:topConceptOf ashs:scheme-review-verdict ;
+    skos:prefLabel "过程待改进"@zh, "Process Improve"@en ;
+    skos:notation "RV-PROCESS-IMPROVE" ;
+    skos:definition "过程存在可修复的缺口，需要改进流程或数据。"@zh .
+
+ashs:verdict-rule-revise a skos:Concept ;
+    skos:inScheme ashs:scheme-review-verdict ;
+    skos:topConceptOf ashs:scheme-review-verdict ;
+    skos:prefLabel "规则需修订"@zh, "Rule Revise"@en ;
+    skos:notation "RV-RULE-REVISE" ;
+    skos:definition "规则或阈值未覆盖实际风险，需要发起规则修订。"@zh .
+
+ashs:verdict-outcome-luck a skos:Concept ;
+    skos:inScheme ashs:scheme-review-verdict ;
+    skos:topConceptOf ashs:scheme-review-verdict ;
+    skos:prefLabel "结果含运气"@zh, "Outcome Luck"@en ;
+    skos:notation "RV-OUTCOME-LUCK" ;
+    skos:definition "结果好于过程质量所能解释的范围，不能简单归因为能力。"@zh .
+
+ashs:verdict-outcome-skill a skos:Concept ;
+    skos:inScheme ashs:scheme-review-verdict ;
+    skos:topConceptOf ashs:scheme-review-verdict ;
+    skos:prefLabel "结果体现能力"@zh, "Outcome Skill"@en ;
+    skos:notation "RV-OUTCOME-SKILL" ;
+    skos:definition "结果可由可重复的过程与判断解释，可沉淀为经验。"@zh .
+
+ashs:scheme-decision-level a skos:ConceptScheme ;
+    skos:prefLabel "决策层级（示例）"@zh, "Decision Levels (illustrative)"@en ;
+    skos:definition "把决策分为战略配置、战术配置、交易执行与复盘迭代四个层级。"@zh ;
+    skos:hasTopConcept
+        ashs:level-strategic ,
+        ashs:level-tactical ,
+        ashs:level-execution ,
+        ashs:level-review .
+
+ashs:level-strategic a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-level ;
+    skos:topConceptOf ashs:scheme-decision-level ;
+    skos:prefLabel "战略配置"@zh, "Strategic Allocation"@en ;
+    skos:notation "DL-STRATEGIC" ;
+    skos:definition "决定资产类别、行业与风格的中长期配置比例。"@zh .
+
+ashs:level-tactical a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-level ;
+    skos:topConceptOf ashs:scheme-decision-level ;
+    skos:prefLabel "战术配置"@zh, "Tactical Allocation"@en ;
+    skos:notation "DL-TACTICAL" ;
+    skos:definition "在战略配置内调整行业、主题与个股权重。"@zh .
+
+ashs:level-execution a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-level ;
+    skos:topConceptOf ashs:scheme-decision-level ;
+    skos:prefLabel "交易执行"@zh, "Trade Execution"@en ;
+    skos:notation "DL-EXECUTION" ;
+    skos:definition "把决策转换为买点、卖点、数量、价格与订单意图。"@zh .
+
+ashs:level-review a skos:Concept ;
+    skos:inScheme ashs:scheme-decision-level ;
+    skos:topConceptOf ashs:scheme-decision-level ;
+    skos:prefLabel "复盘迭代"@zh, "Review & Iteration"@en ;
+    skos:notation "DL-REVIEW" ;
+    skos:definition "根据结果与过程复盘修订规则、阈值和流程。"@zh .

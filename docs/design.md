@@ -1,9 +1,9 @@
 # A 股投资决策本体 — 设计说明
 
-> 版本：1.8.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
+> 版本：1.9.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
 
 本文说明本体“为什么这样建模”、每层使用了哪些 W3C 构造、跨层链路如何工作，以及当前实现的边界。
-1.1 的领域清单见 [expansion-1.1.md](expansion-1.1.md)。
+1.1 与 1.9 的领域清单分别见 [expansion-1.1.md](expansion-1.1.md) 与 [expansion-1.9.md](expansion-1.9.md)。
 自然语言标签与定义在 Turtle 中；本文是设计说明，不是本体的替代物。
 
 ---
@@ -380,9 +380,9 @@ RDFS 推断主要依赖：
 
 ---
 
-## 8. SKOS 层：九套概念方案
+## 8. SKOS 层：十四套概念方案
 
-文件：`ontology/skos/taxonomy.ttl`（1,304 条三元组）
+文件：`ontology/skos/taxonomy.ttl`（1,532 条三元组）
 
 ### 8.1 方案
 
@@ -397,8 +397,13 @@ RDFS 推断主要依赖：
 | `ashs:scheme-emotion-cycle` | 6 | 启动、发酵、高潮、结束、反复、冰点 |
 | `ashs:scheme-seat-style` | 8 | 营业部/机构、一日游/波段/锁仓/加码/做T/通道 |
 | `ashs:scheme-skill-topic` | 20 | 龙虎榜、打板、低吸、接力、情绪、竞价、复盘、风控等技能主题 |
+| `ashs:scheme-decision-stage` | 8 | 账户快照、风险预算、买卖点、仓位、约束、执行、复盘、规则迭代 |
+| `ashs:scheme-position-status` | 5 | 持有、加仓、减仓、已平仓、冻结 |
+| `ashs:scheme-sizing-method` | 4 | 固定比例、ATR、等权、凯利上限 |
+| `ashs:scheme-review-verdict` | 5 | 过程正确、过程待改进、规则需修订、结果含运气/体现能力 |
+| `ashs:scheme-decision-level` | 4 | 战略配置、战术配置、交易执行、复盘迭代 |
 
-合计 147 个概念。
+合计 173 个概念。
 
 ### 8.2 构造
 
@@ -512,15 +517,15 @@ SWRL 基于开放世界与一阶 Horn 逻辑，本项目刻意不表达：
 
 ## 10. OWL-S 层：服务
 
-文件：`ontology/owl-s/service.ttl`（327 条三元组）
+文件：`ontology/owl-s/service.ttl`（628 条三元组）
 
 ### 10.1 三个视角
 
 | OWL-S 视角 | 本项目的表达 |
 | --- | --- |
 | Profile | 服务名称、描述、分类、输入、输出、前置条件、类别 |
-| Process Model | `CompositeProcess` + `Sequence` + 7 个 `Perform` + 7 个 `AtomicProcess` |
-| Grounding | `WsdlGrounding` + 7 个 `WsdlAtomicProcessGrounding` + WSDL 操作名 |
+| Process Model | 2 个 `CompositeProcess`：决策服务 7 步，生命周期服务 8 步 |
+| Grounding | 2 个 `WsdlGrounding`，共 15 个 `WsdlAtomicProcessGrounding` + WSDL 操作名 |
 
 ### 10.2 七步流程
 
@@ -540,6 +545,19 @@ SWRL 基于开放世界与一阶 Horn 逻辑，本项目刻意不表达：
 - 人工批准：`ash:humanApprovalRequired true`，服务不直接连接交易通道；
 - Grounding：WSDL 文档、服务、端口、操作名均为示意，不指向生产系统。
 
+### 10.2.1 生命周期服务（1.9）
+
+`svc-trade-lifecycle` 把账户与风控纳入服务契约：
+
+```text
+01 账户与持仓快照 → 02 风险预算检查 → 03 买卖点与触发条件 → 04 仓位测算
+→ 05 约束与审批 → 06 订单意图 → 07 执行与复盘 → 08 规则迭代
+```
+
+输入为账户与持仓状态、组合风险预算、行情/风险快照和交易政策；输出为交易计划、订单意图、
+执行质量、交易后复盘和规则修订。前置条件新增“风险预算使用率低于 100%、单笔风险不超过
+riskPerTradeLimit、预计单票权重不超过 maxSingleNameWeight”。
+
 ### 10.3 规范状态
 
 OWL-S 1.2 是 W3C Member Submission（2004-11-22），不是 W3C Recommendation。本仓库显式记录
@@ -550,7 +568,7 @@ OWL-S 作为语义服务契约。
 
 ## 11. ODRL 层：政策
 
-文件：`ontology/odrl/policies.ttl`（408 条三元组）
+文件：`ontology/odrl/policies.ttl`（499 条三元组）
 
 ### 11.1 政策清单
 
@@ -561,6 +579,7 @@ OWL-S 作为语义服务契约。
 | `policy-trade-guard` | `odrl:Set` | 订单意图 | 允许 execute 当且仅当 humanApproval=true 且 compliancePassed=true；禁止 humanApproval=false 的执行；义务 inform/reviewPolicy |
 | `policy-ai-analysis` | `odrl:Agreement` | AI 辅助分析 | 允许 read/use/reproduce；约束 purpose、recipient isA QualifiedInvestor；禁止绕过人工审批执行订单；义务 attribute/reviewPolicy |
 | `policy-hot-money-data` | `odrl:Set` | 龙虎榜/游资数据 | 允许 read/derive；约束 purpose/recipient；禁止自动执行订单；义务 attribute/reviewPolicy |
+| `policy-trade-lifecycle` | `odrl:Agreement` | 风险预算、交易计划、复盘 | 允许 read/use/derive；约束预算使用率 < 100%；禁止未审批或预算超限时执行；义务标注来源并完成复盘 |
 
 ### 11.2 关键构造
 
@@ -620,9 +639,27 @@ ODRL 政策是**声明式**的。本仓库：
 
 ---
 
-## 13. 校验与测试
+## 13. 决策生命周期（1.9）
 
-### 13.1 结构校验
+1.9 把“决策”拆成可推理的层级，而不是只增加一个建议字段：
+
+1. **账户与持仓状态**：`Account`、`AccountState`、`PositionState`、`PositionLot`、`CashMovement`
+   记录现金、购买力、可卖数量、成本、浮盈亏与资金流水；
+2. **组合风险预算**：`RiskBudget`、`RiskBudgetAllocation`、`RiskLimit`、`RiskUtilization`、
+   `PortfolioRiskSnapshot`、`RiskContribution` 记录总风险资本、单笔/单票/行业/回撤/VaR 限额；
+3. **买卖点与仓位联动**：`TradePlan` → `EntryPlan`/`ExitPlan`、`PriceLevel`、`TradeTrigger`、
+   `hasTradeSizing`、`PositionSizing`、`OrderIntent` 把买点、止损、目标、数量、预计权重与风险金额写进同一计划；
+4. **执行到复盘闭环**：`ExecutionQuality`、`DecisionOutcome`、`PostTradeReview`、`ReviewFinding`、
+   `LessonLearned`、`PerformanceAttribution`、`RuleRevision` 把成交、结果、发现、经验与规则修订回写。
+
+`DecisionCycle` 串起上述阶段；`DecisionContext` 固定决策时点的账户、预算、风险和市场状态。
+新增 OWL-S 服务 `svc-trade-lifecycle` 以八步流程表达生命周期，原有 `svc-ashare-decision` 仍是
+“从数据到投资决策”的七步服务。新增 ODRL 政策 `policy-trade-lifecycle` 把风险预算、人工批准
+和复盘义务写成可检查约束。详见 [expansion-1.9.md](expansion-1.9.md)。
+
+## 14. 校验与测试
+
+### 14.1 结构校验
 
 `scripts/validate.py` 使用 `rdflib` 与 `owlrl`：
 
@@ -635,42 +672,42 @@ ODRL 政策是**声明式**的。本仓库：
 - 检查 OWL-S profile/process/grounding 结构；
 - 检查 ODRL 政策 uid/profile/规则/约束；
 - 检查示例决策字段完整性；
-- 解析 10 条 SPARQL 查询；
+- 解析 20 条 SPARQL 查询；
 - 运行 OWL RL 闭包。
 
-### 13.2 当前结果
+### 14.2 当前结果
 
 ```text
 modules: 7
-triples: 40574
-classes: 294
-object properties: 167
-data properties: 284
-SKOS concepts: 147
-SWRL rules: 151
-OWL-S services: 1
-ODRL policies: 5
-OWL RL closure: 31734 -> 60963 triples (29229 inferred)
+triples: 44372
+classes: 337
+object properties: 258
+data properties: 395
+SKOS concepts: 173
+SWRL rules: 161
+OWL-S services: 2
+ODRL policies: 6
+OWL RL closure: 34487 -> 69413 triples (34926 inferred)
 warnings: 0
 ```
 
-### 13.3 页面测试
+### 14.3 页面测试
 
 使用 Firefox + Playwright 做冒烟检查：
 
 - 页面标题与数据快照加载；
-- 3,404 个实体、151 条规则、7 个流程步骤、5 项政策渲染；
+- 3,742 个实体、161 条规则、15 个流程步骤、6 项政策渲染；
 - 搜索 `InvestmentDecision` 返回 1 条；
 - 点击实体详情显示 8 条 OWL 限制；
 - 规则严重程度筛选、政策 tab、概念树、示例 tab 交互正常；
 - 短线面板：6 个 KPI、4 步剧本、3 张方法论卡、情绪六阶段、R16–R26 规则、游资科技短线决策；
 - 技能目录：50 个技能、821 个章节、20 个主题、1,327 条短原话可在 Explorer 检索；
-- 图谱四种模式：核心全景 51 节点、全部类 294 节点、决策链 19 节点/15 条带标签边、SKOS 147 节点；
+- 图谱四种模式：核心全景 51 节点、全部类 337 节点、决策链 47 节点/带标签边、SKOS 173 节点；
 - 图谱缩放、图例隐藏/恢复、节点聚焦、跳转 Explorer/SKOS 均正常；
 - 桌面与 390px 手机视口无横向滚动、无 console error；
 - 截图见 `docs/evidence/`。
 
-### 13.4 未覆盖
+### 14.4 未覆盖
 
 - OWL 2 DL 完整一致性；
 - SWRL 规则执行与冲突消解；
@@ -680,9 +717,9 @@ warnings: 0
 
 ---
 
-## 14. 页面实现
+## 15. 页面实现
 
-### 14.1 数据流
+### 15.1 数据流
 
 ```text
 Turtle modules
@@ -698,7 +735,7 @@ index.html + assets/js/app.js
 
 页面不直接解析 Turtle，避免在浏览器引入大型 RDF 解析器；Turtle 仍是唯一规范源。
 
-### 14.2 信息架构
+### 15.2 信息架构
 
 1. 首屏：本体定位、七层徽章、示例决策卡、规模指标；
 2. Agent 对话区：服务端工具循环或规则模式，回答附带本体证据；
@@ -714,14 +751,14 @@ index.html + assets/js/app.js
 12. 决策样例（建议、风险、证据链、政策、合规）；
 13. W3C 对照表、下载、规模评估与能力问题。
 
-### 14.3 图谱实现
+### 15.3 图谱实现
 
 图谱使用原生 SVG 与自实现力导向布局，不引入 D3 或图表库：
 
 - **核心全景**：51 个核心类节点，保证可读性；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
-- **全部类**：294 个类节点，用于查看完整扩展域；
+- **全部类**：337 个类节点，用于查看完整扩展域；
 - **决策链**：19 个核心类的手工布局，边标签显示对象属性，适合讲解决策路径；
-- **SKOS 分类**：147 个概念，按九套 ConceptScheme 着色，边为 `broader`；
+- **SKOS 分类**：173 个概念，按十四套 ConceptScheme 着色，边为 `broader`；
 - **交互**：滚轮缩放、拖拽平移、图例筛选、节点聚焦、`标签`开关；点击节点在右侧显示类/概念详情；
 - **联动**：详情中的“在 Explorer 中打开”跳转到实体浏览器；“在 SKOS 分类中查看”跳转到概念树；
 - **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、294 节点全部类并缩放查看；
@@ -729,7 +766,7 @@ index.html + assets/js/app.js
 
 图谱节点与边全部来自 `DATA.classes`、`DATA.objectProperties`、`DATA.concepts`，没有手工维护的第二份图数据。
 
-### 14.4 可访问性与响应式
+### 15.4 可访问性与响应式
 
 - 跳至主要内容链接、可见焦点、语义化按钮/aria 标签；
 - 详情面板在手机端为全屏抽屉，Esc 关闭；
@@ -737,7 +774,7 @@ index.html + assets/js/app.js
 - 表格在小屏可横向滚动；
 - 页面无外部字体/CDN 依赖。
 
-### 14.5 Agent 层（服务端）
+### 15.5 Agent 层（服务端）
 
 Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物：
 
@@ -762,7 +799,7 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
 - **边界控制**：CORS 白名单、每 IP 分钟/小时限流、每日额度、请求体上限、并发上限、静态文件白名单；
   静态服务只挂载 `assets/`、`ontology/`、`docs/` 与 `index.html`，不暴露 `.env`、`server/` 或 `.git`。
 
-### 14.6 Agent 驱动的本体查询与规则模式回退
+### 15.6 Agent 驱动的本体查询与规则模式回退
 
 单股问答很容易退化成固定报表；本版本把 LLM 的“用本体”改为由模型自己生成查询，固定工具只保留
 在确定性回退路径：
@@ -793,9 +830,9 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
 
 ---
 
-## 15. 治理、版本与变更流程
+## 16. 治理、版本与变更流程
 
-### 15.1 变更类型
+### 16.1 变更类型
 
 | 变更 | 要求 |
 | --- | --- |
@@ -806,14 +843,14 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
 | 调整分类 | 更新 SKOS 方案版本；检查引用概念的公司/决策 |
 | 修改页面 | 重建数据、跑浏览器冒烟、更新截图 |
 
-### 15.2 审计字段
+### 16.2 审计字段
 
 - 本体：`owl:versionInfo`、`owl:versionIRI`、`dcterms:created/modified`；
 - 规则：`ruleId`、`ruleVersion`、`ruleOwner`、`ruleStatus`、`ruleEffectiveFrom`；
 - 政策：`policyVersion`、`policyStatus`、`reviewDate`；
 - 决策：`decisionId`、`decisionDate`、`validUntil`、`generatedBy`、`hasComplianceCheck`。
 
-### 15.3 生产化建议
+### 16.3 生产化建议
 
 1. 用 SHACL 增加写入时数据质量约束；
 2. 用 OWL 2 DL reasoner 做本体一致性回归；
@@ -825,7 +862,7 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
 
 ---
 
-## 16. 已知限制
+## 17. 已知限制
 
 1. 没有完整 OWL 2 DL 一致性证明；OWL RL 闭包不等价于 DL 一致性。
 2. 没有内置 SWRL 引擎；规则可读、可校验，但不在本仓库执行。
@@ -838,7 +875,7 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
 
 ---
 
-## 17. 参考资料
+## 18. 参考资料
 
 ### W3C
 

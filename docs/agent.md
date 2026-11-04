@@ -224,6 +224,7 @@ LLM 的工具列表里：
 | `query_ontology` | 问题驱动的跨公司筛选：业务字段→属性路径、行业、规则条件、排序；`universe=real` 扫真实行情单页样本 |
 | `trace_evidence` | 从公司/决策/规则/政策展开证据链，保留数据日期、来源与版本 |
 | `check_constraints` | R06/R07/R11 与 ODRL trade-guard 的人工批准、合规检查前置条件 |
+| `evaluate_trade` | 账户与持仓状态、组合风险预算、买点/卖点/仓位、预计权重、购买力、T+1 可卖、执行质量与复盘闭环；检查 R152–R161 |
 | `simulate_scenario` | 在内存事实副本上改指标并重跑规则，对比 what-if 前后状态 |
 | `get_portfolio_analysis` | 组合持仓、R05 止损、R06 集中度 |
 | `get_rule` | 规则 IF/THEN、阈值、责任人、当前触发对象 |

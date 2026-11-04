@@ -42,7 +42,8 @@ A 股投资决策涉及至少八类语义问题：
 | 词汇如何定义？ | RDFS | 类层次、属性 domain/range、双语标签与自然语言定义 |
 | 结构约束如何成立？ | OWL 2 | 基数、存在/全称限制、属性特征、键、类不相交 |
 | 分类如何组织？ | SKOS | 行业、主题、风格、资产类别、因子、短线剧本六套 ConceptScheme |
-| 决策如何推理？ | SWRL | 26 条无副作用 Horn 规则，覆盖筛选、风险、止损、集中度与合规 |
+| 决策如何推理？ | SWRL | 161 条无副作用 Horn 规则，覆盖筛选、风险、止损、集中度、风险预算、买卖点与复盘 |
+| 决策如何落地？ | OWL-S | 从账户状态、风险预算、买卖点、仓位测算到执行复盘的八步生命周期服务 |
 | 服务如何调用？ | OWL-S | Profile / Process Model / Grounding 三视角的七步决策服务 |
 | 政策如何治理？ | ODRL | 权限、禁止、义务、约束、冲突策略与 profile 扩展 |
 | 如何把语义链变成可对话分析？ | Agent | 服务端工具 + 本体规则 + 可选 LLM，缺失数据由 Agent 自取并接入，回答带可追溯证据 |
@@ -118,15 +119,15 @@ python3 scripts/validate.py
 ```text
 A-share ontology validation passed.
   modules: 7
-  triples: 40574
-  classes: 294
-  object properties: 167
-  data properties: 284
-  SKOS concepts: 147
-  SWRL rules: 151
-  OWL-S services: 1
-  ODRL policies: 5
-  OWL RL closure: 31734 -> 60963 triples (29229 inferred)
+  triples: 44372
+  classes: 337
+  object properties: 258
+  data properties: 395
+  SKOS concepts: 173
+  SWRL rules: 161
+  OWL-S services: 2
+  ODRL policies: 6
+  OWL RL closure: 34487 -> 69413 triples (34926 inferred)
   warnings: 0
 ```
 
@@ -174,7 +175,8 @@ python3 scripts/build_data.py   # 或 make build
 │   ├── ontology.py                    # 读取 Turtle、映射真实 A 股快照、构建企业/组合事实
 │   ├── marketdata.py                  # 真实 A 股公开行情/年报/日线适配器（可替换）
 │   ├── rules.py                       # SWRL 阈值与确定性信号评估
-│   ├── tools.py                       # 16 个本体工具（LLM 模式暴露 4 项通用能力）
+│   ├── decision.py                    # 决策生命周期上下文与买卖点/风险预算检查
+│   ├── tools.py                       # 16 个只读本体工具（LLM 模式暴露 4 项通用能力）
 │   ├── query.py                       # 属性路径查询、多股对比、证据链、约束与情景模拟
 │   ├── sparql.py                      # Agent 生成的只读 SPARQL 与图式发现
 │   ├── namespaces.py                  # 本体与运行时命名空间
@@ -189,6 +191,7 @@ python3 scripts/build_data.py   # 或 make build
 │   ├── test_query.py
 │   ├── test_real_data.py
 │   ├── test_rules.py
+│   ├── test_decision.py
 │   └── test_secrets.py
 ├── ontology/
 │   ├── a-share.ttl                    # 聚合入口，owl:imports 七层
@@ -206,7 +209,8 @@ python3 scripts/build_data.py   # 或 make build
 │   ├── youzi-knowledge.md             # 游资方法论提炼与来源
 │   ├── scale-assessment.md            # 节点规模评估与扩展路线
 │   ├── roadmap-2.0.md                 # 股票优先的 2.0 扩展路线
-│   ├── competency-questions.rq        # 10 条 SPARQL 能力问题
+│   ├── competency-questions.rq        # 20 条 SPARQL 能力问题
+│   ├── expansion-1.9.md               # 1.9 决策生命周期扩展说明
 │   └── evidence/                      # 浏览器前后对比截图与说明
 ├── scripts/
 │   ├── build_data.py                  # Turtle -> 页面 JSON
@@ -231,12 +235,12 @@ python3 scripts/build_data.py   # 或 make build
 | 层 | W3C 规范 | 本仓库落地 | 关键文件 |
 | --- | --- | --- | --- |
 | RDF | [RDF 1.1 Concepts](https://www.w3.org/TR/rdf11-concepts/) / [Turtle 1.1](https://www.w3.org/TR/turtle/) | 公司、证券、财报、行情、估值、风险、决策、组合的实例图 | `ontology/rdf/instances.ttl` |
-| RDFS | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | 294 个类、451 个属性，含 `subClassOf`、`domain`、`range`、双语标签 | `ontology/rdfs/schema.ttl` |
+| RDFS | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | 337 个类、653 个属性，含 `subClassOf`、`domain`、`range`、双语标签 | `ontology/rdfs/schema.ttl` |
 | OWL 2 | [OWL 2 Overview](https://www.w3.org/TR/owl2-overview/) / [Structural Specification](https://www.w3.org/TR/owl2-syntax/) / [RDF Mapping](https://www.w3.org/TR/owl2-mapping-to-rdf/) | 100 条类限制、10 个键、14 组类不相交、函数式/传递/对称/逆属性 | `ontology/owl/ontology.ttl` |
-| SKOS | [SKOS Reference](https://www.w3.org/TR/skos-reference/) | 9 个 ConceptScheme、147 个概念、层级/关联/多语言标签/定义 | `ontology/skos/taxonomy.ttl` |
-| SWRL | [SWRL W3C Member Submission](https://www.w3.org/Submission/SWRL/) | 26 条 `swrl:Imp` 规则，使用 RDF 具体语法与 `swrlb:` 内建 | `ontology/swrl/rules.ttl` |
-| OWL-S | [OWL-S 1.2 W3C Member Submission](https://www.w3.org/Submission/OWL-S/) | 1 个 Service、1 个 Profile、1 个 CompositeProcess、7 个 AtomicProcess、7 个 WSDL Grounding | `ontology/owl-s/service.ttl` |
-| ODRL | [ODRL Information Model 2.2](https://www.w3.org/TR/odrl-model/) / [Vocabulary 2.2](https://www.w3.org/TR/odrl-vocab/) | 研究数据、决策报告、订单护栏、AI 分析、游资数据五项政策；含 profile 扩展左操作数 | `ontology/odrl/policies.ttl` |
+| SKOS | [SKOS Reference](https://www.w3.org/TR/skos-reference/) | 14 个 ConceptScheme、173 个概念、层级/关联/多语言标签/定义 | `ontology/skos/taxonomy.ttl` |
+| SWRL | [SWRL W3C Member Submission](https://www.w3.org/Submission/SWRL/) | 161 条 `swrl:Imp` 规则，使用 RDF 具体语法与 `swrlb:` 内建 | `ontology/swrl/rules.ttl` |
+| OWL-S | [OWL-S 1.2 W3C Member Submission](https://www.w3.org/Submission/OWL-S/) | 2 个 Service（决策服务 + 生命周期服务）、2 个 Profile、2 个 CompositeProcess、15 个 AtomicProcess、15 个 WSDL Grounding | `ontology/owl-s/service.ttl` |
+| ODRL | [ODRL Information Model 2.2](https://www.w3.org/TR/odrl-model/) / [Vocabulary 2.2](https://www.w3.org/TR/odrl-vocab/) | 研究数据、决策报告、订单护栏、AI 分析、游资数据、交易生命周期六项政策；含 profile 扩展左操作数 | `ontology/odrl/policies.ttl` |
 
 ### 规范状态说明
 
@@ -297,6 +301,17 @@ SWRL 规则不表达否定、聚合、时间窗口滑移或“缺失即拒绝”
 
 它们不对应任何真实证券，也不构成投资建议。
 
+1.9 另有一组决策生命周期示例，围绕华辰智造演示“账户 → 风险预算 → 买卖点 → 仓位 → 执行 → 复盘”：
+
+- 证券账户 `ACC-2026-001`：现金/购买力 85 万元，总资产 3,680 万元；三条持仓各有可卖数量与浮盈亏；
+- 组合风险预算 80 万元、已用 62 万元（77.5%）、单笔 2 万元、单票上限 10%、单笔/回撤/VaR 限额；
+- 加仓计划（预计权重 20.5%，被 R154 与单票硬限额阻断）、减仓至 10% 计划（已就绪）、止损止盈计划、
+  11 月已成交减仓计划，以及对应的订单意图与账户资金流水；
+- 成交滑点 12 bps、结果 15.8%、复盘发现“缺少预计权重检查”（重复 2 次）、经验教训与规则修订
+  `RR-2026-001`；规则修订后新增 R154 预计权重规则。
+
+这些示例同样全部为合成数据，不连接真实账户或交易通道。
+
 ### 6.1 真实 A 股（运行时扩展）
 
 Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代码或证券简称（如 `600519`、
@@ -326,7 +341,7 @@ Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代�
 - **SKOS 概念树**：九套方案切换、概念搜索、上下位/关联概念跳转；
 - **技能目录**：50 个外部技能、821 个章节、20 个主题作为 `SkillArtifact`/`SkillSection`/`SkillTopic` 编目，可在 Explorer 检索；
 - **原话摘录**：1,327 条公开短句，标注说话者、类型、主题和来源，不复制全文；
-- **规则层**：151 条 SWRL 规则，按市场/情绪/题材/龙头/竞价/龙虎榜/打板/风控/执行分类；
+- **规则层**：161 条 SWRL 规则，按市场/情绪/题材/龙头/竞价/龙虎榜/打板/风控/执行分类；
 - **短线/游资面板**：换手率、连板高度、龙虎榜净买、主题热度、RSI、风险分，叠加首板/连板/反包/退潮剧本、龙虎榜/竞价/复盘方法卡与 R16–R26 规则；
 - **SWRL 规则卡片**：严重程度筛选、IF/THEN、适用类、读取属性、SWRL 原子展开；
 - **OWL-S 服务**：输入、输出、前置条件、七步流程、grounding 操作；
@@ -341,11 +356,11 @@ Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代�
 
 ### 规模定位
 
-当前可浏览实体为 3,404 个：294 个类、451 个属性、2,355 个个体、147 个 SKOS 概念、151 条规则、1 个服务、5 项政策；
-RDF 图共 40,574 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
+当前可浏览实体为 3,742 个：337 个类、653 个属性、2,410 个个体、173 个 SKOS 概念、161 条规则、2 个服务、6 项政策；
+RDF 图共 44,372 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
 FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是生产级，建议沿公司行为、基金/ETF、衍生品、
 交易执行、组合风险、合规与披露等业务模块继续扩展，而不是为增加节点而堆叠孤立类。
-1.1 已实际新增 64 个类、94 个属性、41 个概念、4 条规则和 1 项政策；1.2 补了 58 个短线/游资类、77 个属性、20 个短线剧本概念、6 条规则和 1 项数据政策；1.3 又从公开游资方法论提炼了 48 个类、85 个属性、14 个概念、5 条规则；1.4 把站点 50 个技能、821 个章节、20 个技能主题编成可检索的 `SkillArtifact`/`SkillSection` 目录；1.5 抽取 144 条短原话；1.6 扩展到 1,327 条短原话摘录；1.7 把规则层从 26 条扩到 76 条；1.8 继续扩到 151 条，新增选股、估值、质押/商誉/解禁、监管、技术、竞价、龙虎榜、买卖点、仓位、执行、复盘等规则，完整清单见
+1.1 已实际新增 64 个类、94 个属性、41 个概念、4 条规则和 1 项政策；1.2 补了 58 个短线/游资类、77 个属性、20 个短线剧本概念、6 条规则和 1 项数据政策；1.3 又从公开游资方法论提炼了 48 个类、85 个属性、14 个概念、5 条规则；1.4 把站点 50 个技能、821 个章节、20 个技能主题编成可检索的 `SkillArtifact`/`SkillSection` 目录；1.5 抽取 144 条短原话；1.6 扩展到 1,327 条短原话摘录；1.7 把规则层从 26 条扩到 76 条；1.8 继续扩到 151 条，新增选股、估值、质押/商誉/解禁、监管、技术、竞价、龙虎榜、买卖点、仓位、执行、复盘等规则；1.9 再把决策拆成账户与持仓状态、组合风险预算、买卖点与仓位联动、执行到复盘闭环，新增 43 个类、202 个属性、26 个概念、10 条规则、1 个生命周期服务和 1 项风险预算政策，完整清单见
 [1.1 领域扩展说明](docs/expansion-1.1.md) 和 [1.3 游资方法论提炼](docs/youzi-knowledge.md)。2.0 将按股票优先的模块化路线推进，目标约
 1,200–1,500 个类、2,000+ 属性、3,000+ SKOS 概念；详见
 [2.0 股票优先扩展路线](docs/roadmap-2.0.md)。更完整的节点口径与缺口见
@@ -397,7 +412,9 @@ Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 四项能力
 6. `check_constraints`：R06 集中度、R07 限制名单、R11 高风险买入复核，以及 ODRL
    trade-guard 的人工批准与合规检查双前置条件；
 7. `simulate_scenario`：在内存事实副本上改 ROE/增速/PE/风险/权重等指标，重跑规则并对比前后状态；
-8. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
+8. `evaluate_trade`：读取账户、持仓状态、风险预算、买卖点、仓位测算、订单意图、执行质量与复盘，
+   判断买入/卖出计划是否可执行并给出限制清单；
+9. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 
 LLM 模式下，数据不再需要“用户先补数据源、工程师先写适配器”：Agent 看到 `missingData` 后自行
@@ -458,7 +475,7 @@ GitHub Pages 不能运行后端，因此在线 Agent 需要把静态页面接到
 - OWL-S Profile / Process / Grounding 结构完整；
 - ODRL 政策含 uid、profile、permission/prohibition、约束三元组；
 - 示例决策具备完整决策字段；
-- 10 条 SPARQL 能力问题可解析；
+- 20 条 SPARQL 能力问题可解析；
 - 页面快照统计与本体统计一致；
 - OWL RL 闭包可运行（当前 5,864 → 16,762 三元组，推断 10,898 条）。
 
@@ -504,7 +521,8 @@ FIBO 资料：<https://spec.edmcouncil.org/fibo/> · <https://www.omg.org/spec/E
 - [节点规模评估与扩展路线](docs/scale-assessment.md)
 - [2.0 股票优先扩展路线](docs/roadmap-2.0.md)
 - [efinance 数据源评估](docs/efinance-assessment.md)
-- [10 条 SPARQL 能力问题](docs/competency-questions.rq)
+- [20 条 SPARQL 能力问题](docs/competency-questions.rq)
+- [1.9 决策生命周期扩展说明](docs/expansion-1.9.md)
 - [视觉证据索引](docs/evidence/README.md)
 - [Bostar Pack 英文静态站](bostarpack/README.md)
 - [聚合入口 ontology/a-share.ttl](ontology/a-share.ttl)

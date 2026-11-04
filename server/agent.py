@@ -24,6 +24,7 @@ from .answers import (
     compose_scenario,
     compose_screen,
     compose_search,
+    compose_trade,
 )
 from .llm import LLMClient, LLMError
 from .ontology import OntologyStore
@@ -482,6 +483,9 @@ class AgentService:
         elif intent == "screen":
             result = await run("screen_companies", {"rule_id": value} if value else {})
             answer = compose_screen(result.get("data") or {}) if result.get("ok") else self._tool_error_answer(result)
+        elif intent == "trade":
+            result = await run("evaluate_trade", value)
+            answer = compose_trade(result.get("data") or {}) if result.get("ok") else self._tool_error_answer(result)
         elif intent == "portfolio":
             result = await run("get_portfolio_analysis", {})
             answer = compose_portfolio(result.get("data") or {}) if result.get("ok") else self._tool_error_answer(result)
@@ -641,6 +645,22 @@ class AgentService:
 
         screen_words = ("哪些", "筛选", "候选", "机会", "池", "排名", "符合", "触发", "选出", "挑出")
         portfolio_words = ("组合", "持仓", "集中度", "止损", "仓位", "权重")
+        trade_words = (
+            "买点",
+            "卖点",
+            "买入计划",
+            "卖出计划",
+            "该不该买",
+            "该不该卖",
+            "买多少",
+            "卖多少",
+            "风险预算",
+            "账户状态",
+            "复盘",
+            "执行质量",
+            "仓位测算",
+            "仓位怎么定",
+        )
         policy_words = ("政策", "odrl", "合规", "治理", "人工批准")
         search_words = ("本体", "类", "属性", "概念", "定义", "解释", "是什么", "是啥", "含义")
         list_words = ("公司", "标的", "列表", "清单", "有什么")
@@ -666,6 +686,12 @@ class AgentService:
         explicit_industry = bool(spec.get("industry"))
         real_universe = is_real_universe_question(question)
 
+        if any(word in lower for word in trade_words):
+            has_buy = any(word in lower for word in ("买", "加仓", "建仓"))
+            has_sell = any(word in lower for word in ("卖", "减仓", "清仓", "止盈"))
+            side = "both" if has_buy and has_sell else ("sell" if has_sell else "buy" if has_buy else "both")
+            company = self.store._label(companies[0]) if companies else None
+            return "trade", {"company": company, "side": side}
         if any(word in lower for word in constraint_words) and (
             companies or any(word in lower for word in portfolio_words)
         ):
