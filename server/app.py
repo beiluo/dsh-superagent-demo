@@ -23,6 +23,7 @@ from .ontology import OntologyStore
 from .query import METRIC_FIELDS
 from .security import SlidingWindowLimiter, client_ip
 from .settings import Settings
+from .tools import LLM_TOOL_NAMES, TOOLS
 
 logger = logging.getLogger("ashare.agent.api")
 
@@ -220,19 +221,20 @@ def create_app(
             },
             "companies": store.company_names(),
             "query": {
-                "tools": [
-                    "sparql_query",
-                    "describe_ontology",
-                    "query_ontology",
-                    "trace_evidence",
-                    "check_constraints",
-                    "simulate_scenario",
+                "tools": list(LLM_TOOL_NAMES),
+                "rulesFallbackTools": [
+                    tool["function"]["name"]
+                    for tool in TOOLS
+                    if tool["function"]["name"] not in LLM_TOOL_NAMES
                 ],
                 "freeQuery": {
                     "enabled": enabled,
                     "forms": ["SELECT", "ASK"],
                     "maxRows": 50,
-                    "note": "LLM 模式可读取本体图式并生成只读 SPARQL；规则模式保持确定性工具路径。",
+                    "note": (
+                        "LLM 模式只用图式发现、真实事实加载和自生成只读 SPARQL 驱动本体；"
+                        "固定分析工具仅用于规则回退。"
+                    ),
                 },
                 "metrics": list(METRIC_FIELDS),
                 "realScreening": store.market_data is not None,

@@ -119,7 +119,16 @@ def test_llm_timeout_is_retryable():
 def test_agent_tool_loop(client_factory):
     fake = FakeLLM(
         [
-            tool_response("get_company_analysis", {"company": "华辰智造"}),
+            tool_response("load_company_data", {"company": "华辰智造"}),
+            tool_response(
+                "sparql_query",
+                {
+                    "query": (
+                        "SELECT ?company ?label WHERE { ?company a ash:ListedCompany ; "
+                        "rdfs:label ?label . FILTER(LANG(?label) = \"zh\") } LIMIT 5"
+                    )
+                },
+            ),
             final_response("### 结论\n华辰智造触发 R01。"),
         ]
     )
@@ -129,8 +138,11 @@ def test_agent_tool_loop(client_factory):
     data = response.json()
     assert data["mode"] == "llm"
     assert data["model"] == "fake-model"
-    assert data["steps"][0]["tool"] == "get_company_analysis"
-    assert data["summary"]["recommendation"] == "增持"
+    assert [item["tool"] for item in data["steps"]] == [
+        "load_company_data",
+        "sparql_query",
+    ]
+    assert data["summary"] is None
     assert "华辰智造" in data["answer"]
     assert "不构成投资建议" in data["answer"]
     assert FAKE_KEY not in response.text
@@ -182,7 +194,7 @@ def test_agent_generates_and_chains_sparql_queries(client_factory):
 def test_agent_execution_trace_records_raw_messages(client_factory):
     fake = FakeLLM(
         [
-            tool_response("get_company_analysis", {"company": "华辰智造"}),
+            tool_response("load_company_data", {"company": "华辰智造"}),
             final_response("### 结论\n华辰智造触发 R01。"),
         ]
     )
@@ -224,14 +236,14 @@ def test_agent_execution_trace_records_raw_messages(client_factory):
     assert decision["toolCalls"] == [
         {
             "id": "call-test",
-            "name": "get_company_analysis",
+            "name": "load_company_data",
             "arguments": {"company": "华辰智造"},
         }
     ]
 
     tool_message = messages[4]
-    assert tool_message["name"] == "get_company_analysis"
-    assert tool_message["label"] == "读取企业画像与规则信号"
+    assert tool_message["name"] == "load_company_data"
+    assert tool_message["label"] == "加载公司事实到本体图"
     assert tool_message["arguments"] == {"company": "华辰智造"}
     assert tool_message["ok"] is True
     assert tool_message["elapsedMs"] >= 0
@@ -268,8 +280,11 @@ def test_agent_falls_back_when_llm_fails(client_factory):
 def test_agent_handles_tool_errors(client_factory):
     fake = FakeLLM(
         [
-            tool_response("get_company_analysis", {"company": "不存在的公司"}),
-            final_response("没有找到该公司，可用的公司有华辰智造、宁源新能源、景康生物、示例 ST 公司。"),
+            tool_response(
+                "sparql_query",
+                {"query": "SELECT ?company WHERE { ?company a ash:MissingClass"},
+            ),
+            final_response("查询失败，已说明原因。"),
         ]
     )
     client = client_factory({"llm_api_key": FAKE_KEY}, llm=fake)
@@ -280,9 +295,36 @@ def test_agent_handles_tool_errors(client_factory):
     assert data["steps"][0]["status"] == "error"
 
 
+def test_agent_cannot_call_hidden_fixed_tools(client_factory):
+    fake = FakeLLM(
+        [
+            tool_response("get_company_analysis", {"company": "华辰智造"}),
+            final_response("固定分析工具不可用，我只用图式、事实加载和 SPARQL。"),
+        ]
+    )
+    client = client_factory({"llm_api_key": FAKE_KEY}, llm=fake)
+    response = client.post("/api/agent/analyze", json={"question": "分析华辰智造"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["mode"] == "llm"
+    assert data["steps"][0]["tool"] == "get_company_analysis"
+    assert data["steps"][0]["status"] == "error"
+    assert "不在 LLM" in data["steps"][0]["detail"]
+    assert data["queryPath"] == []
+    tool_message = [
+        item
+        for item in data["execution"]["messages"]
+        if item.get("name") == "get_company_analysis"
+    ][0]
+    assert '"code": "tool_not_available"' in tool_message["content"]
+
+
 def test_agent_step_limit_falls_back(client_factory):
     def always_tool():
-        return tool_response("list_companies", {})
+        return tool_response(
+            "sparql_query",
+            {"query": "SELECT ?c WHERE { ?c a ash:ListedCompany } LIMIT 1"},
+        )
 
     fake = FakeLLM([always_tool for _ in range(10)])
     client = client_factory({"llm_api_key": FAKE_KEY, "agent_max_steps": 2}, llm=fake)

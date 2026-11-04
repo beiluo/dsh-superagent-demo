@@ -205,7 +205,17 @@ def test_llm_path_uses_real_boundary():
     store = _store(provider)
     fake = FakeLLM(
         [
-            tool_response("get_company_analysis", {"company": "贵州茅台"}),
+            tool_response("load_company_data", {"company": "贵州茅台"}),
+            tool_response(
+                "sparql_query",
+                {
+                    "query": (
+                        "SELECT ?company ?pe WHERE { ?company a ash:ListedCompany ; "
+                        "ash:hasSecurity ?security . ?security ash:hasValuation ?valuation . "
+                        "?valuation ash:peTtm ?pe } LIMIT 5"
+                    )
+                },
+            ),
             final_response("### 贵州茅台（600519）\n真实数据来自公开接口。"),
         ]
     )

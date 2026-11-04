@@ -174,7 +174,7 @@ python3 scripts/build_data.py   # 或 make build
 │   ├── ontology.py                    # 读取 Turtle、映射真实 A 股快照、构建企业/组合事实
 │   ├── marketdata.py                  # 真实 A 股公开行情/年报/日线适配器（可替换）
 │   ├── rules.py                       # SWRL 阈值与确定性信号评估
-│   ├── tools.py                       # 14 个只读本体工具
+│   ├── tools.py                       # 14 个只读本体工具（LLM 模式只暴露 3 项通用能力）
 │   ├── query.py                       # 属性路径查询、多股对比、证据链、约束与情景模拟
 │   ├── sparql.py                      # Agent 生成的只读 SPARQL 与图式发现
 │   ├── namespaces.py                  # 本体与运行时命名空间
@@ -353,23 +353,29 @@ FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是
 
 [![Agent 区块](docs/evidence/agent-section.png)](docs/evidence/agent-section.png)
 
-Agent 不是把整份 Turtle 塞进 prompt。它通过服务端只读工具与图查询按需读取本体；参数化工具只是快捷方式，不是查询边界。LLM 还可以读取本体图式，自己生成并编排只读 SPARQL：
+Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 三项能力：加载外部事实、读取本体图式、执行自生成的只读 SPARQL；所有公司、财报、行情、估值、规则、决策、证据、组合与 ODRL 政策查询都由 Agent 自己写，不再通过固定分析工具。
 
-### 开放查询层：Agent 自己生成图查询
+### LLM 模式：Agent 直接使用本体
 
+- `load_company_data`：真实 A 股先把公开行情、年报、估值与短线快照写入运行时本体图；示例公司已在本体中。只返回公司标识、来源与日期，不返回分析结论；
 - `describe_ontology`：读取类、对象属性、数据属性、命名空间前缀和示例查询，可按 `focus` 检索
   “财务”“决策”“规则”“组合”等词汇；
-- `sparql_query`：直接执行 Agent 生成的只读 SPARQL。任意关系、聚合、属性路径、否定/缺失条件、
-  跨实体组合都可以表达；一次复杂问题可以多轮“生成→执行→按结果修正”，再与参数化工具组合。
+- `sparql_query`：执行 Agent 自己生成的只读 SPARQL。任意关系、聚合、属性路径、否定/缺失条件、
+  跨实体组合都可以表达；一次复杂问题可以多轮“生成→执行→按结果修正”，规则阈值也从
+  `ash:RuleArtifact` 的 `ruleIf`/`ruleThen` 读取后对照事实。
 
 服务端把生成查询限制在只读范围：只接受 `SELECT`/`ASK`，拒绝 `INSERT`/`DELETE`/`LOAD` 等更新、
 `CONSTRUCT`/`DESCRIBE`，以及会访问远程端点的 `SERVICE`/`FROM`；查询最长 4,000 字符，单次最多
-返回 50 行，长字面量会截断。解析失败只返回安全错误、可用前缀和下一步提示。自由查询只在 LLM
-模式可用；规则模式保持确定性的固定路径，便于复现。
+返回 50 行，长字面量会截断。解析失败只返回安全错误、可用前缀和下一步提示。LLM 的工具面在服务端
+固定为上面三项；如果模型尝试调用 `get_company_analysis` 等隐藏的固定工具，会得到
+`tool_not_available`，而不是被执行。
 
 [![Agent 生成并编排只读 SPARQL 的查询路径](docs/evidence/open-query-after.png)](docs/evidence/open-query-after.png)
 
-参数化工具包括：
+### 规则模式：确定性工具回退
+
+没有 key 或 LLM 调用失败时，服务端回退到确定性规则模式，使用下面这些固定工具生成可复现的回答；
+它们不再出现在 LLM 的工具列表里：
 
 1. `query_ontology`：问题驱动的跨公司查询。`filters` 把 ROE、PE、负债率、营收增速、风险分数、
    市值、换手率、组合权重映射成本体属性路径；可叠加行业、规则条件和排序，返回每条命中的
@@ -387,26 +393,25 @@ Agent 不是把整份 Turtle 塞进 prompt。它通过服务端只读工具与�
 8. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 
-可以这样问，验证自由查询层：**哪些公司的决策缺少风险评估？**（否定条件）、**每家公司分别有几条
-证据？**（聚合）、**从公司沿 `aboutCompany` 反向能找到哪些决策？**（路径与方向）、**示例公司中
+可以这样问，验证 LLM 的自由查询层：**哪些公司的决策缺少风险评估？**（否定条件）、**每家公司分别
+有几条证据？**（聚合）、**从公司沿 `aboutCompany` 反向能找到哪些决策？**（路径与方向）、**示例公司中
 谁的 ROE 最高、对应 PE 是多少？**（联表与排序）。
 
 [![多股同口径对比](docs/evidence/compare-after.png)](docs/evidence/compare-after.png)
 
 真实 A 股查询走 `server/marketdata.py`：公开行情、年报和近 80 个交易日的日线先被规范化，
-再映射为运行时的 RDF 事实，因此规则、引用和回答结构与示例公司一致；返回结果带
-`dataMode=real`，前端据此展示“真实数据”标识而不是示例结论卡。`get_company_analysis` 的
-`shortTerm` 字段会带出 MA5/MA20/MA60、连板/炸板、龙虎榜净买入和主题热度（有则显示），
-并由规则引擎执行 R16–R21。
+再由 `load_company_data` 映射为运行时的 RDF 事实，因此规则、引用和回答结构与示例公司一致；
+返回结果带 `dataMode=real`，前端据此展示“真实数据”标识而不是示例结论卡。LLM 随后用
+`sparql_query` 读取 `shortTerm` 字段中的 MA5/MA20/MA60、连板/炸板、龙虎榜净买入和主题热度
+（有则显示），并对照 R16–R21 的规则文本判断。
 
-LLM 模式由服务端做工具循环；参数化工具不够用时，模型会先读图式，再生成只读 SPARQL 并执行。
-没有 key 或 LLM 调用失败时自动回退到确定性的规则模式。两种模式使用同一套本体事实和引用，
-回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。
+LLM 模式由服务端做工具循环；模型只会看到图式发现、事实加载与自生成 SPARQL 三项能力，所有
+本体查询路径由模型自己决定。没有 key 或 LLM 调用失败时自动回退到确定性的规则模式，此时才使用
+固定分析工具。两种模式使用同一套本体事实和引用，回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。
 
-回答会同时给出 **“本体查询路径”**：把本次使用的工具、范围选择、属性路径、过滤条件和规则复核
-串成可读步骤；自由生成的 SPARQL 也会出现在这里，问题不同，路径也不同。下方还可展开
-**“执行详情”**，按顺序展示用户/历史消息、LLM 的工具决策（工具名与参数）、发给 LLM 的工具结果
-原文和最终回答，也可以查看原始 JSON。
+回答会同时给出 **“本体查询路径”**：把本次加载的事实、读取的图式、生成的 SPARQL 和结果串成
+可读步骤；问题不同，路径也不同。下方还可展开 **“执行详情”**，按顺序展示用户/历史消息、
+LLM 的工具决策（工具名与参数）、发给 LLM 的工具结果原文和最终回答，也可以查看原始 JSON。
 系统提示按安全边界不下发浏览器。规则模式同样展示确定性工具调用与返回，便于对照本体事实如何进入回答。
 
 [![问题驱动的本体查询路径](docs/evidence/query-after.png)](docs/evidence/query-after.png)

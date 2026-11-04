@@ -173,4 +173,25 @@ def test_schema_tool_is_registered(store: OntologyStore):
 
 def test_tool_catalog_exposes_free_query():
     names = {item["function"]["name"] for item in TOOLS}
-    assert {"describe_ontology", "sparql_query"} <= names
+    assert {"describe_ontology", "sparql_query", "load_company_data"} <= names
+
+
+def test_llm_tool_surface_is_generic_query_only():
+    from server.tools import LLM_TOOLS
+
+    names = [item["function"]["name"] for item in LLM_TOOLS]
+    assert names == ["load_company_data", "describe_ontology", "sparql_query"]
+    assert "get_company_analysis" not in names
+    assert "check_constraints" not in names
+    assert "simulate_scenario" not in names
+
+
+def test_load_company_data_returns_metadata_not_analysis(store: OntologyStore):
+    result = call_tool(store, "load_company_data", {"company": "华辰智造"})
+    assert result["ok"] is True
+    data = result["data"]
+    assert data["company"]["label"] == "华辰智造"
+    assert data["dataMode"] == "example"
+    assert "financials" not in data
+    assert "signals" not in data
+    assert "sparql_query" in data["dataNote"]
