@@ -27,7 +27,7 @@ from .settings import Settings
 logger = logging.getLogger("ashare.agent.api")
 
 SERVICE_NAME = "ashare-ontology-agent"
-SERVICE_VERSION = "1.2.0"
+SERVICE_VERSION = "1.8.0"
 
 DISCLAIMER = (
     "示例公司数据为合成示例；真实 A 股数据来自公开行情与年报接口，可能延迟。"
