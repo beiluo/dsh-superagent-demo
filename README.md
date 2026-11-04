@@ -492,6 +492,7 @@ FIBO 资料：<https://spec.edmcouncil.org/fibo/> · <https://www.omg.org/spec/E
 - [1.1 领域扩展说明](docs/expansion-1.1.md)
 - [节点规模评估与扩展路线](docs/scale-assessment.md)
 - [2.0 股票优先扩展路线](docs/roadmap-2.0.md)
+- [efinance 数据源评估](docs/efinance-assessment.md)
 - [10 条 SPARQL 能力问题](docs/competency-questions.rq)
 - [视觉证据索引](docs/evidence/README.md)
 - [Bostar Pack 英文静态站](bostarpack/README.md)
