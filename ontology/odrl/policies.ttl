@@ -25,7 +25,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
     rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.9.0" ;
+    owl:versionInfo "1.10.0" ;
     ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
 
 # ===========================================================================
@@ -37,7 +37,7 @@ ashd:odrl-profile a owl:Ontology ;
     dcterms:title "A 股投资决策 ODRL Profile"@zh ;
     dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.9.0" .
+    owl:versionInfo "1.10.0" .
 
 ashd:leftOperand-humanApproval a odrl:LeftOperand ;
     skos:prefLabel "人工批准状态"@zh, "human approval"@en ;
@@ -530,3 +530,109 @@ ashd:policy-trade-lifecycle
     ] ;
     rdfs:label "交易决策生命周期风险预算政策"@zh ;
     rdfs:comment "把风险预算、人工批准与复盘义务写入 ODRL，交易执行前必须通过策略检查。"@zh .
+
+# ===== Trading cognition judgment policy =====
+ashd:leftOperand-counterEvidenceReviewed a odrl:LeftOperand ;
+    rdfs:label "反向证据是否审查"@zh ;
+    rdfs:comment "交易判断是否逐条审查了反向证据并写明处置。"@zh ;
+    ash:isExample true .
+
+ashd:leftOperand-marketRiskAppetiteScore a odrl:LeftOperand ;
+    rdfs:label "市场风险偏好分数"@zh ;
+    rdfs:comment "市场认知给出的 0—100 示例风险偏好分数。"@zh ;
+    ash:isExample true .
+
+ashd:asset-trading-judgment a odrl:Asset, ash:InformationObject ;
+    rdfs:label "交易判断、行为规则与结果验证"@zh ;
+    rdfs:comment "分场景的交易判断、失效条件、行为规则、判断版本与结果验证记录。"@zh ;
+    odrl:hasPolicy ashd:policy-trading-cognition ;
+    ash:isExample true .
+
+ashd:asset-opportunity-assessment a odrl:Asset, ash:InformationObject ;
+    rdfs:label "机会评估与反向证据"@zh ;
+    rdfs:comment "机会结构、阶段、支持证据、反向证据、风险收益与胜率依据。"@zh ;
+    odrl:hasPolicy ashd:policy-trading-cognition ;
+    ash:isExample true .
+
+ashd:policy-trading-cognition
+    a odrl:Agreement, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-trading-cognition ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "五引擎交易认知判断协议"@zh, "Five-engine trading cognition judgment agreement"@en ;
+    dcterms:description "交易判断只能用于投资决策支持；反向证据未审查、市场风险偏好过低或人工批准为 false 时不得执行或新增风险；判断变化必须保留版本与触发证据，并用结果验证回写经验。"@zh ;
+    ash:policyVersion "1.10.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-12-31"^^xsd:date ;
+    ash:isExample true ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-trading-judgment, ashd:asset-opportunity-assessment ;
+        odrl:action odrl:read, odrl:use, odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "investment-decision-support"@en
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:recipient ;
+            odrl:operator odrl:isA ;
+            odrl:rightOperand ash:QualifiedInvestor
+        ] ;
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:attribute ;
+            odrl:target ashd:asset-source-notice
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:target ashd:asset-trading-judgment
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-order-intent ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-humanApproval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand false
+        ] ;
+        odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
+    ] , [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-trading-judgment ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-counterEvidenceReviewed ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand false
+        ] ;
+        odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
+    ] , [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-trading-judgment ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-marketRiskAppetiteScore ;
+            odrl:operator odrl:lt ;
+            odrl:rightOperand 30.0
+        ] ;
+        odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
+    ] ;
+    rdfs:label "五引擎交易认知判断政策"@zh ;
+    rdfs:comment "把反向证据审查、市场否决、人工批准与结果验证写成可检查约束，不替代真实合规流程。"@zh .

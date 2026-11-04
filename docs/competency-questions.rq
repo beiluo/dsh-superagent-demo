@@ -314,3 +314,62 @@ SELECT ?entity ?type WHERE {
     BIND ("ExecutionSlippageBreach" AS ?type)
   }
 }
+
+# --- CQ ---
+# CQ21: How does one analysis case connect market, sector, stock, event,
+#       opportunity and judgment outputs?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?case ?security ?market ?sector ?stockCognition ?event ?opportunity ?judgment WHERE {
+  ?case a ash:AnalysisCase ;
+        ash:caseOfSecurity ?security ;
+        ash:hasMarketCognition ?market ;
+        ash:hasSectorCognition ?sector ;
+        ash:hasStockCognition ?stockCognition ;
+        ash:hasEventCognition ?event ;
+        ash:hasOpportunityAssessment ?opportunity ;
+        ash:hasTradingJudgment ?judgment .
+}
+
+# --- CQ ---
+# CQ22: What supporting and counter evidence does an opportunity assessment
+#       carry, and has the counter evidence been reviewed?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?opportunity ?supporting ?counter ?counterEvidenceReviewed WHERE {
+  ?opportunity a ash:OpportunityAssessment ;
+               ash:counterEvidenceReviewed ?counterEvidenceReviewed .
+  OPTIONAL { ?opportunity ash:opportunitySupportingEvidence ?supporting }
+  OPTIONAL { ?opportunity ash:opportunityCounterEvidence ?counter }
+}
+
+# --- CQ ---
+# CQ23: Which new evidence changed a judgment, and from which version to which?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?judgment ?fromVersion ?toVersion ?reason ?changedField ?triggerEvidence WHERE {
+  ?judgment a ash:TradingJudgment ;
+            ash:hasJudgmentRevision ?revision .
+  ?revision ash:revisionFromVersion ?fromVersion ;
+            ash:revisionToVersion ?toVersion ;
+            ash:revisionReason ?reason ;
+            ash:revisionChangedField ?changedField ;
+            ash:revisionTriggerEvidence ?triggerEvidence .
+}
+
+# --- CQ ---
+# CQ24: Which behavior rules and outcome verification belong to a judgment?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?judgment ?scenario ?decision ?behaviorRule ?action ?condition ?verification ?result WHERE {
+  ?judgment a ash:TradingJudgment ;
+            ash:judgmentScenarioCode ?scenario ;
+            ash:judgmentDecisionCode ?decision .
+  OPTIONAL {
+    ?judgment ash:hasBehaviorRule ?behaviorRule .
+    ?behaviorRule ash:behaviorActionCode ?action ;
+                  ash:behaviorCondition ?condition .
+  }
+  OPTIONAL {
+    ?case a ash:AnalysisCase ;
+          ash:hasTradingJudgment ?judgment ;
+          ash:hasOutcomeVerification ?verification .
+    ?verification ash:verificationResultCode ?result .
+  }
+}

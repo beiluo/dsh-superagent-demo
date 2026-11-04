@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.9.0" ;
+    owl:versionInfo "1.10.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
@@ -1589,3 +1589,167 @@ ash:competency-question-20 a owl:NamedIndividual, ash:CompetencyQuestion ;
     ash:competencyQuestion "哪些决策或计划存在风险预算超限、购买力不足或执行滑点超限？"@zh ;
     ash:isExample true .
 
+
+# ===========================================================================
+# Domain expansion 1.10 — trading cognition pipeline
+# ===========================================================================
+# Restrictions make the five-engine case traceable: an AnalysisCase must bind
+# the five cognition outputs, a judgment must have a scenario, decision,
+# invalidation and behavior rules, and a revision must name its trigger.
+
+ash:AnalysisCase rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:caseOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:caseScenario ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasMarketCognition ; owl:someValuesFrom ash:MarketCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasSectorCognition ; owl:someValuesFrom ash:SectorCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasStockCognition ; owl:someValuesFrom ash:StockCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasEventCognition ; owl:someValuesFrom ash:EventCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasOpportunityAssessment ; owl:someValuesFrom ash:OpportunityAssessment ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasTradingJudgment ; owl:someValuesFrom ash:TradingJudgment ] ,
+    [ a owl:Restriction ; owl:onProperty ash:caseAsOf ; owl:someValuesFrom xsd:date ] .
+
+ash:MarketCognition rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:cognitionOfRegime ; owl:someValuesFrom ash:MarketRegime ] ,
+    [ a owl:Restriction ; owl:onProperty ash:marketRegimeCode ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:marketCognitionSummary ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:dataAsOf ; owl:cardinality 1 ] .
+
+ash:SectorCognition rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:sectorCognitionOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:cognitionOfSector ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:sectorCognitionSummary ; owl:cardinality 1 ] .
+
+ash:StockCognition rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:stockCognitionOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:cognitionTrendState ; owl:someValuesFrom ash:TrendState ] ,
+    [ a owl:Restriction ; owl:onProperty ash:cognitionPricePattern ; owl:someValuesFrom ash:PricePattern ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasVolumePriceBehavior ; owl:minCardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:stockCognitionSummary ; owl:cardinality 1 ] .
+
+ash:EventCognition rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:eventCognitionOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:eventVerified ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:eventCognitionSummary ; owl:cardinality 1 ] .
+
+ash:OpportunityAssessment rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:opportunityForSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasOpportunityStage ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasRiskReward ; owl:someValuesFrom ash:RiskRewardAssessment ] ,
+    [ a owl:Restriction ; owl:onProperty ash:fromMarketCognition ; owl:someValuesFrom ash:MarketCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:fromSectorCognition ; owl:someValuesFrom ash:SectorCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:fromStockCognition ; owl:someValuesFrom ash:StockCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:fromEventCognition ; owl:someValuesFrom ash:EventCognition ] ,
+    [ a owl:Restriction ; owl:onProperty ash:counterEvidenceReviewed ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:opportunityStructure ; owl:cardinality 1 ] .
+
+ash:RiskRewardAssessment rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:riskRewardForSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:winRateBasis ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:expectedRewardRiskRatio ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:riskRewardInvalidation ; owl:cardinality 1 ] .
+
+ash:TradingJudgment rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:judgmentOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:judgmentForCase ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasJudgmentScenario ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasJudgmentDecision ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:judgmentVersion ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:judgmentInvalidation ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:judgmentAsOf ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:judgmentFromAssessment ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:judgmentBasedOn ; owl:minCardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasBehaviorRule ; owl:minCardinality 1 ] .
+
+ash:BehaviorRule rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:behaviorForJudgment ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasBehaviorAction ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:behaviorCondition ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:behaviorPriority ; owl:cardinality 1 ] .
+
+ash:JudgmentRevision rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:revisionOfJudgment ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:revisionFromVersion ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:revisionToVersion ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:revisionReason ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:revisionChangedField ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:revisionTriggerEvidence ; owl:minCardinality 1 ] .
+
+ash:OutcomeVerification rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:verificationOfJudgment ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:hasVerificationResult ; owl:someValuesFrom skos:Concept ] ,
+    [ a owl:Restriction ; owl:onProperty ash:verificationLogicStillValid ; owl:cardinality 1 ] ,
+    [ a owl:Restriction ; owl:onProperty ash:verificationLesson ; owl:cardinality 1 ] .
+
+ash:VolumePriceBehavior rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:volumePriceBehaviorOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:volumePriceTypeCode ; owl:cardinality 1 ] .
+
+ash:AuctionBehavior rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:auctionBehaviorOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:auctionBehaviorCode ; owl:cardinality 1 ] .
+
+ash:IntradayBehavior rdfs:subClassOf
+    [ a owl:Restriction ; owl:onProperty ash:intradayBehaviorOfSecurity ; owl:someValuesFrom ash:Security ] ,
+    [ a owl:Restriction ; owl:onProperty ash:intradayBehaviorCode ; owl:cardinality 1 ] .
+
+# --- keys ---
+
+ash:AnalysisCase owl:hasKey ( ash:caseId ) .
+ash:MarketCognition owl:hasKey ( ash:dataAsOf ) .
+ash:SectorCognition owl:hasKey ( ash:dataAsOf ash:cognitionOfSector ) .
+ash:StockCognition owl:hasKey ( ash:stockCognitionOfSecurity ash:dataAsOf ) .
+ash:EventCognition owl:hasKey ( ash:eventCognitionOfSecurity ash:dataAsOf ) .
+ash:OpportunityAssessment owl:hasKey ( ash:opportunityForSecurity ash:dataAsOf ) .
+ash:RiskRewardAssessment owl:hasKey ( ash:riskRewardForSecurity ash:dataAsOf ) .
+ash:TradingJudgment owl:hasKey ( ash:judgmentForCase ash:judgmentVersion ) .
+ash:BehaviorRule owl:hasKey ( ash:behaviorRuleId ) .
+ash:JudgmentRevision owl:hasKey ( ash:judgmentRevisionId ) .
+ash:OutcomeVerification owl:hasKey ( ash:verificationId ) .
+
+# --- functional identifiers ---
+
+ash:caseId a owl:FunctionalProperty .
+ash:behaviorRuleId a owl:FunctionalProperty .
+ash:judgmentRevisionId a owl:FunctionalProperty .
+ash:verificationId a owl:FunctionalProperty .
+
+# --- inverse links ---
+
+ash:hasTradingJudgment owl:inverseOf ash:judgmentForCase .
+ash:judgmentForCase owl:inverseOf ash:hasTradingJudgment .
+ash:hasBehaviorRule owl:inverseOf ash:behaviorForJudgment .
+ash:behaviorForJudgment owl:inverseOf ash:hasBehaviorRule .
+ash:hasJudgmentRevision owl:inverseOf ash:revisionOfJudgment .
+ash:revisionOfJudgment owl:inverseOf ash:hasJudgmentRevision .
+ash:hasOutcomeVerification owl:inverseOf ash:verificationOfJudgment .
+ash:verificationOfJudgment owl:inverseOf ash:hasOutcomeVerification .
+
+# --- cognitive outputs are distinct record types ---
+
+[ a owl:AllDisjointClasses ;
+  owl:members ( ash:MarketCognition ash:SectorCognition ash:StockCognition ash:EventCognition
+                ash:OpportunityAssessment ash:RiskRewardAssessment ash:OutcomeVerification ) ] .
+
+# ===========================================================================
+# Domain expansion 1.10 — competency questions
+# ===========================================================================
+
+ash:competency-question-21 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ21 一只证券如何把市场、板块、个股、事件、机会与判断串成案例？"@zh ;
+    ash:competencyQuestion "一只证券如何把市场、板块、个股、事件、机会与判断串成案例？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-22 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ22 某次交易判断的支持证据与反向证据分别是什么？"@zh ;
+    ash:competencyQuestion "某次交易判断的支持证据与反向证据分别是什么？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-23 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ23 判断从哪个版本变到哪个版本，什么新证据触发了变化？"@zh ;
+    ash:competencyQuestion "判断从哪个版本变到哪个版本，什么新证据触发了变化？"@zh ;
+    ash:isExample true .
+
+ash:competency-question-24 a owl:NamedIndividual, ash:CompetencyQuestion ;
+    rdfs:label "CQ24 非持仓与已持仓各自适用哪些行为规则，结果验证是否支持原逻辑？"@zh ;
+    ash:competencyQuestion "非持仓与已持仓各自适用哪些行为规则，结果验证是否支持原逻辑？"@zh ;
+    ash:isExample true .

@@ -880,7 +880,7 @@ def build() -> dict[str, Any]:
         "meta": {
             "title": "A 股投资决策本体",
             "titleEn": "A-Share Investment Decision Ontology",
-            "version": "1.9.0",
+            "version": "1.10.0",
             "date": "2026-11",
             "namespace": str(ASH),
             "repo": "https://github.com/beiluo/dsh-superagent-demo",

@@ -17,6 +17,7 @@ from .acquisition import (
     AcquisitionError,
     AcquisitionService,
 )
+from .cognition import CognitionError, assess_cognition
 from .decision import DecisionError, evaluate_trade
 from .marketdata import MarketDataError
 from .ontology import CompanyKnowledge, OntologyStore, SUPPORTED_MERGE_FIELDS, local_name
@@ -50,6 +51,7 @@ TOOL_LABELS = {
     "trace_evidence": "追踪决策证据链",
     "check_constraints": "检查组合与政策约束",
     "evaluate_trade": "检查买卖点、仓位与风险预算",
+    "evaluate_cognition": "按五引擎认知流程形成交易判断",
     "simulate_scenario": "模拟情景下的规则变化",
 }
 
@@ -471,6 +473,34 @@ TOOLS: list[dict[str, Any]] = [
                         "type": "string",
                         "enum": ["buy", "sell", "both"],
                         "description": "关注方向，默认 both。",
+                    },
+                },
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "evaluate_cognition",
+            "description": (
+                "按「市场认知 → 机会识别 → 交易判断 → 行为管理 → 结果验证」五引擎流程判断一只证券："
+                "先检查市场是否允许交易，再读取板块、个股趋势、量价、竞价、盘中与事件证据，审查反向证据，"
+                "按非持仓或已持仓场景形成买入/持有/加仓/减仓/卖出/观望结论，并给出失效条件、行为规则、"
+                "判断版本与结果验证。回答“这只股票为什么值得买”“买入后什么情况下继续持有或卖出”"
+                "“按认知体系分析”“判断逻辑有没有变”类问题时优先使用。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company": {
+                        "type": "string",
+                        "description": "公司名、证券简称或 6 位代码；不传则使用本体中的默认分析案例。",
+                    },
+                    "scenario": {
+                        "type": "string",
+                        "enum": ["auto", "non_position", "held"],
+                        "description": "auto 根据持仓自动判断；non_position 寻找买入机会；held 管理已有持仓。",
                     },
                 },
                 "additionalProperties": False,
@@ -1331,6 +1361,22 @@ def _trade(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _cognition(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    company = str(arguments.get("company")) if arguments.get("company") else None
+    scenario = str(arguments.get("scenario") or "auto")
+    try:
+        data = assess_cognition(store, company=company, scenario=scenario)
+    except CognitionError as exc:
+        return _error("evaluate_cognition", exc.code, exc.message, **exc.extra)
+    return {
+        "ok": True,
+        "tool": "evaluate_cognition",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
 def _scenario(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
     company = str(arguments.get("company", ""))
     changes = arguments.get("changes")
@@ -1458,6 +1504,8 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
             return _constraints(store, arguments)
         if name == "evaluate_trade":
             return _trade(store, arguments)
+        if name == "evaluate_cognition":
+            return _cognition(store, arguments)
         if name == "simulate_scenario":
             return _scenario(store, arguments)
     except Exception as exc:  # noqa: BLE001 - tool boundary must not crash the agent
