@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.2.0" ;
+    owl:versionInfo "1.8.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================
@@ -84,7 +84,7 @@ ashd:rule-value-candidate
     ash:ruleOwner "投资决策委员会" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:ListedCompany ;
-    ash:ruleUses ash:roe, ash:peTtm, ash:netProfit, ash:isST ;
+    ash:ruleUses ash:ash:roe, ash:peTtm, ash:netProfit, ash:isST ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-report ]
@@ -121,7 +121,7 @@ ashd:rule-high-financial-risk
     ash:ruleOwner "风险管理部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:ListedCompany ;
-    ash:ruleUses ash:debtRatio, ash:interestCoverage ;
+    ash:ruleUses ash:ash:debtRatio, ash:interestCoverage ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-report ]
@@ -152,7 +152,7 @@ ashd:rule-st-exclusion
     ash:ruleOwner "合规部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:ListedCompany ;
-    ash:ruleUses ash:isST ;
+    ash:ruleUses ash:ash:isST ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:isST ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-isst ]
@@ -176,7 +176,7 @@ ashd:rule-delisting-exclusion
     ash:ruleOwner "合规部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:ListedCompany ;
-    ash:ruleUses ash:delistingRisk ;
+    ash:ruleUses ash:ash:delistingRisk ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:delistingRisk ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-isst ]
@@ -204,7 +204,7 @@ ashd:rule-stop-loss
     ash:ruleOwner "组合管理部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:Position ;
-    ash:ruleUses ash:avgCost, ash:lastPrice ;
+    ash:ruleUses ash:ash:avgCost, ash:lastPrice ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-portfolio ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:holdsPosition ; swrl:argument1 ashd:var-portfolio ; swrl:argument2 ashd:var-position ]
@@ -237,7 +237,7 @@ ashd:rule-concentration
     ash:ruleOwner "组合管理部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:Portfolio ;
-    ash:ruleUses ash:positionWeight ;
+    ash:ruleUses ash:ash:positionWeight ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-portfolio ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:holdsPosition ; swrl:argument1 ashd:var-portfolio ; swrl:argument2 ashd:var-position ]
@@ -266,7 +266,7 @@ ashd:rule-restricted-review
     ash:ruleOwner "合规部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:InvestmentDecision ;
-    ash:ruleUses ash:aboutSecurity, ash:isRestricted ;
+    ash:ruleUses ash:ash:aboutSecurity, ash:isRestricted ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:InvestmentDecision ; swrl:argument1 ashd:var-decision ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:aboutSecurity ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-security ]
@@ -295,7 +295,7 @@ ashd:rule-auditable-decision
     ash:ruleOwner "投资决策委员会" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:InvestmentDecision ;
-    ash:ruleUses ash:hasRiskAssessment, ash:hasRationale, ash:basedOn, ash:governedBy ;
+    ash:ruleUses ash:ash:hasRiskAssessment, ash:hasRationale, ash:basedOn, ash:governedBy ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:InvestmentDecision ; swrl:argument1 ashd:var-decision ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRiskAssessment ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-risk ]
@@ -325,7 +325,7 @@ ashd:rule-illiquidity
     ash:ruleOwner "风险管理部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:turnoverRate, ash:marketCap ;
+    ash:ruleUses ash:ash:turnoverRate, ash:marketCap ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-security ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketQuote ; swrl:argument1 ashd:var-security ; swrl:argument2 ashd:var-quote ]
@@ -356,7 +356,7 @@ ashd:rule-growth-candidate
     ash:ruleOwner "投资决策委员会" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:ListedCompany ;
-    ash:ruleUses ash:revenueGrowth, ash:profitGrowth, ash:peTtm ;
+    ash:ruleUses ash:ash:revenueGrowth, ash:profitGrowth, ash:peTtm ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:ListedCompany ; swrl:argument1 ashd:var-company ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasFinancialReport ; swrl:argument1 ashd:var-company ; swrl:argument2 ashd:var-report ]
@@ -391,7 +391,7 @@ ashd:rule-buy-high-risk-review
     ash:ruleOwner "风险管理部" ;
     ash:ruleEffectiveFrom "2026-10-01"^^xsd:date ;
     ash:appliesTo ash:InvestmentDecision ;
-    ash:ruleUses ash:actionCode, ash:riskScore ;
+    ash:ruleUses ash:ash:actionCode, ash:riskScore ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:InvestmentDecision ; swrl:argument1 ashd:var-decision ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRecommendation ; swrl:argument1 ashd:var-decision ; swrl:argument2 ashd:var-recommendation ]
@@ -431,7 +431,7 @@ ashd:rule-tracking-error
     ash:ruleOwner "指数与量化部" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:FundShare ;
-    ash:ruleUses ash:trackingError ;
+    ash:ruleUses ash:ash:trackingError ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:FundShare ; swrl:argument1 ashd:var-fundshare ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:trackingError ; swrl:argument1 ashd:var-fundshare ; swrl:argument2 ashd:var-tracking ]
@@ -455,7 +455,7 @@ ashd:rule-convertible-rich
     ash:ruleOwner "固定收益部" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:ConvertibleBond ;
-    ash:ruleUses ash:conversionPremium ;
+    ash:ruleUses ash:ash:conversionPremium ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:ConvertibleBond ; swrl:argument1 ashd:var-cb ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:conversionPremium ; swrl:argument1 ashd:var-cb ; swrl:argument2 ashd:var-premium ]
@@ -479,7 +479,7 @@ ashd:rule-order-blocked
     ash:ruleOwner "交易运营部" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Order ;
-    ash:ruleUses ash:orderStatus ;
+    ash:ruleUses ash:ash:orderStatus ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Order ; swrl:argument1 ashd:var-order ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:orderStatus ; swrl:argument1 ashd:var-order ; swrl:argument2 ashd:var-orderstatus ]
@@ -503,7 +503,7 @@ ashd:rule-fund-outflow
     ash:ruleOwner "组合管理部" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Fund ;
-    ash:ruleUses ash:netFlowPct ;
+    ash:ruleUses ash:ash:netFlowPct ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Fund ; swrl:argument1 ashd:var-fund ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:netFlowPct ; swrl:argument1 ashd:var-fund ; swrl:argument2 ashd:var-fundflow ]
@@ -548,7 +548,7 @@ ashd:rule-hotmoney-inflow a swrl:Imp, ash:RuleArtifact ;
     ash:ruleOwner "短线研究组" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:hasDragonTigerList, ash:dragonTigerNetBuy, ash:hasDragonTigerSeat, ash:seatType ;
+    ash:ruleUses ash:ash:hasDragonTigerList, ash:dragonTigerNetBuy, ash:hasDragonTigerSeat, ash:seatType ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerList ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-list ]
@@ -573,7 +573,7 @@ ashd:rule-limitup-streak a swrl:Imp, ash:RuleArtifact ;
     ash:ruleOwner "短线研究组" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:hasLimitUpStreak, ash:limitUpDays, ash:brokenBoardCount, ash:sealAmount ;
+    ash:ruleUses ash:ash:hasLimitUpStreak, ash:limitUpDays, ash:brokenBoardCount, ash:sealAmount ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLimitUpStreak ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-streak ]
@@ -599,7 +599,7 @@ ashd:rule-overheat a swrl:Imp, ash:RuleArtifact ;
     ash:ruleOwner "短线研究组" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:hasMarketQuote, ash:turnoverRate, ash:hasLimitUpStreak, ash:limitUpDays ;
+    ash:ruleUses ash:ash:hasMarketQuote, ash:turnoverRate, ash:hasLimitUpStreak, ash:limitUpDays ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketQuote ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-quote ]
@@ -624,7 +624,7 @@ ashd:rule-board-break a swrl:Imp, ash:RuleArtifact ;
     ash:ruleOwner "短线研究组" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:hasLimitUpStreak, ash:brokenBoardCount ;
+    ash:ruleUses ash:ash:hasLimitUpStreak, ash:brokenBoardCount ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLimitUpStreak ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-streak ]
@@ -646,7 +646,7 @@ ashd:rule-medium-term-uptrend a swrl:Imp, ash:RuleArtifact ;
     ash:ruleOwner "策略研究组" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:ma20, ash:ma60, ash:issuedBy, ash:hasFinancialReport, ash:revenueGrowth ;
+    ash:ruleUses ash:ash:ma20, ash:ma60, ash:issuedBy, ash:hasFinancialReport, ash:revenueGrowth ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
         [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma20 ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-ma20 ]
@@ -672,7 +672,7 @@ ashd:rule-theme-catalyst a swrl:Imp, ash:RuleArtifact ;
     ash:ruleOwner "短线研究组" ;
     ash:ruleEffectiveFrom "2026-11-01"^^xsd:date ;
     ash:appliesTo ash:Security ;
-    ash:ruleUses ash:issuedBy, ash:hasThemeExposure, ash:hasThemeHeat, ash:themeHeatScore, ash:hasNewsCatalyst ;
+    ash:ruleUses ash:ash:issuedBy, ash:hasThemeExposure, ash:hasThemeHeat, ash:themeHeatScore, ash:hasNewsCatalyst ;
     swrl:body (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-st-security ]
         [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:issuedBy ; swrl:argument1 ashd:var-st-security ; swrl:argument2 ashd:var-st-company ]
@@ -683,3 +683,3280 @@ ashd:rule-theme-catalyst a swrl:Imp, ash:RuleArtifact ;
         [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-st-heatscore "80"^^xsd:decimal ) ]
     ) ;
     swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EventDrivenSignal ; swrl:argument1 ashd:var-st-security ] ) .
+# ===== Youzi methodology rules =====
+
+ashd:var-yz-security a swrl:Variable ; rdfs:label "?security" .
+ashd:var-yz-auction a swrl:Variable ; rdfs:label "?auction" .
+ashd:var-yz-expect a swrl:Variable ; rdfs:label "?expectation" .
+ashd:var-yz-expected a swrl:Variable ; rdfs:label "?expectedPremium" .
+ashd:var-yz-actual a swrl:Variable ; rdfs:label "?actualPremium" .
+ashd:var-yz-vol a swrl:Variable ; rdfs:label "?auctionVolume" .
+ashd:var-yz-list a swrl:Variable ; rdfs:label "?list" .
+ashd:var-yz-consensus a swrl:Variable ; rdfs:label "?consensus" .
+ashd:var-yz-ctype a swrl:Variable ; rdfs:label "?consensusType" .
+ashd:var-yz-net a swrl:Variable ; rdfs:label "?netBuy" .
+ashd:var-yz-cycle a swrl:Variable ; rdfs:label "?cycle" .
+ashd:var-yz-mheight a swrl:Variable ; rdfs:label "?marketHeight" .
+ashd:var-yz-height a swrl:Variable ; rdfs:label "?height" .
+ashd:var-yz-moneyobj a swrl:Variable ; rdfs:label "?moneyEffectObj" .
+ashd:var-yz-money a swrl:Variable ; rdfs:label "?moneyEffect" .
+ashd:var-yz-lossobj a swrl:Variable ; rdfs:label "?lossEffectObj" .
+ashd:var-yz-loss a swrl:Variable ; rdfs:label "?lossEffect" .
+ashd:var-yz-seat a swrl:Variable ; rdfs:label "?seat" .
+ashd:var-yz-odt a swrl:Variable ; rdfs:label "?oneDayTrip" .
+ashd:var-yz-journal a swrl:Variable ; rdfs:label "?journal" .
+ashd:var-yz-dd a swrl:Variable ; rdfs:label "?drawdown" .
+ashd:var-yz-investor a swrl:Variable ; rdfs:label "?investor" .
+
+ashd:rule-weak-to-strong a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R22" ;
+    rdfs:label "竞价弱转强"@zh, "Weak-to-strong auction"@en ;
+    rdfs:comment "预期溢价为负、实际溢价为正且竞价成交额超过 500 万时，推断为弱转强。"@zh ;
+    ash:ruleIf "expectedPremium < 0 且 actualPremium > 0 且 auctionVolumeAmount > 5,000,000"@zh ;
+    ash:ruleThen "证券被推断为 ash:WeakToStrong"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 27 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ash:hasAuctionSnapshot, ash:hasAuctionExpectation, ash:expectedPremium, ash:actualPremium, ash:auctionVolumeAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-yz-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasAuctionSnapshot ; swrl:argument1 ashd:var-yz-security ; swrl:argument2 ashd:var-yz-auction ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasAuctionExpectation ; swrl:argument1 ashd:var-yz-auction ; swrl:argument2 ashd:var-yz-expect ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:expectedPremium ; swrl:argument1 ashd:var-yz-expect ; swrl:argument2 ashd:var-yz-expected ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:actualPremium ; swrl:argument1 ashd:var-yz-expect ; swrl:argument2 ashd:var-yz-actual ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:auctionVolumeAmount ; swrl:argument1 ashd:var-yz-auction ; swrl:argument2 ashd:var-yz-vol ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-yz-expected "0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-actual "0"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-vol "5000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:WeakToStrong ; swrl:argument1 ashd:var-yz-security ] ) .
+
+ashd:rule-dragon-tiger-consensus a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R23" ;
+    rdfs:label "龙虎榜混合共识"@zh, "Dragon-tiger mixed consensus"@en ;
+    rdfs:comment "龙虎榜净买超过 5000 万且游资/机构混合时，推断为资金共识。"@zh ;
+    ash:ruleIf "dragonTigerNetBuy > 50,000,000 且 consensusType = mixed"@zh ;
+    ash:ruleThen "证券被推断为 ash:HotMoneyInflow"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 28 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ash:hasDragonTigerList, ash:dragonTigerNetBuy, ash:hasDragonTigerConsensus, ash:consensusType ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-yz-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerList ; swrl:argument1 ashd:var-yz-security ; swrl:argument2 ashd:var-yz-list ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:dragonTigerNetBuy ; swrl:argument1 ashd:var-yz-list ; swrl:argument2 ashd:var-yz-net ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerConsensus ; swrl:argument1 ashd:var-yz-list ; swrl:argument2 ashd:var-yz-consensus ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:consensusType ; swrl:argument1 ashd:var-yz-consensus ; swrl:argument2 ashd:var-yz-ctype ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-net "50000000"^^xsd:decimal ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-yz-ctype "mixed"^^xsd:string ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyInflow ; swrl:argument1 ashd:var-yz-security ] ) .
+
+ashd:rule-emotion-freeze a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R24" ;
+    rdfs:label "情绪冰点"@zh, "Emotion freeze"@en ;
+    rdfs:comment "最高连板不超过 2 且亏钱效应高于赚钱效应时，推断为情绪冰点。"@zh ;
+    ash:ruleIf "marketHeight ≤ 2 且 lossEffectScore > moneyEffectScore"@zh ;
+    ash:ruleThen "情绪周期被推断为 ash:EmotionFreeze"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 10 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:SentimentCycle ;
+    ash:ruleUses ash:ash:hasMarketHeight, ash:marketHeight, ash:hasMoneyEffect, ash:moneyEffectScore, ash:hasLossEffect, ash:lossEffectScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:SentimentCycle ; swrl:argument1 ashd:var-yz-cycle ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMarketHeight ; swrl:argument1 ashd:var-yz-cycle ; swrl:argument2 ashd:var-yz-mheight ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketHeight ; swrl:argument1 ashd:var-yz-mheight ; swrl:argument2 ashd:var-yz-height ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasLossEffect ; swrl:argument1 ashd:var-yz-cycle ; swrl:argument2 ashd:var-yz-lossobj ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:lossEffectScore ; swrl:argument1 ashd:var-yz-lossobj ; swrl:argument2 ashd:var-yz-loss ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasMoneyEffect ; swrl:argument1 ashd:var-yz-cycle ; swrl:argument2 ashd:var-yz-moneyobj ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:moneyEffectScore ; swrl:argument1 ashd:var-yz-moneyobj ; swrl:argument2 ashd:var-yz-money ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-yz-height "2"^^xsd:integer ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-loss ashd:var-yz-money ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionFreeze ; swrl:argument1 ashd:var-yz-cycle ] ) .
+
+ashd:rule-one-day-trip a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R25" ;
+    rdfs:label "一日游风险"@zh, "One-day-trip risk"@en ;
+    rdfs:comment "游资席位一日游比例高于 60% 时，推断为一日游风险。"@zh ;
+    ash:ruleIf "seatOneDayTripRate > 0.60"@zh ;
+    ash:ruleThen "证券被推断为 ash:OneDayTripRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 11 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "短线研究组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ash:hasDragonTigerList, ash:hasDragonTigerSeat, ash:seatOneDayTripRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-yz-security ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerList ; swrl:argument1 ashd:var-yz-security ; swrl:argument2 ashd:var-yz-list ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasDragonTigerSeat ; swrl:argument1 ashd:var-yz-list ; swrl:argument2 ashd:var-yz-seat ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:seatOneDayTripRate ; swrl:argument1 ashd:var-yz-seat ; swrl:argument2 ashd:var-yz-odt ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-odt "0.60"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OneDayTripRisk ; swrl:argument1 ashd:var-yz-security ] ) .
+
+ashd:rule-drawdown-breach a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R26" ;
+    rdfs:label "回撤超限"@zh, "Drawdown breach"@en ;
+    rdfs:comment "账户最大回撤超过 10% 时，推断为回撤超限。"@zh ;
+    ash:ruleIf "maxDrawdown > 10"@zh ;
+    ash:ruleThen "投资者被推断为 ash:DrawdownBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 6 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "交易风控组" ;
+    ash:ruleEffectiveFrom "2026-11-03"^^xsd:date ;
+    ash:appliesTo ash:Investor ;
+    ash:ruleUses ash:ash:hasTradingJournal, ash:maxDrawdown ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Investor ; swrl:argument1 ashd:var-yz-investor ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasTradingJournal ; swrl:argument1 ashd:var-yz-investor ; swrl:argument2 ashd:var-yz-journal ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxDrawdown ; swrl:argument1 ashd:var-yz-journal ; swrl:argument2 ashd:var-yz-dd ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-yz-dd "10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:DrawdownBreach ; swrl:argument1 ashd:var-yz-investor ] ) .
+# ===== Rule expansion 1.7: from public hot-money principles =====
+
+ashd:rule-r27 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R27" ;
+    rdfs:label "市场趋势开启"@zh ;
+    rdfs:comment "趋势分数高于 60 时允许进攻。"@zh ;
+    ash:ruleIf "趋势分数高于 60 时允许进攻。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOn"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 73 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketTrendScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r27 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketTrendScore ; swrl:argument1 ashd:var-r27 ; swrl:argument2 ashd:var-r27-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r27-v "60"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOn ; swrl:argument1 ashd:var-r27 ] ) .
+ashd:var-r27 a swrl:Variable ; rdfs:label "?var-r27" .
+ashd:var-r27-v a swrl:Variable ; rdfs:label "?var-r27-v" .
+
+ashd:rule-r28 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R28" ;
+    rdfs:label "市场趋势关闭"@zh ;
+    rdfs:comment "趋势分数低于 -40 时转为防守。"@zh ;
+    ash:ruleIf "趋势分数低于 -40 时转为防守。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOff"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 72 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketTrendScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r28 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketTrendScore ; swrl:argument1 ashd:var-r28 ; swrl:argument2 ashd:var-r28-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r28-v "-40"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOff ; swrl:argument1 ashd:var-r28 ] ) .
+ashd:var-r28 a swrl:Variable ; rdfs:label "?var-r28" .
+ashd:var-r28-v a swrl:Variable ; rdfs:label "?var-r28-v" .
+
+ashd:rule-r29 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R29" ;
+    rdfs:label "市场宽度开启"@zh ;
+    rdfs:comment "市场宽度高于 70 时风险偏好上升。"@zh ;
+    ash:ruleIf "市场宽度高于 70 时风险偏好上升。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOn"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 71 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketBreadthScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r29 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketBreadthScore ; swrl:argument1 ashd:var-r29 ; swrl:argument2 ashd:var-r29-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r29-v "70"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOn ; swrl:argument1 ashd:var-r29 ] ) .
+ashd:var-r29 a swrl:Variable ; rdfs:label "?var-r29" .
+ashd:var-r29-v a swrl:Variable ; rdfs:label "?var-r29-v" .
+
+ashd:rule-r30 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R30" ;
+    rdfs:label "市场宽度走弱"@zh ;
+    rdfs:comment "宽度低于 30 时减少开仓。"@zh ;
+    ash:ruleIf "宽度低于 30 时减少开仓。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketBreadthWeak"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 70 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketBreadthScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r30 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketBreadthScore ; swrl:argument1 ashd:var-r30 ; swrl:argument2 ashd:var-r30-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r30-v "30"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketBreadthWeak ; swrl:argument1 ashd:var-r30 ] ) .
+ashd:var-r30 a swrl:Variable ; rdfs:label "?var-r30" .
+ashd:var-r30-v a swrl:Variable ; rdfs:label "?var-r30-v" .
+
+ashd:rule-r31 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R31" ;
+    rdfs:label "成交额支持"@zh ;
+    rdfs:comment "全市场成交额高于 8000 亿时流动性充足。"@zh ;
+    ash:ruleIf "全市场成交额高于 8000 亿时流动性充足。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOn"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 69 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketTurnoverAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r31 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketTurnoverAmount ; swrl:argument1 ashd:var-r31 ; swrl:argument2 ashd:var-r31-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r31-v "800000000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOn ; swrl:argument1 ashd:var-r31 ] ) .
+ashd:var-r31 a swrl:Variable ; rdfs:label "?var-r31" .
+ashd:var-r31-v a swrl:Variable ; rdfs:label "?var-r31-v" .
+
+ashd:rule-r32 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R32" ;
+    rdfs:label "成交额不足"@zh ;
+    rdfs:comment "成交额低于 5000 亿时降低交易频率。"@zh ;
+    ash:ruleIf "成交额低于 5000 亿时降低交易频率。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 68 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketTurnoverAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r32 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketTurnoverAmount ; swrl:argument1 ashd:var-r32 ; swrl:argument2 ashd:var-r32-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r32-v "500000000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r32 ] ) .
+ashd:var-r32 a swrl:Variable ; rdfs:label "?var-r32" .
+ashd:var-r32-v a swrl:Variable ; rdfs:label "?var-r32-v" .
+
+ashd:rule-r33 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R33" ;
+    rdfs:label "炸板率过高"@zh ;
+    rdfs:comment "炸板率高于 50% 时进入退潮。"@zh ;
+    ash:ruleIf "炸板率高于 50% 时进入退潮。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EmotionEbb"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 67 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "情绪" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:brokenBoardRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r33 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:brokenBoardRate ; swrl:argument1 ashd:var-r33 ; swrl:argument2 ashd:var-r33-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r33-v "50"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionEbb ; swrl:argument1 ashd:var-r33 ] ) .
+ashd:var-r33 a swrl:Variable ; rdfs:label "?var-r33" .
+ashd:var-r33-v a swrl:Variable ; rdfs:label "?var-r33-v" .
+
+ashd:rule-r34 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R34" ;
+    rdfs:label "封板率强"@zh ;
+    rdfs:comment "炸板率低于 20% 时情绪偏强。"@zh ;
+    ash:ruleIf "炸板率低于 20% 时情绪偏强。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EmotionClimax"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 66 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "情绪" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:brokenBoardRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r34 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:brokenBoardRate ; swrl:argument1 ashd:var-r34 ; swrl:argument2 ashd:var-r34-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r34-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionClimax ; swrl:argument1 ashd:var-r34 ] ) .
+ashd:var-r34 a swrl:Variable ; rdfs:label "?var-r34" .
+ashd:var-r34-v a swrl:Variable ; rdfs:label "?var-r34-v" .
+
+ashd:rule-r35 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R35" ;
+    rdfs:label "主线确认"@zh ;
+    rdfs:comment "主题排名前三且热度高于 80。"@zh ;
+    ash:ruleIf "主题排名前三且热度高于 80。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ThemeMainline"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 65 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:themeRank, ash:themeHeatScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r35 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeRank ; swrl:argument1 ashd:var-r35 ; swrl:argument2 ashd:var-r35-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-r35-v "3"^^xsd:integer ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeHeatScore ; swrl:argument1 ashd:var-r35 ; swrl:argument2 ashd:var-r35-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r35-v2 "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ThemeMainline ; swrl:argument1 ashd:var-r35 ] ) .
+ashd:var-r35 a swrl:Variable ; rdfs:label "?var-r35" .
+ashd:var-r35-v a swrl:Variable ; rdfs:label "?var-r35-v" .
+ashd:var-r35-v2 a swrl:Variable ; rdfs:label "?var-r35-v2" .
+
+ashd:rule-r36 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R36" ;
+    rdfs:label "主题升温"@zh ;
+    rdfs:comment "主题热度单日升温超过 10。"@zh ;
+    ash:ruleIf "主题热度单日升温超过 10。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ThemeMainline"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 64 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:themeHeatDelta ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r36 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeHeatDelta ; swrl:argument1 ashd:var-r36 ; swrl:argument2 ashd:var-r36-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r36-v "10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ThemeMainline ; swrl:argument1 ashd:var-r36 ] ) .
+ashd:var-r36 a swrl:Variable ; rdfs:label "?var-r36" .
+ashd:var-r36-v a swrl:Variable ; rdfs:label "?var-r36-v" .
+
+ashd:rule-r37 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R37" ;
+    rdfs:label "主题降温"@zh ;
+    rdfs:comment "主题热度单日下降超过 10。"@zh ;
+    ash:ruleIf "主题热度单日下降超过 10。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EmotionEbb"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 63 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:themeHeatDelta ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r37 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeHeatDelta ; swrl:argument1 ashd:var-r37 ; swrl:argument2 ashd:var-r37-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r37-v "-10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionEbb ; swrl:argument1 ashd:var-r37 ] ) .
+ashd:var-r37 a swrl:Variable ; rdfs:label "?var-r37" .
+ashd:var-r37-v a swrl:Variable ; rdfs:label "?var-r37-v" .
+
+ashd:rule-r38 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R38" ;
+    rdfs:label "高标龙头"@zh ;
+    rdfs:comment "龙头高度达到 5 板。"@zh ;
+    ash:ruleIf "龙头高度达到 5 板。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LeaderConfirmed"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 62 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙头" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:leaderHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r38 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:leaderHeight ; swrl:argument1 ashd:var-r38 ; swrl:argument2 ashd:var-r38-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r38-v "5"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LeaderConfirmed ; swrl:argument1 ashd:var-r38 ] ) .
+ashd:var-r38 a swrl:Variable ; rdfs:label "?var-r38" .
+ashd:var-r38-v a swrl:Variable ; rdfs:label "?var-r38-v" .
+
+ashd:rule-r39 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R39" ;
+    rdfs:label "没有高度"@zh ;
+    rdfs:comment "龙头高度不足 2 板时不做接力。"@zh ;
+    ash:ruleIf "龙头高度不足 2 板时不做接力。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 61 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙头" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:leaderHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r39 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:leaderHeight ; swrl:argument1 ashd:var-r39 ; swrl:argument2 ashd:var-r39-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r39-v "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r39 ] ) .
+ashd:var-r39 a swrl:Variable ; rdfs:label "?var-r39" .
+ashd:var-r39-v a swrl:Variable ; rdfs:label "?var-r39-v" .
+
+ashd:rule-r40 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R40" ;
+    rdfs:label "竞价强承接"@zh ;
+    rdfs:comment "竞价溢价高于 3% 且量比大于 2。"@zh ;
+    ash:ruleIf "竞价溢价高于 3% 且量比大于 2。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionStrong"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 60 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "竞价" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:auctionPremium, ash:volumeRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r40 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:auctionPremium ; swrl:argument1 ashd:var-r40 ; swrl:argument2 ashd:var-r40-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r40-v "3"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:volumeRatio ; swrl:argument1 ashd:var-r40 ; swrl:argument2 ashd:var-r40-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r40-v2 "2"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionStrong ; swrl:argument1 ashd:var-r40 ] ) .
+ashd:var-r40 a swrl:Variable ; rdfs:label "?var-r40" .
+ashd:var-r40-v a swrl:Variable ; rdfs:label "?var-r40-v" .
+ashd:var-r40-v2 a swrl:Variable ; rdfs:label "?var-r40-v2" .
+
+ashd:rule-r41 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R41" ;
+    rdfs:label "竞价弱承接"@zh ;
+    rdfs:comment "竞价溢价低于 -3%。"@zh ;
+    ash:ruleIf "竞价溢价低于 -3%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionWeak"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 59 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "竞价" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:auctionPremium ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r41 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:auctionPremium ; swrl:argument1 ashd:var-r41 ; swrl:argument2 ashd:var-r41-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r41-v "-3"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionWeak ; swrl:argument1 ashd:var-r41 ] ) .
+ashd:var-r41 a swrl:Variable ; rdfs:label "?var-r41" .
+ashd:var-r41-v a swrl:Variable ; rdfs:label "?var-r41-v" .
+
+ashd:rule-r42 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R42" ;
+    rdfs:label "跳空突破"@zh ;
+    rdfs:comment "跳空高开大于 3% 且量比大于 1.5。"@zh ;
+    ash:ruleIf "跳空高开大于 3% 且量比大于 1.5。"@zh ;
+    ash:ruleThen "主体被推断为 ash:BreakoutSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 58 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "突破" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:gapPct, ash:volumeRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r42 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:gapPct ; swrl:argument1 ashd:var-r42 ; swrl:argument2 ashd:var-r42-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r42-v "3"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:volumeRatio ; swrl:argument1 ashd:var-r42 ; swrl:argument2 ashd:var-r42-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r42-v2 "1.5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BreakoutSetup ; swrl:argument1 ashd:var-r42 ] ) .
+ashd:var-r42 a swrl:Variable ; rdfs:label "?var-r42" .
+ashd:var-r42-v a swrl:Variable ; rdfs:label "?var-r42-v" .
+ashd:var-r42-v2 a swrl:Variable ; rdfs:label "?var-r42-v2" .
+
+ashd:rule-r43 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R43" ;
+    rdfs:label "低开走弱"@zh ;
+    rdfs:comment "低开超过 3% 时防承接失败。"@zh ;
+    ash:ruleIf "低开超过 3% 时防承接失败。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionWeak"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 57 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "竞价" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:gapPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r43 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:gapPct ; swrl:argument1 ashd:var-r43 ; swrl:argument2 ashd:var-r43-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r43-v "-3"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionWeak ; swrl:argument1 ashd:var-r43 ] ) .
+ashd:var-r43 a swrl:Variable ; rdfs:label "?var-r43" .
+ashd:var-r43-v a swrl:Variable ; rdfs:label "?var-r43-v" .
+
+ashd:rule-r44 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R44" ;
+    rdfs:label "换手异常"@zh ;
+    rdfs:comment "换手率处于历史 2 倍标准差以上。"@zh ;
+    ash:ruleIf "换手率处于历史 2 倍标准差以上。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OverheatRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 56 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:turnoverZScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r44 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:turnoverZScore ; swrl:argument1 ashd:var-r44 ; swrl:argument2 ashd:var-r44-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r44-v "2"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OverheatRisk ; swrl:argument1 ashd:var-r44 ] ) .
+ashd:var-r44 a swrl:Variable ; rdfs:label "?var-r44" .
+ashd:var-r44-v a swrl:Variable ; rdfs:label "?var-r44-v" .
+
+ashd:rule-r45 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R45" ;
+    rdfs:label "缩量回调"@zh ;
+    rdfs:comment "缩量回调后观察承接。"@zh ;
+    ash:ruleIf "缩量回调后观察承接。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LowBuySetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 55 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "低吸" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:turnoverZScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r45 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:turnoverZScore ; swrl:argument1 ashd:var-r45 ; swrl:argument2 ashd:var-r45-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r45-v "-1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LowBuySetup ; swrl:argument1 ashd:var-r45 ] ) .
+ashd:var-r45 a swrl:Variable ; rdfs:label "?var-r45" .
+ashd:var-r45-v a swrl:Variable ; rdfs:label "?var-r45-v" .
+
+ashd:rule-r46 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R46" ;
+    rdfs:label "放量换手"@zh ;
+    rdfs:comment "量比与换手同时放大。"@zh ;
+    ash:ruleIf "量比与换手同时放大。"@zh ;
+    ash:ruleThen "主体被推断为 ash:VolumeTurnoverBoard"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 54 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:volumeRatio, ash:turnoverRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r46 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:volumeRatio ; swrl:argument1 ashd:var-r46 ; swrl:argument2 ashd:var-r46-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r46-v "2"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:turnoverRate ; swrl:argument1 ashd:var-r46 ; swrl:argument2 ashd:var-r46-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r46-v2 "5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:VolumeTurnoverBoard ; swrl:argument1 ashd:var-r46 ] ) .
+ashd:var-r46 a swrl:Variable ; rdfs:label "?var-r46" .
+ashd:var-r46-v a swrl:Variable ; rdfs:label "?var-r46-v" .
+ashd:var-r46-v2 a swrl:Variable ; rdfs:label "?var-r46-v2" .
+
+ashd:rule-r47 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R47" ;
+    rdfs:label "缩量无承接"@zh ;
+    rdfs:comment "量比低于 0.8 时不做突破。"@zh ;
+    ash:ruleIf "量比低于 0.8 时不做突破。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 53 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:volumeRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r47 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:volumeRatio ; swrl:argument1 ashd:var-r47 ; swrl:argument2 ashd:var-r47-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r47-v "0.8"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r47 ] ) .
+ashd:var-r47 a swrl:Variable ; rdfs:label "?var-r47" .
+ashd:var-r47-v a swrl:Variable ; rdfs:label "?var-r47-v" .
+
+ashd:rule-r48 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R48" ;
+    rdfs:label "强封首板"@zh ;
+    rdfs:comment "封单超过 1 亿且炸板不超过 1 次。"@zh ;
+    ash:ruleIf "封单超过 1 亿且炸板不超过 1 次。"@zh ;
+    ash:ruleThen "主体被推断为 ash:FirstBoardSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 52 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:sealAmount, ash:brokenBoardCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r48 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:sealAmount ; swrl:argument1 ashd:var-r48 ; swrl:argument2 ashd:var-r48-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r48-v "100000000"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:brokenBoardCount ; swrl:argument1 ashd:var-r48 ; swrl:argument2 ashd:var-r48-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-r48-v2 "1"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:FirstBoardSetup ; swrl:argument1 ashd:var-r48 ] ) .
+ashd:var-r48 a swrl:Variable ; rdfs:label "?var-r48" .
+ashd:var-r48-v a swrl:Variable ; rdfs:label "?var-r48-v" .
+ashd:var-r48-v2 a swrl:Variable ; rdfs:label "?var-r48-v2" .
+
+ashd:rule-r49 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R49" ;
+    rdfs:label "封单不足"@zh ;
+    rdfs:comment "封单低于 2000 万时防炸板。"@zh ;
+    ash:ruleIf "封单低于 2000 万时防炸板。"@zh ;
+    ash:ruleThen "主体被推断为 ash:BoardBreakRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 51 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:sealAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r49 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:sealAmount ; swrl:argument1 ashd:var-r49 ; swrl:argument2 ashd:var-r49-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r49-v "20000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BoardBreakRisk ; swrl:argument1 ashd:var-r49 ] ) .
+ashd:var-r49 a swrl:Variable ; rdfs:label "?var-r49" .
+ashd:var-r49-v a swrl:Variable ; rdfs:label "?var-r49-v" .
+
+ashd:rule-r50 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R50" ;
+    rdfs:label "高位连板"@zh ;
+    rdfs:comment "连板达到 5 板进入高位风险区。"@zh ;
+    ash:ruleIf "连板达到 5 板进入高位风险区。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HighBoardRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 50 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:limitUpDays ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r50 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:limitUpDays ; swrl:argument1 ashd:var-r50 ; swrl:argument2 ashd:var-r50-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r50-v "5"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HighBoardRisk ; swrl:argument1 ashd:var-r50 ] ) .
+ashd:var-r50 a swrl:Variable ; rdfs:label "?var-r50" .
+ashd:var-r50-v a swrl:Variable ; rdfs:label "?var-r50-v" .
+
+ashd:rule-r51 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R51" ;
+    rdfs:label "断板反包"@zh ;
+    rdfs:comment "低位断板后出现反包机会。"@zh ;
+    ash:ruleIf "低位断板后出现反包机会。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ReversalSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 49 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "反包" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:limitUpDays, ash:brokenBoardCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r51 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:limitUpDays ; swrl:argument1 ashd:var-r51 ; swrl:argument2 ashd:var-r51-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-r51-v "2"^^xsd:integer ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:brokenBoardCount ; swrl:argument1 ashd:var-r51 ; swrl:argument2 ashd:var-r51-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r51-v2 "1"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ReversalSetup ; swrl:argument1 ashd:var-r51 ] ) .
+ashd:var-r51 a swrl:Variable ; rdfs:label "?var-r51" .
+ashd:var-r51-v a swrl:Variable ; rdfs:label "?var-r51-v" .
+ashd:var-r51-v2 a swrl:Variable ; rdfs:label "?var-r51-v2" .
+
+ashd:rule-r52 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R52" ;
+    rdfs:label "游资持续流入"@zh ;
+    rdfs:comment "净买超过 5000 万且一日游比例低。"@zh ;
+    ash:ruleIf "净买超过 5000 万且一日游比例低。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HotMoneyInflow"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 48 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:dragonTigerNetBuy, ash:seatOneDayTripRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r52 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:dragonTigerNetBuy ; swrl:argument1 ashd:var-r52 ; swrl:argument2 ashd:var-r52-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r52-v "50000000"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:seatOneDayTripRate ; swrl:argument1 ashd:var-r52 ; swrl:argument2 ashd:var-r52-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r52-v2 "0.3"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyInflow ; swrl:argument1 ashd:var-r52 ] ) .
+ashd:var-r52 a swrl:Variable ; rdfs:label "?var-r52" .
+ashd:var-r52-v a swrl:Variable ; rdfs:label "?var-r52-v" .
+ashd:var-r52-v2 a swrl:Variable ; rdfs:label "?var-r52-v2" .
+
+ashd:rule-r53 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R53" ;
+    rdfs:label "游资净卖出"@zh ;
+    rdfs:comment "龙虎榜净卖出超过 5000 万。"@zh ;
+    ash:ruleIf "龙虎榜净卖出超过 5000 万。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HotMoneyExit"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 47 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:dragonTigerNetBuy ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r53 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:dragonTigerNetBuy ; swrl:argument1 ashd:var-r53 ; swrl:argument2 ashd:var-r53-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r53-v "-50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyExit ; swrl:argument1 ashd:var-r53 ] ) .
+ashd:var-r53 a swrl:Variable ; rdfs:label "?var-r53" .
+ashd:var-r53-v a swrl:Variable ; rdfs:label "?var-r53-v" .
+
+ashd:rule-r54 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R54" ;
+    rdfs:label "一日游风险"@zh ;
+    rdfs:comment "席位一日游比例高于 60%。"@zh ;
+    ash:ruleIf "席位一日游比例高于 60%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OneDayTripRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 46 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:seatOneDayTripRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r54 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:seatOneDayTripRate ; swrl:argument1 ashd:var-r54 ; swrl:argument2 ashd:var-r54-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r54-v "0.6"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OneDayTripRisk ; swrl:argument1 ashd:var-r54 ] ) .
+ashd:var-r54 a swrl:Variable ; rdfs:label "?var-r54" .
+ashd:var-r54-v a swrl:Variable ; rdfs:label "?var-r54-v" .
+
+ashd:rule-r55 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R55" ;
+    rdfs:label "买一弱于卖一"@zh ;
+    rdfs:comment "买一金额小于卖一。"@zh ;
+    ash:ruleIf "买一金额小于卖一。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionWeak"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 45 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:buy1ToSell1Ratio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r55 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:buy1ToSell1Ratio ; swrl:argument1 ashd:var-r55 ; swrl:argument2 ashd:var-r55-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r55-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionWeak ; swrl:argument1 ashd:var-r55 ] ) .
+ashd:var-r55 a swrl:Variable ; rdfs:label "?var-r55" .
+ashd:var-r55-v a swrl:Variable ; rdfs:label "?var-r55-v" .
+
+ashd:rule-r56 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R56" ;
+    rdfs:label "买一强势"@zh ;
+    rdfs:comment "买一金额高于卖一 1.5 倍。"@zh ;
+    ash:ruleIf "买一金额高于卖一 1.5 倍。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LeaderConfirmed"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 44 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:buy1ToSell1Ratio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r56 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:buy1ToSell1Ratio ; swrl:argument1 ashd:var-r56 ; swrl:argument2 ashd:var-r56-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r56-v "1.5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LeaderConfirmed ; swrl:argument1 ashd:var-r56 ] ) .
+ashd:var-r56 a swrl:Variable ; rdfs:label "?var-r56" .
+ashd:var-r56-v a swrl:Variable ; rdfs:label "?var-r56-v" .
+
+ashd:rule-r57 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R57" ;
+    rdfs:label "均线多头"@zh ;
+    rdfs:comment "20 日线高于 60 日线。"@zh ;
+    ash:ruleIf "20 日线高于 60 日线。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MediumTermTrend"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 43 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "趋势" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ma20, ash:ma60 ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r57 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma20 ; swrl:argument1 ashd:var-r57 ; swrl:argument2 ashd:var-r57-v ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma60 ; swrl:argument1 ashd:var-r57 ; swrl:argument2 ashd:var-r57-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r57-v ashd:var-r57-v2 ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MediumTermTrend ; swrl:argument1 ashd:var-r57 ] ) .
+ashd:var-r57 a swrl:Variable ; rdfs:label "?var-r57" .
+ashd:var-r57-v a swrl:Variable ; rdfs:label "?var-r57-v" .
+ashd:var-r57-v2 a swrl:Variable ; rdfs:label "?var-r57-v2" .
+
+ashd:rule-r58 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R58" ;
+    rdfs:label "均线空头"@zh ;
+    rdfs:comment "20 日线低于 60 日线。"@zh ;
+    ash:ruleIf "20 日线低于 60 日线。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOff"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 42 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "趋势" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ma20, ash:ma60 ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r58 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma20 ; swrl:argument1 ashd:var-r58 ; swrl:argument2 ashd:var-r58-v ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma60 ; swrl:argument1 ashd:var-r58 ; swrl:argument2 ashd:var-r58-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r58-v ashd:var-r58-v2 ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOff ; swrl:argument1 ashd:var-r58 ] ) .
+ashd:var-r58 a swrl:Variable ; rdfs:label "?var-r58" .
+ashd:var-r58-v a swrl:Variable ; rdfs:label "?var-r58-v" .
+ashd:var-r58-v2 a swrl:Variable ; rdfs:label "?var-r58-v2" .
+
+ashd:rule-r59 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R59" ;
+    rdfs:label "业绩增长"@zh ;
+    rdfs:comment "营收增速高于 20%。"@zh ;
+    ash:ruleIf "营收增速高于 20%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EarningsCatalyst"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 41 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "基本面" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:revenueGrowth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r59 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:revenueGrowth ; swrl:argument1 ashd:var-r59 ; swrl:argument2 ashd:var-r59-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r59-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EarningsCatalyst ; swrl:argument1 ashd:var-r59 ] ) .
+ashd:var-r59 a swrl:Variable ; rdfs:label "?var-r59" .
+ashd:var-r59-v a swrl:Variable ; rdfs:label "?var-r59-v" .
+
+ashd:rule-r60 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R60" ;
+    rdfs:label "业绩超预期"@zh ;
+    rdfs:comment "业绩超预期幅度高于 10%。"@zh ;
+    ash:ruleIf "业绩超预期幅度高于 10%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EarningsCatalyst"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 40 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "基本面" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:earningsSurprise ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r60 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:earningsSurprise ; swrl:argument1 ashd:var-r60 ; swrl:argument2 ashd:var-r60-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r60-v "10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EarningsCatalyst ; swrl:argument1 ashd:var-r60 ] ) .
+ashd:var-r60 a swrl:Variable ; rdfs:label "?var-r60" .
+ashd:var-r60-v a swrl:Variable ; rdfs:label "?var-r60-v" .
+
+ashd:rule-r61 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R61" ;
+    rdfs:label "政策催化"@zh ;
+    rdfs:comment "新闻与主题热度同时高。"@zh ;
+    ash:ruleIf "新闻与主题热度同时高。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PolicyCatalyst"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 39 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:newsScore, ash:themeHeatScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r61 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:newsScore ; swrl:argument1 ashd:var-r61 ; swrl:argument2 ashd:var-r61-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r61-v "70"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeHeatScore ; swrl:argument1 ashd:var-r61 ; swrl:argument2 ashd:var-r61-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r61-v2 "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PolicyCatalyst ; swrl:argument1 ashd:var-r61 ] ) .
+ashd:var-r61 a swrl:Variable ; rdfs:label "?var-r61" .
+ashd:var-r61-v a swrl:Variable ; rdfs:label "?var-r61-v" .
+ashd:var-r61-v2 a swrl:Variable ; rdfs:label "?var-r61-v2" .
+
+ashd:rule-r62 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R62" ;
+    rdfs:label "缺少催化"@zh ;
+    rdfs:comment "新闻催化分数低于 30。"@zh ;
+    ash:ruleIf "新闻催化分数低于 30。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 38 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:newsScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r62 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:newsScore ; swrl:argument1 ashd:var-r62 ; swrl:argument2 ashd:var-r62-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r62-v "30"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r62 ] ) .
+ashd:var-r62 a swrl:Variable ; rdfs:label "?var-r62" .
+ashd:var-r62-v a swrl:Variable ; rdfs:label "?var-r62-v" .
+
+ashd:rule-r63 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R63" ;
+    rdfs:label "监管降温"@zh ;
+    rdfs:comment "监管风险分数高于 70。"@zh ;
+    ash:ruleIf "监管风险分数高于 70。"@zh ;
+    ash:ruleThen "主体被推断为 ash:RegulatoryCooling"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 37 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "监管" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:regulatoryRiskScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r63 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:regulatoryRiskScore ; swrl:argument1 ashd:var-r63 ; swrl:argument2 ashd:var-r63-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r63-v "70"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:RegulatoryCooling ; swrl:argument1 ashd:var-r63 ] ) .
+ashd:var-r63 a swrl:Variable ; rdfs:label "?var-r63" .
+ashd:var-r63-v a swrl:Variable ; rdfs:label "?var-r63-v" .
+
+ashd:rule-r64 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R64" ;
+    rdfs:label "高位监管风险"@zh ;
+    rdfs:comment "高位连板叠加监管风险。"@zh ;
+    ash:ruleIf "高位连板叠加监管风险。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HighBoardRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 36 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "监管" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:regulatoryRiskScore, ash:leaderHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r64 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:regulatoryRiskScore ; swrl:argument1 ashd:var-r64 ; swrl:argument2 ashd:var-r64-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r64-v "50"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:leaderHeight ; swrl:argument1 ashd:var-r64 ; swrl:argument2 ashd:var-r64-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r64-v2 "5"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HighBoardRisk ; swrl:argument1 ashd:var-r64 ] ) .
+ashd:var-r64 a swrl:Variable ; rdfs:label "?var-r64" .
+ashd:var-r64-v a swrl:Variable ; rdfs:label "?var-r64-v" .
+ashd:var-r64-v2 a swrl:Variable ; rdfs:label "?var-r64-v2" .
+
+ashd:rule-r65 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R65" ;
+    rdfs:label "主题扩散"@zh ;
+    rdfs:comment "主题扩散分数高于 70。"@zh ;
+    ash:ruleIf "主题扩散分数高于 70。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ThemeMainline"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 35 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:themeDiffusionScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r65 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeDiffusionScore ; swrl:argument1 ashd:var-r65 ; swrl:argument2 ashd:var-r65-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r65-v "70"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ThemeMainline ; swrl:argument1 ashd:var-r65 ] ) .
+ashd:var-r65 a swrl:Variable ; rdfs:label "?var-r65" .
+ashd:var-r65-v a swrl:Variable ; rdfs:label "?var-r65-v" .
+
+ashd:rule-r66 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R66" ;
+    rdfs:label "主题收缩"@zh ;
+    rdfs:comment "主题扩散不足、拥挤度上升。"@zh ;
+    ash:ruleIf "主题扩散不足、拥挤度上升。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ThemeCrowding"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 34 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:themeDiffusionScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r66 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeDiffusionScore ; swrl:argument1 ashd:var-r66 ; swrl:argument2 ashd:var-r66-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r66-v "30"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ThemeCrowding ; swrl:argument1 ashd:var-r66 ] ) .
+ashd:var-r66 a swrl:Variable ; rdfs:label "?var-r66" .
+ashd:var-r66-v a swrl:Variable ; rdfs:label "?var-r66-v" .
+
+ashd:rule-r67 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R67" ;
+    rdfs:label "总仓位过重"@zh ;
+    rdfs:comment "总仓位高于 80%。"@zh ;
+    ash:ruleIf "总仓位高于 80%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PositionTooLarge"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 33 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "仓位" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:positionSizePct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r67 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:positionSizePct ; swrl:argument1 ashd:var-r67 ; swrl:argument2 ashd:var-r67-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r67-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PositionTooLarge ; swrl:argument1 ashd:var-r67 ] ) .
+ashd:var-r67 a swrl:Variable ; rdfs:label "?var-r67" .
+ashd:var-r67-v a swrl:Variable ; rdfs:label "?var-r67-v" .
+
+ashd:rule-r68 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R68" ;
+    rdfs:label "单笔风险过大"@zh ;
+    rdfs:comment "单笔风险超过 2%。"@zh ;
+    ash:ruleIf "单笔风险超过 2%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PositionTooLarge"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 32 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "仓位" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:singleTradeRiskPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r68 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:singleTradeRiskPct ; swrl:argument1 ashd:var-r68 ; swrl:argument2 ashd:var-r68-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r68-v "2"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PositionTooLarge ; swrl:argument1 ashd:var-r68 ] ) .
+ashd:var-r68 a swrl:Variable ; rdfs:label "?var-r68" .
+ashd:var-r68-v a swrl:Variable ; rdfs:label "?var-r68-v" .
+
+ashd:rule-r69 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R69" ;
+    rdfs:label "执行偏离"@zh ;
+    rdfs:comment "成交价偏离计划超过 1%。"@zh ;
+    ash:ruleIf "成交价偏离计划超过 1%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExecutionViolation"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 31 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:executionDeviationPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r69 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:executionDeviationPct ; swrl:argument1 ashd:var-r69 ; swrl:argument2 ashd:var-r69-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r69-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionViolation ; swrl:argument1 ashd:var-r69 ] ) .
+ashd:var-r69 a swrl:Variable ; rdfs:label "?var-r69" .
+ashd:var-r69-v a swrl:Variable ; rdfs:label "?var-r69-v" .
+
+ashd:rule-r70 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R70" ;
+    rdfs:label "环境空仓"@zh ;
+    rdfs:comment "趋势与宽度同时走弱。"@zh ;
+    ash:ruleIf "趋势与宽度同时走弱。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 30 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketTrendScore, ash:marketBreadthScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r70 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketTrendScore ; swrl:argument1 ashd:var-r70 ; swrl:argument2 ashd:var-r70-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r70-v "-40"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketBreadthScore ; swrl:argument1 ashd:var-r70 ; swrl:argument2 ashd:var-r70-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r70-v2 "35"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r70 ] ) .
+ashd:var-r70 a swrl:Variable ; rdfs:label "?var-r70" .
+ashd:var-r70-v a swrl:Variable ; rdfs:label "?var-r70-v" .
+ashd:var-r70-v2 a swrl:Variable ; rdfs:label "?var-r70-v2" .
+
+ashd:rule-r71 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R71" ;
+    rdfs:label "高位过热"@zh ;
+    rdfs:comment "连板与换手同时过高。"@zh ;
+    ash:ruleIf "连板与换手同时过高。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OverheatRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 29 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:limitUpDays, ash:turnoverRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r71 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:limitUpDays ; swrl:argument1 ashd:var-r71 ; swrl:argument2 ashd:var-r71-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r71-v "3"^^xsd:integer ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:turnoverRate ; swrl:argument1 ashd:var-r71 ; swrl:argument2 ashd:var-r71-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r71-v2 "15"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OverheatRisk ; swrl:argument1 ashd:var-r71 ] ) .
+ashd:var-r71 a swrl:Variable ; rdfs:label "?var-r71" .
+ashd:var-r71-v a swrl:Variable ; rdfs:label "?var-r71-v" .
+ashd:var-r71-v2 a swrl:Variable ; rdfs:label "?var-r71-v2" .
+
+ashd:rule-r72 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R72" ;
+    rdfs:label "回撤超限"@zh ;
+    rdfs:comment "最大回撤超过 10%。"@zh ;
+    ash:ruleIf "最大回撤超过 10%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:DrawdownBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 28 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "复盘" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:maxDrawdown ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r72 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxDrawdown ; swrl:argument1 ashd:var-r72 ; swrl:argument2 ashd:var-r72-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r72-v "10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:DrawdownBreach ; swrl:argument1 ashd:var-r72 ] ) .
+ashd:var-r72 a swrl:Variable ; rdfs:label "?var-r72" .
+ashd:var-r72-v a swrl:Variable ; rdfs:label "?var-r72-v" .
+
+ashd:rule-r73 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R73" ;
+    rdfs:label "连续亏损停手"@zh ;
+    rdfs:comment "连续亏损 3 天。"@zh ;
+    ash:ruleIf "连续亏损 3 天。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 27 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:consecutiveLossDays ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r73 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:consecutiveLossDays ; swrl:argument1 ashd:var-r73 ; swrl:argument2 ashd:var-r73-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r73-v "3"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r73 ] ) .
+ashd:var-r73 a swrl:Variable ; rdfs:label "?var-r73" .
+ashd:var-r73-v a swrl:Variable ; rdfs:label "?var-r73-v" .
+
+ashd:rule-r74 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R74" ;
+    rdfs:label "盈亏比失衡"@zh ;
+    rdfs:comment "盈亏比低于 1。"@zh ;
+    ash:ruleIf "盈亏比低于 1。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExecutionViolation"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 26 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:profitFactor ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r74 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:profitFactor ; swrl:argument1 ashd:var-r74 ; swrl:argument2 ashd:var-r74-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r74-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionViolation ; swrl:argument1 ashd:var-r74 ] ) .
+ashd:var-r74 a swrl:Variable ; rdfs:label "?var-r74" .
+ashd:var-r74-v a swrl:Variable ; rdfs:label "?var-r74-v" .
+
+ashd:rule-r75 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R75" ;
+    rdfs:label "持有过短"@zh ;
+    rdfs:comment "平均持有不足 1 天。"@zh ;
+    ash:ruleIf "平均持有不足 1 天。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExecutionViolation"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 25 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:avgHoldDays ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r75 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:avgHoldDays ; swrl:argument1 ashd:var-r75 ; swrl:argument2 ashd:var-r75-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r75-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionViolation ; swrl:argument1 ashd:var-r75 ] ) .
+ashd:var-r75 a swrl:Variable ; rdfs:label "?var-r75" .
+ashd:var-r75-v a swrl:Variable ; rdfs:label "?var-r75-v" .
+
+ashd:rule-r76 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R76" ;
+    rdfs:label "胜率过低"@zh ;
+    rdfs:comment "胜率低于 40%。"@zh ;
+    ash:ruleIf "胜率低于 40%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 24 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.7.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:winRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r76 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:winRate ; swrl:argument1 ashd:var-r76 ; swrl:argument2 ashd:var-r76-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r76-v "40"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r76 ] ) .
+ashd:var-r76 a swrl:Variable ; rdfs:label "?var-r76" .
+ashd:var-r76-v a swrl:Variable ; rdfs:label "?var-r76-v" .
+# ===== Rule expansion 1.8: 75 rules from public method summaries =====
+
+ashd:rule-r77 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R77" ;
+    rdfs:label "低估值入池"@zh ;
+    rdfs:comment "PE 处于 20% 分位以下。"@zh ;
+    ash:ruleIf "PE 处于 20% 分位以下。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EligibleStock"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 123 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:pePercentile ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r77 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:pePercentile ; swrl:argument1 ashd:var-r77 ; swrl:argument2 ashd:var-r77-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r77-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EligibleStock ; swrl:argument1 ashd:var-r77 ] ) .
+ashd:var-r77 a swrl:Variable ; rdfs:label "?var-r77" .
+ashd:var-r77-v a swrl:Variable ; rdfs:label "?var-r77-v" .
+
+ashd:rule-r78 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R78" ;
+    rdfs:label "低 PB 入池"@zh ;
+    rdfs:comment "PB 处于 20% 分位以下。"@zh ;
+    ash:ruleIf "PB 处于 20% 分位以下。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EligibleStock"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 122 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:pbPercentile ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r78 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:pbPercentile ; swrl:argument1 ashd:var-r78 ; swrl:argument2 ashd:var-r78-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r78-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EligibleStock ; swrl:argument1 ashd:var-r78 ] ) .
+ashd:var-r78 a swrl:Variable ; rdfs:label "?var-r78" .
+ashd:var-r78-v a swrl:Variable ; rdfs:label "?var-r78-v" .
+
+ashd:rule-r79 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R79" ;
+    rdfs:label "高 ROE"@zh ;
+    rdfs:comment "ROE 高于 15%。"@zh ;
+    ash:ruleIf "ROE 高于 15%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EligibleStock"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 121 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:roe ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r79 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:roe ; swrl:argument1 ashd:var-r79 ; swrl:argument2 ashd:var-r79-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r79-v "15"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EligibleStock ; swrl:argument1 ashd:var-r79 ] ) .
+ashd:var-r79 a swrl:Variable ; rdfs:label "?var-r79" .
+ashd:var-r79-v a swrl:Variable ; rdfs:label "?var-r79-v" .
+
+ashd:rule-r80 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R80" ;
+    rdfs:label "高增长"@zh ;
+    rdfs:comment "营收增速高于 20%。"@zh ;
+    ash:ruleIf "营收增速高于 20%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EligibleStock"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 120 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:revenueGrowth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r80 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:revenueGrowth ; swrl:argument1 ashd:var-r80 ; swrl:argument2 ashd:var-r80-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r80-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EligibleStock ; swrl:argument1 ashd:var-r80 ] ) .
+ashd:var-r80 a swrl:Variable ; rdfs:label "?var-r80" .
+ashd:var-r80-v a swrl:Variable ; rdfs:label "?var-r80-v" .
+
+ashd:rule-r81 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R81" ;
+    rdfs:label "利润高增"@zh ;
+    rdfs:comment "净利润增速高于 20%。"@zh ;
+    ash:ruleIf "净利润增速高于 20%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EligibleStock"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 119 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:profitGrowth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r81 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:profitGrowth ; swrl:argument1 ashd:var-r81 ; swrl:argument2 ashd:var-r81-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r81-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EligibleStock ; swrl:argument1 ashd:var-r81 ] ) .
+ashd:var-r81 a swrl:Variable ; rdfs:label "?var-r81" .
+ashd:var-r81-v a swrl:Variable ; rdfs:label "?var-r81-v" .
+
+ashd:rule-r82 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R82" ;
+    rdfs:label "高负债排除"@zh ;
+    rdfs:comment "资产负债率高于 70%。"@zh ;
+    ash:ruleIf "资产负债率高于 70%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:IneligibleStock"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 118 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:debtRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r82 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:debtRatio ; swrl:argument1 ashd:var-r82 ; swrl:argument2 ashd:var-r82-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r82-v "70"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:IneligibleStock ; swrl:argument1 ashd:var-r82 ] ) .
+ashd:var-r82 a swrl:Variable ; rdfs:label "?var-r82" .
+ashd:var-r82-v a swrl:Variable ; rdfs:label "?var-r82-v" .
+
+ashd:rule-r83 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R83" ;
+    rdfs:label "商誉过高"@zh ;
+    rdfs:comment "商誉占净资产高于 30%。"@zh ;
+    ash:ruleIf "商誉占净资产高于 30%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:GoodwillRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 117 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:goodwillRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r83 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:goodwillRatio ; swrl:argument1 ashd:var-r83 ; swrl:argument2 ashd:var-r83-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r83-v "30"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:GoodwillRisk ; swrl:argument1 ashd:var-r83 ] ) .
+ashd:var-r83 a swrl:Variable ; rdfs:label "?var-r83" .
+ashd:var-r83-v a swrl:Variable ; rdfs:label "?var-r83-v" .
+
+ashd:rule-r84 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R84" ;
+    rdfs:label "质押过高"@zh ;
+    rdfs:comment "质押比例高于 50%。"@zh ;
+    ash:ruleIf "质押比例高于 50%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PledgeRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 116 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:pledgeRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r84 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:pledgeRatio ; swrl:argument1 ashd:var-r84 ; swrl:argument2 ashd:var-r84-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r84-v "50"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PledgeRisk ; swrl:argument1 ashd:var-r84 ] ) .
+ashd:var-r84 a swrl:Variable ; rdfs:label "?var-r84" .
+ashd:var-r84-v a swrl:Variable ; rdfs:label "?var-r84-v" .
+
+ashd:rule-r85 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R85" ;
+    rdfs:label "大额减持"@zh ;
+    rdfs:comment "重要股东减持超过 1 亿。"@zh ;
+    ash:ruleIf "重要股东减持超过 1 亿。"@zh ;
+    ash:ruleThen "主体被推断为 ash:InsiderSellingRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 115 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:insiderSellAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r85 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:insiderSellAmount ; swrl:argument1 ashd:var-r85 ; swrl:argument2 ashd:var-r85-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r85-v "100000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:InsiderSellingRisk ; swrl:argument1 ashd:var-r85 ] ) .
+ashd:var-r85 a swrl:Variable ; rdfs:label "?var-r85" .
+ashd:var-r85-v a swrl:Variable ; rdfs:label "?var-r85-v" .
+
+ashd:rule-r86 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R86" ;
+    rdfs:label "解禁压力"@zh ;
+    rdfs:comment "解禁比例高于 20%。"@zh ;
+    ash:ruleIf "解禁比例高于 20%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LockupOverhangRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 114 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:lockupRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r86 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:lockupRatio ; swrl:argument1 ashd:var-r86 ; swrl:argument2 ashd:var-r86-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r86-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LockupOverhangRisk ; swrl:argument1 ashd:var-r86 ] ) .
+ashd:var-r86 a swrl:Variable ; rdfs:label "?var-r86" .
+ashd:var-r86-v a swrl:Variable ; rdfs:label "?var-r86-v" .
+
+ashd:rule-r87 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R87" ;
+    rdfs:label "监管问询"@zh ;
+    rdfs:comment "存在监管问询/处罚。"@zh ;
+    ash:ruleIf "存在监管问询/处罚。"@zh ;
+    ash:ruleThen "主体被推断为 ash:RegulatoryInquiryRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 113 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:regulatoryInquiryCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r87 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:regulatoryInquiryCount ; swrl:argument1 ashd:var-r87 ; swrl:argument2 ashd:var-r87-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r87-v "0"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:RegulatoryInquiryRisk ; swrl:argument1 ashd:var-r87 ] ) .
+ashd:var-r87 a swrl:Variable ; rdfs:label "?var-r87" .
+ashd:var-r87-v a swrl:Variable ; rdfs:label "?var-r87-v" .
+
+ashd:rule-r88 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R88" ;
+    rdfs:label "次新股"@zh ;
+    rdfs:comment "上市不足 30 天。"@zh ;
+    ash:ruleIf "上市不足 30 天。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NewStockRisk"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 112 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:daysSinceListing ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r88 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:daysSinceListing ; swrl:argument1 ashd:var-r88 ; swrl:argument2 ashd:var-r88-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r88-v "30"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NewStockRisk ; swrl:argument1 ashd:var-r88 ] ) .
+ashd:var-r88 a swrl:Variable ; rdfs:label "?var-r88" .
+ashd:var-r88-v a swrl:Variable ; rdfs:label "?var-r88-v" .
+
+ashd:rule-r89 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R89" ;
+    rdfs:label "流通盘偏小"@zh ;
+    rdfs:comment "流通市值低于 20 亿。"@zh ;
+    ash:ruleIf "流通市值低于 20 亿。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LiquidityRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 111 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:freeFloatMarketCap ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r89 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:freeFloatMarketCap ; swrl:argument1 ashd:var-r89 ; swrl:argument2 ashd:var-r89-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r89-v "2000000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LiquidityRisk ; swrl:argument1 ashd:var-r89 ] ) .
+ashd:var-r89 a swrl:Variable ; rdfs:label "?var-r89" .
+ashd:var-r89-v a swrl:Variable ; rdfs:label "?var-r89-v" .
+
+ashd:rule-r90 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R90" ;
+    rdfs:label "成交不足"@zh ;
+    rdfs:comment "日均成交额低于 5000 万。"@zh ;
+    ash:ruleIf "日均成交额低于 5000 万。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LiquidityRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 110 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:avgDailyAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r90 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:avgDailyAmount ; swrl:argument1 ashd:var-r90 ; swrl:argument2 ashd:var-r90-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r90-v "50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LiquidityRisk ; swrl:argument1 ashd:var-r90 ] ) .
+ashd:var-r90 a swrl:Variable ; rdfs:label "?var-r90" .
+ashd:var-r90-v a swrl:Variable ; rdfs:label "?var-r90-v" .
+
+ashd:rule-r91 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R91" ;
+    rdfs:label "业绩暴雷"@zh ;
+    rdfs:comment "业绩低于预期 20% 以上。"@zh ;
+    ash:ruleIf "业绩低于预期 20% 以上。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EarningsMissRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 109 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:earningsMissPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r91 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:earningsMissPct ; swrl:argument1 ashd:var-r91 ; swrl:argument2 ashd:var-r91-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r91-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EarningsMissRisk ; swrl:argument1 ashd:var-r91 ] ) .
+ashd:var-r91 a swrl:Variable ; rdfs:label "?var-r91" .
+ashd:var-r91-v a swrl:Variable ; rdfs:label "?var-r91-v" .
+
+ashd:rule-r92 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R92" ;
+    rdfs:label "PE 高分位"@zh ;
+    rdfs:comment "PE 处于 90% 分位以上。"@zh ;
+    ash:ruleIf "PE 处于 90% 分位以上。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OvervaluationRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 108 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:pePercentile ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r92 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:pePercentile ; swrl:argument1 ashd:var-r92 ; swrl:argument2 ashd:var-r92-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r92-v "90"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OvervaluationRisk ; swrl:argument1 ashd:var-r92 ] ) .
+ashd:var-r92 a swrl:Variable ; rdfs:label "?var-r92" .
+ashd:var-r92-v a swrl:Variable ; rdfs:label "?var-r92-v" .
+
+ashd:rule-r93 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R93" ;
+    rdfs:label "PB 高分位"@zh ;
+    rdfs:comment "PB 处于 90% 分位以上。"@zh ;
+    ash:ruleIf "PB 处于 90% 分位以上。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OvervaluationRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 107 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:pbPercentile ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r93 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:pbPercentile ; swrl:argument1 ashd:var-r93 ; swrl:argument2 ashd:var-r93-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r93-v "90"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OvervaluationRisk ; swrl:argument1 ashd:var-r93 ] ) .
+ashd:var-r93 a swrl:Variable ; rdfs:label "?var-r93" .
+ashd:var-r93-v a swrl:Variable ; rdfs:label "?var-r93-v" .
+
+ashd:rule-r94 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R94" ;
+    rdfs:label "小盘低流动性"@zh ;
+    rdfs:comment "市值与成交额同时不足。"@zh ;
+    ash:ruleIf "市值与成交额同时不足。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LiquidityRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 106 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketCap, ash:avgDailyAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r94 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketCap ; swrl:argument1 ashd:var-r94 ; swrl:argument2 ashd:var-r94-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r94-v "2000000000"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:avgDailyAmount ; swrl:argument1 ashd:var-r94 ; swrl:argument2 ashd:var-r94-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r94-v2 "50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LiquidityRisk ; swrl:argument1 ashd:var-r94 ] ) .
+ashd:var-r94 a swrl:Variable ; rdfs:label "?var-r94" .
+ashd:var-r94-v a swrl:Variable ; rdfs:label "?var-r94-v" .
+ashd:var-r94-v2 a swrl:Variable ; rdfs:label "?var-r94-v2" .
+
+ashd:rule-r95 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R95" ;
+    rdfs:label "高商誉高负债"@zh ;
+    rdfs:comment "商誉与负债同时高。"@zh ;
+    ash:ruleIf "商誉与负债同时高。"@zh ;
+    ash:ruleThen "主体被推断为 ash:GoodwillRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 105 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:goodwillRatio, ash:debtRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r95 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:goodwillRatio ; swrl:argument1 ashd:var-r95 ; swrl:argument2 ashd:var-r95-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r95-v "50"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:debtRatio ; swrl:argument1 ashd:var-r95 ; swrl:argument2 ashd:var-r95-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r95-v2 "60"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:GoodwillRisk ; swrl:argument1 ashd:var-r95 ] ) .
+ashd:var-r95 a swrl:Variable ; rdfs:label "?var-r95" .
+ashd:var-r95-v a swrl:Variable ; rdfs:label "?var-r95-v" .
+ashd:var-r95-v2 a swrl:Variable ; rdfs:label "?var-r95-v2" .
+
+ashd:rule-r96 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R96" ;
+    rdfs:label "极高质押"@zh ;
+    rdfs:comment "质押比例高于 70%。"@zh ;
+    ash:ruleIf "质押比例高于 70%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PledgeRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 104 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "选股" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:pledgeRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r96 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:pledgeRatio ; swrl:argument1 ashd:var-r96 ; swrl:argument2 ashd:var-r96-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r96-v "70"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PledgeRisk ; swrl:argument1 ashd:var-r96 ] ) .
+ashd:var-r96 a swrl:Variable ; rdfs:label "?var-r96" .
+ashd:var-r96-v a swrl:Variable ; rdfs:label "?var-r96-v" .
+
+ashd:rule-r97 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R97" ;
+    rdfs:label "趋势转正"@zh ;
+    rdfs:comment "市场趋势分数为正。"@zh ;
+    ash:ruleIf "市场趋势分数为正。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOn"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 103 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentMarketTrend ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r97 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentMarketTrend ; swrl:argument1 ashd:var-r97 ; swrl:argument2 ashd:var-r97-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r97-v "0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOn ; swrl:argument1 ashd:var-r97 ] ) .
+ashd:var-r97 a swrl:Variable ; rdfs:label "?var-r97" .
+ashd:var-r97-v a swrl:Variable ; rdfs:label "?var-r97-v" .
+
+ashd:rule-r98 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R98" ;
+    rdfs:label "趋势转负"@zh ;
+    rdfs:comment "市场趋势分数为负。"@zh ;
+    ash:ruleIf "市场趋势分数为负。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOff"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 102 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentMarketTrend ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r98 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentMarketTrend ; swrl:argument1 ashd:var-r98 ; swrl:argument2 ashd:var-r98-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r98-v "0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOff ; swrl:argument1 ashd:var-r98 ] ) .
+ashd:var-r98 a swrl:Variable ; rdfs:label "?var-r98" .
+ashd:var-r98-v a swrl:Variable ; rdfs:label "?var-r98-v" .
+
+ashd:rule-r99 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R99" ;
+    rdfs:label "宽度扩散"@zh ;
+    rdfs:comment "市场宽度高于 70。"@zh ;
+    ash:ruleIf "市场宽度高于 70。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketRiskOn"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 101 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentMarketBreadth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r99 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentMarketBreadth ; swrl:argument1 ashd:var-r99 ; swrl:argument2 ashd:var-r99-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r99-v "70"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketRiskOn ; swrl:argument1 ashd:var-r99 ] ) .
+ashd:var-r99 a swrl:Variable ; rdfs:label "?var-r99" .
+ashd:var-r99-v a swrl:Variable ; rdfs:label "?var-r99-v" .
+
+ashd:rule-r100 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R100" ;
+    rdfs:label "宽度收缩"@zh ;
+    rdfs:comment "市场宽度低于 30。"@zh ;
+    ash:ruleIf "市场宽度低于 30。"@zh ;
+    ash:ruleThen "主体被推断为 ash:MarketBreadthWeak"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 100 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "市场" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentMarketBreadth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r100 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentMarketBreadth ; swrl:argument1 ashd:var-r100 ; swrl:argument2 ashd:var-r100-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r100-v "30"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketBreadthWeak ; swrl:argument1 ashd:var-r100 ] ) .
+ashd:var-r100 a swrl:Variable ; rdfs:label "?var-r100" .
+ashd:var-r100-v a swrl:Variable ; rdfs:label "?var-r100-v" .
+
+ashd:rule-r101 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R101" ;
+    rdfs:label "主题高热"@zh ;
+    rdfs:comment "主题热度高于 80。"@zh ;
+    ash:ruleIf "主题热度高于 80。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ThemeMainline"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 99 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentThemeHeat ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r101 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentThemeHeat ; swrl:argument1 ashd:var-r101 ; swrl:argument2 ashd:var-r101-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r101-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ThemeMainline ; swrl:argument1 ashd:var-r101 ] ) .
+ashd:var-r101 a swrl:Variable ; rdfs:label "?var-r101" .
+ashd:var-r101-v a swrl:Variable ; rdfs:label "?var-r101-v" .
+
+ashd:rule-r102 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R102" ;
+    rdfs:label "主题冷清"@zh ;
+    rdfs:comment "主题热度低于 30。"@zh ;
+    ash:ruleIf "主题热度低于 30。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 98 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentThemeHeat ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r102 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentThemeHeat ; swrl:argument1 ashd:var-r102 ; swrl:argument2 ashd:var-r102-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r102-v "30"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r102 ] ) .
+ashd:var-r102 a swrl:Variable ; rdfs:label "?var-r102" .
+ashd:var-r102-v a swrl:Variable ; rdfs:label "?var-r102-v" .
+
+ashd:rule-r103 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R103" ;
+    rdfs:label "主题掉队"@zh ;
+    rdfs:comment "主题排名明显下滑。"@zh ;
+    ash:ruleIf "主题排名明显下滑。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EmotionEbb"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 97 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "题材" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:themeRankChange ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r103 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:themeRankChange ; swrl:argument1 ashd:var-r103 ; swrl:argument2 ashd:var-r103-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r103-v "-5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionEbb ; swrl:argument1 ashd:var-r103 ] ) .
+ashd:var-r103 a swrl:Variable ; rdfs:label "?var-r103" .
+ashd:var-r103-v a swrl:Variable ; rdfs:label "?var-r103-v" .
+
+ashd:rule-r104 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R104" ;
+    rdfs:label "高度不足"@zh ;
+    rdfs:comment "市场高度低于 2 板。"@zh ;
+    ash:ruleIf "市场高度低于 2 板。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 96 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "情绪" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:marketHeightValue ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r104 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketHeightValue ; swrl:argument1 ashd:var-r104 ; swrl:argument2 ashd:var-r104-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r104-v "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r104 ] ) .
+ashd:var-r104 a swrl:Variable ; rdfs:label "?var-r104" .
+ashd:var-r104-v a swrl:Variable ; rdfs:label "?var-r104-v" .
+
+ashd:rule-r105 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R105" ;
+    rdfs:label "高位连板"@zh ;
+    rdfs:comment "连板达到 5 板。"@zh ;
+    ash:ruleIf "连板达到 5 板。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HighBoardRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 95 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "情绪" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentLimitUpHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r105 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentLimitUpHeight ; swrl:argument1 ashd:var-r105 ; swrl:argument2 ashd:var-r105-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r105-v "5"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HighBoardRisk ; swrl:argument1 ashd:var-r105 ] ) .
+ashd:var-r105 a swrl:Variable ; rdfs:label "?var-r105" .
+ashd:var-r105-v a swrl:Variable ; rdfs:label "?var-r105-v" .
+
+ashd:rule-r106 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R106" ;
+    rdfs:label "炸板率高"@zh ;
+    rdfs:comment "炸板率高于 50%。"@zh ;
+    ash:ruleIf "炸板率高于 50%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:EmotionEbb"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 94 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "情绪" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentBrokenBoardRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r106 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentBrokenBoardRate ; swrl:argument1 ashd:var-r106 ; swrl:argument2 ashd:var-r106-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r106-v "50"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:EmotionEbb ; swrl:argument1 ashd:var-r106 ] ) .
+ashd:var-r106 a swrl:Variable ; rdfs:label "?var-r106" .
+ashd:var-r106-v a swrl:Variable ; rdfs:label "?var-r106-v" .
+
+ashd:rule-r107 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R107" ;
+    rdfs:label "换手过热"@zh ;
+    rdfs:comment "换手率高于 20%。"@zh ;
+    ash:ruleIf "换手率高于 20%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OverheatRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 93 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentTurnoverRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r107 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentTurnoverRate ; swrl:argument1 ashd:var-r107 ; swrl:argument2 ashd:var-r107-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r107-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OverheatRisk ; swrl:argument1 ashd:var-r107 ] ) .
+ashd:var-r107 a swrl:Variable ; rdfs:label "?var-r107" .
+ashd:var-r107-v a swrl:Variable ; rdfs:label "?var-r107-v" .
+
+ashd:rule-r108 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R108" ;
+    rdfs:label "换手不足"@zh ;
+    rdfs:comment "换手率低于 1%。"@zh ;
+    ash:ruleIf "换手率低于 1%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LiquidityRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 92 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentTurnoverRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r108 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentTurnoverRate ; swrl:argument1 ashd:var-r108 ; swrl:argument2 ashd:var-r108-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r108-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LiquidityRisk ; swrl:argument1 ashd:var-r108 ] ) .
+ashd:var-r108 a swrl:Variable ; rdfs:label "?var-r108" .
+ashd:var-r108-v a swrl:Variable ; rdfs:label "?var-r108-v" .
+
+ashd:rule-r109 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R109" ;
+    rdfs:label "波动过大"@zh ;
+    rdfs:comment "ATR 占价格比例高于 5%。"@zh ;
+    ash:ruleIf "ATR 占价格比例高于 5%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:VolatilityRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 91 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "风控" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:atrPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r109 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:atrPct ; swrl:argument1 ashd:var-r109 ; swrl:argument2 ashd:var-r109-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r109-v "5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:VolatilityRisk ; swrl:argument1 ashd:var-r109 ] ) .
+ashd:var-r109 a swrl:Variable ; rdfs:label "?var-r109" .
+ashd:var-r109-v a swrl:Variable ; rdfs:label "?var-r109-v" .
+
+ashd:rule-r110 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R110" ;
+    rdfs:label "布林带扩张"@zh ;
+    rdfs:comment "布林带宽度大于 0.2。"@zh ;
+    ash:ruleIf "布林带宽度大于 0.2。"@zh ;
+    ash:ruleThen "主体被推断为 ash:BreakoutSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 90 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:bollingerWidth ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r110 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:bollingerWidth ; swrl:argument1 ashd:var-r110 ; swrl:argument2 ashd:var-r110-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r110-v "0.2"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BreakoutSetup ; swrl:argument1 ashd:var-r110 ] ) .
+ashd:var-r110 a swrl:Variable ; rdfs:label "?var-r110" .
+ashd:var-r110-v a swrl:Variable ; rdfs:label "?var-r110-v" .
+
+ashd:rule-r111 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R111" ;
+    rdfs:label "MACD 转弱"@zh ;
+    rdfs:comment "MACD 柱转负。"@zh ;
+    ash:ruleIf "MACD 柱转负。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 89 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:macdHistogram ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r111 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:macdHistogram ; swrl:argument1 ashd:var-r111 ; swrl:argument2 ashd:var-r111-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r111-v "0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r111 ] ) .
+ashd:var-r111 a swrl:Variable ; rdfs:label "?var-r111" .
+ashd:var-r111-v a swrl:Variable ; rdfs:label "?var-r111-v" .
+
+ashd:rule-r112 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R112" ;
+    rdfs:label "RSI 超卖"@zh ;
+    rdfs:comment "RSI 低于 20。"@zh ;
+    ash:ruleIf "RSI 低于 20。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LowBuySetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 88 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:rsiValue ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r112 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:rsiValue ; swrl:argument1 ashd:var-r112 ; swrl:argument2 ashd:var-r112-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r112-v "20"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LowBuySetup ; swrl:argument1 ashd:var-r112 ] ) .
+ashd:var-r112 a swrl:Variable ; rdfs:label "?var-r112" .
+ashd:var-r112-v a swrl:Variable ; rdfs:label "?var-r112-v" .
+
+ashd:rule-r113 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R113" ;
+    rdfs:label "RSI 超买"@zh ;
+    rdfs:comment "RSI 高于 80。"@zh ;
+    ash:ruleIf "RSI 高于 80。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OverheatRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 87 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:rsiValue ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r113 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:rsiValue ; swrl:argument1 ashd:var-r113 ; swrl:argument2 ashd:var-r113-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r113-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OverheatRisk ; swrl:argument1 ashd:var-r113 ] ) .
+ashd:var-r113 a swrl:Variable ; rdfs:label "?var-r113" .
+ashd:var-r113-v a swrl:Variable ; rdfs:label "?var-r113-v" .
+
+ashd:rule-r114 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R114" ;
+    rdfs:label "缩量回调"@zh ;
+    rdfs:comment "成交量较近期高点萎缩 60%。"@zh ;
+    ash:ruleIf "成交量较近期高点萎缩 60%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LowBuySetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 86 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:volumeDryUp ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r114 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:volumeDryUp ; swrl:argument1 ashd:var-r114 ; swrl:argument2 ashd:var-r114-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r114-v "0.6"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LowBuySetup ; swrl:argument1 ashd:var-r114 ] ) .
+ashd:var-r114 a swrl:Variable ; rdfs:label "?var-r114" .
+ashd:var-r114-v a swrl:Variable ; rdfs:label "?var-r114-v" .
+
+ashd:rule-r115 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R115" ;
+    rdfs:label "跳空高开"@zh ;
+    rdfs:comment "跳空高开超过 3%。"@zh ;
+    ash:ruleIf "跳空高开超过 3%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:BreakoutSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 85 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:gapPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r115 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:gapPct ; swrl:argument1 ashd:var-r115 ; swrl:argument2 ashd:var-r115-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r115-v "3"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BreakoutSetup ; swrl:argument1 ashd:var-r115 ] ) .
+ashd:var-r115 a swrl:Variable ; rdfs:label "?var-r115" .
+ashd:var-r115-v a swrl:Variable ; rdfs:label "?var-r115-v" .
+
+ashd:rule-r116 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R116" ;
+    rdfs:label "缺口回补"@zh ;
+    rdfs:comment "缺口回补超过 80%。"@zh ;
+    ash:ruleIf "缺口回补超过 80%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:GapFillRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 84 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "技术" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:gapFillPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r116 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:gapFillPct ; swrl:argument1 ashd:var-r116 ; swrl:argument2 ashd:var-r116-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r116-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:GapFillRisk ; swrl:argument1 ashd:var-r116 ] ) .
+ashd:var-r116 a swrl:Variable ; rdfs:label "?var-r116" .
+ashd:var-r116-v a swrl:Variable ; rdfs:label "?var-r116-v" .
+
+ashd:rule-r117 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R117" ;
+    rdfs:label "强封板"@zh ;
+    rdfs:comment "封单超过 1 亿。"@zh ;
+    ash:ruleIf "封单超过 1 亿。"@zh ;
+    ash:ruleThen "主体被推断为 ash:FirstBoardSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 83 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentSealAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r117 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentSealAmount ; swrl:argument1 ashd:var-r117 ; swrl:argument2 ashd:var-r117-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r117-v "100000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:FirstBoardSetup ; swrl:argument1 ashd:var-r117 ] ) .
+ashd:var-r117 a swrl:Variable ; rdfs:label "?var-r117" .
+ashd:var-r117-v a swrl:Variable ; rdfs:label "?var-r117-v" .
+
+ashd:rule-r118 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R118" ;
+    rdfs:label "封单不足"@zh ;
+    rdfs:comment "封单低于 2000 万。"@zh ;
+    ash:ruleIf "封单低于 2000 万。"@zh ;
+    ash:ruleThen "主体被推断为 ash:BoardBreakRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 82 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentSealAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r118 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentSealAmount ; swrl:argument1 ashd:var-r118 ; swrl:argument2 ashd:var-r118-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r118-v "20000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BoardBreakRisk ; swrl:argument1 ashd:var-r118 ] ) .
+ashd:var-r118 a swrl:Variable ; rdfs:label "?var-r118" .
+ashd:var-r118-v a swrl:Variable ; rdfs:label "?var-r118-v" .
+
+ashd:rule-r119 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R119" ;
+    rdfs:label "反复炸板"@zh ;
+    rdfs:comment "炸板次数达到 2 次。"@zh ;
+    ash:ruleIf "炸板次数达到 2 次。"@zh ;
+    ash:ruleThen "主体被推断为 ash:BoardBreakRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 81 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentBrokenBoards ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r119 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentBrokenBoards ; swrl:argument1 ashd:var-r119 ; swrl:argument2 ashd:var-r119-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r119-v "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:BoardBreakRisk ; swrl:argument1 ashd:var-r119 ] ) .
+ashd:var-r119 a swrl:Variable ; rdfs:label "?var-r119" .
+ashd:var-r119-v a swrl:Variable ; rdfs:label "?var-r119-v" .
+
+ashd:rule-r120 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R120" ;
+    rdfs:label "连板接力"@zh ;
+    rdfs:comment "连板高度达到 3 板。"@zh ;
+    ash:ruleIf "连板高度达到 3 板。"@zh ;
+    ash:ruleThen "主体被推断为 ash:RelaySetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 80 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentLimitUpHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r120 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentLimitUpHeight ; swrl:argument1 ashd:var-r120 ; swrl:argument2 ashd:var-r120-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r120-v "3"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:RelaySetup ; swrl:argument1 ashd:var-r120 ] ) .
+ashd:var-r120 a swrl:Variable ; rdfs:label "?var-r120" .
+ashd:var-r120-v a swrl:Variable ; rdfs:label "?var-r120-v" .
+
+ashd:rule-r121 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R121" ;
+    rdfs:label "低位反包"@zh ;
+    rdfs:comment "连板高度不超过 2 板。"@zh ;
+    ash:ruleIf "连板高度不超过 2 板。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ReversalSetup"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 79 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "反包" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentLimitUpHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r121 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentLimitUpHeight ; swrl:argument1 ashd:var-r121 ; swrl:argument2 ashd:var-r121-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-r121-v "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ReversalSetup ; swrl:argument1 ashd:var-r121 ] ) .
+ashd:var-r121 a swrl:Variable ; rdfs:label "?var-r121" .
+ashd:var-r121-v a swrl:Variable ; rdfs:label "?var-r121-v" .
+
+ashd:rule-r122 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R122" ;
+    rdfs:label "放量换手板"@zh ;
+    rdfs:comment "换手与封单同时达标。"@zh ;
+    ash:ruleIf "换手与封单同时达标。"@zh ;
+    ash:ruleThen "主体被推断为 ash:VolumeTurnoverBoard"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 78 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentTurnoverRate, ash:currentSealAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r122 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentTurnoverRate ; swrl:argument1 ashd:var-r122 ; swrl:argument2 ashd:var-r122-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r122-v "5"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentSealAmount ; swrl:argument1 ashd:var-r122 ; swrl:argument2 ashd:var-r122-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r122-v2 "50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:VolumeTurnoverBoard ; swrl:argument1 ashd:var-r122 ] ) .
+ashd:var-r122 a swrl:Variable ; rdfs:label "?var-r122" .
+ashd:var-r122-v a swrl:Variable ; rdfs:label "?var-r122-v" .
+ashd:var-r122-v2 a swrl:Variable ; rdfs:label "?var-r122-v2" .
+
+ashd:rule-r123 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R123" ;
+    rdfs:label "缩量封板"@zh ;
+    rdfs:comment "缩量封板不适合追。"@zh ;
+    ash:ruleIf "缩量封板不适合追。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 77 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "打板" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentTurnoverRate, ash:currentSealAmount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r123 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentTurnoverRate ; swrl:argument1 ashd:var-r123 ; swrl:argument2 ashd:var-r123-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r123-v "3"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentSealAmount ; swrl:argument1 ashd:var-r123 ; swrl:argument2 ashd:var-r123-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r123-v2 "50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r123 ] ) .
+ashd:var-r123 a swrl:Variable ; rdfs:label "?var-r123" .
+ashd:var-r123-v a swrl:Variable ; rdfs:label "?var-r123-v" .
+ashd:var-r123-v2 a swrl:Variable ; rdfs:label "?var-r123-v2" .
+
+ashd:rule-r124 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R124" ;
+    rdfs:label "游资净买"@zh ;
+    rdfs:comment "最新龙虎榜净买超过 5000 万。"@zh ;
+    ash:ruleIf "最新龙虎榜净买超过 5000 万。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HotMoneyInflow"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 76 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:latestDragonTigerNetBuy ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r124 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:latestDragonTigerNetBuy ; swrl:argument1 ashd:var-r124 ; swrl:argument2 ashd:var-r124-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r124-v "50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyInflow ; swrl:argument1 ashd:var-r124 ] ) .
+ashd:var-r124 a swrl:Variable ; rdfs:label "?var-r124" .
+ashd:var-r124-v a swrl:Variable ; rdfs:label "?var-r124-v" .
+
+ashd:rule-r125 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R125" ;
+    rdfs:label "游资净卖"@zh ;
+    rdfs:comment "最新龙虎榜净卖超过 5000 万。"@zh ;
+    ash:ruleIf "最新龙虎榜净卖超过 5000 万。"@zh ;
+    ash:ruleThen "主体被推断为 ash:HotMoneyExit"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 75 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:latestDragonTigerNetBuy ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r125 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:latestDragonTigerNetBuy ; swrl:argument1 ashd:var-r125 ; swrl:argument2 ashd:var-r125-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r125-v "-50000000"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:HotMoneyExit ; swrl:argument1 ashd:var-r125 ] ) .
+ashd:var-r125 a swrl:Variable ; rdfs:label "?var-r125" .
+ashd:var-r125-v a swrl:Variable ; rdfs:label "?var-r125-v" .
+
+ashd:rule-r126 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R126" ;
+    rdfs:label "一日游风险"@zh ;
+    rdfs:comment "席位一日游比例高于 60%。"@zh ;
+    ash:ruleIf "席位一日游比例高于 60%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OneDayTripRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 74 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:seatOneDayTripRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r126 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:seatOneDayTripRate ; swrl:argument1 ashd:var-r126 ; swrl:argument2 ashd:var-r126-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r126-v "0.6"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OneDayTripRisk ; swrl:argument1 ashd:var-r126 ] ) .
+ashd:var-r126 a swrl:Variable ; rdfs:label "?var-r126" .
+ashd:var-r126-v a swrl:Variable ; rdfs:label "?var-r126-v" .
+
+ashd:rule-r127 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R127" ;
+    rdfs:label "买一弱"@zh ;
+    rdfs:comment "买一金额小于卖一。"@zh ;
+    ash:ruleIf "买一金额小于卖一。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionWeak"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 73 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:buy1ToSell1Ratio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r127 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:buy1ToSell1Ratio ; swrl:argument1 ashd:var-r127 ; swrl:argument2 ashd:var-r127-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r127-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionWeak ; swrl:argument1 ashd:var-r127 ] ) .
+ashd:var-r127 a swrl:Variable ; rdfs:label "?var-r127" .
+ashd:var-r127-v a swrl:Variable ; rdfs:label "?var-r127-v" .
+
+ashd:rule-r128 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R128" ;
+    rdfs:label "买一强"@zh ;
+    rdfs:comment "买一金额高于卖一 1.5 倍。"@zh ;
+    ash:ruleIf "买一金额高于卖一 1.5 倍。"@zh ;
+    ash:ruleThen "主体被推断为 ash:LeaderConfirmed"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 72 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "龙虎榜" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:buy1ToSell1Ratio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r128 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:buy1ToSell1Ratio ; swrl:argument1 ashd:var-r128 ; swrl:argument2 ashd:var-r128-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r128-v "1.5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:LeaderConfirmed ; swrl:argument1 ashd:var-r128 ] ) .
+ashd:var-r128 a swrl:Variable ; rdfs:label "?var-r128" .
+ashd:var-r128-v a swrl:Variable ; rdfs:label "?var-r128-v" .
+
+ashd:rule-r129 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R129" ;
+    rdfs:label "竞价强"@zh ;
+    rdfs:comment "竞价溢价高于 3%。"@zh ;
+    ash:ruleIf "竞价溢价高于 3%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionStrong"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 71 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "竞价" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:auctionPremium ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r129 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:auctionPremium ; swrl:argument1 ashd:var-r129 ; swrl:argument2 ashd:var-r129-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r129-v "3"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionStrong ; swrl:argument1 ashd:var-r129 ] ) .
+ashd:var-r129 a swrl:Variable ; rdfs:label "?var-r129" .
+ashd:var-r129-v a swrl:Variable ; rdfs:label "?var-r129-v" .
+
+ashd:rule-r130 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R130" ;
+    rdfs:label "竞价弱"@zh ;
+    rdfs:comment "竞价溢价低于 -3%。"@zh ;
+    ash:ruleIf "竞价溢价低于 -3%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:AuctionWeak"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 70 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "竞价" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:auctionPremium ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r130 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:auctionPremium ; swrl:argument1 ashd:var-r130 ; swrl:argument2 ashd:var-r130-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r130-v "-3"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:AuctionWeak ; swrl:argument1 ashd:var-r130 ] ) .
+ashd:var-r130 a swrl:Variable ; rdfs:label "?var-r130" .
+ashd:var-r130-v a swrl:Variable ; rdfs:label "?var-r130-v" .
+
+ashd:rule-r131 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R131" ;
+    rdfs:label "利润回吐"@zh ;
+    rdfs:comment "浮盈回吐超过 50%。"@zh ;
+    ash:ruleIf "浮盈回吐超过 50%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ProfitGivebackRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 69 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:profitGivebackPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r131 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:profitGivebackPct ; swrl:argument1 ashd:var-r131 ; swrl:argument2 ashd:var-r131-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r131-v "50"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ProfitGivebackRisk ; swrl:argument1 ashd:var-r131 ] ) .
+ashd:var-r131 a swrl:Variable ; rdfs:label "?var-r131" .
+ashd:var-r131-v a swrl:Variable ; rdfs:label "?var-r131-v" .
+
+ashd:rule-r132 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R132" ;
+    rdfs:label "高位巨换手"@zh ;
+    rdfs:comment "高位换手超过 25%。"@zh ;
+    ash:ruleIf "高位换手超过 25%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:OverheatRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 68 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentTurnoverRate, ash:currentLimitUpHeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r132 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentTurnoverRate ; swrl:argument1 ashd:var-r132 ; swrl:argument2 ashd:var-r132-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r132-v "25"^^xsd:decimal ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentLimitUpHeight ; swrl:argument1 ashd:var-r132 ; swrl:argument2 ashd:var-r132-v2 ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r132-v2 "3"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:OverheatRisk ; swrl:argument1 ashd:var-r132 ] ) .
+ashd:var-r132 a swrl:Variable ; rdfs:label "?var-r132" .
+ashd:var-r132-v a swrl:Variable ; rdfs:label "?var-r132-v" .
+ashd:var-r132-v2 a swrl:Variable ; rdfs:label "?var-r132-v2" .
+
+ashd:rule-r133 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R133" ;
+    rdfs:label "MACD 走弱"@zh ;
+    rdfs:comment "MACD 柱转负。"@zh ;
+    ash:ruleIf "MACD 柱转负。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 67 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:macdHistogram ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r133 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:macdHistogram ; swrl:argument1 ashd:var-r133 ; swrl:argument2 ashd:var-r133-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r133-v "0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r133 ] ) .
+ashd:var-r133 a swrl:Variable ; rdfs:label "?var-r133" .
+ashd:var-r133-v a swrl:Variable ; rdfs:label "?var-r133-v" .
+
+ashd:rule-r134 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R134" ;
+    rdfs:label "跌破均线"@zh ;
+    rdfs:comment "价格/均线跌破 1。"@zh ;
+    ash:ruleIf "价格/均线跌破 1。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 66 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:ma20 ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r134 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ma20 ; swrl:argument1 ashd:var-r134 ; swrl:argument2 ashd:var-r134-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r134-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r134 ] ) .
+ashd:var-r134 a swrl:Variable ; rdfs:label "?var-r134" .
+ashd:var-r134-v a swrl:Variable ; rdfs:label "?var-r134-v" .
+
+ashd:rule-r135 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R135" ;
+    rdfs:label "主题退潮"@zh ;
+    rdfs:comment "主题热度低于 40。"@zh ;
+    ash:ruleIf "主题热度低于 40。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 65 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentThemeHeat ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r135 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentThemeHeat ; swrl:argument1 ashd:var-r135 ; swrl:argument2 ashd:var-r135-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r135-v "40"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r135 ] ) .
+ashd:var-r135 a swrl:Variable ; rdfs:label "?var-r135" .
+ashd:var-r135-v a swrl:Variable ; rdfs:label "?var-r135-v" .
+
+ashd:rule-r136 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R136" ;
+    rdfs:label "环境退潮"@zh ;
+    rdfs:comment "炸板率高于 50%。"@zh ;
+    ash:ruleIf "炸板率高于 50%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 64 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentBrokenBoardRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r136 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentBrokenBoardRate ; swrl:argument1 ashd:var-r136 ; swrl:argument2 ashd:var-r136-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r136-v "50"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r136 ] ) .
+ashd:var-r136 a swrl:Variable ; rdfs:label "?var-r136" .
+ashd:var-r136-v a swrl:Variable ; rdfs:label "?var-r136-v" .
+
+ashd:rule-r137 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R137" ;
+    rdfs:label "监管风险退出"@zh ;
+    rdfs:comment "存在监管问询。"@zh ;
+    ash:ruleIf "存在监管问询。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 63 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:regulatoryInquiryCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r137 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:regulatoryInquiryCount ; swrl:argument1 ashd:var-r137 ; swrl:argument2 ashd:var-r137-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r137-v "0"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r137 ] ) .
+ashd:var-r137 a swrl:Variable ; rdfs:label "?var-r137" .
+ashd:var-r137-v a swrl:Variable ; rdfs:label "?var-r137-v" .
+
+ashd:rule-r138 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R138" ;
+    rdfs:label "停牌风险"@zh ;
+    rdfs:comment "存在停牌。"@zh ;
+    ash:ruleIf "存在停牌。"@zh ;
+    ash:ruleThen "主体被推断为 ash:SuspensionRisk"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 62 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:suspensionDays ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r138 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:suspensionDays ; swrl:argument1 ashd:var-r138 ; swrl:argument2 ashd:var-r138-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r138-v "0"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:SuspensionRisk ; swrl:argument1 ashd:var-r138 ] ) .
+ashd:var-r138 a swrl:Variable ; rdfs:label "?var-r138" .
+ashd:var-r138-v a swrl:Variable ; rdfs:label "?var-r138-v" .
+
+ashd:rule-r139 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R139" ;
+    rdfs:label "缺口回补"@zh ;
+    rdfs:comment "缺口回补超过 80%。"@zh ;
+    ash:ruleIf "缺口回补超过 80%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 61 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:gapFillPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r139 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:gapFillPct ; swrl:argument1 ashd:var-r139 ; swrl:argument2 ashd:var-r139-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r139-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r139 ] ) .
+ashd:var-r139 a swrl:Variable ; rdfs:label "?var-r139" .
+ashd:var-r139-v a swrl:Variable ; rdfs:label "?var-r139-v" .
+
+ashd:rule-r140 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R140" ;
+    rdfs:label "炸板退出"@zh ;
+    rdfs:comment "炸板达到 2 次。"@zh ;
+    ash:ruleIf "炸板达到 2 次。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExitSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 60 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "退出" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Security ;
+    ash:ruleUses ash:currentBrokenBoards ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Security ; swrl:argument1 ashd:var-r140 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:currentBrokenBoards ; swrl:argument1 ashd:var-r140 ; swrl:argument2 ashd:var-r140-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-r140-v "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitSignal ; swrl:argument1 ashd:var-r140 ] ) .
+ashd:var-r140 a swrl:Variable ; rdfs:label "?var-r140" .
+ashd:var-r140-v a swrl:Variable ; rdfs:label "?var-r140-v" .
+
+ashd:rule-r141 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R141" ;
+    rdfs:label "总仓位超限"@zh ;
+    rdfs:comment "总仓位超过 80%。"@zh ;
+    ash:ruleIf "总仓位超过 80%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PositionTooLarge"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 59 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "仓位" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Portfolio ;
+    ash:ruleUses ash:maxPositionPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-r141 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxPositionPct ; swrl:argument1 ashd:var-r141 ; swrl:argument2 ashd:var-r141-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r141-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PositionTooLarge ; swrl:argument1 ashd:var-r141 ] ) .
+ashd:var-r141 a swrl:Variable ; rdfs:label "?var-r141" .
+ashd:var-r141-v a swrl:Variable ; rdfs:label "?var-r141-v" .
+
+ashd:rule-r142 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R142" ;
+    rdfs:label "单日亏损超限"@zh ;
+    rdfs:comment "单日亏损超过 5%。"@zh ;
+    ash:ruleIf "单日亏损超过 5%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:DailyLossLimitBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 58 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "仓位" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Portfolio ;
+    ash:ruleUses ash:maxDailyLossPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-r142 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxDailyLossPct ; swrl:argument1 ashd:var-r142 ; swrl:argument2 ashd:var-r142-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r142-v "5"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:DailyLossLimitBreach ; swrl:argument1 ashd:var-r142 ] ) .
+ashd:var-r142 a swrl:Variable ; rdfs:label "?var-r142" .
+ashd:var-r142-v a swrl:Variable ; rdfs:label "?var-r142-v" .
+
+ashd:rule-r143 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R143" ;
+    rdfs:label "仓位过重"@zh ;
+    rdfs:comment "当前仓位超过 80%。"@zh ;
+    ash:ruleIf "当前仓位超过 80%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PositionTooLarge"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 57 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "仓位" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Portfolio ;
+    ash:ruleUses ash:positionSizePct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-r143 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:positionSizePct ; swrl:argument1 ashd:var-r143 ; swrl:argument2 ashd:var-r143-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r143-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PositionTooLarge ; swrl:argument1 ashd:var-r143 ] ) .
+ashd:var-r143 a swrl:Variable ; rdfs:label "?var-r143" .
+ashd:var-r143-v a swrl:Variable ; rdfs:label "?var-r143-v" .
+
+ashd:rule-r144 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R144" ;
+    rdfs:label "单笔风险超限"@zh ;
+    rdfs:comment "单笔风险超过 2%。"@zh ;
+    ash:ruleIf "单笔风险超过 2%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:PositionTooLarge"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 56 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "仓位" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Portfolio ;
+    ash:ruleUses ash:singleTradeRiskPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-r144 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:singleTradeRiskPct ; swrl:argument1 ashd:var-r144 ; swrl:argument2 ashd:var-r144-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r144-v "2"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:PositionTooLarge ; swrl:argument1 ashd:var-r144 ] ) .
+ashd:var-r144 a swrl:Variable ; rdfs:label "?var-r144" .
+ashd:var-r144-v a swrl:Variable ; rdfs:label "?var-r144-v" .
+
+ashd:rule-r145 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R145" ;
+    rdfs:label "执行偏离"@zh ;
+    rdfs:comment "执行偏离超过 1%。"@zh ;
+    ash:ruleIf "执行偏离超过 1%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExecutionViolation"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 55 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Portfolio ;
+    ash:ruleUses ash:executionDeviationPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:Portfolio ; swrl:argument1 ashd:var-r145 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:executionDeviationPct ; swrl:argument1 ashd:var-r145 ; swrl:argument2 ashd:var-r145-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r145-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionViolation ; swrl:argument1 ashd:var-r145 ] ) .
+ashd:var-r145 a swrl:Variable ; rdfs:label "?var-r145" .
+ashd:var-r145-v a swrl:Variable ; rdfs:label "?var-r145-v" .
+
+ashd:rule-r146 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R146" ;
+    rdfs:label "回撤超限"@zh ;
+    rdfs:comment "最大回撤超过 10%。"@zh ;
+    ash:ruleIf "最大回撤超过 10%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:DrawdownBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 54 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "复盘" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:maxDrawdown ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r146 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxDrawdown ; swrl:argument1 ashd:var-r146 ; swrl:argument2 ashd:var-r146-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r146-v "10"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:DrawdownBreach ; swrl:argument1 ashd:var-r146 ] ) .
+ashd:var-r146 a swrl:Variable ; rdfs:label "?var-r146" .
+ashd:var-r146-v a swrl:Variable ; rdfs:label "?var-r146-v" .
+
+ashd:rule-r147 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R147" ;
+    rdfs:label "日志不完整"@zh ;
+    rdfs:comment "日志完整度低于 80%。"@zh ;
+    ash:ruleIf "日志完整度低于 80%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:JournalIncomplete"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 53 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "复盘" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:journalCompleteness ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r147 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:journalCompleteness ; swrl:argument1 ashd:var-r147 ; swrl:argument2 ashd:var-r147-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r147-v "80"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:JournalIncomplete ; swrl:argument1 ashd:var-r147 ] ) .
+ashd:var-r147 a swrl:Variable ; rdfs:label "?var-r147" .
+ashd:var-r147-v a swrl:Variable ; rdfs:label "?var-r147-v" .
+
+ashd:rule-r148 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R148" ;
+    rdfs:label "规则违规"@zh ;
+    rdfs:comment "存在规则违规。"@zh ;
+    ash:ruleIf "存在规则违规。"@zh ;
+    ash:ruleThen "主体被推断为 ash:RuleViolation"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 52 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:ruleViolationCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r148 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:ruleViolationCount ; swrl:argument1 ashd:var-r148 ; swrl:argument2 ashd:var-r148-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-r148-v "0"^^xsd:integer ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:RuleViolation ; swrl:argument1 ashd:var-r148 ] ) .
+ashd:var-r148 a swrl:Variable ; rdfs:label "?var-r148" .
+ashd:var-r148-v a swrl:Variable ; rdfs:label "?var-r148-v" .
+
+ashd:rule-r149 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R149" ;
+    rdfs:label "复盘不足"@zh ;
+    rdfs:comment "每周复盘少于 1 次。"@zh ;
+    ash:ruleIf "每周复盘少于 1 次。"@zh ;
+    ash:ruleThen "主体被推断为 ash:JournalIncomplete"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 51 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "复盘" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:reviewFrequency ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r149 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:reviewFrequency ; swrl:argument1 ashd:var-r149 ; swrl:argument2 ashd:var-r149-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r149-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:JournalIncomplete ; swrl:argument1 ashd:var-r149 ] ) .
+ashd:var-r149 a swrl:Variable ; rdfs:label "?var-r149" .
+ashd:var-r149-v a swrl:Variable ; rdfs:label "?var-r149-v" .
+
+ashd:rule-r150 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R150" ;
+    rdfs:label "胜率过低"@zh ;
+    rdfs:comment "胜率低于 40%。"@zh ;
+    ash:ruleIf "胜率低于 40%。"@zh ;
+    ash:ruleThen "主体被推断为 ash:NoTradeSignal"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 50 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:winRate ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r150 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:winRate ; swrl:argument1 ashd:var-r150 ; swrl:argument2 ashd:var-r150-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r150-v "40"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:NoTradeSignal ; swrl:argument1 ashd:var-r150 ] ) .
+ashd:var-r150 a swrl:Variable ; rdfs:label "?var-r150" .
+ashd:var-r150-v a swrl:Variable ; rdfs:label "?var-r150-v" .
+
+ashd:rule-r151 a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R151" ;
+    rdfs:label "盈亏比失衡"@zh ;
+    rdfs:comment "盈亏比低于 1。"@zh ;
+    ash:ruleIf "盈亏比低于 1。"@zh ;
+    ash:ruleThen "主体被推断为 ash:ExecutionViolation"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 49 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.8.0" ;
+    ash:ruleOwner "游资规则组" ;
+    ash:ruleCategory "执行" ;
+    ash:ruleBasis "公开游资方法论/原话摘要；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJournal ;
+    ash:ruleUses ash:profitFactor ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJournal ; swrl:argument1 ashd:var-r151 ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:profitFactor ; swrl:argument1 ashd:var-r151 ; swrl:argument2 ashd:var-r151-v ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-r151-v "1"^^xsd:decimal ) ]
+    ) ;
+    swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionViolation ; swrl:argument1 ashd:var-r151 ] ) .
+ashd:var-r151 a swrl:Variable ; rdfs:label "?var-r151" .
+ashd:var-r151-v a swrl:Variable ; rdfs:label "?var-r151-v" .

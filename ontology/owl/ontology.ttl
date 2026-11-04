@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.2.0" ;
+    owl:versionInfo "1.8.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
@@ -888,3 +888,273 @@ ash:playbookStage a owl:FunctionalProperty .
 [] a owl:AllDisjointClasses ; owl:members ( ash:BreakoutPattern ash:ConsolidationPattern ) .
 [] a owl:AllDisjointClasses ; owl:members ( ash:LimitUpEvent ash:LimitDownEvent ) .
 [] a owl:AllDisjointClasses ; owl:members ( ash:MomentumSignal ash:EventDrivenSignal ) .
+# ===== Youzi methodology restrictions =====
+
+ash:SeatRank rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:seatRankNumber ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:AuctionExpectation rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:expectedPremium ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:actualPremium ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:TradingJournal rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:journalDate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:tradeCount ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:maxDrawdown ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:KnowledgeSource rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:sourceUrl ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:sourceTitle ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+    [ a owl:Restriction ;
+      owl:onProperty ash:retrievedAt ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:TPlusOneConstraint rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:tPlusOneDays ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:DisclosureLag rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:disclosureLagDays ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:MarketHeight rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:marketHeight ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:DragonTigerConsensus rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:consensusType ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:PlaybookPrinciple rdfs:subClassOf [ a owl:Restriction ;
+      owl:onProperty ash:principleText ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ] .
+
+ash:seatRankNumber a owl:FunctionalProperty .
+
+ash:buyAmount a owl:FunctionalProperty .
+
+ash:sellAmount a owl:FunctionalProperty .
+
+ash:buy1ToSell1Ratio a owl:FunctionalProperty .
+
+ash:buyConcentration a owl:FunctionalProperty .
+
+ash:sellConcentration a owl:FunctionalProperty .
+
+ash:seatOneDayTripRate a owl:FunctionalProperty .
+
+ash:seatLockupRate a owl:FunctionalProperty .
+
+ash:seatAddRate a owl:FunctionalProperty .
+
+ash:expectedPremium a owl:FunctionalProperty .
+
+ash:actualPremium a owl:FunctionalProperty .
+
+ash:auctionVolumeAmount a owl:FunctionalProperty .
+
+ash:auctionSurpriseScore a owl:FunctionalProperty .
+
+ash:marketHeight a owl:FunctionalProperty .
+
+ash:limitUpCount a owl:FunctionalProperty .
+
+ash:limitDownCount a owl:FunctionalProperty .
+
+ash:moneyEffectScore a owl:FunctionalProperty .
+
+ash:lossEffectScore a owl:FunctionalProperty .
+
+ash:emotionStageCode a owl:FunctionalProperty .
+
+ash:consensusType a owl:FunctionalProperty .
+
+ash:resealCount a owl:FunctionalProperty .
+
+ash:openCount a owl:FunctionalProperty .
+
+ash:lockupDays a owl:FunctionalProperty .
+
+ash:oneDayTripRate a owl:FunctionalProperty .
+
+ash:floatingChipRatio a owl:FunctionalProperty .
+
+ash:recentVolumePeak a owl:FunctionalProperty .
+
+ash:chipConcentration a owl:FunctionalProperty .
+
+ash:journalDate a owl:FunctionalProperty .
+
+ash:tradeCount a owl:FunctionalProperty .
+
+ash:winRate a owl:FunctionalProperty .
+
+ash:maxDrawdown a owl:FunctionalProperty .
+
+ash:positionSize a owl:FunctionalProperty .
+
+ash:riskPerTrade a owl:FunctionalProperty .
+
+ash:disciplineScore a owl:FunctionalProperty .
+
+ash:principleText a owl:FunctionalProperty .
+
+ash:principleCategory a owl:FunctionalProperty .
+
+ash:sourceUrl a owl:FunctionalProperty .
+
+ash:sourceTitle a owl:FunctionalProperty .
+
+ash:retrievedAt a owl:FunctionalProperty .
+
+ash:usageNote a owl:FunctionalProperty .
+
+ash:boardQualityScore a owl:FunctionalProperty .
+
+ash:relayRiskLevel a owl:FunctionalProperty .
+
+ash:manipulationRiskLevel a owl:FunctionalProperty .
+
+ash:tPlusOneDays a owl:FunctionalProperty .
+
+ash:disclosureLagDays a owl:FunctionalProperty .
+
+ash:stockCharacter a owl:FunctionalProperty .
+
+
+[] a owl:AllDisjointClasses ; owl:members ( ash:SweepBoard ash:QueueBoard ash:ResealBoard ash:VolumeTurnoverBoard ) .
+[] a owl:AllDisjointClasses ; owl:members ( ash:WeakToStrong ash:StrongToWeak ) .
+# ===== Rule expansion functional properties =====
+
+ash:marketTrendScore a owl:FunctionalProperty .
+
+ash:marketTurnoverAmount a owl:FunctionalProperty .
+
+ash:brokenBoardRate a owl:FunctionalProperty .
+
+ash:themeRank a owl:FunctionalProperty .
+
+ash:auctionPremium a owl:FunctionalProperty .
+
+ash:gapPct a owl:FunctionalProperty .
+
+ash:volumeRatio a owl:FunctionalProperty .
+
+ash:turnoverZScore a owl:FunctionalProperty .
+
+ash:earningsSurprise a owl:FunctionalProperty .
+
+ash:newsScore a owl:FunctionalProperty .
+
+ash:leaderHeight a owl:FunctionalProperty .
+
+ash:themeHeatDelta a owl:FunctionalProperty .
+
+ash:marketBreadthScore a owl:FunctionalProperty .
+
+ash:consecutiveLossDays a owl:FunctionalProperty .
+
+ash:consecutiveWinDays a owl:FunctionalProperty .
+
+ash:profitFactor a owl:FunctionalProperty .
+
+ash:avgHoldDays a owl:FunctionalProperty .
+
+ash:positionSizePct a owl:FunctionalProperty .
+
+ash:singleTradeRiskPct a owl:FunctionalProperty .
+
+ash:executionDeviationPct a owl:FunctionalProperty .
+
+ash:regulatoryRiskScore a owl:FunctionalProperty .
+
+ash:themeDiffusionScore a owl:FunctionalProperty .
+# ===== Rule expansion 1.8 functional properties =====
+
+ash:pePercentile a owl:FunctionalProperty .
+
+ash:pbPercentile a owl:FunctionalProperty .
+
+ash:marketCap a owl:FunctionalProperty .
+
+ash:freeFloatMarketCap a owl:FunctionalProperty .
+
+ash:avgDailyAmount a owl:FunctionalProperty .
+
+ash:pledgeRatio a owl:FunctionalProperty .
+
+ash:goodwillRatio a owl:FunctionalProperty .
+
+ash:insiderSellAmount a owl:FunctionalProperty .
+
+ash:lockupRatio a owl:FunctionalProperty .
+
+ash:regulatoryInquiryCount a owl:FunctionalProperty .
+
+ash:suspensionDays a owl:FunctionalProperty .
+
+ash:daysSinceListing a owl:FunctionalProperty .
+
+ash:earningsMissPct a owl:FunctionalProperty .
+
+ash:gapFillPct a owl:FunctionalProperty .
+
+ash:volumeDryUp a owl:FunctionalProperty .
+
+ash:rsiValue a owl:FunctionalProperty .
+
+ash:macdHistogram a owl:FunctionalProperty .
+
+ash:bollingerWidth a owl:FunctionalProperty .
+
+ash:atrPct a owl:FunctionalProperty .
+
+ash:currentTurnoverRate a owl:FunctionalProperty .
+
+ash:currentLimitUpHeight a owl:FunctionalProperty .
+
+ash:currentSealAmount a owl:FunctionalProperty .
+
+ash:currentBrokenBoards a owl:FunctionalProperty .
+
+ash:latestDragonTigerNetBuy a owl:FunctionalProperty .
+
+ash:currentThemeHeat a owl:FunctionalProperty .
+
+ash:themeRankChange a owl:FunctionalProperty .
+
+ash:marketHeightValue a owl:FunctionalProperty .
+
+ash:currentBrokenBoardRate a owl:FunctionalProperty .
+
+ash:currentMarketBreadth a owl:FunctionalProperty .
+
+ash:currentMarketTrend a owl:FunctionalProperty .
+
+ash:profitGivebackPct a owl:FunctionalProperty .
+
+ash:maxPositionPct a owl:FunctionalProperty .
+
+ash:maxDailyLossPct a owl:FunctionalProperty .
+
+ash:journalCompleteness a owl:FunctionalProperty .
+
+ash:ruleViolationCount a owl:FunctionalProperty .
+
+ash:reviewFrequency a owl:FunctionalProperty .
+
+ash:targetDistancePct a owl:FunctionalProperty .
+
+ash:ruleBasis a owl:FunctionalProperty .

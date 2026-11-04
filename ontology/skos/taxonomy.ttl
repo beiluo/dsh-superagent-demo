@@ -21,7 +21,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
-    owl:versionInfo "1.2.0" .
+    owl:versionInfo "1.8.0" .
 
 # ===========================================================================
 # Concept schemes
@@ -1094,3 +1094,289 @@ ashs:catalyst-event a skos:Concept ;
     skos:prefLabel "事件催化"@zh, "Event Catalyst"@en ;
     skos:notation "CT-EVENT" ;
     skos:definition "产品发布、技术突破、突发事件等催化。"@zh .
+ashs:scheme-emotion-cycle a skos:ConceptScheme ;
+    skos:prefLabel "A 股情绪周期（示例）"@zh, "A 股情绪周期（示例）"@en ;
+    skos:definition "市场炒作六阶段：启动、发酵、高潮、结束、反复、迷茫。"@zh ;
+    skos:hasTopConcept
+        ashs:emotion-start,
+        ashs:emotion-ferment,
+        ashs:emotion-climax,
+        ashs:emotion-end,
+        ashs:emotion-repeat,
+        ashs:emotion-freeze .
+
+ashs:emotion-start a skos:Concept ;
+    skos:inScheme ashs:scheme-emotion-cycle ;
+    skos:topConceptOf ashs:scheme-emotion-cycle ;
+    skos:prefLabel "启动"@zh, "Start"@en ;
+    skos:notation "EM-START" ;
+    skos:definition "市场高度打开，龙头打出空间。"@zh .
+
+ashs:emotion-ferment a skos:Concept ;
+    skos:inScheme ashs:scheme-emotion-cycle ;
+    skos:topConceptOf ashs:scheme-emotion-cycle ;
+    skos:prefLabel "发酵"@zh, "Ferment"@en ;
+    skos:notation "EM-FERMENT" ;
+    skos:definition "市场宽度扩散，资金试探新题材。"@zh .
+
+ashs:emotion-climax a skos:Concept ;
+    skos:inScheme ashs:scheme-emotion-cycle ;
+    skos:topConceptOf ashs:scheme-emotion-cycle ;
+    skos:prefLabel "高潮"@zh, "Climax"@en ;
+    skos:notation "EM-CLIMAX" ;
+    skos:definition "主线加速，分支龙头拓展高度。"@zh .
+
+ashs:emotion-end a skos:Concept ;
+    skos:inScheme ashs:scheme-emotion-cycle ;
+    skos:topConceptOf ashs:scheme-emotion-cycle ;
+    skos:prefLabel "结束"@zh, "End"@en ;
+    skos:notation "EM-END" ;
+    skos:definition "高位溢价消失，亏钱效应出现。"@zh .
+
+ashs:emotion-repeat a skos:Concept ;
+    skos:inScheme ashs:scheme-emotion-cycle ;
+    skos:topConceptOf ashs:scheme-emotion-cycle ;
+    skos:prefLabel "反复"@zh, "Repeat"@en ;
+    skos:notation "EM-REPEAT" ;
+    skos:definition "首次亏钱后资金寻找新热点。"@zh .
+
+ashs:emotion-freeze a skos:Concept ;
+    skos:inScheme ashs:scheme-emotion-cycle ;
+    skos:topConceptOf ashs:scheme-emotion-cycle ;
+    skos:prefLabel "冰点/迷茫"@zh, "Freeze"@en ;
+    skos:notation "EM-FREEZE" ;
+    skos:definition "连板稀少、亏钱效应持续、交易清淡。"@zh .
+
+
+ashs:scheme-seat-style a skos:ConceptScheme ;
+    skos:prefLabel "龙虎榜席位风格（示例）"@zh, "龙虎榜席位风格（示例）"@en ;
+    skos:definition "营业部/机构、一日游/波段/锁仓/加码等席位风格。"@zh ;
+    skos:hasTopConcept
+        ashs:seat-style-brokerage,
+        ashs:seat-style-institution,
+        ashs:seat-style-one-day,
+        ashs:seat-style-swing,
+        ashs:seat-style-lockup,
+        ashs:seat-style-add,
+        ashs:seat-style-t0,
+        ashs:seat-style-channel .
+
+ashs:seat-style-brokerage a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "营业部游资"@zh, "Brokerage Hot Money"@en ;
+    skos:notation "SS-BROKER" ;
+    skos:definition "营业部席位，短线交易为主。"@zh .
+
+ashs:seat-style-institution a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "机构专用"@zh, "Institution"@en ;
+    skos:notation "SS-INST" ;
+    skos:definition "基金、券商自营、社保等机构席位。"@zh .
+
+ashs:seat-style-one-day a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "一日游"@zh, "One-Day Trip"@en ;
+    skos:notation "SS-ONEDAY" ;
+    skos:definition "次日集中兑现、持续时间短。"@zh .
+
+ashs:seat-style-swing a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "波段"@zh, "Swing"@en ;
+    skos:notation "SS-SWING" ;
+    skos:definition "持有数日、跟随趋势。"@zh .
+
+ashs:seat-style-lockup a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "锁仓"@zh, "Lockup"@en ;
+    skos:notation "SS-LOCKUP" ;
+    skos:definition "继续持有、等待接力。"@zh .
+
+ashs:seat-style-add a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "加码"@zh, "Add"@en ;
+    skos:notation "SS-ADD" ;
+    skos:definition "在原有仓位继续买入。"@zh .
+
+ashs:seat-style-t0 a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "做T"@zh, "Intraday T"@en ;
+    skos:notation "SS-T0" ;
+    skos:definition "利用底仓做日内差价。"@zh .
+
+ashs:seat-style-channel a skos:Concept ;
+    skos:inScheme ashs:scheme-seat-style ;
+    skos:topConceptOf ashs:scheme-seat-style ;
+    skos:prefLabel "通道/量化"@zh, "Channel/Quant"@en ;
+    skos:notation "SS-CHANNEL" ;
+    skos:definition "依赖通道速度或量化执行。"@zh .
+ashs:scheme-skill-topic a skos:ConceptScheme ;
+    skos:prefLabel "游资技能主题（示例）"@zh, "Hot-Money Skill Topics (illustrative)"@en ;
+    skos:definition "用于索引外部游资技能章节的主题分类。"@zh ;
+    skos:hasTopConcept
+        ashs:topic-dragon-tiger,
+        ashs:topic-board,
+        ashs:topic-low-buy,
+        ashs:topic-relay,
+        ashs:topic-leader,
+        ashs:topic-emotion,
+        ashs:topic-auction,
+        ashs:topic-review,
+        ashs:topic-account,
+        ashs:topic-risk,
+        ashs:topic-position,
+        ashs:topic-trend,
+        ashs:topic-range,
+        ashs:topic-lockup,
+        ashs:topic-one-day,
+        ashs:topic-theme,
+        ashs:topic-fundamental,
+        ashs:topic-technical,
+        ashs:topic-chip,
+        ashs:topic-regulatory .
+
+ashs:topic-dragon-tiger a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "龙虎榜"@zh, "Dragon-Tiger"@en ;
+    skos:notation "SK-DT" ;
+    skos:definition "席位、买一卖一、共识与上榜原因。"@zh .
+
+ashs:topic-board a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "打板"@zh, "Board Tactics"@en ;
+    skos:notation "SK-BOARD" ;
+    skos:definition "扫板、排板、回封、放量换手板。"@zh .
+
+ashs:topic-low-buy a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "低吸"@zh, "Low Buy"@en ;
+    skos:notation "SK-LOWBUY" ;
+    skos:definition "分歧回调时低吸。"@zh .
+
+ashs:topic-relay a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "接力"@zh, "Relay"@en ;
+    skos:notation "SK-RELAY" ;
+    skos:definition "连板过程中接力。"@zh .
+
+ashs:topic-leader a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "龙头"@zh, "Leader"@en ;
+    skos:notation "SK-LEADER" ;
+    skos:definition "题材龙头与高标。"@zh .
+
+ashs:topic-emotion a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "情绪周期"@zh, "Emotion Cycle"@en ;
+    skos:notation "SK-EMOTION" ;
+    skos:definition "启动、发酵、高潮、退潮、冰点。"@zh .
+
+ashs:topic-auction a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "竞价"@zh, "Auction"@en ;
+    skos:notation "SK-AUCTION" ;
+    skos:definition "集合竞价预期与预期差。"@zh .
+
+ashs:topic-review a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "复盘"@zh, "Review"@en ;
+    skos:notation "SK-REVIEW" ;
+    skos:definition "每日复盘与交易总结。"@zh .
+
+ashs:topic-account a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "账户诊断"@zh, "Account Diagnosis"@en ;
+    skos:notation "SK-ACCOUNT" ;
+    skos:definition "交割单、回撤与交易系统。"@zh .
+
+ashs:topic-risk a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "风控"@zh, "Risk Control"@en ;
+    skos:notation "SK-RISK" ;
+    skos:definition "止损、仓位、回撤与退出。"@zh .
+
+ashs:topic-position a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "仓位"@zh, "Position"@en ;
+    skos:notation "SK-POSITION" ;
+    skos:definition "单笔风险与总仓位。"@zh .
+
+ashs:topic-trend a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "趋势"@zh, "Trend"@en ;
+    skos:notation "SK-TREND" ;
+    skos:definition "均线、波段与趋势跟随。"@zh .
+
+ashs:topic-range a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "震荡"@zh, "Range"@en ;
+    skos:notation "SK-RANGE" ;
+    skos:definition "区间震荡与高抛低吸。"@zh .
+
+ashs:topic-lockup a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "锁仓"@zh, "Lockup"@en ;
+    skos:notation "SK-LOCKUP" ;
+    skos:definition "买一锁仓与接力。"@zh .
+
+ashs:topic-one-day a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "一日游"@zh, "One-Day Trip"@en ;
+    skos:notation "SK-ONEDAY" ;
+    skos:definition "次日兑现与溢价消失。"@zh .
+
+ashs:topic-theme a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "题材"@zh, "Theme"@en ;
+    skos:notation "SK-THEME" ;
+    skos:definition "题材、主线与扩散。"@zh .
+
+ashs:topic-fundamental a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "基本面"@zh, "Fundamentals"@en ;
+    skos:notation "SK-FUND" ;
+    skos:definition "财报、估值与业绩。"@zh .
+
+ashs:topic-technical a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "技术面"@zh, "Technical"@en ;
+    skos:notation "SK-TECH" ;
+    skos:definition "量价、分时、筹码与技术形态。"@zh .
+
+ashs:topic-chip a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "筹码"@zh, "Chips"@en ;
+    skos:notation "SK-CHIP" ;
+    skos:definition "浮筹、集中度与套牢盘。"@zh .
+
+ashs:topic-regulatory a skos:Concept ;
+    skos:inScheme ashs:scheme-skill-topic ;
+    skos:topConceptOf ashs:scheme-skill-topic ;
+    skos:prefLabel "监管"@zh, "Regulatory"@en ;
+    skos:notation "SK-REG" ;
+    skos:definition "监管、处罚与操纵风险。"@zh .

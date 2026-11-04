@@ -5926,3 +5926,161 @@ a.agent-citation:hover {
   color: var(--muted);
   overflow-wrap: anywhere;
 }
+
+/* Keep the growing SKOS scheme switcher usable on desktop and mobile. */
+.scheme-tabs {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.scheme-tab {
+  flex: 0 0 auto;
+  min-width: 66px;
+}
+
+/* Methodology cards and emotion-cycle strip */
+.short-methods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.short-methods article {
+  padding: 14px;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+}
+
+.short-methods span,
+.short-cycle-label {
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+}
+
+.short-methods h3 {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.short-methods p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.short-cycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.short-cycle-label {
+  margin-right: 4px;
+}
+
+.short-cycle > span:not(.short-cycle-label) {
+  padding: 4px 8px;
+  color: var(--muted);
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  font-size: 8px;
+}
+
+.short-source {
+  margin: 12px 0 0;
+  color: var(--muted-2);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.short-source a {
+  color: var(--red);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .short-methods {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Short trader-voice excerpts */
+.short-voices {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.short-voices-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.short-voices-head span:last-child {
+  color: var(--red);
+}
+
+.short-voice-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.short-voice {
+  padding: 11px 12px;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+}
+
+.short-voice p {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.short-voice footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted-2);
+  font-family: var(--mono);
+  font-size: 7px;
+}
+
+.short-voice footer strong {
+  color: var(--red);
+  font-weight: 500;
+}
+
+@media (max-width: 960px) {
+  .short-voice-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .short-voice-list {
+    grid-template-columns: 1fr;
+  }
+}
