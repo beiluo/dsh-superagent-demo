@@ -99,7 +99,7 @@ class Settings:
     llm_timeout_seconds: float = 60.0
     llm_max_output_tokens: int = 1800
     llm_temperature: float = 0.2
-    agent_max_steps: int = 4
+    agent_max_steps: int = 6
     agent_max_tool_calls: int = 6
     allowed_origins: tuple[str, ...] = DEFAULT_ALLOWED_ORIGINS
     rate_limit_per_minute: int = 6
@@ -154,7 +154,7 @@ class Settings:
             llm_timeout_seconds=_env_float("LLM_TIMEOUT_SECONDS", 60.0, minimum=5.0),
             llm_max_output_tokens=_env_int("LLM_MAX_OUTPUT_TOKENS", 1800, minimum=128),
             llm_temperature=_env_float("LLM_TEMPERATURE", 0.2, minimum=0.0),
-            agent_max_steps=_env_int("AGENT_MAX_STEPS", 4, minimum=1),
+            agent_max_steps=_env_int("AGENT_MAX_STEPS", 6, minimum=1),
             agent_max_tool_calls=_env_int("AGENT_MAX_TOOL_CALLS", 6, minimum=1),
             allowed_origins=_env_csv("ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS),
             rate_limit_per_minute=_env_int("RATE_LIMIT_PER_MINUTE", 6, minimum=1),

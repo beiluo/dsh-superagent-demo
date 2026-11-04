@@ -221,11 +221,19 @@ def create_app(
             "companies": store.company_names(),
             "query": {
                 "tools": [
+                    "sparql_query",
+                    "describe_ontology",
                     "query_ontology",
                     "trace_evidence",
                     "check_constraints",
                     "simulate_scenario",
                 ],
+                "freeQuery": {
+                    "enabled": enabled,
+                    "forms": ["SELECT", "ASK"],
+                    "maxRows": 50,
+                    "note": "LLM 模式可读取本体图式并生成只读 SPARQL；规则模式保持确定性工具路径。",
+                },
                 "metrics": list(METRIC_FIELDS),
                 "realScreening": store.market_data is not None,
                 "realScreeningScope": "东方财富行情接口单页样本（最多 200 只），仅行情/估值字段",
