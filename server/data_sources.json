@@ -1,0 +1,125 @@
+{
+  "sources": [
+    {
+      "id": "eastmoney-billboard",
+      "label": "东方财富·龙虎榜明细",
+      "description": "交易所披露的龙虎榜买卖金额与净买入；按交易日回溯，未上榜则不写入。",
+      "attribution": "东方财富公开龙虎榜数据接口",
+      "lookbackDays": 4,
+      "ttlSeconds": 300,
+      "requests": [
+        {
+          "url": "https://datacenter-web.eastmoney.com/api/data/v1/get",
+          "params": {
+            "reportName": "RPT_DAILYBILLBOARD_DETAILSNEW",
+            "columns": "ALL",
+            "filter": "(TRADE_DATE='{date}')(SECURITY_CODE=\"{code}\")",
+            "pageNumber": "1",
+            "pageSize": "20"
+          },
+          "select": {
+            "path": "result.data",
+            "match": {
+              "SECURITY_CODE": "{code}"
+            }
+          },
+          "asOfPath": "TRADE_DATE",
+          "fields": {
+            "dragonTigerNetBuy": {
+              "path": "BILLBOARD_NET_AMT",
+              "type": "float"
+            },
+            "dragonTigerBuyAmount": {
+              "path": "BILLBOARD_BUY_AMT",
+              "type": "float"
+            },
+            "dragonTigerSellAmount": {
+              "path": "BILLBOARD_SELL_AMT",
+              "type": "float"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "eastmoney-billboard-seats",
+      "label": "东方财富·龙虎榜买方席位",
+      "description": "龙虎榜买方营业部明细，用于识别游资/机构席位与席位净买入。",
+      "attribution": "东方财富公开龙虎榜席位接口",
+      "lookbackDays": 4,
+      "ttlSeconds": 300,
+      "requests": [
+        {
+          "url": "https://datacenter-web.eastmoney.com/api/data/v1/get",
+          "params": {
+            "reportName": "RPT_BILLBOARD_DAILYDETAILSBUY",
+            "columns": "ALL",
+            "filter": "(TRADE_DATE='{date}')(SECURITY_CODE=\"{code}\")",
+            "pageNumber": "1",
+            "pageSize": "50"
+          },
+          "asOfPath": "$.result.data[0].TRADE_DATE",
+          "fields": {
+            "seats": {
+              "type": "rows",
+              "path": "result.data",
+              "item": {
+                "name": "OPERATEDEPT_NAME",
+                "buy": "BUY",
+                "sell": "SELL",
+                "netBuy": "NET",
+                "riseProbability3Day": "RISE_PROBABILITY_3DAY"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "eastmoney-limit-pool",
+      "label": "东方财富·涨停池",
+      "description": "当日涨停池中的连板天数、炸板次数与封单资金；按交易日回溯，未涨停则不写入。",
+      "attribution": "东方财富公开涨停池接口",
+      "lookbackDays": 0,
+      "ttlSeconds": 120,
+      "requests": [
+        {
+          "url": "https://push2ex.eastmoney.com/getTopicZTPool",
+          "params": {
+            "ut": "7eea3edcaed734bea9cbfc24409ed989",
+            "dpt": "wz.ztzt",
+            "Pageindex": "0",
+            "pagesize": "800",
+            "sort": "fbt:asc",
+            "date": "{yyyymmdd}"
+          },
+          "select": {
+            "path": "data.pool",
+            "match": {
+              "c": "{code}"
+            }
+          },
+          "asOfPath": "$.data.qdate",
+          "fields": {
+            "limitUpDays": {
+              "path": "lbc",
+              "type": "int"
+            },
+            "brokenBoardCount": {
+              "path": "zbc",
+              "type": "int"
+            },
+            "sealAmount": {
+              "path": "fund",
+              "type": "float"
+            },
+            "firstLimitUpTime": {
+              "path": "fbt",
+              "type": "time"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

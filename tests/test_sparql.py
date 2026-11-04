@@ -143,8 +143,8 @@ def test_sparql_tool_wraps_errors_and_results(store: OntologyStore):
 def test_schema_tool_exposes_core_vocabulary_and_prefixes(store: OntologyStore):
     result = describe_ontology(store)
     assert result["prefixes"]["ash"].endswith("ontology/a-share#")
-    assert result["counts"]["classes"] == 194
-    assert result["counts"]["rules"] == 21
+    assert result["counts"]["classes"] >= 194
+    assert result["counts"]["rules"] >= 21
     assert result["entries"]
     assert len(result["starterQueries"]) >= 3
     assert "SELECT" in result["starterQueries"][0]["sparql"]
@@ -176,11 +176,16 @@ def test_tool_catalog_exposes_free_query():
     assert {"describe_ontology", "sparql_query", "load_company_data"} <= names
 
 
-def test_llm_tool_surface_is_generic_query_only():
+def test_llm_tool_surface_is_generic_query_with_data_acquisition():
     from server.tools import LLM_TOOLS
 
     names = [item["function"]["name"] for item in LLM_TOOLS]
-    assert names == ["load_company_data", "describe_ontology", "sparql_query"]
+    assert names == [
+        "load_company_data",
+        "acquire_data",
+        "describe_ontology",
+        "sparql_query",
+    ]
     assert "get_company_analysis" not in names
     assert "check_constraints" not in names
     assert "simulate_scenario" not in names

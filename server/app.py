@@ -17,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
 from .agent import AgentService
+from .acquisition import AcquisitionService
 from .llm import LLMClient
 from .marketdata import EastmoneyProvider, MarketDataProvider
 from .ontology import OntologyStore
@@ -28,7 +29,7 @@ from .tools import LLM_TOOL_NAMES, TOOLS
 logger = logging.getLogger("ashare.agent.api")
 
 SERVICE_NAME = "ashare-ontology-agent"
-SERVICE_VERSION = "1.8.0"
+SERVICE_VERSION = "1.8.1"
 
 DISCLAIMER = (
     "示例公司数据为合成示例；真实 A 股数据来自公开行情与年报接口，可能延迟。"
@@ -96,6 +97,16 @@ def create_app(
         store = OntologyStore(settings.root, market_data=market_data)
     elif market_data is not None:
         store.market_data = market_data
+    store.acquisition = (
+        AcquisitionService(
+            allowed_hosts=settings.acquisition_allowed_hosts,
+            timeout_seconds=settings.acquisition_timeout_seconds,
+            max_bytes=settings.acquisition_max_bytes,
+        )
+        if settings.acquisition_enabled
+        else None
+    )
+    store.acquisition_enabled = settings.acquisition_enabled
     service = AgentService(store, settings, llm=llm)
     limiter = SlidingWindowLimiter(
         per_minute=settings.rate_limit_per_minute,
@@ -232,7 +243,7 @@ def create_app(
                     "forms": ["SELECT", "ASK"],
                     "maxRows": 50,
                     "note": (
-                        "LLM 模式只用图式发现、真实事实加载和自生成只读 SPARQL 驱动本体；"
+                        "LLM 模式用图式发现、真实事实加载、缺失数据自取和自生成只读 SPARQL 驱动本体；"
                         "固定分析工具仅用于规则回退。"
                     ),
                 },
@@ -245,6 +256,15 @@ def create_app(
                 "provider": getattr(store.market_data, "source_label", None),
                 "scope": "真实 A 股（6 位证券代码或证券简称）",
                 "note": "公开行情与年报接口，可能延迟；不连接交易通道。",
+            },
+            "acquisition": {
+                "enabled": bool(getattr(store, "acquisition", None) and settings.acquisition_enabled),
+                "sources": (
+                    [item["id"] for item in store.acquisition.list_sources()]
+                    if getattr(store, "acquisition", None)
+                    else []
+                ),
+                "note": "Agent 按需抓取缺失公开数据并写入运行时本体；只读公开 HTTPS 金融接口。",
             },
             "disclaimer": DISCLAIMER,
             "keyHandling": "LLM_API_KEY 只存在于服务端环境变量；浏览器不会收到密钥。",
