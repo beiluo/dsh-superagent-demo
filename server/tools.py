@@ -33,6 +33,7 @@ TOOL_LABELS = {
     "get_rule": "解释 SWRL 规则",
     "get_policies": "读取 ODRL 政策",
     "search_ontology": "检索本体词汇",
+    "load_company_data": "加载公司事实到本体图",
     "describe_ontology": "读取本体图式与查询示例",
     "sparql_query": "执行 Agent 生成的只读 SPARQL",
     "query_ontology": "问题驱动的本体查询",
@@ -167,6 +168,28 @@ TOOLS: list[dict[str, Any]] = [
                     }
                 },
                 "required": ["query"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "load_company_data",
+            "description": (
+                "把一家公司的公开事实加载进本体运行时图：真实 A 股会读取行情、年报、估值与短线快照，"
+                "示例公司已在本体中。只返回公司标识、数据来源与日期，不返回分析或规则结论；"
+                "加载后用 describe_ontology / sparql_query 自己查询。真实个股分析的第一步调用本工具。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company": {
+                        "type": "string",
+                        "description": "公司名称、证券简称或 6 位证券代码，例如 有研新材、600206、贵州茅台。",
+                    }
+                },
+                "required": ["company"],
                 "additionalProperties": False,
             },
         },
@@ -549,6 +572,86 @@ def _company_analysis(store: OntologyStore, query: str) -> dict[str, Any]:
     }
 
 
+def _load_company_data(store: OntologyStore, query: str) -> dict[str, Any]:
+    """Load a company's facts into the graph without returning an analysis.
+
+    The agent uses this only to acquire external facts (real A-shares); all
+    ontology questions are then answered with self-generated SPARQL.
+    """
+
+    text = str(query or "").strip()
+    if not text:
+        return _error("load_company_data", "missing_company", "请提供公司名称、证券简称或 6 位证券代码。")
+    names = store.company_names()
+    subject = store.find_company(text)
+    refresh_error: MarketDataError | None = None
+
+    if subject is not None and store.is_real_company(subject):
+        code = ((store.company_knowledge(subject).security or {}).get("code")) or ""
+        if code and store.market_data is not None:
+            try:
+                subject = store.real_company(code) or subject
+            except MarketDataError as exc:
+                refresh_error = exc
+
+    if subject is None:
+        try:
+            subject = store.real_company(text)
+        except MarketDataError as exc:
+            return _error(
+                "load_company_data",
+                exc.code,
+                f"{exc.message}本体中的示例公司已加载，可直接用 sparql_query 查询。",
+                available=[item["label"] for item in names],
+            )
+        if subject is None:
+            message = (
+                f"本体中没有找到“{text}”，当前未启用真实 A 股数据源。"
+                if store.market_data is None
+                else f"没有找到与“{text}”匹配的本体公司或真实 A 股证券。"
+            )
+            return _error(
+                "load_company_data",
+                "company_not_found",
+                message,
+                available=[item["label"] for item in names],
+                hint="可输入 6 位证券代码或证券简称，例如 600519、贵州茅台。",
+            )
+
+    knowledge = store.company_knowledge(subject)
+    company = knowledge.company or {}
+    security = knowledge.security or {}
+    quote = knowledge.quote or {}
+    financials = knowledge.financials or {}
+    data: dict[str, Any] = {
+        "company": {
+            "id": company.get("id"),
+            "iri": company.get("iri"),
+            "label": company.get("label"),
+            "code": security.get("code") or company.get("companyCode"),
+            "industry": (company.get("industry") or {}).get("label"),
+        },
+        "dataMode": knowledge.data_mode,
+        "source": quote.get("source") or financials.get("source"),
+        "asOf": quote.get("asOf") or financials.get("asOf") or financials.get("reportPeriod"),
+        "dataNote": (
+            "事实已写入本体内存图；请用 describe_ontology / sparql_query 查询，不要假设存在固定分析工具。"
+        ),
+        "hint": (
+            "常用属性：ash:hasFinancialReport/ash:roe、ash:hasSecurity/ash:hasMarketQuote、"
+            "ash:hasValuation/ash:peTtm、ash:hasLimitUpStreak；规则为 ash:RuleArtifact。"
+        ),
+    }
+    if refresh_error is not None:
+        data["dataNote"] += f" 本次刷新失败（{refresh_error.message}），使用上次抓取的事实。"
+    return {
+        "ok": True,
+        "tool": "load_company_data",
+        "data": data,
+        "citations": _dedupe(knowledge.citations[:4]),
+    }
+
+
 def _screen(store: OntologyStore, rule_id: str | None) -> dict[str, Any]:
     try:
         result = store.screen(rule_id)
@@ -878,6 +981,8 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
             return _policies(store)
         if name == "search_ontology":
             return _search(store, str(arguments.get("query", "")))
+        if name == "load_company_data":
+            return _load_company_data(store, str(arguments.get("company", "")))
         if name == "describe_ontology":
             return _describe(store, arguments)
         if name == "sparql_query":
@@ -895,4 +1000,25 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
     return _error(name, "unknown_tool", "未知工具。", available=list(TOOL_LABELS))
 
 
-__all__ = ["TOOLS", "TOOL_LABELS", "call_tool"]
+# The LLM works directly against the ontology: schema discovery, a data-loading
+# primitive for external facts, and arbitrary read-only SPARQL.  The curated
+# analysis tools remain available to the deterministic rules-mode fallback, but
+# are deliberately hidden from the LLM so ontology usage is agent-generated.
+LLM_TOOL_NAMES: tuple[str, ...] = (
+    "load_company_data",
+    "describe_ontology",
+    "sparql_query",
+)
+LLM_TOOLS: list[dict[str, Any]] = [
+    next(tool for tool in TOOLS if tool["function"]["name"] == name)
+    for name in LLM_TOOL_NAMES
+]
+
+
+__all__ = [
+    "LLM_TOOL_NAMES",
+    "LLM_TOOLS",
+    "TOOLS",
+    "TOOL_LABELS",
+    "call_tool",
+]

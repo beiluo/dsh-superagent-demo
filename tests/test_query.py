@@ -357,24 +357,32 @@ def test_real_screen_without_market_data_is_a_safe_error(client_factory):
 def test_status_reports_query_capabilities(client_factory):
     data = client_factory().get("/api/agent/status").json()
     assert data["query"]["realScreening"] is False
-    assert "query_ontology" in data["query"]["tools"]
+    assert data["query"]["tools"] == [
+        "load_company_data",
+        "describe_ontology",
+        "sparql_query",
+    ]
+    assert "query_ontology" in data["query"]["rulesFallbackTools"]
     assert "roe" in data["query"]["metrics"]
 
 
-def test_llm_agent_can_chain_query_and_evidence(client_factory):
+def test_llm_agent_can_chain_sparql_queries(client_factory):
     fake = FakeLLM(
         [
+            tool_response("describe_ontology", {"focus": "公司"}),
             tool_response(
-                "query_ontology",
+                "sparql_query",
                 {
-                    "filters": [
-                        {"field": "roe", "op": "gt", "value": 15},
-                        {"field": "peTtm", "op": "lt", "value": 20},
-                    ]
+                    "query": (
+                        "SELECT ?company ?label ?roe WHERE { "
+                        '?company a ash:ListedCompany ; rdfs:label ?label . '
+                        'FILTER(LANG(?label) = "zh") '
+                        "OPTIONAL { ?company ash:hasFinancialReport ?r . ?r ash:roe ?roe } "
+                        "} LIMIT 5"
+                    )
                 },
             ),
-            tool_response("trace_evidence", {"subject": "华辰智造"}),
-            final_response("### 结论\n华辰智造命中 R01，证据链见工具结果。"),
+            final_response("### 结论\n华辰智造命中 R01，依据来自生成查询。"),
         ]
     )
     client = client_factory({"llm_api_key": FAKE_KEY}, llm=fake)
@@ -386,12 +394,12 @@ def test_llm_agent_can_chain_query_and_evidence(client_factory):
     data = response.json()
     assert data["mode"] == "llm"
     assert [item["tool"] for item in data["steps"]] == [
-        "query_ontology",
-        "trace_evidence",
+        "describe_ontology",
+        "sparql_query",
     ]
     assert [group["tool"] for group in data["queryPath"]] == [
-        "query_ontology",
-        "trace_evidence",
+        "describe_ontology",
+        "sparql_query",
     ]
     assert FAKE_KEY not in response.text
 

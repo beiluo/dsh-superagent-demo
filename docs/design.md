@@ -720,42 +720,47 @@ Agent 是页面之外的独立服务端，避免把 LLM key 放进静态产物�
   行情估值、风险、决策、证据、合规、组合与政策的紧凑事实；不依赖浏览器快照。
 - **规则**：`server/rules.py` 对 R01—R11 做确定性评估；阈值与 `ontology/swrl/rules.ttl` 的示例常量
   一致，`tests/test_rules.py` 直接从 SWRL body 提取字面量校验。
-- **工具循环**：`server/tools.py` 暴露 14 个只读工具；LLM 只能看到工具结果，不能访问环境变量。
-- **问题驱动的查询**：`server/query.py` 把问题中的业务条件翻译成属性路径，支持跨公司筛选、
-  证据链遍历、组合/ODRL 约束检查和 what-if 规则重算；每次工具调用返回 `queryPath`，前端据此
-  展示本次实际走的查询路径，而不是固定报表流程。
-- **开放查询层**：`server/sparql.py` 把查询边界从参数化工具扩展到 Agent 自己生成的只读 SPARQL。
-  `describe_ontology` 提供类、属性、前缀和示例查询；`sparql_query` 执行 `SELECT`/`ASK`，拒绝
-  更新、`CONSTRUCT`/`DESCRIBE`、`SERVICE` 与 `FROM`，并限制查询长度、返回行数和字面量大小。
-  LLM 可以多轮“生成→执行→修正”，再与其他工具组合；规则模式不生成查询，保持确定性。
-- **回退**：没有 `LLM_API_KEY` 或上游失败时，`server/agent.py` 用同一批工具生成确定性 Markdown，
+- **工具循环**：LLM 模式只暴露 `load_company_data`、`describe_ontology`、`sparql_query` 三项能力；
+  `server/tools.py` 的其余固定分析工具只在规则回退模式使用。LLM 只能看到能力结果，不能访问环境变量。
+- **问题驱动的查询**：`server/query.py` 把规则模式问题中的业务条件翻译成属性路径，支持跨公司筛选、
+  证据链遍历、组合/ODRL 约束检查和 what-if 规则重算；每次调用返回 `queryPath`，前端据此
+  展示实际路径，而不是固定报表流程。
+- **开放查询层**：`server/sparql.py` 让 Agent 自己生成只读 SPARQL。`load_company_data` 只负责
+  把真实 A 股事实加载进运行时图，不返回分析；`describe_ontology` 提供类、属性、前缀和示例查询；
+  `sparql_query` 执行 `SELECT`/`ASK`，拒绝更新、`CONSTRUCT`/`DESCRIBE`、`SERVICE` 与 `FROM`，
+  并限制查询长度、返回行数和字面量大小。LLM 可以多轮“生成→执行→修正”；固定分析工具不在
+  LLM 的工具面中，调用会返回 `tool_not_available`。
+- **回退**：没有 `LLM_API_KEY` 或上游失败时，`server/agent.py` 用固定工具生成确定性 Markdown，
   页面明确显示“规则模式”，不会把上游错误或密钥返回浏览器。
 - **边界控制**：CORS 白名单、每 IP 分钟/小时限流、每日额度、请求体上限、并发上限、静态文件白名单；
   静态服务只挂载 `assets/`、`ontology/`、`docs/` 与 `index.html`，不暴露 `.env`、`server/` 或 `.git`。
 
-### 14.6 问题驱动的本体查询原型
+### 14.6 Agent 驱动的本体查询与规则模式回退
 
-单股问答很容易退化成固定报表；本版本把“用本体”扩展为按问题选择查询路径：
+单股问答很容易退化成固定报表；本版本把 LLM 的“用本体”改为由模型自己生成查询，固定工具只保留
+在确定性回退路径：
 
-- **跨公司筛选**：`query_ontology` 接收字段/运算符/阈值，映射到
+- **自由图查询**：`load_company_data` 加载真实事实后，`describe_ontology` 返回类/属性/前缀与示例，
+  `sparql_query` 执行 Agent 生成的只读查询；覆盖任意关系、聚合、路径和否定条件，例如
+  “哪些决策缺少风险评估”“每家公司分别有几条证据”。规则也从 `ash:RuleArtifact` 读取后对照事实，
+  不依赖预计算的固定报表。
+- **规则模式跨公司筛选**：`query_ontology` 接收字段/运算符/阈值，映射到
   `hasFinancialReport→roe`、`hasSecurity→hasValuation→peTtm` 等属性路径，叠加行业与 SWRL 规则条件；
   筛选结果保留每条命中的属性路径。`universe=real` 用真实 A 股行情单页样本做横截面筛选，
   只覆盖行情/估值字段，不伪装成年报级全市场扫描。
-- **证据链**：`trace_evidence` 从公司/决策/规则/政策沿 `aboutCompany`、`basedOn`、`governedBy`、
+- **规则模式证据链**：`trace_evidence` 从公司/决策/规则/政策沿 `aboutCompany`、`basedOn`、`governedBy`、
   `hasRiskAssessment`、`hasSource` 等显式谓词遍历，输出节点、边、数据日期、来源和版本；反向遍历
   只用于 `aboutCompany` 等逆关系，避免通过共享政策把其他决策混进同一证据链。
-- **组合与政策约束**：`check_constraints` 读取 R06/R07/R11 阈值与 ODRL trade-guard 约束，
+- **规则模式组合与政策约束**：`check_constraints` 读取 R06/R07/R11 阈值与 ODRL trade-guard 约束，
   对拟议权重、人工批准、合规检查逐项给出通过/未通过/待确认状态。
-- **what-if**：`simulate_scenario` 在内存事实副本上修改指标并重跑确定性规则，对比前后状态；
+- **规则模式 what-if**：`simulate_scenario` 在内存事实副本上修改指标并重跑确定性规则，对比前后状态；
   不写回 Turtle，也不声称是预测。
-- **自由图查询**：`describe_ontology` 按 `focus` 返回类/属性/前缀与示例，`sparql_query` 执行
-  Agent 生成的只读查询；覆盖参数化工具无法表达的任意关系、聚合、路径和否定条件，例如
-  “哪些决策缺少风险评估”“每家公司分别有几条证据”。查询与参数化工具共用 `queryPath` 结构。
-- **查询路径**：每次工具结果带 `queryPath`，`AgentResult.queryPath` 汇总工具、范围、属性路径、
-  过滤与规则复核步骤；前端“本体查询路径”面板直接展示，包括 Agent 生成的 SPARQL。
+- **查询路径**：每次能力结果带 `queryPath`，`AgentResult.queryPath` 汇总事实加载、图式读取、SPARQL
+  步骤；前端“本体查询路径”面板直接展示，包括 Agent 生成的查询。规则模式同样返回固定工具的步骤。
 
 这些是原型：真实筛选只读取行情单页样本；ODRL 检查只覆盖政策中已显式建模的上下文约束；
-证据链不推断未建模的因果关系。
+证据链不推断未建模的因果关系。LLM 模式的查询是只读的，不能做 what-if 重算；情景问题只说明假设
+与规则阈值，确定性 what-if 与固定约束检查仍由规则模式的工具完成。
 
 部署、密钥轮换与 GitHub Pages 接入见 [`agent.md`](agent.md)。
 

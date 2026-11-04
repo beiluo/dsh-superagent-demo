@@ -180,9 +180,31 @@ GitHub Pages 不能运行 Python。它只负责静态页面：
 
 ## 6. Agent 如何基于本体工作
 
-### 6.1 工具
+### 6.1 LLM 模式：Agent 直接使用本体
 
-Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取：
+Agent 不把整份 Turtle 塞进 prompt，也不使用固定的分析工具。LLM 模式只暴露三项通用能力：
+
+| 能力 | 作用 |
+| --- | --- |
+| `load_company_data` | 把真实 A 股的公开行情、年报、估值与短线快照写入运行时本体图；只返回公司标识、来源与日期，不返回分析结论 |
+| `describe_ontology` | 读取类、对象属性、数据属性、命名空间前缀与示例查询；可按 `focus` 检索 |
+| `sparql_query` | 执行 Agent 自己生成的只读 SPARQL，支持任意图模式、聚合、路径与否定条件 |
+
+所有本体查询都由模型生成：公司/财报/行情/估值用属性路径，规则从 `ash:RuleArtifact` 读
+`ruleIf`/`ruleThen` 后对照事实，证据链用反向遍历，组合与 ODRL 政策用图查询。模型可以多轮
+“生成→执行→按结果修正”，最多 `AGENT_MAX_STEPS` 轮。服务端对生成查询做这些限制：
+
+- 只接受 `SELECT` 与 `ASK`；`INSERT`/`DELETE`/`LOAD`/`CLEAR` 等更新和 `CONSTRUCT`/`DESCRIBE` 被拒绝；
+- 禁止 `SERVICE` 与 `FROM`，不会从查询里访问远程端点或加载外部文件；
+- 查询最长 4,000 字符，单次最多返回 50 行，长字面量会截断；
+- 执行失败只返回安全错误、可用前缀和 `describe_ontology` 提示，不返回 traceback；
+- 工具面在服务端固定为上面三项；模型调用 `get_company_analysis`、`check_constraints` 等隐藏工具会得到
+  `tool_not_available`，不会被执行。
+
+### 6.2 规则模式：确定性回退
+
+没有 key 或 LLM 调用失败时，服务端使用下面这些固定工具生成可复现的 Markdown 回答。它们不出现在
+LLM 的工具列表里：
 
 | 工具 | 作用 |
 | --- | --- |
@@ -190,8 +212,6 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | `get_company_analysis` | 企业、证券、财报、行情估值、短线快照、风险、决策、证据、合规与 R01–R21 规则信号；支持真实 A 股 |
 | `screen_companies` | 对本体中已有公司执行 SWRL 规则筛选 |
 | `compare_companies` | 2–5 只股票的本体同口径对比：统一字段 + R01–R21 + 指标 RDF 路径与证据 |
-| `describe_ontology` | 读取类、对象属性、数据属性、命名空间前缀与示例查询；可按 `focus` 检索 |
-| `sparql_query` | 执行 Agent 自己生成的只读 SPARQL，支持任意图模式、聚合、路径与否定条件 |
 | `query_ontology` | 问题驱动的跨公司筛选：业务字段→属性路径、行业、规则条件、排序；`universe=real` 扫真实行情单页样本 |
 | `trace_evidence` | 从公司/决策/规则/政策展开证据链，保留数据日期、来源与版本 |
 | `check_constraints` | R06/R07/R11 与 ODRL trade-guard 的人工批准、合规检查前置条件 |
@@ -201,34 +221,26 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | `get_policies` | ODRL 权限/禁止/义务 |
 | `search_ontology` | 类、属性、个体、概念、规则、政策、服务检索 |
 
-参数化工具只是快捷方式，不是查询边界。LLM 模式下 Agent 可以先 `describe_ontology` 确认类、属性
-与前缀，再生成 `SELECT`/`ASK` 查询交给 `sparql_query`；也可以多轮“生成→执行→按结果修正”，
-再与其他工具组合。服务端对生成查询做这些限制：
-
-- 只接受 `SELECT` 与 `ASK`；`INSERT`/`DELETE`/`LOAD`/`CLEAR` 等更新和 `CONSTRUCT`/`DESCRIBE` 被拒绝；
-- 禁止 `SERVICE` 与 `FROM`，不会从查询里访问远程端点或加载外部文件；
-- 查询最长 4,000 字符，单次最多返回 50 行，长字面量会截断；
-- 执行失败只返回安全错误、可用前缀和 `describe_ontology` 提示，不返回 traceback。
-
 `query_ontology` 的多条筛选条件按 AND 组合，`positionWeight` 用 0-1 小数；`universe=real` 时只接受
 `peTtm`、`pb`、`marketCap`、`turnoverRate`、`changePct`，读取行情接口单页最多 200 只，不做全市场
-年报级扫描。命中结果会映射到运行时 RDF 图，因此每条筛选依据都能给出属性路径。自由生成的
-SPARQL 与参数化工具返回同一个 `queryPath` 结构，前端“本体查询路径”会显示实际执行的查询。
+年报级扫描。自由生成的 SPARQL 与规则模式的工具结果都使用同一个 `queryPath` 结构，前端“本体
+查询路径”会显示实际执行的事实加载、图式读取与查询。
 
 服务端从 `ontology/**/*.ttl` 读取规范源（rdflib），规则阈值与
 `ontology/swrl/rules.ttl` 中的示例常量保持同步，并由 `tests/test_rules.py` 校验。
 
 真实 A 股查询先用 `server/marketdata.py` 的公开数据适配器取数，再把快照映射成运行时
-RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所以工具、规则和引用链路不需要分叉。
+RDF 事实（公司、证券、年报、行情、估值、SKOS 行业）；LLM 模式只负责加载，后续分析全部由
+SPARQL 完成。
 
-### 6.2 两种模式
+### 6.3 两种模式
 
-- **LLM 模式**：工具调用循环，最多 `AGENT_MAX_STEPS` 轮；LLM 只能看到工具结果，不能访问环境变量。
-  自由 SPARQL 只在这里可用，因为查询由模型生成。
-- **规则模式**：没有 key 或 LLM 调用失败时，服务端用同一批确定性工具做检索，再生成 Markdown 回答；
-  不生成 SPARQL，保持可复现的固定路径。LLM 失败会自动回退，不会把上游错误原文返回给浏览器。
+- **LLM 模式**：工具循环，最多 `AGENT_MAX_STEPS` 轮；模型只看到 `load_company_data`、
+  `describe_ontology`、`sparql_query`，所有本体查询由模型自己生成。
+- **规则模式**：没有 key 或 LLM 调用失败时，服务端用固定工具做确定性检索，再生成 Markdown
+  回答；不生成 SPARQL，保持可复现的固定路径。LLM 失败会自动回退，不会把上游错误原文返回给浏览器。
 
-### 6.3 输出
+### 6.4 输出
 
 `POST /api/agent/analyze` 返回：
 
@@ -239,26 +251,30 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
   "dataMode": "example",
   "model": "deepseek-chat",
   "answer": "Markdown…",
-  "summary": {
-    "title": "华辰智造",
-    "recommendation": "增持",
-    "confidence": 0.78,
-    "targetPrice": 45.0,
-    "stopLoss": 30.5,
-    "riskLevel": "中",
-    "riskScore": 42
-  },
+  "summary": null,
   "citations": [
-    {"id": "decision-huachen-2026q4", "iri": "…", "label": "…", "kind": "individual"}
+    {"id": "company-huachen", "iri": "…", "label": "华辰智造", "kind": "individual"}
   ],
-  "steps": [{"tool": "get_company_analysis", "label": "读取企业画像与决策链", "status": "ok"}],
+  "steps": [
+    {"tool": "load_company_data", "label": "加载公司事实到本体图", "status": "ok"},
+    {"tool": "sparql_query", "label": "执行 Agent 生成的只读 SPARQL", "status": "ok"}
+  ],
   "queryPath": [
-    {"tool": "get_company_analysis", "label": "读取企业画像与规则信号", "steps": []}
+    {"tool": "load_company_data", "label": "加载公司事实到本体图", "steps": []},
+    {
+      "tool": "sparql_query",
+      "label": "执行 Agent 生成的只读 SPARQL",
+      "steps": [
+        {"kind": "select", "label": "执行 Agent 生成的只读 SPARQL", "detail": "SELECT …"},
+        {"kind": "scan", "label": "扫描图模式并绑定变量", "detail": "变量: company、label"},
+        {"kind": "result", "label": "返回查询结果", "detail": "返回 4 行"}
+      ]
+    }
   ],
   "execution": {
     "mode": "llm",
     "model": "deepseek-chat",
-    "systemPrompt": {"hidden": true, "chars": 858},
+    "systemPrompt": {"hidden": true, "chars": 1500},
     "messages": [
       {"role": "user", "content": "分析华辰智造"},
       {
@@ -267,7 +283,7 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
         "toolCalls": [
           {
             "id": "call_1",
-            "name": "get_company_analysis",
+            "name": "load_company_data",
             "arguments": {"company": "华辰智造"}
           }
         ],
@@ -276,11 +292,33 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
       {
         "role": "tool",
         "toolCallId": "call_1",
-        "name": "get_company_analysis",
-        "label": "读取企业画像与规则信号",
+        "name": "load_company_data",
+        "label": "加载公司事实到本体图",
         "arguments": {"company": "华辰智造"},
         "ok": true,
         "elapsedMs": 12,
+        "content": "{\"ok\": true, \"data\": {…}}"
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "toolCalls": [
+          {
+            "id": "call_2",
+            "name": "sparql_query",
+            "arguments": {"query": "SELECT ?company ?roe WHERE { … } LIMIT 10"}
+          }
+        ],
+        "round": 2
+      },
+      {
+        "role": "tool",
+        "toolCallId": "call_2",
+        "name": "sparql_query",
+        "label": "执行 Agent 生成的只读 SPARQL",
+        "arguments": {"query": "SELECT ?company ?roe WHERE { … } LIMIT 10"},
+        "ok": true,
+        "elapsedMs": 5,
         "content": "{\"ok\": true, \"data\": {…}}"
       },
       {"role": "assistant", "content": "…最终 Markdown 回答…"}
@@ -303,23 +341,25 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
 真实 A 股结果额外带 `dataMode: "real"`；其运行时实体标记为 `kind: "real"`，不在静态
 `data.js` 中，因此前端显示为不可点击的证据 chip，而规则、类和已有 SKOS 概念仍可跳转。
 
-### 6.4 真实 A 股数据
+### 6.5 真实 A 股数据
 
 默认启用，无需 API key。输入 `600519`、`贵州茅台` 或 `600519.SH` 时：
 
 1. `EastmoneyProvider` 解析证券并读取公开行情（价格、涨跌幅、换手率、市值、PE/PB）；
 2. 读取最近一期年报与主要财务指标（ROE、ROA、资产负债率、利息保障、经营现金流、增速）；
 3. 读取近 80 个交易日日线，计算 MA5/MA20/MA60、连板天数和炸板次数；
-4. `OntologyStore.register_real_company` 在内存中写入 `ash:ListedCompany`、`ash:AShare`、
-   `ash:AnnualReport`、`ash:MarketQuote`、`ash:Valuation`、`ash:LimitUpStreak` 和 SKOS 行业概念；
-5. 规则引擎执行 R01–R11 与 R16–R21：缺少龙虎榜净买入、封单金额或新闻催化的字段标为
-   “无法评估”，不会用推测补齐；回答层返回 `dataMode="real"`。
+4. `load_company_data` 调用 `OntologyStore.register_real_company`，在内存中写入 `ash:ListedCompany`、
+   `ash:AShare`、`ash:AnnualReport`、`ash:MarketQuote`、`ash:Valuation`、`ash:LimitUpStreak` 和
+   SKOS 行业概念；
+5. LLM 模式由 Agent 查询 `ash:RuleArtifact` 并对照公司事实；规则模式由规则引擎执行 R01–R11 与
+   R16–R21。缺少龙虎榜净买入、封单金额或新闻催化的字段标为“无法评估”，不会用推测补齐；
+   回答返回 `dataMode="real"`。
 
 要点：
 
 - 运行时 IRI 位于 `.../a-share/real#`，不写回 Turtle 文件；
-- 行情缓存 60 秒、财报缓存 6 小时、短线日线缓存 5 分钟；`screen_companies` 不包含真实公司，
-  真实横截面请用 `query_ontology` 的 `universe=real`；
+- 行情缓存 60 秒、财报缓存 6 小时、短线日线缓存 5 分钟；规则模式的 `screen_companies` 不包含
+  真实公司，真实横截面请用 `query_ontology` 的 `universe=real`；LLM 模式用 `sparql_query` 查询；
 - 真实 A 股的短线字段目前覆盖均线、连板/炸板；龙虎榜净买入、封单和新闻催化需要额外数据源，
   暂标为“无法评估”；
 - 数据来自东方财富公开网页接口，可能延迟、限流或改版；生产环境应替换为持牌数据源；
