@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.6.0" ;
+    owl:versionInfo "1.7.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
@@ -1036,3 +1036,48 @@ ash:stockCharacter a owl:FunctionalProperty .
 
 [] a owl:AllDisjointClasses ; owl:members ( ash:SweepBoard ash:QueueBoard ash:ResealBoard ash:VolumeTurnoverBoard ) .
 [] a owl:AllDisjointClasses ; owl:members ( ash:WeakToStrong ash:StrongToWeak ) .
+# ===== Rule expansion functional properties =====
+
+ash:marketTrendScore a owl:FunctionalProperty .
+
+ash:marketTurnoverAmount a owl:FunctionalProperty .
+
+ash:brokenBoardRate a owl:FunctionalProperty .
+
+ash:themeRank a owl:FunctionalProperty .
+
+ash:auctionPremium a owl:FunctionalProperty .
+
+ash:gapPct a owl:FunctionalProperty .
+
+ash:volumeRatio a owl:FunctionalProperty .
+
+ash:turnoverZScore a owl:FunctionalProperty .
+
+ash:earningsSurprise a owl:FunctionalProperty .
+
+ash:newsScore a owl:FunctionalProperty .
+
+ash:leaderHeight a owl:FunctionalProperty .
+
+ash:themeHeatDelta a owl:FunctionalProperty .
+
+ash:marketBreadthScore a owl:FunctionalProperty .
+
+ash:consecutiveLossDays a owl:FunctionalProperty .
+
+ash:consecutiveWinDays a owl:FunctionalProperty .
+
+ash:profitFactor a owl:FunctionalProperty .
+
+ash:avgHoldDays a owl:FunctionalProperty .
+
+ash:positionSizePct a owl:FunctionalProperty .
+
+ash:singleTradeRiskPct a owl:FunctionalProperty .
+
+ash:executionDeviationPct a owl:FunctionalProperty .
+
+ash:regulatoryRiskScore a owl:FunctionalProperty .
+
+ash:themeDiffusionScore a owl:FunctionalProperty .

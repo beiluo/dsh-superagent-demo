@@ -11,13 +11,15 @@ These captures document the browser work for the A-share ontology tickets.
 | `after-graph.png` | Same branch | 1440 × 1000 | Domain overview graph: 72 class nodes, 96 hierarchy/property edges, cluster legend and scale assessment. |
 | `after-graph-decision.png` | Same branch | 1440 × 1000 | Decision-chain graph: 19 nodes, 15 labelled object-property edges. |
 | `expansion-before.png` | Merged `main` at `fa2b24f` (1.0) | 1440 × 1000 | Expanded-domain baseline: 72 classes / 4,290 triples. |
-| `expansion-after.png` | 1.6 branch | 1440 × 1000 | Expanded page: 246 classes / 33,667 triples / 3,171 entities / 26 rules / 5 policies. |
+| `expansion-after.png` | 1.7 branch | 1440 × 1000 | Expanded page: 269 classes / 36,507 triples / 3,267 entities / 76 rules / 5 policies. |
 | `expansion-explorer.png` | 1.1 branch | 1440 × 1000 | `Fund` search in the 564-entity Explorer with class detail. |
-| `expansion-graph.png` | 1.6 branch | 1440 × 1000 | Core overview: 51 classes / 82 relations. |
-| `expansion-graph-all.png` | 1.6 branch | 1440 × 1000 | All-class overview: 246 classes / 385 relations. |
+| `expansion-graph.png` | 1.7 branch | 1440 × 1000 | Core overview: 51 classes / 82 relations. |
+| `expansion-graph-all.png` | 1.7 branch | 1440 × 1000 | All-class overview: 269 classes / 408 relations. |
 | `short-before.png` | Merged `main` at `852e52c` (1.1) | 1440 × 1000 | Baseline before the short-term module: no 短线 nav item, fallback hero stats 136 classes / 6,253 triples. |
+| `rules-before.png` | 1.6 branch | 1440 × 1000 | Rule section before the 1.7 expansion: 26 rules. |
+| `rules-after.png` | 1.7 branch | 1440 × 1000 | Rule section after expansion: 76 rules with market/emotion/theme/leader/auction/dragon-tiger/entry/risk/execution categories. |
 | `youzi-before.png` | Merged `main` at `115eb98` (1.2) | 1440 × 1000 | Same 短线 section before 1.3: four-step playbook and R16–R21 only; no methodology cards or emotion cycle. |
-| `short-term.png` | 1.6 branch | 1440 × 1000 | Short-term panel with methodology cards, emotion cycle, four trader-voice excerpts, R16–R26 and a short-term decision; source line indexes 50 skills/821 sections/1,327 statements. |
+| `short-term.png` | 1.7 branch | 1440 × 1000 | Short-term panel with methodology cards, emotion cycle, four trader-voice excerpts, R16–R26 and a short-term decision; source line indexes 50 skills/821 sections/1,327 statements. |
 | `agent-before.png` | Live GitHub Pages at `main` `7bc4064` (PR #2 merged, before this Agent PR) | 1440 × 1000 | Baseline: graph UI is present, but there is no Agent nav entry, no “问 Agent” action and no Agent section. |
 | `agent-after.png` | This Agent branch after merging `main`; served by `uvicorn` on `127.0.0.1:8010` | 1440 × 1000 | Same hero and graph-era header, plus the new Agent nav entry and “问 Agent” action. |
 | `agent-section.png` | Same merged branch head; rules mode, no server key | 1240 × 941 | New Agent section: status, starter questions, key-safety note, empty conversation. |
