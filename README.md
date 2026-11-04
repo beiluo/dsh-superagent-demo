@@ -3,10 +3,32 @@
 > 一套覆盖 **RDF、RDFS、OWL 2、SKOS、SWRL、OWL-S、ODRL** 的模块化语义模型，
 > 用来表达“从数据到投资决策”的可推理、可追溯、可治理链路。
 
+[**在线浏览**](https://beiluo.github.io/dsh-superagent-demo/) ·
+[设计说明](docs/design.md) ·
+[Agent 部署](docs/agent.md) ·
+[能力问题](docs/competency-questions.rq)
+
 [![浏览器页面](docs/evidence/expansion-after.png)](docs/evidence/expansion-after.png)
 
 页面不是静态说明书：它由本体源文件生成，支持全文检索、按层筛选、类/属性/个体详情、SKOS 概念树、
 SWRL 规则卡片、OWL-S 流程和 ODRL 政策矩阵。
+
+> 当前在线页面没有配置后端，只能浏览本体；Agent 对话需要单独部署后端并在
+> `assets/js/agent-config.js` 中配置 `apiBase`，步骤见 [`docs/agent.md`](docs/agent.md)。
+
+## 目录
+
+- [1. 这是什么](#1-这是什么)
+- [2. 快速开始](#2-快速开始)
+- [3. 目录结构](#3-目录结构)
+- [4. 七层设计与规范依据](#4-七层设计与规范依据)
+- [5. 关键建模决策](#5-关键建模决策)
+- [6. 示例数据](#6-示例数据)
+- [7. 页面能力](#7-页面能力)
+- [8. Agent：基于本体的股票分析](#8-agent基于本体的股票分析)
+- [9. 校验覆盖与已知限制](#9-校验覆盖与已知限制)
+- [10. 设计参考：FIBO 给了什么启发](#10-设计参考fibo-给了什么启发)
+- [11. 进一步阅读](#11-进一步阅读)
 
 ---
 
@@ -28,9 +50,25 @@ A 股投资决策涉及至少八类语义问题：
 设计参考 **FIBO**（Financial Industry Business Ontology）的模块化、定义优先、可追溯与 OWL 2
 建模思路；领域内容为独立编写，**不复用 FIBO 本体文本，也不声称是 FIBO 的官方扩展**。
 
+### 仓库组成
+
+| 部分 | 内容 |
+| --- | --- |
+| `index.html` + `assets/` | 本体浏览页与 Agent 对话前端，纯静态、无构建步骤 |
+| `ontology/` | 七层 Turtle 规范源，页面数据由它生成 |
+| `server/` | 可选的 FastAPI Agent 后端（规则模式 / LLM 模式） |
+| `scripts/` | 本体校验、页面数据生成、密钥扫描 |
+| `bostarpack/` | 同仓库的英文静态站示例，独立于本体项目，见 [`bostarpack/README.md`](bostarpack/README.md) |
+
 ---
 
 ## 2. 快速开始
+
+### 环境要求
+
+- **浏览页面**：任意现代浏览器 + 一个静态文件服务器；不需要安装 Python 包、构建步骤或后端；
+- **运行 Agent、校验与测试**：Python 3.12。`make setup` 使用 [uv](https://docs.astral.sh/uv/) 创建虚拟环境；
+  没有 uv 时，可按下面的 `venv` 方式手动安装依赖。
 
 ### 浏览页面
 
@@ -39,8 +77,8 @@ python3 -m http.server 8000
 # 打开 http://127.0.0.1:8000/
 ```
 
-浏览页面不需要构建、不需要外部 CDN，也不需要后端。`index.html` 直接加载
-`assets/js/data.js`（由本体生成的数据快照）。
+`index.html` 直接加载 `assets/js/data.js`（由本体生成的数据快照），不需要外部 CDN，
+也不需要后端。要同时使用 Agent，请直接用下一节的 `make agent`，不要重复占用 8000 端口。
 
 ### 运行 Agent
 
@@ -53,12 +91,20 @@ cp .env.example .env
 make agent          # 打开 http://127.0.0.1:8000/#agent
 ```
 
+`make agent` 同源提供静态页面和 API，因此 `assets/js/agent-config.js` 的 `apiBase` 保持为空即可。
 没有 key 时 Agent 使用本体规则模式；配置 key 后自动切换为 LLM 对话。问题会决定查询路径：
-可以按业务条件跨公司筛选、追踪决策证据链、检查组合与 ODRL 约束，或在事实副本上做情景模拟；
-也可以按 6 位代码或证券简称查询真实 A 股（公开行情与年报接口，需要联网）。部署、密钥配置和
-GitHub Pages 接入方式见 [`docs/agent.md`](docs/agent.md)。
+可以按业务条件跨公司筛选、对比多只股票、追踪决策证据链、检查组合与 ODRL 约束，或在事实副本上
+做情景模拟；也可以按 6 位代码或证券简称查询真实 A 股（公开行情与年报接口，需要联网）。
+部署、密钥配置和 GitHub Pages 接入方式见 [`docs/agent.md`](docs/agent.md)。
 
 ### 校验本体
+
+```bash
+make setup
+make validate        # 结构校验 + 密钥扫描
+```
+
+也可以手动安装依赖后直接运行：
 
 ```bash
 python3 -m venv .venv
@@ -84,10 +130,18 @@ A-share ontology validation passed.
   warnings: 0
 ```
 
+### 运行测试
+
+```bash
+make test            # API、规则阈值、查询/证据/约束/情景、真实数据、LLM 回退与密钥扫描
+```
+
+手动安装依赖时，测试还需要 `pip install -r requirements-dev.txt`。
+
 ### 重新生成页面数据
 
 ```bash
-python3 scripts/build_data.py
+python3 scripts/build_data.py   # 或 make build
 ```
 
 会生成：
@@ -96,6 +150,7 @@ python3 scripts/build_data.py
 - `assets/data/ontology.json`：同一份数据的 JSON 版本，便于外部消费。
 
 > 页面数据是派生产物。修改本体后必须重新运行 `build_data.py`；不要手工编辑 `data.js`。
+> `make validate` 会核对快照统计与本体统计是否一致。
 
 ---
 
@@ -113,17 +168,25 @@ python3 scripts/build_data.py
 │   └── data/ontology.json             # 由 build_data.py 生成
 ├── server/                            # Agent 服务端（FastAPI）
 │   ├── app.py                         # API、CORS、限流、静态白名单
+│   ├── main.py                        # ASGI 入口：uvicorn server.main:app
 │   ├── agent.py                       # LLM 工具循环 + 规则模式回退
+│   ├── answers.py                     # 规则模式的 Markdown 回答与摘要组装
 │   ├── ontology.py                    # 读取 Turtle、映射真实 A 股快照、构建企业/组合事实
-│   ├── marketdata.py                  # 真实 A 股公开行情/年报适配器（可替换）
+│   ├── marketdata.py                  # 真实 A 股公开行情/年报/日线适配器（可替换）
 │   ├── rules.py                       # SWRL 阈值与确定性信号评估
-│   ├── tools.py                       # 11 个只读本体工具
-│   ├── query.py                       # 问题驱动的属性路径查询、证据链、约束与情景模拟
+│   ├── tools.py                       # 12 个只读本体工具
+│   ├── query.py                       # 属性路径查询、多股对比、证据链、约束与情景模拟
+│   ├── namespaces.py                  # 本体与运行时命名空间
 │   ├── llm.py                         # OpenAI-compatible 客户端（密钥只在服务端）
+│   ├── security.py                    # 客户端身份、滑动窗口限流与每日预算
 │   └── settings.py                    # 环境变量配置
-├── tests/                             # 服务端、规则与密钥测试
+├── tests/                             # 服务端、规则、真实数据与密钥测试
+│   ├── conftest.py
 │   ├── test_api.py
 │   ├── test_llm.py
+│   ├── test_marketdata.py
+│   ├── test_query.py
+│   ├── test_real_data.py
 │   ├── test_rules.py
 │   └── test_secrets.py
 ├── ontology/
@@ -142,16 +205,22 @@ python3 scripts/build_data.py
 │   ├── scale-assessment.md            # 节点规模评估与扩展路线
 │   ├── roadmap-2.0.md                 # 股票优先的 2.0 扩展路线
 │   ├── competency-questions.rq        # 10 条 SPARQL 能力问题
-│   └── evidence/                      # 浏览器前后对比截图
+│   └── evidence/                      # 浏览器前后对比截图与说明
 ├── scripts/
 │   ├── build_data.py                  # Turtle -> 页面 JSON
 │   ├── check_no_secrets.py            # 扫描被 git 跟踪文件中的疑似密钥
 │   └── validate.py                    # 结构、规则、服务、政策与查询校验
+├── bostarpack/                        # 英文静态站示例（独立交付物，见其 README）
+├── Makefile                           # setup / validate / build / serve / agent / test
 ├── Dockerfile                         # 后端容器镜像
 ├── render.yaml                        # Render Blueprint（密钥用平台 Secret）
 ├── .env.example                       # 服务端配置模板（不含真实密钥）
-└── requirements.txt
+├── requirements.txt                   # 运行时依赖
+└── requirements-dev.txt               # 测试依赖
 ```
+
+> `bostarpack/` 是同一仓库中的独立英文静态站示例，与本体项目没有代码依赖；其页面、部署方式和
+> 视觉证据见 [`bostarpack/README.md`](bostarpack/README.md)。
 
 ---
 
@@ -301,6 +370,8 @@ Agent 不是把整份 Turtle 塞进 prompt。它通过服务端工具按需读�
 8. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 
+[![多股同口径对比](docs/evidence/compare-after.png)](docs/evidence/compare-after.png)
+
 真实 A 股查询走 `server/marketdata.py`：公开行情、年报和近 80 个交易日的日线先被规范化，
 再映射为运行时的 RDF 事实，因此规则、引用和回答结构与示例公司一致；返回结果带
 `dataMode=real`，前端据此展示“真实数据”标识而不是示例结论卡。`get_company_analysis` 的
@@ -319,8 +390,18 @@ LLM 的工具决策（工具名与参数）、发给 LLM 的工具结果原文�
 
 [![Agent 执行详情](docs/evidence/trace-after-detail.png)](docs/evidence/trace-after.png)
 
+### 服务端 API
+
+| 端点 | 方法 | 用途 |
+| --- | --- | --- |
+| `/api/health` | GET | 健康检查与版本 |
+| `/api/agent/status` | GET | 运行模式、LLM 配置、限流额度、本体规模与真实数据状态 |
+| `/api/agent/analyze` | POST | 分析问题；请求体为 `{"question": "...", "history": []}` |
+
+请求与响应的完整字段、限流、CORS 和部署步骤见 [`docs/agent.md`](docs/agent.md)。
+
 **密钥边界**：`LLM_API_KEY` 只存在于服务端环境变量；`assets/js/agent-config.js` 只保存公开
-的 `apiBase`。`scripts/check_no_secrets.py` 由 `make validate` 运行；CI 也可调用同一脚本。
+的 `apiBase`。`scripts/check_no_secrets.py` 由 `make validate` 运行，也可接入 CI。
 GitHub Pages 不能运行后端，因此在线 Agent 需要把静态页面接到单独部署的后端；完整步骤见
 [`docs/agent.md`](docs/agent.md)。
 
@@ -339,12 +420,13 @@ GitHub Pages 不能运行后端，因此在线 Agent 需要把静态页面接到
 - ODRL 政策含 uid、profile、permission/prohibition、约束三元组；
 - 示例决策具备完整决策字段；
 - 10 条 SPARQL 能力问题可解析；
-- OWL RL 闭包可运行（当前 2887 → 7991 三元组）。
+- 页面快照统计与本体统计一致；
+- OWL RL 闭包可运行（当前 5,864 → 16,762 三元组，推断 10,898 条）。
 
 Agent 服务端测试：
 
 ```bash
-make test          # 服务端测试：API、规则阈值、查询/证据/约束/情景、LLM 客户端、回退与密钥扫描
+make test          # 服务端测试：API、规则阈值、查询/证据/约束/情景、真实数据、LLM 客户端、回退与密钥扫描
 make validate      # 本体结构校验 + 密钥扫描
 ```
 
@@ -379,8 +461,12 @@ FIBO 资料：<https://spec.edmcouncil.org/fibo/> · <https://www.omg.org/spec/E
 
 - [详细设计说明](docs/design.md)
 - [Agent 部署与密钥配置](docs/agent.md)
+- [1.1 领域扩展说明](docs/expansion-1.1.md)
 - [节点规模评估与扩展路线](docs/scale-assessment.md)
+- [2.0 股票优先扩展路线](docs/roadmap-2.0.md)
 - [10 条 SPARQL 能力问题](docs/competency-questions.rq)
+- [视觉证据索引](docs/evidence/README.md)
+- [Bostar Pack 英文静态站](bostarpack/README.md)
 - [聚合入口 ontology/a-share.ttl](ontology/a-share.ttl)
 - [浏览器页面 index.html](index.html)
 
