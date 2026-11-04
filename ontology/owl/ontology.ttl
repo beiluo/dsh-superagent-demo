@@ -27,7 +27,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/owl2-mapping-to-rdf/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/owl2-primer/> ;
-    owl:versionInfo "1.7.0" ;
+    owl:versionInfo "1.8.0" ;
     ash:designNote "采用 OWL 2 DL；模块边界对应 FIBO 的 domain module 思路，但领域内容完全独立编写。"@zh .
 
 # ===========================================================================
@@ -1081,3 +1081,80 @@ ash:executionDeviationPct a owl:FunctionalProperty .
 ash:regulatoryRiskScore a owl:FunctionalProperty .
 
 ash:themeDiffusionScore a owl:FunctionalProperty .
+# ===== Rule expansion 1.8 functional properties =====
+
+ash:pePercentile a owl:FunctionalProperty .
+
+ash:pbPercentile a owl:FunctionalProperty .
+
+ash:marketCap a owl:FunctionalProperty .
+
+ash:freeFloatMarketCap a owl:FunctionalProperty .
+
+ash:avgDailyAmount a owl:FunctionalProperty .
+
+ash:pledgeRatio a owl:FunctionalProperty .
+
+ash:goodwillRatio a owl:FunctionalProperty .
+
+ash:insiderSellAmount a owl:FunctionalProperty .
+
+ash:lockupRatio a owl:FunctionalProperty .
+
+ash:regulatoryInquiryCount a owl:FunctionalProperty .
+
+ash:suspensionDays a owl:FunctionalProperty .
+
+ash:daysSinceListing a owl:FunctionalProperty .
+
+ash:earningsMissPct a owl:FunctionalProperty .
+
+ash:gapFillPct a owl:FunctionalProperty .
+
+ash:volumeDryUp a owl:FunctionalProperty .
+
+ash:rsiValue a owl:FunctionalProperty .
+
+ash:macdHistogram a owl:FunctionalProperty .
+
+ash:bollingerWidth a owl:FunctionalProperty .
+
+ash:atrPct a owl:FunctionalProperty .
+
+ash:currentTurnoverRate a owl:FunctionalProperty .
+
+ash:currentLimitUpHeight a owl:FunctionalProperty .
+
+ash:currentSealAmount a owl:FunctionalProperty .
+
+ash:currentBrokenBoards a owl:FunctionalProperty .
+
+ash:latestDragonTigerNetBuy a owl:FunctionalProperty .
+
+ash:currentThemeHeat a owl:FunctionalProperty .
+
+ash:themeRankChange a owl:FunctionalProperty .
+
+ash:marketHeightValue a owl:FunctionalProperty .
+
+ash:currentBrokenBoardRate a owl:FunctionalProperty .
+
+ash:currentMarketBreadth a owl:FunctionalProperty .
+
+ash:currentMarketTrend a owl:FunctionalProperty .
+
+ash:profitGivebackPct a owl:FunctionalProperty .
+
+ash:maxPositionPct a owl:FunctionalProperty .
+
+ash:maxDailyLossPct a owl:FunctionalProperty .
+
+ash:journalCompleteness a owl:FunctionalProperty .
+
+ash:ruleViolationCount a owl:FunctionalProperty .
+
+ash:reviewFrequency a owl:FunctionalProperty .
+
+ash:targetDistancePct a owl:FunctionalProperty .
+
+ash:ruleBasis a owl:FunctionalProperty .

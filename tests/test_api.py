@@ -115,11 +115,11 @@ def test_rule_explanation(client_factory):
 
 
 def test_invalid_rule_is_reported(client_factory):
-    response = client_factory().post("/api/agent/analyze", json={"question": "R99 是什么规则？"})
+    response = client_factory().post("/api/agent/analyze", json={"question": "R00 是什么规则？"})
     assert response.status_code == 200
     data = response.json()
     assert data["steps"][0]["tool"] == "get_rule"
-    assert "R99" in data["answer"]
+    assert "R00" in data["answer"]
     assert "R01" in data["answer"]
 
 

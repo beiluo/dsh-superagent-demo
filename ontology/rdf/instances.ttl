@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.7.0" .
+    owl:versionInfo "1.8.0" .
 
 # ===========================================================================
 # Market structure

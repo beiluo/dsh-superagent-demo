@@ -72,15 +72,15 @@ python3 scripts/validate.py
 ```text
 A-share ontology validation passed.
   modules: 7
-  triples: 36507
-  classes: 269
+  triples: 40574
+  classes: 294
   object properties: 167
-  data properties: 247
+  data properties: 284
   SKOS concepts: 147
-  SWRL rules: 76
+  SWRL rules: 151
   OWL-S services: 1
   ODRL policies: 5
-  OWL RL closure: 31357 -> 59955 triples (28598 inferred)
+  OWL RL closure: 31734 -> 60963 triples (29229 inferred)
   warnings: 0
 ```
 
@@ -161,7 +161,7 @@ python3 scripts/build_data.py
 | 层 | W3C 规范 | 本仓库落地 | 关键文件 |
 | --- | --- | --- | --- |
 | RDF | [RDF 1.1 Concepts](https://www.w3.org/TR/rdf11-concepts/) / [Turtle 1.1](https://www.w3.org/TR/turtle/) | 公司、证券、财报、行情、估值、风险、决策、组合的实例图 | `ontology/rdf/instances.ttl` |
-| RDFS | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | 269 个类、414 个属性，含 `subClassOf`、`domain`、`range`、双语标签 | `ontology/rdfs/schema.ttl` |
+| RDFS | [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/) | 294 个类、451 个属性，含 `subClassOf`、`domain`、`range`、双语标签 | `ontology/rdfs/schema.ttl` |
 | OWL 2 | [OWL 2 Overview](https://www.w3.org/TR/owl2-overview/) / [Structural Specification](https://www.w3.org/TR/owl2-syntax/) / [RDF Mapping](https://www.w3.org/TR/owl2-mapping-to-rdf/) | 100 条类限制、10 个键、14 组类不相交、函数式/传递/对称/逆属性 | `ontology/owl/ontology.ttl` |
 | SKOS | [SKOS Reference](https://www.w3.org/TR/skos-reference/) | 9 个 ConceptScheme、147 个概念、层级/关联/多语言标签/定义 | `ontology/skos/taxonomy.ttl` |
 | SWRL | [SWRL W3C Member Submission](https://www.w3.org/Submission/SWRL/) | 26 条 `swrl:Imp` 规则，使用 RDF 具体语法与 `swrlb:` 内建 | `ontology/swrl/rules.ttl` |
@@ -254,7 +254,7 @@ Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代�
 - **SKOS 概念树**：九套方案切换、概念搜索、上下位/关联概念跳转；
 - **技能目录**：50 个外部技能、821 个章节、20 个主题作为 `SkillArtifact`/`SkillSection`/`SkillTopic` 编目，可在 Explorer 检索；
 - **原话摘录**：1,327 条公开短句，标注说话者、类型、主题和来源，不复制全文；
-- **规则层**：76 条 SWRL 规则，按市场/情绪/题材/龙头/竞价/龙虎榜/打板/风控/执行分类；
+- **规则层**：151 条 SWRL 规则，按市场/情绪/题材/龙头/竞价/龙虎榜/打板/风控/执行分类；
 - **短线/游资面板**：换手率、连板高度、龙虎榜净买、主题热度、RSI、风险分，叠加首板/连板/反包/退潮剧本、龙虎榜/竞价/复盘方法卡与 R16–R26 规则；
 - **SWRL 规则卡片**：严重程度筛选、IF/THEN、适用类、读取属性、SWRL 原子展开；
 - **OWL-S 服务**：输入、输出、前置条件、七步流程、grounding 操作；
@@ -269,11 +269,11 @@ Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代�
 
 ### 规模定位
 
-当前可浏览实体为 3,267 个：269 个类、414 个属性、2,355 个个体、147 个 SKOS 概念、76 条规则、1 个服务、5 项政策；
-RDF 图共 36,507 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
+当前可浏览实体为 3,404 个：294 个类、451 个属性、2,355 个个体、147 个 SKOS 概念、151 条规则、1 个服务、5 项政策；
+RDF 图共 40,574 条三元组。这个规模足以贯通七层语义与一条完整决策链，但**不是 FIBO 级行业本体**：
 FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是生产级，建议沿公司行为、基金/ETF、衍生品、
 交易执行、组合风险、合规与披露等业务模块继续扩展，而不是为增加节点而堆叠孤立类。
-1.1 已实际新增 64 个类、94 个属性、41 个概念、4 条规则和 1 项政策；1.2 补了 58 个短线/游资类、77 个属性、20 个短线剧本概念、6 条规则和 1 项数据政策；1.3 又从公开游资方法论提炼了 48 个类、85 个属性、14 个概念、5 条规则；1.4 把站点 50 个技能、821 个章节、20 个技能主题编成可检索的 `SkillArtifact`/`SkillSection` 目录；1.5 抽取 144 条短原话；1.6 扩展到 1,327 条短原话摘录；1.7 把规则层从 26 条扩到 76 条，覆盖市场、情绪、题材、龙头、竞价、龙虎榜、打板、低吸、反包、接力、突破、仓位、执行与复盘，完整清单见
+1.1 已实际新增 64 个类、94 个属性、41 个概念、4 条规则和 1 项政策；1.2 补了 58 个短线/游资类、77 个属性、20 个短线剧本概念、6 条规则和 1 项数据政策；1.3 又从公开游资方法论提炼了 48 个类、85 个属性、14 个概念、5 条规则；1.4 把站点 50 个技能、821 个章节、20 个技能主题编成可检索的 `SkillArtifact`/`SkillSection` 目录；1.5 抽取 144 条短原话；1.6 扩展到 1,327 条短原话摘录；1.7 把规则层从 26 条扩到 76 条；1.8 继续扩到 151 条，新增选股、估值、质押/商誉/解禁、监管、技术、竞价、龙虎榜、买卖点、仓位、执行、复盘等规则，完整清单见
 [1.1 领域扩展说明](docs/expansion-1.1.md) 和 [1.3 游资方法论提炼](docs/youzi-knowledge.md)。2.0 将按股票优先的模块化路线推进，目标约
 1,200–1,500 个类、2,000+ 属性、3,000+ SKOS 概念；详见
 [2.0 股票优先扩展路线](docs/roadmap-2.0.md)。更完整的节点口径与缺口见

@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.7.0" .
+    owl:versionInfo "1.8.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -3851,3 +3851,352 @@ ash:themeDiffusionScore a owl:DatatypeProperty ;
     rdfs:label "主题扩散分数"@zh, "theme diffusion score"@en .
 
 ash:ruleCategory a owl:DatatypeProperty ; rdfs:domain ash:RuleArtifact ; rdfs:range xsd:string ; rdfs:label "规则类别"@zh .
+# ===== Rule expansion 1.8 =====
+
+ash:EligibleStock a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "可入选标的"@zh, "Eligible Stock"@en ;
+    rdfs:comment "通过基本面、流动性与风险筛选的标的。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:IneligibleStock a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "不可入选标的"@zh, "Ineligible Stock"@en ;
+    rdfs:comment "触发排除条件的标的。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:EntrySignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "入场信号"@zh, "Entry Signal"@en ;
+    rdfs:comment "满足入场条件的信号。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ExitSignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "退出信号"@zh, "Exit Signal"@en ;
+    rdfs:comment "满足退出条件的信号。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:AddPositionSignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "加仓信号"@zh, "Add Position Signal"@en ;
+    rdfs:comment "允许加仓的信号。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ReducePositionSignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "减仓信号"@zh, "Reduce Position Signal"@en ;
+    rdfs:comment "需要减仓的信号。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:AvoidTradeSignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "回避信号"@zh, "Avoid Trade Signal"@en ;
+    rdfs:comment "环境或个股不适合交易。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:LiquidityRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "流动性风险"@zh, "Liquidity Risk"@en ;
+    rdfs:comment "成交额、市值或换手不足。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:PledgeRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "质押风险"@zh, "Pledge Risk"@en ;
+    rdfs:comment "大股东质押比例过高。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:GoodwillRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "商誉风险"@zh, "Goodwill Risk"@en ;
+    rdfs:comment "商誉占净资产比例过高。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:InsiderSellingRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "减持风险"@zh, "Insider Selling Risk"@en ;
+    rdfs:comment "重要股东大额减持。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:LockupOverhangRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "解禁压力"@zh, "Lockup Overhang"@en ;
+    rdfs:comment "限售解禁比例过高。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:RegulatoryInquiryRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "监管问询"@zh, "Regulatory Inquiry"@en ;
+    rdfs:comment "问询、处罚或立案调查。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:SuspensionRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "停牌风险"@zh, "Suspension Risk"@en ;
+    rdfs:comment "停牌或长期无法交易。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:NewStockRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "次新股风险"@zh, "New Stock Risk"@en ;
+    rdfs:comment "上市时间短、波动与解禁风险高。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:STDelistingRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "ST/退市风险"@zh, "ST/Delisting Risk"@en ;
+    rdfs:comment "ST、退市或财务异常。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:OvervaluationRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "高估值风险"@zh, "Overvaluation Risk"@en ;
+    rdfs:comment "估值处于历史高分位。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:EarningsMissRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "业绩不及预期"@zh, "Earnings Miss"@en ;
+    rdfs:comment "业绩低于预期或下修。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:GapFillRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "缺口回补风险"@zh, "Gap Fill Risk"@en ;
+    rdfs:comment "跳空缺口回补概率高。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:TimeStopSignal a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "时间止损"@zh, "Time Stop"@en ;
+    rdfs:comment "持有超过计划期限仍未兑现。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:ProfitGivebackRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "利润回吐"@zh, "Profit Giveback"@en ;
+    rdfs:comment "浮盈大幅回吐。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:DailyLossLimitBreach a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "单日亏损超限"@zh, "Daily Loss Limit"@en ;
+    rdfs:comment "单日亏损超过阈值。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:OvertradingRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "过度交易"@zh, "Overtrading Risk"@en ;
+    rdfs:comment "交易频率过高。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:JournalIncomplete a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "交易日志缺失"@zh, "Journal Incomplete"@en ;
+    rdfs:comment "日志字段或复盘不足。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:RuleViolation a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "规则违规"@zh, "Rule Violation"@en ;
+    rdfs:comment "交易偏离既定规则。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:VolatilityRisk a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "波动风险"@zh, "Volatility Risk"@en ;
+    rdfs:comment "波动率过高、止损距离过大。"@zh ;
+    rdfs:isDefinedBy <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share/rdfs> .
+
+ash:pePercentile a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "PE 分位"@zh, "PE percentile"@en .
+
+ash:pbPercentile a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "PB 分位"@zh, "PB percentile"@en .
+
+ash:marketCap a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "总市值"@zh, "market cap"@en .
+
+ash:freeFloatMarketCap a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "流通市值"@zh, "free-float market cap"@en .
+
+ash:avgDailyAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "日均成交额"@zh, "average daily amount"@en .
+
+ash:pledgeRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "质押比例"@zh, "pledge ratio"@en .
+
+ash:goodwillRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "商誉比例"@zh, "goodwill ratio"@en .
+
+ash:insiderSellAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "重要股东减持金额"@zh, "insider sell amount"@en .
+
+ash:lockupRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "解禁比例"@zh, "lockup ratio"@en .
+
+ash:regulatoryInquiryCount a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:integer ;
+    rdfs:label "监管问询次数"@zh, "regulatory inquiry count"@en .
+
+ash:suspensionDays a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:integer ;
+    rdfs:label "停牌天数"@zh, "suspension days"@en .
+
+ash:daysSinceListing a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:integer ;
+    rdfs:label "上市天数"@zh, "days since listing"@en .
+
+ash:earningsMissPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "业绩低于预期幅度"@zh, "earnings miss"@en .
+
+ash:gapFillPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "缺口回补比例"@zh, "gap fill percent"@en .
+
+ash:volumeDryUp a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "缩量程度"@zh, "volume dry-up"@en .
+
+ash:rsiValue a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "RSI 值"@zh, "RSI value"@en .
+
+ash:macdHistogram a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "MACD 柱"@zh, "MACD histogram"@en .
+
+ash:bollingerWidth a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "布林带宽度"@zh, "Bollinger width"@en .
+
+ash:atrPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "ATR 占价格比例"@zh, "ATR percent"@en .
+
+ash:currentTurnoverRate a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "当前换手率"@zh, "current turnover"@en .
+
+ash:currentLimitUpHeight a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:integer ;
+    rdfs:label "当前连板高度"@zh, "current limit-up height"@en .
+
+ash:currentSealAmount a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "当前封单金额"@zh, "current seal amount"@en .
+
+ash:currentBrokenBoards a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:integer ;
+    rdfs:label "当前炸板次数"@zh, "current broken boards"@en .
+
+ash:latestDragonTigerNetBuy a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最新龙虎榜净买"@zh, "latest dragon-tiger net buy"@en .
+
+ash:currentThemeHeat a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "当前主题热度"@zh, "current theme heat"@en .
+
+ash:themeRankChange a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "主题排名变化"@zh, "theme rank change"@en .
+
+ash:marketHeightValue a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:integer ;
+    rdfs:label "市场高度值"@zh, "market height value"@en .
+
+ash:currentBrokenBoardRate a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "当前炸板率"@zh, "current broken-board rate"@en .
+
+ash:currentMarketBreadth a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "当前市场宽度"@zh, "current market breadth"@en .
+
+ash:currentMarketTrend a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "当前市场趋势"@zh, "current market trend"@en .
+
+ash:profitGivebackPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Security ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "利润回吐比例"@zh, "profit giveback"@en .
+
+ash:maxPositionPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大总仓位"@zh, "max position percent"@en .
+
+ash:maxDailyLossPct a owl:DatatypeProperty ;
+    rdfs:domain ash:Portfolio ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "单日最大亏损"@zh, "max daily loss"@en .
+
+ash:journalCompleteness a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJournal ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "日志完整度"@zh, "journal completeness"@en .
+
+ash:ruleViolationCount a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJournal ;
+    rdfs:range xsd:integer ;
+    rdfs:label "规则违规次数"@zh, "rule violation count"@en .
+
+ash:reviewFrequency a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJournal ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "复盘频率"@zh, "review frequency"@en .
+
+ash:targetDistancePct a owl:DatatypeProperty ;
+    rdfs:domain ash:InvestmentDecision ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "目标价距离"@zh, "target distance"@en .
+
+ash:ruleBasis a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleArtifact ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则依据"@zh, "rule basis"@en .
+
+ash:ruleBasis a owl:DatatypeProperty ; rdfs:domain ash:RuleArtifact ; rdfs:range xsd:string ; rdfs:label "规则依据"@zh .
