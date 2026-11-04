@@ -94,7 +94,7 @@ LLM_MODEL=deepseek-chat
 | `RATE_LIMIT_PER_HOUR` | 否 | `40` | 每 IP 每小时请求上限 |
 | `DAILY_REQUEST_BUDGET` | 否 | `300` | 进程级每日总请求上限 |
 | `MAX_QUESTION_CHARS` | 否 | `500` | 单次问题最大长度 |
-| `AGENT_MAX_STEPS` | 否 | `4` | LLM 工具调用最大轮数 |
+| `AGENT_MAX_STEPS` | 否 | `6` | LLM 工具调用最大轮数；自由 SPARQL 的生成/修正需要更多轮 |
 | `LLM_MAX_OUTPUT_TOKENS` | 否 | `1800` | 单次回答最大 token；多股对比需要更长输出 |
 | `MARKET_DATA_ENABLED` | 否 | `true` | 是否启用真实 A 股查询；关闭后只保留示例公司 |
 | `MARKET_DATA_TIMEOUT_SECONDS` | 否 | `8` | 真实行情请求超时 |
@@ -190,6 +190,8 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | `get_company_analysis` | 企业、证券、财报、行情估值、短线快照、风险、决策、证据、合规与 R01–R21 规则信号；支持真实 A 股 |
 | `screen_companies` | 对本体中已有公司执行 SWRL 规则筛选 |
 | `compare_companies` | 2–5 只股票的本体同口径对比：统一字段 + R01–R21 + 指标 RDF 路径与证据 |
+| `describe_ontology` | 读取类、对象属性、数据属性、命名空间前缀与示例查询；可按 `focus` 检索 |
+| `sparql_query` | 执行 Agent 自己生成的只读 SPARQL，支持任意图模式、聚合、路径与否定条件 |
 | `query_ontology` | 问题驱动的跨公司筛选：业务字段→属性路径、行业、规则条件、排序；`universe=real` 扫真实行情单页样本 |
 | `trace_evidence` | 从公司/决策/规则/政策展开证据链，保留数据日期、来源与版本 |
 | `check_constraints` | R06/R07/R11 与 ODRL trade-guard 的人工批准、合规检查前置条件 |
@@ -199,9 +201,19 @@ Agent 不把整份 Turtle 塞进 prompt，而是通过只读工具按需读取�
 | `get_policies` | ODRL 权限/禁止/义务 |
 | `search_ontology` | 类、属性、个体、概念、规则、政策、服务检索 |
 
+参数化工具只是快捷方式，不是查询边界。LLM 模式下 Agent 可以先 `describe_ontology` 确认类、属性
+与前缀，再生成 `SELECT`/`ASK` 查询交给 `sparql_query`；也可以多轮“生成→执行→按结果修正”，
+再与其他工具组合。服务端对生成查询做这些限制：
+
+- 只接受 `SELECT` 与 `ASK`；`INSERT`/`DELETE`/`LOAD`/`CLEAR` 等更新和 `CONSTRUCT`/`DESCRIBE` 被拒绝；
+- 禁止 `SERVICE` 与 `FROM`，不会从查询里访问远程端点或加载外部文件；
+- 查询最长 4,000 字符，单次最多返回 50 行，长字面量会截断；
+- 执行失败只返回安全错误、可用前缀和 `describe_ontology` 提示，不返回 traceback。
+
 `query_ontology` 的多条筛选条件按 AND 组合，`positionWeight` 用 0-1 小数；`universe=real` 时只接受
 `peTtm`、`pb`、`marketCap`、`turnoverRate`、`changePct`，读取行情接口单页最多 200 只，不做全市场
-年报级扫描。命中结果会映射到运行时 RDF 图，因此每条筛选依据都能给出属性路径。
+年报级扫描。命中结果会映射到运行时 RDF 图，因此每条筛选依据都能给出属性路径。自由生成的
+SPARQL 与参数化工具返回同一个 `queryPath` 结构，前端“本体查询路径”会显示实际执行的查询。
 
 服务端从 `ontology/**/*.ttl` 读取规范源（rdflib），规则阈值与
 `ontology/swrl/rules.ttl` 中的示例常量保持同步，并由 `tests/test_rules.py` 校验。
@@ -212,8 +224,9 @@ RDF 事实（公司、证券、年报、行情、估值、SKOS 行业），所�
 ### 6.2 两种模式
 
 - **LLM 模式**：工具调用循环，最多 `AGENT_MAX_STEPS` 轮；LLM 只能看到工具结果，不能访问环境变量。
-- **规则模式**：没有 key 或 LLM 调用失败时，服务端用同一批工具做确定性检索，再生成 Markdown 回答。
-  LLM 失败会自动回退，不会把上游错误原文返回给浏览器。
+  自由 SPARQL 只在这里可用，因为查询由模型生成。
+- **规则模式**：没有 key 或 LLM 调用失败时，服务端用同一批确定性工具做检索，再生成 Markdown 回答；
+  不生成 SPARQL，保持可复现的固定路径。LLM 失败会自动回退，不会把上游错误原文返回给浏览器。
 
 ### 6.3 输出
 

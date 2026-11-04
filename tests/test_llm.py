@@ -136,6 +136,49 @@ def test_agent_tool_loop(client_factory):
     assert FAKE_KEY not in response.text
 
 
+def test_agent_generates_and_chains_sparql_queries(client_factory):
+    fake = FakeLLM(
+        [
+            tool_response("describe_ontology", {"focus": "公司"}),
+            tool_response(
+                "sparql_query",
+                {
+                    "query": (
+                        "SELECT ?company ?label WHERE { "
+                        '?company a ash:ListedCompany ; rdfs:label ?label . '
+                        'FILTER(LANG(?label) = "zh") } LIMIT 5'
+                    )
+                },
+            ),
+            final_response("### 结论\n本体中有 5 家示例公司。"),
+        ]
+    )
+    client = client_factory({"llm_api_key": FAKE_KEY}, llm=fake)
+    response = client.post("/api/agent/analyze", json={"question": "本体里有多少家公司？"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["mode"] == "llm"
+    assert [item["tool"] for item in data["steps"]] == [
+        "describe_ontology",
+        "sparql_query",
+    ]
+    assert [item["tool"] for item in data["queryPath"]] == [
+        "describe_ontology",
+        "sparql_query",
+    ]
+    sparql_steps = data["queryPath"][1]["steps"]
+    assert sparql_steps[0]["label"] == "执行 Agent 生成的只读 SPARQL"
+    assert "ash:ListedCompany" in sparql_steps[0]["detail"]
+    tool_message = [
+        item
+        for item in data["execution"]["messages"]
+        if item.get("name") == "sparql_query"
+    ][0]
+    assert tool_message["ok"] is True
+    assert '"rowCount": 5' in tool_message["content"]
+    assert "华辰智造" in tool_message["content"]
+
+
 def test_agent_execution_trace_records_raw_messages(client_factory):
     fake = FakeLLM(
         [

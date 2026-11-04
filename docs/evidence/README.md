@@ -41,11 +41,22 @@ These captures document the browser work for the A-share ontology tickets.
 | `constraints-after.png` | Ticket branch head; same question | 1240 × 1368 | `check_constraints` evaluates the proposed 15% weight, R07/R11 and the ODRL trade-guard human-approval/compliance gates. |
 | `scenario-before.png` | Merged `main` at `1a25a68`; question “如果华辰智造 ROE 下降 5 个百分点会怎样？” | 1240 × 1333 | Baseline: the what-if question is treated as a request to analyse the company; the hypothetical change is ignored. |
 | `scenario-after.png` | Ticket branch head; same question | 1240 × 1132 | `simulate_scenario` changes ROE in an in-memory copy and shows R01 moving from triggered to clear, without writing back to the ontology. |
+| `open-query-before.png` | Merged `main` at `9530cab`, before this ticket; live LLM (`deepseek-flash`), question “哪些投资决策缺少风险评估？” | 1240 × 2068 | Baseline: no graph-query tool. The agent can only call fixed tools, here six `trace_evidence` walks, and has to assemble the negative-condition answer from those results. |
+| `open-query-after.png` | Ticket branch head; same server settings, question, model and viewport | 1240 × 2689 | `describe_ontology` plus multiple generated `sparql_query` calls: the query path shows the actual `SELECT` statements, including a `FILTER NOT EXISTS` check for missing risk assessments and a `GROUP BY` aggregation. |
 
 The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
-not a mockup. The after captures use the actual FastAPI backend and the real `index.html`; no LLM
-provider key was configured, so the screenshots show the deterministic **rules mode**. LLM mode and
+not a mockup. Most after captures use the actual FastAPI backend and the real `index.html`; no LLM
+provider key was configured for those, so they show the deterministic **rules mode**. LLM mode and
 the tool loop are covered by `tests/test_llm.py` with a local OpenAI-compatible stub.
+
+The `open-query-*` pair is a live LLM comparison: the baseline worktree is `main` at `9530cab`
+served on `127.0.0.1:8023`, and the after capture is this ticket branch served on
+`127.0.0.1:8022`. Both used the same git-ignored provider config (`deepseek-flash`), question,
+1240 × 1000 viewport and `AGENT_MAX_STEPS=6`; `.agent-log` was expanded and the sticky header hidden
+on both sides. The baseline has no graph-query tool, so it can only chain fixed tools
+(`trace_evidence` per company); the after agent calls `describe_ontology` and then generates
+`sparql_query` statements that appear in the query-path panel. The provider key is not committed and
+does not appear in the captures.
 
 The `query-*`, `evidence-*`, `constraints-*` and `scenario-*` pairs use the same rules-mode server
 settings (`MARKET_DATA_ENABLED=false`, no LLM key): the baseline worktree is `main` at `1a25a68`
@@ -59,5 +70,5 @@ All example content is synthetic; the `real-data-*` pair additionally shows a li
 against Eastmoney's anonymous JSON endpoints. The `trace-*` pair uses the same rules-mode scenario
 (before/after the change) and the same 1440 × 1000 viewport; `trace-after-detail.png` is a close-up
 of the changed panel. LLM-mode trace rendering was checked in Chromium against a stubbed
-`/api/agent/analyze` response, because no provider key is configured here. See the repository README
-for the disclaimer.
+`/api/agent/analyze` response for the rules-mode pairs; the `open-query-*` pair was captured against
+the live provider. See the repository README for the disclaimer.

@@ -22,6 +22,7 @@ from .query import (
     trace_evidence,
 )
 from .rules import evaluate_company
+from .sparql import SparqlError, describe_ontology, run_sparql
 
 TOOL_LABELS = {
     "list_companies": "列出本体公司",
@@ -32,6 +33,8 @@ TOOL_LABELS = {
     "get_rule": "解释 SWRL 规则",
     "get_policies": "读取 ODRL 政策",
     "search_ontology": "检索本体词汇",
+    "describe_ontology": "读取本体图式与查询示例",
+    "sparql_query": "执行 Agent 生成的只读 SPARQL",
     "query_ontology": "问题驱动的本体查询",
     "trace_evidence": "追踪决策证据链",
     "check_constraints": "检查组合与政策约束",
@@ -162,6 +165,67 @@ TOOLS: list[dict[str, Any]] = [
                         "type": "string",
                         "description": "要检索的词，例如 价值候选、peTtm、投资决策、R08。",
                     }
+                },
+                "required": ["query"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "describe_ontology",
+            "description": (
+                "读取本体图式：类、对象属性、数据属性、命名空间前缀和只读 SPARQL 示例。"
+                "写自定义查询前先调用本工具，用 focus 按公司、财务、估值、决策、证据、规则、"
+                "政策、行业、组合等关键词缩小范围；不带 focus 时返回核心词汇与示例。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "focus": {
+                        "type": "string",
+                        "description": "可选，关键词，例如 公司、财务、估值、决策、规则、行业、组合、政策。",
+                    },
+                    "kind": {
+                        "type": "string",
+                        "enum": ["all", "class", "objectProperty", "dataProperty"],
+                        "description": "只返回某一类词汇，默认 all。",
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "最多返回多少项，默认 30，最大 40。",
+                    },
+                },
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "sparql_query",
+            "description": (
+                "直接对内存中的本体 RDF 图执行 Agent 自己生成的只读 SPARQL。参数化工具只是快捷方式，"
+                "不是查询边界：任意关系、聚合、路径、否定/缺失条件、跨实体组合都可以用 SPARQL 表达。"
+                "只接受 SELECT/ASK；禁止 INSERT/DELETE/LOAD 等更新、SERVICE/FROM 远程加载；"
+                "查询必须写 LIMIT，单次最多返回 50 行。可以先 describe_ontology 确认词汇，"
+                "再多次执行“生成→执行→按结果修正”，并与其他工具组合。结果含变量绑定、引用和查询路径。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": (
+                            "完整的只读 SPARQL。可以直接使用 ash:、ashd:、ashs:、real:、odrl:、"
+                            "rdfs:、skos:、xsd: 等前缀，不必重复声明。"
+                        ),
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "最多返回多少行，默认 25，最大 50。",
+                    },
                 },
                 "required": ["query"],
                 "additionalProperties": False,
@@ -574,6 +638,42 @@ def _search(store: OntologyStore, query: str) -> dict[str, Any]:
     }
 
 
+def _describe(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    try:
+        data = describe_ontology(
+            store,
+            focus=arguments.get("focus", ""),
+            kind=arguments.get("kind", "all"),
+            limit=arguments.get("limit") or 30,
+        )
+    except SparqlError as exc:
+        return _error("describe_ontology", exc.code, exc.message, **exc.extra)
+    return {
+        "ok": True,
+        "tool": "describe_ontology",
+        "data": data,
+        "queryPath": data.get("queryPath", []),
+    }
+
+
+def _sparql(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    try:
+        data = run_sparql(
+            store,
+            arguments.get("query", ""),
+            limit=arguments.get("limit") or 25,
+        )
+    except SparqlError as exc:
+        return _error("sparql_query", exc.code, exc.message, **exc.extra)
+    return {
+        "ok": True,
+        "tool": "sparql_query",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
 def _compare(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
     companies = arguments.get("companies") or []
     if not isinstance(companies, list):
@@ -778,6 +878,10 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
             return _policies(store)
         if name == "search_ontology":
             return _search(store, str(arguments.get("query", "")))
+        if name == "describe_ontology":
+            return _describe(store, arguments)
+        if name == "sparql_query":
+            return _sparql(store, arguments)
         if name == "query_ontology":
             return _query(store, arguments)
         if name == "trace_evidence":
