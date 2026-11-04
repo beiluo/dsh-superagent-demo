@@ -24,8 +24,10 @@ from rdflib import RDF, URIRef
 from rdflib.namespace import SKOS
 
 from .decision import DecisionError, build_trade_context
+from .marketdata import SOURCE_LABEL, MarketDataError
 from .namespaces import ASH
 from .ontology import OntologyStore, local_name
+from .rules import evaluate_company
 
 
 SCENARIOS = {"non_position", "held"}
@@ -496,10 +498,19 @@ def _position_for(store: OntologyStore, security: URIRef | None) -> dict[str, An
 def _resolve_company(store: OntologyStore, company: str | None) -> tuple[URIRef | None, URIRef | None]:
     if company:
         subject = store.find_company(company)
+        if subject is None and store.market_data is not None:
+            try:
+                subject = store.real_company(company)
+            except MarketDataError as exc:
+                raise CognitionError(
+                    "real_data_unavailable",
+                    f"真实行情获取失败：{exc.message}",
+                    available=[store._label(item) for item in store._company_subjects],
+                ) from exc
         if subject is None:
             raise CognitionError(
                 "company_not_found",
-                f"没有找到公司“{company}”。当前只有本体示例公司有完整的五引擎认知案例。",
+                f"没有找到公司“{company}”。请使用本体示例公司，或提供 6 位 A 股代码/证券简称。",
                 available=[store._label(item) for item in store._company_subjects],
             )
         security = store._first(subject, ASH.hasSecurity)
@@ -515,6 +526,383 @@ def _resolve_company(store: OntologyStore, company: str | None) -> tuple[URIRef 
 # ---------------------------------------------------------------------------
 # Public context builder
 # ---------------------------------------------------------------------------
+
+
+def _real_evidence(item: dict[str, Any], label: str, *, fallback_id: str = "") -> dict[str, Any]:
+    return {
+        "id": item.get("id") or fallback_id,
+        "iri": item.get("iri") or "",
+        "label": label,
+        "kind": "real",
+        "asOf": item.get("asOf"),
+        "source": item.get("source") or "",
+    }
+
+
+def _real_behavior_rule(
+    rule_id: str,
+    action_code: str,
+    action_label: str,
+    condition: str,
+    priority: int,
+) -> dict[str, Any]:
+    return {
+        "id": rule_id,
+        "iri": "",
+        "label": action_label,
+        "kind": "real",
+        "ruleId": rule_id,
+        "action": {"id": action_code, "label": action_label, "code": action_code},
+        "actionCode": action_code,
+        "condition": condition,
+        "priority": priority,
+        "asOf": None,
+    }
+
+
+def _build_real_context(
+    store: OntologyStore,
+    subject: URIRef,
+    scenario: str | None,
+) -> dict[str, Any]:
+    """Build a provisional five-stage view from public real-company facts.
+
+    Real A-shares do not have historical ``AnalysisCase`` individuals. This
+    fallback only uses the facts the public adapter actually returned and marks
+    every missing dimension explicitly. It must not invent auction, sector
+    performance, event or historical win-rate evidence.
+    """
+
+    knowledge = store.company_knowledge(subject)
+    data = knowledge.to_dict()
+    company = data.get("company") or {}
+    security = data.get("security") or {}
+    quote = data.get("quote") or {}
+    valuation = data.get("valuation") or {}
+    financials = data.get("financials") or {}
+    short = data.get("shortTerm") or {}
+    industry = company.get("industry") or {}
+    signals = evaluate_company(data)
+
+    last = _num(quote.get("lastPrice"))
+    change = _num(quote.get("changePct"))
+    turnover = _num(quote.get("turnoverRate"))
+    pe = _num(valuation.get("peTtm"))
+    roe = _num(financials.get("roe"))
+    interest = _num(financials.get("interestCoverage"))
+    profit_growth = _num(financials.get("profitGrowth"))
+    revenue_growth = _num(financials.get("revenueGrowth"))
+    ma5 = _num(short.get("ma5"))
+    ma20 = _num(short.get("ma20"))
+    ma60 = _num(short.get("ma60"))
+    limit_up_days = _num(short.get("limitUpDays"))
+
+    direction = "未知"
+    if last is not None and ma20 is not None and ma60 is not None:
+        if last >= ma20 >= ma60:
+            direction = "上升"
+        elif last <= ma20 <= ma60:
+            direction = "下降"
+        else:
+            direction = "横盘"
+
+    stage = "未知"
+    if change is not None and change >= 9.5 and (limit_up_days or 0) <= 1:
+        stage = "启动"
+    elif direction == "上升":
+        stage = "延续"
+    elif direction == "下降":
+        stage = "衰竭"
+    elif direction == "横盘":
+        stage = "整理"
+
+    position_label = "未知"
+    if last is not None and ma20 is not None and ma60 is not None:
+        if last <= ma20 and last <= ma60:
+            position_label = "低位"
+        elif last >= ma20 and last >= ma60:
+            position_label = "高位"
+        else:
+            position_label = "中位"
+
+    structure = "未知"
+    if last is not None and ma20 is not None:
+        if last >= ma20:
+            structure = "站上 MA20"
+        elif change is not None and change >= 5:
+            structure = "跌破 MA20 后单日反弹"
+        else:
+            structure = "跌破 MA20"
+
+    key_level_bits = []
+    if ma5 is not None:
+        key_level_bits.append(f"MA5 {ma5:.2f}")
+    if ma20 is not None:
+        key_level_bits.append(f"MA20 {ma20:.2f}")
+    if ma60 is not None:
+        key_level_bits.append(f"MA60 {ma60:.2f}")
+    if last is not None:
+        key_level_bits.append(f"现价 {last:.2f}")
+
+    stock = {
+        "id": f"real-stock-{security.get('code') or ''}",
+        "iri": security.get("iri") or "",
+        "label": f"{company.get('label') or '真实证券'} 真实数据个股状态",
+        "kind": "real",
+        "asOf": quote.get("asOf"),
+        "security": security,
+        "trendState": None,
+        "pricePattern": None,
+        "trendDirection": direction,
+        "trendStage": stage,
+        "pricePosition": position_label,
+        "keyLevel": "；".join(key_level_bits) or "缺少均线数据",
+        "structure": structure,
+        "volatility": "未知",
+        "quality": "待确认" if direction != "下降" else "偏弱",
+        "summary": (
+            f"价格 {last:.2f}" if last is not None else "价格未知"
+        )
+        + (f"、当日 {change:+.2f}%" if change is not None else "")
+        + (f"，低于 MA20 {ma20:.2f} 与 MA60 {ma60:.2f}" if ma20 is not None and ma60 is not None and last is not None and last < ma20 and last < ma60 else "")
+        + "；真实数据未覆盖成交量变化、竞价与分时，量价与盘中行为无法确认。",
+        "volumePrice": [
+            {
+                "id": f"real-vp-{security.get('code') or ''}",
+                "iri": "",
+                "label": "量价待确认",
+                "kind": "real",
+                "asOf": quote.get("asOf"),
+                "type": "量价待确认",
+                "code": "unknown",
+                "priceChangePct": change,
+                "volumeChangePct": None,
+                "sequence": "",
+                "meaning": "真实数据只有当日涨跌幅、换手率与成交量总量，缺少成交量变化与分时，不能确认放量或缩量。",
+            }
+        ],
+        "auction": [],
+        "intraday": [],
+    }
+
+    sector = {
+        "id": f"real-sector-{industry.get('id') or 'unknown'}",
+        "iri": industry.get("iri") or "",
+        "label": f"{industry.get('label') or '未知行业'} 板块认知（真实数据）",
+        "kind": "real",
+        "asOf": quote.get("asOf"),
+        "sector": industry or None,
+        "themeHeat": None,
+        "trend": "未知",
+        "capital": "未知",
+        "diffusion": "未知",
+        "leader": "未知",
+        "position": "未知",
+        "persistence": "未知",
+        "summary": (
+            f"行业为{industry.get('label')}" if industry.get("label") else "行业未知"
+        )
+        + "；真实数据未覆盖板块资金、扩散、龙头与题材持续性，无法确认板块共振。",
+    }
+
+    support = [
+        _real_evidence(quote, f"{company.get('label') or '证券'} {quote.get('asOf') or ''} 行情（{change:+.2f}%）" if change is not None else f"{company.get('label') or '证券'} 行情"),
+    ]
+    if financials:
+        support.append(_real_evidence(financials, f"{financials.get('period') or ''} 年报：净利润增长 {profit_growth:+.2f}%" if profit_growth is not None else "年报"))
+    if industry.get("label"):
+        support.append({"id": industry.get("id"), "iri": industry.get("iri"), "label": f"所属行业：{industry.get('label')}", "kind": "concept", "asOf": None, "source": ""})
+
+    counter = []
+    if last is not None and ma20 is not None and ma60 is not None and last < ma20 and last < ma60:
+        counter.append(
+            {
+                "id": f"real-counter-ma-{security.get('code') or ''}",
+                "iri": "",
+                "label": f"价格 {last:.2f} 低于 MA20 {ma20:.2f} 与 MA60 {ma60:.2f}",
+                "kind": "real",
+                "asOf": quote.get("asOf"),
+                "source": quote.get("source") or "",
+            }
+        )
+    if pe is not None and pe >= 60:
+        counter.append(
+            {
+                "id": f"real-counter-pe-{security.get('code') or ''}",
+                "iri": "",
+                "label": f"PE(TTM) {pe:.1f} 偏高，缺少盈利增速匹配",
+                "kind": "real",
+                "asOf": valuation.get("asOf"),
+                "source": valuation.get("source") or "",
+            }
+        )
+    if interest is not None and interest < 2:
+        counter.append(
+            {
+                "id": f"real-counter-interest-{security.get('code') or ''}",
+                "iri": "",
+                "label": f"利息保障倍数 {interest:.2f} 偏低",
+                "kind": "real",
+                "asOf": financials.get("asOf"),
+                "source": financials.get("source") or "",
+            }
+        )
+    if roe is not None and roe < 10:
+        counter.append(
+            {
+                "id": f"real-counter-roe-{security.get('code') or ''}",
+                "iri": "",
+                "label": f"ROE {roe:.2f}% 低于价值筛选门槛",
+                "kind": "real",
+                "asOf": financials.get("asOf"),
+                "source": financials.get("source") or "",
+            }
+        )
+
+    stage_code = "launch" if stage == "启动" else ("confirm" if stage == "延续" else "decline" if stage == "衰竭" else "launch")
+    invalidation = "跌破本次涨停打开后的低点、重新跌破 MA20，或 2025 年报逻辑被证伪。"
+    risk_reward = {
+        "id": f"real-rr-{security.get('code') or ''}",
+        "iri": "",
+        "label": "真实数据风险收益评估",
+        "kind": "real",
+        "asOf": quote.get("asOf"),
+        "winRateBasis": "真实数据没有同场景历史样本，不能给出胜率；需要先建立可复现的样本库。",
+        "winRateSampleSize": None,
+        "winRateSource": "",
+        "potentialGainPct": None,
+        "potentialLossPct": None,
+        "expectedRewardRiskRatio": None,
+        "plannedPositionWeight": None,
+        "invalidation": invalidation,
+        "tradingCostNote": "缺少具体入场、止损与目标，无法计算交易成本对盈亏比的影响。",
+        "verdict": "风险收益无法评估；单日涨停不足以确定入场、止损与目标。",
+    }
+
+    opportunity = {
+        "id": f"real-opportunity-{security.get('code') or ''}",
+        "iri": "",
+        "label": "真实数据机会评估",
+        "kind": "real",
+        "asOf": quote.get("asOf"),
+        "security": security,
+        "structure": (
+            f"单日 {change:+.2f}% 涨停反弹，但价格仍在 MA20/MA60 下方；" if change is not None else "单日价格异动；"
+        )
+        + "缺少板块资金、事件、竞价与量能变化证据。",
+        "stage": {"id": stage_code, "label": STAGE_LABELS.get(stage_code, stage_code), "code": stage_code},
+        "stageCode": stage_code,
+        "confirmation": f"站上 MA20 {ma20:.2f} 并放量、板块同步走强，或出现可验证的事件催化。" if ma20 is not None else "站上中期均线并放量、板块同步走强，或出现可验证的事件催化。",
+        "supportingSummary": "；".join(item["label"] for item in support) or "缺少支持证据。",
+        "counterSummary": "；".join(item["label"] for item in counter) or "没有识别到反向证据。",
+        "counterEvidenceCount": len(counter),
+        "counterEvidenceReviewed": True,
+        "verdict": "仅单日反弹，机会未确认；缺少板块/事件/竞价/量能证据，不能给出买入结论。",
+        "supportingEvidence": support,
+        "counterEvidence": counter,
+        "riskReward": risk_reward,
+        "fromMarket": None,
+        "fromSector": {"id": sector["id"], "label": sector["label"]},
+        "fromStock": {"id": stock["id"], "label": stock["label"]},
+        "fromEvent": None,
+    }
+
+    behavior_rules = [
+        _real_behavior_rule(
+            "REAL-WATCH",
+            "watch",
+            "观望",
+            "等待站上 MA20 且成交量/板块确认，否则不参与。",
+            10,
+        ),
+        _real_behavior_rule(
+            "REAL-ENTER",
+            "enter",
+            "建仓",
+            "站上 MA20 并放量、板块同步走强后，才评估小仓位试错。",
+            20,
+        ),
+        _real_behavior_rule(
+            "REAL-STOP",
+            "stop",
+            "止损",
+            "跌破本次涨停打开后的低点，或重新跌破 MA20。",
+            1,
+        ),
+        _real_behavior_rule(
+            "REAL-TAKE-PROFIT",
+            "take_profit",
+            "止盈",
+            "接近 MA60 且量价背离时评估止盈。",
+            15,
+        ),
+    ]
+
+    triggered = [item for item in signals if item.get("status") == "triggered"]
+    unknown = [item for item in signals if item.get("status") == "unknown"]
+    citations: list[dict[str, Any] | None] = list(knowledge.citations)
+    for ref in (subject, store._first(subject, ASH.hasSecurity), store._first(subject, ASH.hasMarketQuote), store._first(subject, ASH.hasValuation), store._first(subject, ASH.hasFinancialReport)):
+        if isinstance(ref, URIRef):
+            citations.append(store._cite(ref))
+    for signal in triggered:
+        rule = store.rule(signal["ruleId"])
+        if rule:
+            citations.append(store._cite(URIRef(rule["iri"])))
+
+    wanted = "held" if (scenario or "").strip().lower() == "held" else "non_position"
+    position = _position_for(store, store._first(subject, ASH.hasSecurity))
+    if wanted == "held" and position is None:
+        raise CognitionError(
+            "no_position",
+            f"{company.get('label') or '该证券'} 当前没有持仓，不能使用已持仓流程。",
+        )
+
+    return {
+        "company": store._ref(subject),
+        "security": security or None,
+        "scenario": wanted,
+        "scenarioLabel": "已持仓" if wanted == "held" else "非持仓",
+        "detectedScenario": "held" if position else "non_position",
+        "scenarioMatchesRecord": False,
+        "case": None,
+        "market": None,
+        "sector": sector,
+        "stock": stock,
+        "event": None,
+        "opportunity": opportunity,
+        "riskReward": risk_reward,
+        "judgment": None,
+        "behaviorRules": behavior_rules,
+        "verification": None,
+        "revisions": [],
+        "position": position,
+        "tradeContext": None,
+        "engines": [
+            {"id": "market", "label": ENGINE_LABELS["market"], "status": "missing", "detail": "真实数据缺少指数、广度、情绪、流动性与风险偏好，无法确认市场是否允许交易。"},
+            {"id": "stock", "label": ENGINE_LABELS["stock"], "status": "partial", "detail": "已有价格、均线、换手与财务；缺少成交量变化、竞价与分时。"},
+            {"id": "event", "label": ENGINE_LABELS["event"], "status": "missing", "detail": "真实数据缺少事件/公告，无法判断事件真实性与持续性。"},
+            {"id": "opportunity", "label": ENGINE_LABELS["opportunity"], "status": "partial", "detail": "已有价格结构与反向证据；缺少板块、事件、量能与历史样本。"},
+            {"id": "decision", "label": ENGINE_LABELS["decision"], "status": "missing", "detail": "真实证券没有历史判断记录；本次只生成临时判断，不写回本体。"},
+        ],
+        "riskSignals": signals,
+        "missingDimensions": [
+            "市场认知（指数、广度、情绪、流动性、风险偏好）",
+            "板块资金/扩散/龙头/题材持续性",
+            "事件与公告",
+            "集合竞价与盘中分时",
+            "成交量变化（放量/缩量）",
+            "同场景历史胜率样本",
+            "历史判断记录与结果验证",
+        ],
+        "dataMode": "real",
+        "dataSource": quote.get("source") or SOURCE_LABEL,
+        "marketDataAsOf": quote.get("asOf"),
+        "citations": _dedupe_citations(citations, 28),
+        "dataNote": (
+            "真实数据模式：只使用公开行情、估值、年报与短线快照，缺失的市场、板块、事件、竞价、分时、"
+            "历史样本与判断记录明确标为未知；不猜测缺失维度，不连接真实账户或交易通道，不构成投资建议。"
+        ),
+    }
 
 
 def build_cognition_context(
@@ -535,6 +923,8 @@ def build_cognition_context(
         )
 
     company_subject, security = _resolve_company(store, company)
+    if company_subject is not None and store.is_real_company(company_subject):
+        return _build_real_context(store, company_subject, requested_scenario)
     case_subject = _find_case(store, company_subject, security, requested_scenario)
     if case_subject is not None:
         case_data = _case(store, case_subject)
@@ -1175,8 +1565,12 @@ def assess_cognition(
             },
         ],
         "dataNote": (
-            "判断只读取本体中的合成示例事实与示例阈值，采用机会结构 → 证据验证 → 反向证据 → 风险收益的顺序，"
-            "不做加权评分；不连接真实行情、账户或交易通道，不构成投资建议。"
+            context.get("dataNote")
+            if context.get("dataMode") == "real"
+            else (
+                "判断只读取本体中的合成示例事实与示例阈值，采用机会结构 → 证据验证 → 反向证据 → 风险收益的顺序，"
+                "不做加权评分；不连接真实行情、账户或交易通道，不构成投资建议。"
+            )
         ),
     }
 

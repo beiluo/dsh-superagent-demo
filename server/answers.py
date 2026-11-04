@@ -730,6 +730,15 @@ def compose_cognition(data: dict[str, Any]) -> str:
     title = f"### 五引擎交易认知 · {label}" + (f"（{code}）" if code else "") + f" · {scenario_label}"
     lines = [title]
     lines.append("")
+    if data.get("dataMode") == "real":
+        missing = data.get("missingDimensions") or []
+        lines.append(
+            f"**数据**：真实公开行情/年报（{data.get('dataSource') or '公开数据源'}，"
+            f"行情截至 {data.get('marketDataAsOf') or '—'}）。"
+        )
+        if missing:
+            lines.append("**缺失维度**：" + "、".join(missing) + "；以下缺失项按未知处理。")
+        lines.append("")
     lines.append(
         f"**结论**：计算结论为 **{decision.get('label') or '—'}**"
         + (
@@ -782,6 +791,15 @@ def compose_cognition(data: dict[str, Any]) -> str:
     intraday = stock.get("intraday") or []
     if intraday:
         lines.append("- 盘中：" + "；".join(f"{item.get('type')}：{item.get('note')}" for item in intraday))
+    signals = data.get("riskSignals") or []
+    triggered = [item for item in signals if item.get("status") == "triggered"]
+    if triggered:
+        lines.append(
+            "- 本体规则信号：触发 "
+            + "、".join(
+                f"`{item.get('ruleId')}` {item.get('detail', '')}" for item in triggered[:6]
+            )
+        )
     if event:
         lines.append(
             f"- 事件：{event.get('summary') or '—'}（真实 {event.get('verified')} · 相关 {event.get('businessRelevant')} · "
