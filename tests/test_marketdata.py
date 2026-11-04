@@ -5,7 +5,7 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from server.marketdata import EastmoneyProvider, MarketDataError
+from server.marketdata import EastmoneyProvider, MarketDataError, SecurityRef
 
 SHANGHAI_TS = 1793607097  # 2026-11-02 in Asia/Shanghai
 
@@ -52,6 +52,16 @@ def _handler(request: httpx.Request) -> httpx.Response:
                 }
             },
         )
+    if host == "push2his.eastmoney.com":
+        klines = []
+        for index in range(80):
+            close = 1200 + index * 3
+            klines.append(
+                f"2026-{1 + index // 28:02d}-{1 + index % 28:02d},"
+                f"{close - 1},{close},{close + 2},{close - 2},100000,1000000,"
+                f"2.0,0.1,0.1,0.8"
+            )
+        return httpx.Response(200, json={"data": {"klines": klines}})
     if host == "datacenter-web.eastmoney.com":
         return httpx.Response(
             200,
@@ -140,6 +150,11 @@ def test_resolve_and_fetch_real_company(provider):
     assert snapshot.financials["interestCoverage"] == 2141.02
     assert snapshot.financials["revenueGrowth"] == -1.2
     assert snapshot.industry == "白酒Ⅱ"
+    assert snapshot.short_term is not None
+    assert snapshot.short_term["ma20"] is not None
+    assert snapshot.short_term["ma60"] is not None
+    assert snapshot.short_term["limitUpDays"] == 0
+    assert snapshot.short_term["brokenBoardCount"] == 0
     assert snapshot.notes == []
 
 
@@ -282,3 +297,46 @@ def test_eastmoney_screen_reads_quote_page():
     assert snapshots[0].financials is None
     assert snapshots[0].quote["marketCap"] == 972_000_000_000
     assert snapshots[0].notes
+
+
+
+def test_limit_up_streak_and_board_break_are_computed():
+    rows = []
+    close = 10.0
+    for index in range(27):
+        rows.append(f"2026-06-{index + 1:02d},10.0,{close},10.0,9.9,1000,10000,1.0,0.0,0.0,1.0")
+    for _ in range(3):
+        previous = close
+        close = round(previous * 1.1, 2)
+        rows.append(
+            f"2026-07-{len(rows) + 1:02d},{previous},{close},{close},{previous},1000,10000,10.0,10.0,{close - previous:.2f},5.0"
+        )
+    # One more day that touches the limit but closes lower: a broken board.
+    previous = close
+    limit_price = round(previous * 1.1, 2)
+    rows.append(
+        f"2026-07-30,{previous},{previous},{limit_price},{previous},1000,10000,10.0,0.0,0.0,5.0"
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url.host == "push2his.eastmoney.com"
+        return httpx.Response(200, json={"data": {"klines": rows}})
+
+    provider = EastmoneyProvider(timeout_seconds=3, transport=httpx.MockTransport(handler))
+    security = SecurityRef(
+        code="600000",
+        name="测试股份",
+        secid="1.600000",
+        exchange_code="SSE",
+        exchange_label="上海证券交易所",
+        segment_code="main",
+        segment_label="主板",
+    )
+    try:
+        short, notes = provider._short_term(security)
+    finally:
+        provider.close()
+    assert notes == []
+    assert short is not None
+    assert short["limitUpDays"] == 0
+    assert short["brokenBoardCount"] >= 1

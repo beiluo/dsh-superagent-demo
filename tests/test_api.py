@@ -277,3 +277,17 @@ def test_analyze_response_never_contains_key(client_factory):
     assert response.status_code == 200
     assert FAKE_KEY not in response.text
     assert "Authorization" not in response.text
+
+
+def test_compare_companies_rules_mode(client_factory):
+    response = client_factory().post(
+        "/api/agent/analyze",
+        json={"question": "对比华辰智造和游资科技，哪个更值得关注？"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["steps"][0]["tool"] == "compare_companies"
+    assert "华辰智造" in data["answer"]
+    assert "游资科技" in data["answer"]
+    assert "R16" in data["answer"]
+    assert "不构成投资建议" in data["answer"]

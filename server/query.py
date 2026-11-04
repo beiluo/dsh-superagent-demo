@@ -27,6 +27,7 @@ from typing import Any, Iterable
 from rdflib import Literal, RDF, URIRef
 
 from .namespaces import ASH, ODRL
+from .marketdata import MarketDataError
 from .ontology import OntologyStore, local_name, normalize_text
 from .rules import RULE_THRESHOLDS, evaluate_company, fmt_money, fmt_num, fmt_weight
 
@@ -133,7 +134,56 @@ METRIC_SPECS: dict[str, dict[str, Any]] = {
         "unit": "weight",
         "real": False,
     },
+    "ma20": {
+        "label": "MA20",
+        "section": "shortTerm",
+        "key": "ma20",
+        "predicate": ASH.ma20,
+        "unit": "price",
+        "real": True,
+    },
+    "ma60": {
+        "label": "MA60",
+        "section": "shortTerm",
+        "key": "ma60",
+        "predicate": ASH.ma60,
+        "unit": "price",
+        "real": True,
+    },
+    "limitUpDays": {
+        "label": "连板天数",
+        "section": "shortTerm",
+        "key": "limitUpDays",
+        "predicate": ASH.limitUpDays,
+        "unit": "",
+        "real": True,
+    },
+    "brokenBoardCount": {
+        "label": "炸板次数",
+        "section": "shortTerm",
+        "key": "brokenBoardCount",
+        "predicate": ASH.brokenBoardCount,
+        "unit": "",
+        "real": True,
+    },
 }
+
+# Stable, ontology-property-backed fields used by compare_companies.
+COMPARISON_FIELDS: tuple[str, ...] = (
+    "roe",
+    "peTtm",
+    "pb",
+    "debtRatio",
+    "revenueGrowth",
+    "profitGrowth",
+    "marketCap",
+    "turnoverRate",
+    "changePct",
+    "ma20",
+    "ma60",
+    "limitUpDays",
+    "brokenBoardCount",
+)
 
 METRIC_FIELDS = tuple(METRIC_SPECS)
 
@@ -339,6 +389,8 @@ def _metric_value(knowledge: dict[str, Any], field: str) -> Any:
         return (knowledge.get("risk") or {}).get(key)
     if section == "position":
         return (knowledge.get("position") or {}).get(key)
+    if section == "shortTerm":
+        return (knowledge.get("shortTerm") or {}).get(key)
     return (knowledge.get(section) or {}).get(key)
 
 
@@ -373,6 +425,8 @@ def _term_section(store: OntologyStore, subject: URIRef, section: str) -> tuple[
     if section == "position":
         positions = store._all_positions(security)
         return (positions[0] if positions else None), decision
+    if section == "shortTerm":
+        return security, decision
     return None, None
 
 
@@ -383,6 +437,7 @@ def _metric_fact(store: OntologyStore, subject: URIRef, field: str, knowledge: d
     spec = METRIC_SPECS[field]
     section = spec["section"]
     node, decision = _term_section(store, subject, section)
+    meta_node = node
     path: list[dict[str, Any]] = []
     company_node = _node(store, subject)
 
@@ -413,11 +468,32 @@ def _metric_fact(store: OntologyStore, subject: URIRef, field: str, knowledge: d
                 _edge(store, node, ASH.positionIn, security),
                 _edge(store, node, spec["predicate"], None, target_value=value, target_unit=field),
             ]
+    elif section == "shortTerm" and isinstance(node, URIRef):
+        security = node
+        streak = store._first(security, ASH.hasLimitUpStreak)
+        if field in {"ma5", "ma20", "ma60"}:
+            path = [
+                _edge(store, company_node, ASH.hasSecurity, security),
+                _edge(store, security, spec["predicate"], None, target_value=value, target_unit=field),
+            ]
+            meta_node = store._first(security, ASH.hasMarketQuote) or security
+        elif isinstance(streak, URIRef):
+            path = [
+                _edge(store, company_node, ASH.hasSecurity, security),
+                _edge(store, security, ASH.hasLimitUpStreak, streak),
+                _edge(store, streak, spec["predicate"], None, target_value=value, target_unit=field),
+            ]
+            meta_node = streak
+        else:
+            meta_node = security
 
     as_of = store._date(node, ASH.dataAsOf) if isinstance(node, URIRef) else None
     source = store._text(node, ASH.dataSource) if isinstance(node, URIRef) else None
+    if section == "shortTerm" and isinstance(meta_node, URIRef):
+        as_of = store._date(meta_node, ASH.dataAsOf)
+        source = store._text(meta_node, ASH.dataSource)
     citations = []
-    for item in (subject, node):
+    for item in (subject, node, meta_node):
         if isinstance(item, URIRef):
             ref = store._cite(item)
             if ref:
@@ -953,6 +1029,139 @@ def _sort_label(field: str) -> str:
         "changePct": "涨跌幅",
     }
     return labels.get(field, field)
+
+
+def _resolve_compare_subject(store: OntologyStore, query: str) -> tuple[URIRef | None, str | None]:
+    subject = store.find_company(query)
+    if subject is not None:
+        if store.is_real_company(subject):
+            code = ((store.company_knowledge(subject).security or {}).get("code")) or ""
+            if code and store.market_data is not None:
+                try:
+                    return store.real_company(code) or subject, None
+                except MarketDataError as exc:
+                    return subject, f"刷新失败，使用上次数据：{exc.message}"
+        return subject, None
+    if store.market_data is None:
+        return None, f"本体中没有“{query}”，且未启用真实 A 股数据源。"
+    try:
+        subject = store.real_company(query)
+    except MarketDataError as exc:
+        return None, exc.message
+    if subject is None:
+        return None, f"没有找到与“{query}”匹配的本体公司或真实 A 股证券。"
+    return subject, None
+
+
+def compare_companies(
+    store: OntologyStore,
+    companies: list[str],
+    *,
+    fields: Iterable[str] | None = None,
+    include_evidence: bool = True,
+) -> dict[str, Any]:
+    """Compare 2-5 companies through the same ontology properties and rules."""
+
+    names = [str(item).strip() for item in (companies or []) if str(item).strip()]
+    if len(names) < 2:
+        raise QueryError("compare_too_few", "请提供 2–5 只股票进行对比。")
+    if len(names) > 5:
+        raise QueryError("compare_too_many", "一次最多对比 5 只股票。")
+    selected = [field for field in (fields or COMPARISON_FIELDS) if field in METRIC_SPECS]
+    if not selected:
+        raise QueryError("compare_no_fields", "没有可用的对比字段。")
+
+    items: list[dict[str, Any]] = []
+    errors: list[str] = []
+    citations: list[dict[str, Any] | None] = []
+    seen: set[str] = set()
+
+    for query in names:
+        subject, error = _resolve_compare_subject(store, query)
+        if error:
+            errors.append(f"{query}：{error}")
+        if subject is None:
+            continue
+        key = str(subject)
+        if key in seen:
+            continue
+        seen.add(key)
+        knowledge = store.company_knowledge(subject)
+        data = knowledge.to_dict()
+        signals = _evaluate_signals(store, data)
+        triggered = [item for item in signals if item["status"] == "triggered"]
+        unknown = [item["ruleId"] for item in signals if item["status"] == "unknown"]
+        facts: list[dict[str, Any]] = []
+        if include_evidence:
+            for field in selected:
+                fact = _metric_fact(store, subject, field, data)
+                if fact:
+                    facts.append(fact)
+                    citations.extend(fact.get("citations") or [])
+        company = knowledge.company or {}
+        items.append(
+            {
+                "company": {
+                    "id": company.get("id"),
+                    "iri": company.get("iri"),
+                    "label": company.get("label"),
+                    "code": (knowledge.security or {}).get("code", ""),
+                    "industry": (company.get("industry") or {}).get("label", ""),
+                    "dataMode": data.get("dataMode") or "example",
+                },
+                "metrics": {field: _metric_value(data, field) for field in selected},
+                "metricText": {
+                    field: _format_metric(_metric_value(data, field), field) for field in selected
+                },
+                "shortTerm": data.get("shortTerm") or {},
+                "triggeredRules": [
+                    {
+                        "ruleId": item["ruleId"],
+                        "label": item.get("label") or item["ruleId"],
+                        "severity": item.get("severity") or "",
+                        "detail": item.get("detail") or "",
+                    }
+                    for item in triggered
+                ],
+                "unknownRules": unknown,
+                "facts": facts,
+            }
+        )
+        citations.extend([store._cite(subject)] + list(knowledge.citations))
+        for item in triggered:
+            rule = store.rule(item["ruleId"])
+            if rule:
+                citations.append(store._cite(URIRef(rule["iri"])))
+
+    if len(items) < 2:
+        raise QueryError(
+            "compare_not_found",
+            "可用于对比的股票不足 2 只。",
+            errors=errors,
+        )
+    data_mode = "real" if any(item["company"].get("dataMode") == "real" for item in items) else "example"
+    field_labels = [METRIC_SPECS[field]["label"] for field in selected]
+    query_path = [
+        _step("select", "选择对比范围", f"{len(items)} 只股票，同一数据日期口径"),
+        _step(
+            "traverse",
+            "把对比字段映射成本体属性路径",
+            "；".join(
+                f"{METRIC_SPECS[field]['label']} ← {_metric_property_path(field)}"
+                for field in selected
+            ),
+        ),
+        _step("verify", "执行 R01–R21 规则", "逐只公司执行同一套 SWRL 规则"),
+    ]
+    return {
+        "companies": items,
+        "fields": selected,
+        "fieldLabels": field_labels,
+        "errors": errors,
+        "dataMode": data_mode,
+        "queryPath": query_path,
+        "citations": _dedupe_citations(citations),
+    }
 
 
 def run_query(store: OntologyStore, spec: dict[str, Any] | None) -> dict[str, Any]:
@@ -2098,6 +2307,7 @@ __all__ = [
     "METRIC_SPECS",
     "QueryError",
     "check_constraints",
+    "compare_companies",
     "detect_industry",
     "is_real_universe_question",
     "normalize_filters",

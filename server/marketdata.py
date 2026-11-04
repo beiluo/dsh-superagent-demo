@@ -32,6 +32,7 @@ QUOTE_ENDPOINT = "https://push2.eastmoney.com/api/qt/stock/get"
 SCREEN_ENDPOINT = "https://push2.eastmoney.com/api/qt/clist/get"
 REPORT_ENDPOINT = "https://datacenter-web.eastmoney.com/api/data/v1/get"
 INDICATOR_ENDPOINT = "https://datacenter.eastmoney.com/securities/api/data/v1/get"
+KLINE_ENDPOINT = "https://push2his.eastmoney.com/api/qt/stock/kline/get"
 
 QUOTE_FIELDS = "f43,f47,f48,f57,f58,f60,f86,f116,f162,f163,f164,f167,f168,f170,f173"
 
@@ -83,6 +84,7 @@ class RealCompanySnapshot:
     financials: dict[str, Any] | None
     industry: str | None
     fetched_at: datetime
+    short_term: dict[str, Any] | None = None
     notes: list[str] = field(default_factory=list)
     source_label: str = SOURCE_LABEL
     source_url: str = SOURCE_URL
@@ -162,6 +164,17 @@ def _segment_from(code: str, exchange_code: str) -> tuple[str, str]:
     return "main", "主板"
 
 
+def _limit_ratio(security: SecurityRef) -> float:
+    name = (security.name or "").upper()
+    if "ST" in name:
+        return 0.05
+    if security.segment_code in {"chinext", "star"}:
+        return 0.20
+    if security.segment_code == "bse":
+        return 0.30
+    return 0.10
+
+
 def _exchange_details(item: dict[str, Any], code: str) -> tuple[str, str]:
     type_name = str(item.get("SecurityTypeName") or "")
     quote_id = str(item.get("QuoteID") or "")
@@ -186,12 +199,14 @@ class EastmoneyProvider:
         timeout_seconds: float = 8.0,
         quote_ttl_seconds: int = 60,
         financial_ttl_seconds: int = 21_600,
+        short_term_ttl_seconds: int = 300,
         transport: httpx.BaseTransport | None = None,
         clock: Any = None,
     ):
         self.timeout_seconds = timeout_seconds
         self.quote_ttl_seconds = quote_ttl_seconds
         self.financial_ttl_seconds = financial_ttl_seconds
+        self.short_term_ttl_seconds = short_term_ttl_seconds
         self._clock = clock or time.monotonic
         self._client = httpx.Client(
             timeout=httpx.Timeout(timeout_seconds, connect=min(4.0, timeout_seconds)),
@@ -211,6 +226,7 @@ class EastmoneyProvider:
         self._resolve_cache: dict[str, tuple[float, SecurityRef]] = {}
         self._quote_cache: dict[str, tuple[float, dict[str, Any]]] = {}
         self._financial_cache: dict[str, tuple[float, tuple[dict[str, Any] | None, str | None, list[str]]]] = {}
+        self._short_term_cache: dict[str, tuple[float, tuple[dict[str, Any] | None, list[str]]]] = {}
 
     # ------------------------------------------------------------------
     # HTTP helpers
@@ -353,6 +369,8 @@ class EastmoneyProvider:
             security = replace(security, name=str(quote.get("name") or security.code))
         quote = dict(quote)
         financials, industry, notes = self._financials(security)
+        short_term, short_notes = self._short_term(security)
+        notes.extend(short_notes)
         valuation = {
             "peTtm": quote.pop("peTtm", None),
             "pb": quote.pop("pb", None),
@@ -369,6 +387,7 @@ class EastmoneyProvider:
             financials=financials,
             industry=industry,
             fetched_at=fetched_at,
+            short_term=short_term,
             notes=notes,
         )
 
@@ -532,6 +551,94 @@ class EastmoneyProvider:
         with self._lock:
             item = self._quote_cache.get(f"{code}:at")
         return item[1] if item else datetime.now(tz=SHANGHAI_TZ)
+
+    def _short_term(self, security: SecurityRef) -> tuple[dict[str, Any] | None, list[str]]:
+        cached = self._cache_get(self._short_term_cache, security.code, self.short_term_ttl_seconds)
+        if cached is not None:
+            return cached
+
+        notes: list[str] = []
+        try:
+            payload = self._get_json(
+                KLINE_ENDPOINT,
+                {
+                    "secid": security.secid,
+                    "klt": "101",
+                    "fqt": "1",
+                    "lmt": "80",
+                    "end": "20500101",
+                    "fields1": "f1,f2,f3,f4,f5,f6",
+                    "fields2": "f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61",
+                },
+            )
+        except MarketDataError as exc:
+            notes.append(f"短线行情不可用：{exc.message}")
+            result = (None, notes)
+            self._cache_put(self._short_term_cache, security.code, result)
+            return result
+
+        data = payload.get("data") or {}
+        rows: list[dict[str, Any]] = []
+        for raw in data.get("klines") or []:
+            parts = str(raw).split(",")
+            if len(parts) < 11:
+                continue
+            try:
+                rows.append(
+                    {
+                        "date": parts[0],
+                        "close": float(parts[2]),
+                        "high": float(parts[3]),
+                        "changePct": float(parts[8]),
+                    }
+                )
+            except ValueError:
+                continue
+        if len(rows) < 20:
+            notes.append("日线样本不足 20 天，无法计算中短期均线。")
+            result = (None, notes)
+            self._cache_put(self._short_term_cache, security.code, result)
+            return result
+
+        closes = [row["close"] for row in rows]
+        ratio = _limit_ratio(security)
+        limit_up_days = 0
+        for row in reversed(rows):
+            if row["changePct"] >= ratio * 100 - 0.4:
+                limit_up_days += 1
+            else:
+                break
+
+        broken_boards = 0
+        for index in range(max(1, len(rows) - 10), len(rows)):
+            previous_close = rows[index - 1]["close"]
+            row = rows[index]
+            limit_price = previous_close * (1 + ratio)
+            if row["high"] >= limit_price - 0.02 and row["close"] < limit_price - 0.02:
+                broken_boards += 1
+
+        def average(period: int) -> float | None:
+            if len(closes) < period:
+                return None
+            return round(sum(closes[-period:]) / period, 2)
+
+        short_term = {
+            "ma5": average(5),
+            "ma20": average(20),
+            "ma60": average(60),
+            "limitUpDays": limit_up_days,
+            "brokenBoardCount": broken_boards,
+            "sealAmount": None,
+            "dragonTigerNetBuy": None,
+            "hotMoneySeatCount": None,
+            "themeHeatScore": None,
+            "hasNewsCatalyst": None,
+            "asOf": rows[-1]["date"],
+            "source": SOURCE_LABEL,
+        }
+        result = (short_term, notes)
+        self._cache_put(self._short_term_cache, security.code, result)
+        return result
 
     def _financials(self, security: SecurityRef) -> tuple[dict[str, Any] | None, str | None, list[str]]:
         cached = self._cache_get(self._financial_cache, security.code, self.financial_ttl_seconds)

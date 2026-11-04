@@ -12,9 +12,11 @@ from typing import Any
 from .marketdata import MarketDataError
 from .ontology import CompanyKnowledge, OntologyStore, local_name
 from .query import (
+    COMPARISON_FIELDS,
     METRIC_FIELDS,
     QueryError,
     check_constraints,
+    compare_companies,
     run_query,
     simulate_scenario,
     trace_evidence,
@@ -24,6 +26,7 @@ from .rules import evaluate_company
 TOOL_LABELS = {
     "list_companies": "列出本体公司",
     "get_company_analysis": "读取企业画像与规则信号",
+    "compare_companies": "本体同口径多股对比",
     "screen_companies": "执行本体规则筛选",
     "get_portfolio_analysis": "检查组合与集中度",
     "get_rule": "解释 SWRL 规则",
@@ -62,6 +65,36 @@ TOOLS: list[dict[str, Any]] = [
                     }
                 },
                 "required": ["company"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "compare_companies",
+            "description": (
+                "对 2–5 只股票做本体同口径对比：统一读取 ROE、PE/PB、负债率、增速、市值、换手率、"
+                "MA20/MA60、连板/炸板，执行同一套 R01–R21 规则，并返回 RDF 属性路径与证据。"
+                "多股对比、哪个更好、横向比较优先使用本工具，不要逐只调用 get_company_analysis 超过 2 只。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "companies": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minItems": 2,
+                        "maxItems": 5,
+                        "description": "2–5 只股票，名称或 6 位代码，例如 贵州茅台、600519、中国平安。",
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {"type": "string", "enum": list(COMPARISON_FIELDS)},
+                        "description": "可选，只对比这些本体字段；默认使用核心财务/估值/中短期字段。",
+                    },
+                },
+                "required": ["companies"],
                 "additionalProperties": False,
             },
         },
@@ -541,6 +574,32 @@ def _search(store: OntologyStore, query: str) -> dict[str, Any]:
     }
 
 
+def _compare(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    companies = arguments.get("companies") or []
+    if not isinstance(companies, list):
+        return _error("compare_companies", "invalid_companies", "companies 必须是字符串数组。")
+    fields = arguments.get("fields")
+    if fields is not None and not isinstance(fields, list):
+        return _error("compare_companies", "invalid_fields", "fields 必须是字段数组。")
+    try:
+        data = compare_companies(
+            store,
+            [str(item) for item in companies],
+            fields=[str(item) for item in fields] if fields else None,
+        )
+    except QueryError as exc:
+        return _error("compare_companies", exc.code, exc.message, **exc.extra)
+    except MarketDataError as exc:
+        return _error("compare_companies", exc.code, exc.message)
+    return {
+        "ok": True,
+        "tool": "compare_companies",
+        "data": data,
+        "citations": data.get("citations", []),
+        "queryPath": data.get("queryPath", []),
+    }
+
+
 def _query(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
     try:
         data = run_query(store, arguments)
@@ -706,6 +765,8 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
             return _list(store)
         if name == "get_company_analysis":
             return _company_analysis(store, str(arguments.get("company", "")))
+        if name == "compare_companies":
+            return _compare(store, arguments)
         if name == "screen_companies":
             rule_id = arguments.get("rule_id")
             return _screen(store, str(rule_id) if rule_id else None)

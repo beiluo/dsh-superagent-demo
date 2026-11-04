@@ -97,7 +97,7 @@ class Settings:
     llm_model: str = "deepseek-chat"
     llm_enabled: bool = True
     llm_timeout_seconds: float = 60.0
-    llm_max_output_tokens: int = 900
+    llm_max_output_tokens: int = 1800
     llm_temperature: float = 0.2
     agent_max_steps: int = 4
     agent_max_tool_calls: int = 6
@@ -116,6 +116,7 @@ class Settings:
     market_data_timeout_seconds: float = 8.0
     market_data_quote_ttl_seconds: int = 60
     market_data_financial_ttl_seconds: int = 21_600
+    market_data_short_term_ttl_seconds: int = 300
 
     @property
     def configured(self) -> bool:
@@ -151,7 +152,7 @@ class Settings:
             llm_model=os.environ.get("LLM_MODEL", "deepseek-chat").strip(),
             llm_enabled=_env_bool("LLM_ENABLED", True),
             llm_timeout_seconds=_env_float("LLM_TIMEOUT_SECONDS", 60.0, minimum=5.0),
-            llm_max_output_tokens=_env_int("LLM_MAX_OUTPUT_TOKENS", 900, minimum=128),
+            llm_max_output_tokens=_env_int("LLM_MAX_OUTPUT_TOKENS", 1800, minimum=128),
             llm_temperature=_env_float("LLM_TEMPERATURE", 0.2, minimum=0.0),
             agent_max_steps=_env_int("AGENT_MAX_STEPS", 4, minimum=1),
             agent_max_tool_calls=_env_int("AGENT_MAX_TOOL_CALLS", 6, minimum=1),
@@ -171,5 +172,8 @@ class Settings:
             market_data_quote_ttl_seconds=_env_int("MARKET_DATA_QUOTE_TTL_SECONDS", 60, minimum=0),
             market_data_financial_ttl_seconds=_env_int(
                 "MARKET_DATA_FINANCIAL_TTL_SECONDS", 21_600, minimum=300
+            ),
+            market_data_short_term_ttl_seconds=_env_int(
+                "MARKET_DATA_SHORT_TERM_TTL_SECONDS", 300, minimum=30
             ),
         )

@@ -267,3 +267,114 @@ def test_buy_advice_question_leaves_only_the_company_name():
     assert payload["dataMode"] == "real"
     assert provider.queries[0] == "贵州茅台"
     assert "不构成投资建议" in payload["answer"]
+
+
+def test_real_short_term_facts_are_mapped_and_evaluated():
+    snapshot = _snapshot()
+    snapshot.short_term = {
+        "ma5": 1480.0,
+        "ma20": 1450.0,
+        "ma60": 1400.0,
+        "limitUpDays": 0,
+        "brokenBoardCount": 0,
+        "sealAmount": None,
+        "dragonTigerNetBuy": None,
+        "hotMoneySeatCount": None,
+        "themeHeatScore": None,
+        "hasNewsCatalyst": None,
+        "asOf": "2026-11-02",
+        "source": SOURCE_LABEL,
+    }
+    store = _store(FakeProvider(snapshot))
+    result = call_tool(store, "get_company_analysis", {"company": "贵州茅台"})
+    assert result["ok"] is True
+    data = result["data"]
+    assert data["shortTerm"]["ma20"] == 1450.0
+    assert data["shortTerm"]["ma60"] == 1400.0
+    signals = {item["ruleId"]: item for item in data["signals"]}
+    assert signals["R18"]["status"] == "clear"
+    assert signals["R19"]["status"] == "clear"
+    assert signals["R20"]["status"] == "clear"
+    assert signals["R16"]["status"] == "unknown"
+    assert signals["R21"]["status"] == "unknown"
+
+
+def test_example_short_term_signals_appear_in_company_analysis():
+    store = OntologyStore(ROOT)
+    result = call_tool(store, "get_company_analysis", {"company": "游资科技"})
+    assert result["ok"] is True
+    assert result["data"]["shortTerm"]["ma20"] == 17.2
+    signals = {item["ruleId"]: item for item in result["data"]["signals"]}
+    assert signals["R16"]["status"] == "triggered"
+    assert signals["R17"]["status"] == "triggered"
+    assert signals["R18"]["status"] == "triggered"
+    assert signals["R20"]["status"] == "triggered"
+    assert signals["R21"]["status"] == "triggered"
+
+
+class MappingProvider:
+    source_label = "测试公开行情源"
+    source_url = "https://example.test/quote"
+
+    def __init__(self, snapshots):
+        self.snapshots = snapshots
+        self.queries = []
+
+    def fetch(self, query):
+        self.queries.append(query)
+        return self.snapshots.get(query)
+
+
+def _pingan_snapshot():
+    snapshot = _snapshot()
+    snapshot.security = SecurityRef(
+        code="601318",
+        name="中国平安",
+        secid="1.601318",
+        exchange_code="SSE",
+        exchange_label="上海证券交易所",
+        segment_code="main",
+        segment_label="主板",
+    )
+    snapshot.quote = {
+        **snapshot.quote,
+        "code": "601318",
+        "name": "中国平安",
+        "lastPrice": 53.12,
+        "marketCap": 961877942774,
+    }
+    snapshot.financials = {
+        **(snapshot.financials or {}),
+        "roe": 14.0,
+        "debtRatio": 89.8,
+        "revenueGrowth": 2.1,
+    }
+    snapshot.industry = "保险Ⅱ"
+    snapshot.short_term = {
+        "ma5": 52.8,
+        "ma20": 52.33,
+        "ma60": 53.17,
+        "limitUpDays": 0,
+        "brokenBoardCount": 0,
+        "asOf": "2026-11-02",
+        "source": SOURCE_LABEL,
+    }
+    return snapshot
+
+
+def test_compare_real_companies_api_rules_mode():
+    provider = MappingProvider({"贵州茅台": _snapshot(), "中国平安": _pingan_snapshot()})
+    store = OntologyStore(ROOT, market_data=provider)
+    client = TestClient(create_app(settings=_settings(), store=store, market_data=provider))
+    response = client.post(
+        "/api/agent/analyze",
+        json={"question": "对比贵州茅台和中国平安的估值和财务，哪个更值得关注？"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["dataMode"] == "real"
+    assert payload["steps"][0]["tool"] == "compare_companies"
+    assert "贵州茅台" in payload["answer"]
+    assert "中国平安" in payload["answer"]
+    assert "MA20/60" in payload["answer"]
+    assert "不构成投资建议" in payload["answer"]

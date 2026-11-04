@@ -10,6 +10,7 @@ import pytest
 from server.marketdata import RealCompanySnapshot, SecurityRef, SOURCE_LABEL, SOURCE_URL
 from server.ontology import OntologyStore
 from server.query import (
+    compare_companies,
     QueryError,
     check_constraints,
     parse_constraint_question,
@@ -393,3 +394,16 @@ def test_llm_agent_can_chain_query_and_evidence(client_factory):
         "trace_evidence",
     ]
     assert FAKE_KEY not in response.text
+
+
+def test_compare_companies_uses_shared_ontology_fields(store):
+    result = compare_companies(store, ["华辰智造", "游资科技"])
+    assert len(result["companies"]) == 2
+    labels = [item["company"]["label"] for item in result["companies"]]
+    assert set(labels) == {"华辰智造", "游资科技"}
+    youzi = next(item for item in result["companies"] if item["company"]["label"] == "游资科技")
+    assert youzi["metrics"]["ma20"] == 17.2
+    assert youzi["metrics"]["limitUpDays"] == 4
+    assert {"R16", "R17", "R20", "R21"} <= {rule["ruleId"] for rule in youzi["triggeredRules"]}
+    assert result["fields"]
+    assert result["queryPath"]

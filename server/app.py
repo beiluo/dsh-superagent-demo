@@ -90,6 +90,7 @@ def create_app(
                 timeout_seconds=settings.market_data_timeout_seconds,
                 quote_ttl_seconds=settings.market_data_quote_ttl_seconds,
                 financial_ttl_seconds=settings.market_data_financial_ttl_seconds,
+                short_term_ttl_seconds=settings.market_data_short_term_ttl_seconds,
             )
         store = OntologyStore(settings.root, market_data=market_data)
     elif market_data is not None:
