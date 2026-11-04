@@ -214,9 +214,9 @@ PermissionError: [Errno 13] Permission denied: '.../efinance/config/../data'
 封单金额 = 买1数量（手） × 100 × 涨停价
 ```
 
-这是当前适配器唯一能立刻补齐、且能改变规则结果的字段：
+在 efinance 提供的字段里，这是最直接、且能单独改变规则结果的字段：
 
-- `short_term.sealAmount` 现在恒为 `None`，R17 因此永远“无法评估”；
+- `short_term.sealAmount` 在当前适配器里恒为 `None`，R17 因此“无法评估”；
 - 补上后，只要该股当前处于涨停，R17 的“连板天数 / 炸板次数 / 封单金额”三项就齐了；
 - 非涨停时没有封单，建议写 `None` 而不是 `0`，否则 R17 会把“没有封单”误判成“封单为 0”，
   产生假的“未触发”；
