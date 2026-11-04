@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.8.0" ;
+    owl:versionInfo "1.9.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================
@@ -3960,3 +3960,301 @@ ashd:rule-r151 a swrl:Imp, ash:RuleArtifact ;
     swrl:head ( [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionViolation ; swrl:argument1 ashd:var-r151 ] ) .
 ashd:var-r151 a swrl:Variable ; rdfs:label "?var-r151" .
 ashd:var-r151-v a swrl:Variable ; rdfs:label "?var-r151-v" .
+
+
+# ===========================================================================
+# Domain expansion 1.3 — account, risk budget, trade point and review rules
+# ===========================================================================
+
+ashd:var-lc-plan a swrl:Variable ; rdfs:label "?plan" .
+ashd:var-lc-sizing a swrl:Variable ; rdfs:label "?sizing" .
+ashd:var-lc-portfolio a swrl:Variable ; rdfs:label "?portfolio" .
+ashd:var-lc-budget a swrl:Variable ; rdfs:label "?riskBudget" .
+ashd:var-lc-risk a swrl:Variable ; rdfs:label "?riskAmount" .
+ashd:var-lc-risklimit a swrl:Variable ; rdfs:label "?riskPerTrade" .
+ashd:var-lc-projected a swrl:Variable ; rdfs:label "?projectedWeight" .
+ashd:var-lc-maxweight a swrl:Variable ; rdfs:label "?maxSingleNameWeight" .
+ashd:var-lc-notional a swrl:Variable ; rdfs:label "?plannedNotional" .
+ashd:var-lc-account a swrl:Variable ; rdfs:label "?account" .
+ashd:var-lc-buying a swrl:Variable ; rdfs:label "?buyingPower" .
+ashd:var-lc-position a swrl:Variable ; rdfs:label "?position" .
+ashd:var-lc-state a swrl:Variable ; rdfs:label "?positionState" .
+ashd:var-lc-stopnode a swrl:Variable ; rdfs:label "?stopPriceNode" .
+ashd:var-lc-stop a swrl:Variable ; rdfs:label "?stopPrice" .
+ashd:var-lc-targetnode a swrl:Variable ; rdfs:label "?targetPriceNode" .
+ashd:var-lc-target a swrl:Variable ; rdfs:label "?targetPrice" .
+ashd:var-lc-last a swrl:Variable ; rdfs:label "?lastPrice" .
+ashd:var-lc-quality a swrl:Variable ; rdfs:label "?executionQuality" .
+ashd:var-lc-slippage a swrl:Variable ; rdfs:label "?slippageBps" .
+ashd:var-lc-review a swrl:Variable ; rdfs:label "?review" .
+ashd:var-lc-overdue a swrl:Variable ; rdfs:label "?overdueDays" .
+ashd:var-lc-finding a swrl:Variable ; rdfs:label "?finding" .
+ashd:var-lc-severity a swrl:Variable ; rdfs:label "?findingSeverity" .
+ashd:var-lc-occurrence a swrl:Variable ; rdfs:label "?occurrenceCount" .
+ashd:var-lc-utilization a swrl:Variable ; rdfs:label "?riskUtilization" .
+ashd:var-lc-limit a swrl:Variable ; rdfs:label "?riskLimit" .
+ashd:var-lc-hard a swrl:Variable ; rdfs:label "?hardLimit" .
+ashd:var-lc-utilpct a swrl:Variable ; rdfs:label "?utilizationPct" .
+
+ashd:rule-risk-budget-exceeded
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R152" ;
+    rdfs:label "风险预算超限"@zh, "Risk budget exceeded"@en ;
+    rdfs:comment "组合风险预算使用率达到 100% 时，推断风险预算超限。"@zh ;
+    ash:ruleIf "riskBudgetUtilization ≥ 100"@zh ;
+    ash:ruleThen "风险预算被推断为 ash:RiskBudgetExceeded"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 5 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:RiskBudget ;
+    ash:ruleUses ash:riskBudgetUtilization ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RiskBudget ; swrl:argument1 ashd:var-lc-budget ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:riskBudgetUtilization ; swrl:argument1 ashd:var-lc-budget ; swrl:argument2 ashd:var-lc-utilpct ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-lc-utilpct "100.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RiskBudgetExceeded ; swrl:argument1 ashd:var-lc-budget ]
+    ) .
+
+ashd:rule-trade-risk-breach
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R153" ;
+    rdfs:label "单笔风险超限"@zh, "Per-trade risk breach"@en ;
+    rdfs:comment "交易计划的计划风险金额超过组合单笔风险预算时，推断仓位测算超限。"@zh ;
+    ash:ruleIf "riskAmount > riskPerTrade"@zh ;
+    ash:ruleThen "仓位测算被推断为 ash:PositionSizingBreach"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 6 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:PositionSizing ;
+    ash:ruleUses ash:hasTradeSizing, ash:riskAmount, ash:planForPortfolio, ash:hasRiskBudget, ash:riskPerTradeLimit ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradePlan ; swrl:argument1 ashd:var-lc-plan ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasTradeSizing ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-sizing ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:riskAmount ; swrl:argument1 ashd:var-lc-sizing ; swrl:argument2 ashd:var-lc-risk ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:planForPortfolio ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-portfolio ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRiskBudget ; swrl:argument1 ashd:var-lc-portfolio ; swrl:argument2 ashd:var-lc-budget ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:riskPerTradeLimit ; swrl:argument1 ashd:var-lc-budget ; swrl:argument2 ashd:var-lc-risklimit ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-lc-risk ashd:var-lc-risklimit ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:PositionSizingBreach ; swrl:argument1 ashd:var-lc-sizing ]
+    ) .
+
+ashd:rule-projected-weight-breach
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R154" ;
+    rdfs:label "预计权重超限"@zh, "Projected weight breach"@en ;
+    rdfs:comment "买入计划执行后的预计单票权重超过风险预算的单票上限时，推断买入受阻。"@zh ;
+    ash:ruleIf "projectedWeight > maxSingleNameWeight"@zh ;
+    ash:ruleThen "买入计划被推断为 ash:EntryBlocked"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 7 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:EntryPlan ;
+    ash:ruleUses ash:hasTradeSizing, ash:projectedWeight, ash:planForPortfolio, ash:hasRiskBudget, ash:maxSingleNameWeight ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:EntryPlan ; swrl:argument1 ashd:var-lc-plan ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasTradeSizing ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-sizing ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:projectedWeight ; swrl:argument1 ashd:var-lc-sizing ; swrl:argument2 ashd:var-lc-projected ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:planForPortfolio ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-portfolio ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasRiskBudget ; swrl:argument1 ashd:var-lc-portfolio ; swrl:argument2 ashd:var-lc-budget ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:maxSingleNameWeight ; swrl:argument1 ashd:var-lc-budget ; swrl:argument2 ashd:var-lc-maxweight ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-lc-projected ashd:var-lc-maxweight ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:EntryBlocked ; swrl:argument1 ashd:var-lc-plan ]
+    ) .
+
+ashd:rule-buying-power-breach
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R155" ;
+    rdfs:label "购买力不足"@zh, "Insufficient buying power"@en ;
+    rdfs:comment "买入计划金额超过账户购买力时，推断购买力不足。"@zh ;
+    ash:ruleIf "plannedNotional > buyingPower"@zh ;
+    ash:ruleThen "买入计划被推断为 ash:BuyingPowerInsufficient"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 8 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "交易运营组" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:EntryPlan ;
+    ash:ruleUses ash:plannedNotional, ash:planForAccount, ash:buyingPower ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:EntryPlan ; swrl:argument1 ashd:var-lc-plan ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:plannedNotional ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-notional ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:planForAccount ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-account ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:buyingPower ; swrl:argument1 ashd:var-lc-account ; swrl:argument2 ashd:var-lc-buying ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-lc-notional ashd:var-lc-buying ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:BuyingPowerInsufficient ; swrl:argument1 ashd:var-lc-plan ]
+    ) .
+
+ashd:rule-stop-price-breached
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R156" ;
+    rdfs:label "止损价触发"@zh, "Stop price breached"@en ;
+    rdfs:comment "持仓最新价低于或等于退出计划的止损价时，推断止损价触发。"@zh ;
+    ash:ruleIf "stateLastPrice ≤ stopPrice"@zh ;
+    ash:ruleThen "持仓被推断为 ash:StopPriceBreached"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 4 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Position ;
+    ash:ruleUses ash:exitPlanForPosition, ash:hasStopPrice, ash:priceLevelValue, ash:hasPositionState, ash:stateLastPrice ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitPlan ; swrl:argument1 ashd:var-lc-plan ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:exitPlanForPosition ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-position ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasStopPrice ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-stopnode ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:priceLevelValue ; swrl:argument1 ashd:var-lc-stopnode ; swrl:argument2 ashd:var-lc-stop ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasPositionState ; swrl:argument1 ashd:var-lc-position ; swrl:argument2 ashd:var-lc-state ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:stateLastPrice ; swrl:argument1 ashd:var-lc-state ; swrl:argument2 ashd:var-lc-last ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThanOrEqual ; swrl:arguments ( ashd:var-lc-last ashd:var-lc-stop ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:StopPriceBreached ; swrl:argument1 ashd:var-lc-position ]
+    ) .
+
+ashd:rule-target-reached
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R157" ;
+    rdfs:label "目标价到达"@zh, "Target price reached"@en ;
+    rdfs:comment "持仓最新价达到或超过退出计划的目标价时，推断目标价到达。"@zh ;
+    ash:ruleIf "stateLastPrice ≥ targetPrice"@zh ;
+    ash:ruleThen "持仓被推断为 ash:TakeProfitReached"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 12 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:Position ;
+    ash:ruleUses ash:exitPlanForPosition, ash:hasTargetPrice, ash:priceLevelValue, ash:hasPositionState, ash:stateLastPrice ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitPlan ; swrl:argument1 ashd:var-lc-plan ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:exitPlanForPosition ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-position ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasTargetPrice ; swrl:argument1 ashd:var-lc-plan ; swrl:argument2 ashd:var-lc-targetnode ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:priceLevelValue ; swrl:argument1 ashd:var-lc-targetnode ; swrl:argument2 ashd:var-lc-target ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:hasPositionState ; swrl:argument1 ashd:var-lc-position ; swrl:argument2 ashd:var-lc-state ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:stateLastPrice ; swrl:argument1 ashd:var-lc-state ; swrl:argument2 ashd:var-lc-last ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-lc-last ashd:var-lc-target ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TakeProfitReached ; swrl:argument1 ashd:var-lc-position ]
+    ) .
+
+ashd:rule-execution-slippage
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R158" ;
+    rdfs:label "执行滑点超限"@zh, "Execution slippage breach"@en ;
+    rdfs:comment "成交滑点超过 50 个基点时，推断执行滑点超限。"@zh ;
+    ash:ruleIf "slippageBps > 50"@zh ;
+    ash:ruleThen "执行质量被推断为 ash:ExecutionSlippageBreach"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 15 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "交易运营组" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:ExecutionQuality ;
+    ash:ruleUses ash:slippageBps ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionQuality ; swrl:argument1 ashd:var-lc-quality ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:slippageBps ; swrl:argument1 ashd:var-lc-quality ; swrl:argument2 ashd:var-lc-slippage ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-lc-slippage "50.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExecutionSlippageBreach ; swrl:argument1 ashd:var-lc-quality ]
+    ) .
+
+ashd:rule-review-overdue
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R159" ;
+    rdfs:label "复盘逾期"@zh, "Review overdue"@en ;
+    rdfs:comment "交易后复盘逾期 5 天及以上时，推断复盘逾期。"@zh ;
+    ash:ruleIf "reviewOverdueDays ≥ 5"@zh ;
+    ash:ruleThen "复盘被推断为 ash:ReviewOverdue"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 18 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:PostTradeReview ;
+    ash:ruleUses ash:reviewOverdueDays ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:PostTradeReview ; swrl:argument1 ashd:var-lc-review ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:reviewOverdueDays ; swrl:argument1 ashd:var-lc-review ; swrl:argument2 ashd:var-lc-overdue ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-lc-overdue "5"^^xsd:integer ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ReviewOverdue ; swrl:argument1 ashd:var-lc-review ]
+    ) .
+
+ashd:rule-recurring-finding
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R160" ;
+    rdfs:label "重复高严重度发现"@zh, "Recurring high-severity finding"@en ;
+    rdfs:comment "高严重度复盘发现重复出现 2 次及以上时，推断需要规则修订。"@zh ;
+    ash:ruleIf "findingSeverity = high 且 findingOccurrenceCount ≥ 2"@zh ;
+    ash:ruleThen "复盘发现被推断为 ash:RuleRevisionRequired"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 14 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:ReviewFinding ;
+    ash:ruleUses ash:findingSeverity, ash:findingOccurrenceCount ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ReviewFinding ; swrl:argument1 ashd:var-lc-finding ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:findingSeverity ; swrl:argument1 ashd:var-lc-finding ; swrl:argument2 ashd:var-lc-severity ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-lc-severity "high"^^xsd:string ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:findingOccurrenceCount ; swrl:argument1 ashd:var-lc-finding ; swrl:argument2 ashd:var-lc-occurrence ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-lc-occurrence "2"^^xsd:integer ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RuleRevisionRequired ; swrl:argument1 ashd:var-lc-finding ]
+    ) .
+
+ashd:rule-hard-limit-halt
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R161" ;
+    rdfs:label "硬性限额暂停交易"@zh, "Hard limit trading halt"@en ;
+    rdfs:comment "硬性风险限额使用率达到 100% 时，推断暂停新增风险敞口。"@zh ;
+    ash:ruleIf "riskLimitHard = true 且 riskUtilizationPct ≥ 100"@zh ;
+    ash:ruleThen "风险使用率被推断为 ash:TradingHalted"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 3 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.3.0" ;
+    ash:ruleOwner "风险管理部" ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:RiskUtilization ;
+    ash:ruleUses ash:utilizationOfLimit, ash:riskLimitHard, ash:riskUtilizationPct ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RiskUtilization ; swrl:argument1 ashd:var-lc-utilization ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:utilizationOfLimit ; swrl:argument1 ashd:var-lc-utilization ; swrl:argument2 ashd:var-lc-limit ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:riskLimitHard ; swrl:argument1 ashd:var-lc-limit ; swrl:argument2 ashd:var-lc-hard ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-lc-hard "true"^^xsd:boolean ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:riskUtilizationPct ; swrl:argument1 ashd:var-lc-utilization ; swrl:argument2 ashd:var-lc-utilpct ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-lc-utilpct "100.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingHalted ; swrl:argument1 ashd:var-lc-utilization ]
+    ) .

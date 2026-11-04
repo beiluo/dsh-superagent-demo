@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.8.0" .
+    owl:versionInfo "1.9.0" .
 
 # ===========================================================================
 # Market structure
@@ -25136,3 +25136,645 @@ ashd:voice-youzi-1328 a owl:NamedIndividual, ash:TraderStatement ;
     rdfs:label "独谷一箭 · 原话摘录"@zh ;
     ash:isExample true .
 ashd:skill-youzi-30 ash:hasStatement ashd:voice-youzi-1328 .
+
+
+# ===========================================================================
+# Domain expansion 1.3 — decision lifecycle examples
+# ===========================================================================
+
+# ----- account, cash and position state -----
+
+ashd:account-demo a owl:NamedIndividual, ash:SecuritiesAccount ;
+    ash:accountCode "ACC-2026-001" ;
+    ash:accountStatus "active" ;
+    ash:baseCurrency "CNY" ;
+    ash:accountOf ashd:investor-demo ;
+    ash:holdsPortfolio ashd:portfolio-demo ;
+    ash:hasAccountState ashd:account-state-demo-2026-11 ;
+    ash:hasCashMovement ashd:cash-movement-huachen-buy, ashd:cash-movement-huachen-dividend ;
+    rdfs:label "示例机构证券账户"@zh, "Sample Institutional Securities Account"@en ;
+    rdfs:comment "用于演示账户现金、购买力与持仓状态联动的合成账户。"@zh ;
+    ash:isExample true .
+
+ashd:investor-demo ash:hasAccount ashd:account-demo .
+
+ashd:account-state-demo-2026-11 a owl:NamedIndividual, ash:AccountState ;
+    ash:accountStateOf ashd:account-demo ;
+    ash:cashBalance 850000 ;
+    ash:availableCash 850000 ;
+    ash:frozenCash 0 ;
+    ash:buyingPower 850000 ;
+    ash:totalEquity 36800000 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "示例账户 2026-11-03 状态"@zh ;
+    ash:isExample true .
+
+ashd:cash-movement-huachen-buy a owl:NamedIndividual, ash:CashMovement ;
+    ash:cashMovementOf ashd:account-demo ;
+    ash:cashMovementType "BUY" ;
+    ash:cashMovementAmount -3744000 ;
+    ash:cashMovementDate "2026-07-06"^^xsd:date ;
+    rdfs:label "华辰智造建仓资金流出"@zh ;
+    ash:isExample true .
+
+ashd:cash-movement-huachen-dividend a owl:NamedIndividual, ash:CashMovement ;
+    ash:cashMovementOf ashd:account-demo ;
+    ash:cashMovementType "DIVIDEND" ;
+    ash:cashMovementAmount 4200 ;
+    ash:cashMovementDate "2026-10-15"^^xsd:date ;
+    rdfs:label "华辰智造现金分红入账"@zh ;
+    ash:isExample true .
+
+ashd:position-lot-huachen-1 a owl:NamedIndividual, ash:PositionLot ;
+    ash:lotOfPosition ashd:position-huachen ;
+    ash:lotQuantity 80000 ;
+    ash:lotCost 30.50 ;
+    ash:lotOpenDate "2026-07-06"^^xsd:date ;
+    rdfs:label "华辰智造第一批建仓"@zh ;
+    ash:isExample true .
+
+ashd:position-lot-huachen-2 a owl:NamedIndividual, ash:PositionLot ;
+    ash:lotOfPosition ashd:position-huachen ;
+    ash:lotQuantity 40000 ;
+    ash:lotCost 32.60 ;
+    ash:lotOpenDate "2026-08-18"^^xsd:date ;
+    rdfs:label "华辰智造第二批建仓"@zh ;
+    ash:isExample true .
+
+ashd:position-huachen ash:hasPositionLot ashd:position-lot-huachen-1, ashd:position-lot-huachen-2 ;
+    ash:hasPositionState ashd:position-state-huachen-2026-11 .
+
+ashd:position-state-huachen-2026-11 a owl:NamedIndividual, ash:PositionState ;
+    ash:positionStateOf ashd:position-huachen ;
+    ash:positionStatus "OPEN" ;
+    ash:availableQuantity 90000 ;
+    ash:frozenQuantity 30000 ;
+    ash:marketValue 4416000 ;
+    ash:stateLastPrice 36.80 ;
+    ash:unrealizedPnl 672000 ;
+    ash:unrealizedPnlPct 17.95 ;
+    ash:realizedPnl 0 ;
+    ash:holdingDays 120 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "华辰智造 2026-11-03 持仓状态"@zh ;
+    ash:isExample true .
+
+ashd:position-ningyuan ash:hasPositionState ashd:position-state-ningyuan-2026-11 .
+
+ashd:position-state-ningyuan-2026-11 a owl:NamedIndividual, ash:PositionState ;
+    ash:positionStateOf ashd:position-ningyuan ;
+    ash:positionStatus "OPEN" ;
+    ash:availableQuantity 30000 ;
+    ash:frozenQuantity 0 ;
+    ash:marketValue 1578000 ;
+    ash:stateLastPrice 52.60 ;
+    ash:unrealizedPnl 138000 ;
+    ash:unrealizedPnlPct 9.58 ;
+    ash:realizedPnl 0 ;
+    ash:holdingDays 90 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "宁源新能源 2026-11-03 持仓状态"@zh ;
+    ash:isExample true .
+
+ashd:position-jingkang ash:hasPositionState ashd:position-state-jingkang-2026-11 .
+
+ashd:position-state-jingkang-2026-11 a owl:NamedIndividual, ash:PositionState ;
+    ash:positionStateOf ashd:position-jingkang ;
+    ash:positionStatus "OPEN" ;
+    ash:availableQuantity 20000 ;
+    ash:frozenQuantity 0 ;
+    ash:marketValue 568000 ;
+    ash:stateLastPrice 28.40 ;
+    ash:unrealizedPnl -32000 ;
+    ash:unrealizedPnlPct -5.33 ;
+    ash:realizedPnl 0 ;
+    ash:holdingDays 60 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "景康生物 2026-11-03 持仓状态"@zh ;
+    ash:isExample true .
+
+# ----- portfolio risk budget and risk state -----
+
+ashd:risk-budget-demo a owl:NamedIndividual, ash:RiskBudget ;
+    ash:riskBudgetOf ashd:portfolio-demo ;
+    ash:riskBudgetTotal 800000 ;
+    ash:riskBudgetUsed 620000 ;
+    ash:riskBudgetRemaining 180000 ;
+    ash:riskBudgetUtilization 77.5 ;
+    ash:riskPerTradeLimit 20000 ;
+    ash:maxPortfolioLoss 800000 ;
+    ash:maxGrossExposure 1.0 ;
+    ash:maxSingleNameWeight 0.10 ;
+    ash:maxSectorWeight 0.30 ;
+    ash:maxDrawdownLimit 15.0 ;
+    ash:varLimit 5.0 ;
+    ash:riskBudgetAsOf "2026-11-03"^^xsd:date ;
+    ash:hasRiskAllocation ashd:risk-allocation-huachen, ashd:risk-allocation-ningyuan, ashd:risk-allocation-jingkang ;
+    ash:hasRiskLimit ashd:risk-limit-single-name, ashd:risk-limit-per-trade, ashd:risk-limit-total-budget, ashd:risk-limit-drawdown, ashd:risk-limit-var ;
+    ash:hasRiskUtilization ashd:risk-utilization-budget, ashd:risk-utilization-single-name ;
+    rdfs:label "示例质量价值组合风险预算"@zh ;
+    rdfs:comment "以风险资本、单笔风险、单票上限、回撤和 VaR 约束组合的合成示例。"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:hasRiskBudget ashd:risk-budget-demo ;
+    ash:hasPortfolioRiskSnapshot ashd:portfolio-risk-snapshot-demo ;
+    ash:hasDecisionCycle ashd:decision-cycle-huachen ;
+    ash:portfolioHeldByAccount ashd:account-demo .
+
+ashd:risk-allocation-huachen a owl:NamedIndividual, ash:RiskBudgetAllocation ;
+    ash:riskAllocationOf ashd:risk-budget-demo ;
+    ash:allocationToSecurity ashd:sec-huachen-a ;
+    ash:budgetAmount 96000 ;
+    ash:budgetUsed 72000 ;
+    ash:budgetUtilization 75.0 ;
+    rdfs:label "华辰智造风险预算分配"@zh ;
+    ash:isExample true .
+
+ashd:risk-allocation-ningyuan a owl:NamedIndividual, ash:RiskBudgetAllocation ;
+    ash:riskAllocationOf ashd:risk-budget-demo ;
+    ash:allocationToSecurity ashd:sec-ningyuan-a ;
+    ash:budgetAmount 60000 ;
+    ash:budgetUsed 48000 ;
+    ash:budgetUtilization 80.0 ;
+    rdfs:label "宁源新能源风险预算分配"@zh ;
+    ash:isExample true .
+
+ashd:risk-allocation-jingkang a owl:NamedIndividual, ash:RiskBudgetAllocation ;
+    ash:riskAllocationOf ashd:risk-budget-demo ;
+    ash:allocationToSecurity ashd:sec-jingkang-a ;
+    ash:budgetAmount 40000 ;
+    ash:budgetUsed 24000 ;
+    ash:budgetUtilization 60.0 ;
+    rdfs:label "景康生物风险预算分配"@zh ;
+    ash:isExample true .
+
+ashd:risk-limit-single-name a owl:NamedIndividual, ash:RiskLimit ;
+    ash:riskLimitOf ashd:risk-budget-demo ;
+    ash:riskLimitType "SINGLE_NAME_WEIGHT" ;
+    ash:riskLimitThreshold 0.10 ;
+    ash:riskLimitHard true ;
+    ash:riskLimitAppliesTo ashd:portfolio-demo ;
+    rdfs:label "单票权重硬限额 10%"@zh ;
+    ash:isExample true .
+
+ashd:risk-limit-per-trade a owl:NamedIndividual, ash:RiskLimit ;
+    ash:riskLimitOf ashd:risk-budget-demo ;
+    ash:riskLimitType "RISK_PER_TRADE" ;
+    ash:riskLimitThreshold 20000 ;
+    ash:riskLimitHard true ;
+    ash:riskLimitAppliesTo ashd:portfolio-demo ;
+    rdfs:label "单笔风险硬限额 2 万元"@zh ;
+    ash:isExample true .
+
+ashd:risk-limit-total-budget a owl:NamedIndividual, ash:RiskLimit ;
+    ash:riskLimitOf ashd:risk-budget-demo ;
+    ash:riskLimitType "RISK_BUDGET_TOTAL" ;
+    ash:riskLimitThreshold 800000 ;
+    ash:riskLimitHard false ;
+    ash:riskLimitAppliesTo ashd:portfolio-demo ;
+    rdfs:label "组合风险预算 80 万元"@zh ;
+    ash:isExample true .
+
+ashd:risk-limit-drawdown a owl:NamedIndividual, ash:RiskLimit ;
+    ash:riskLimitOf ashd:risk-budget-demo ;
+    ash:riskLimitType "MAX_DRAWDOWN" ;
+    ash:riskLimitThreshold 15.0 ;
+    ash:riskLimitHard true ;
+    ash:riskLimitAppliesTo ashd:portfolio-demo ;
+    rdfs:label "最大回撤硬限额 15%"@zh ;
+    ash:isExample true .
+
+ashd:risk-limit-var a owl:NamedIndividual, ash:RiskLimit ;
+    ash:riskLimitOf ashd:risk-budget-demo ;
+    ash:riskLimitType "VAR" ;
+    ash:riskLimitThreshold 5.0 ;
+    ash:riskLimitHard false ;
+    ash:riskLimitAppliesTo ashd:portfolio-demo ;
+    rdfs:label "VaR 软限额 5%"@zh ;
+    ash:isExample true .
+
+ashd:risk-utilization-budget a owl:NamedIndividual, ash:RiskUtilization ;
+    ash:riskUtilizationOf ashd:risk-budget-demo ;
+    ash:utilizationOfLimit ashd:risk-limit-total-budget ;
+    ash:riskUtilizationPct 77.5 ;
+    ash:riskUtilizationStatus "NORMAL" ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "组合风险预算使用率 77.5%"@zh ;
+    ash:isExample true .
+
+ashd:risk-utilization-single-name a owl:NamedIndividual, ash:RiskUtilization ;
+    ash:riskUtilizationOf ashd:risk-budget-demo ;
+    ash:utilizationOfLimit ashd:risk-limit-single-name ;
+    ash:riskUtilizationPct 120.0 ;
+    ash:riskUtilizationStatus "BREACH" ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "单票权重使用率 120%"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-risk-snapshot-demo a owl:NamedIndividual, ash:PortfolioRiskSnapshot ;
+    ash:portfolioRiskSnapshotOf ashd:portfolio-demo ;
+    ash:portfolioVolatility 18.5 ;
+    ash:portfolioVar95 6.2 ;
+    ash:expectedShortfall 8.8 ;
+    ash:portfolioBeta 0.92 ;
+    ash:portfolioTrackingError 4.1 ;
+    ash:concentrationHhi 0.029 ;
+    ash:portfolioMaxDrawdown 9.5 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:hasRiskContribution ashd:risk-contribution-huachen, ashd:risk-contribution-ningyuan, ashd:risk-contribution-jingkang ;
+    rdfs:label "示例组合 2026-11-03 风险快照"@zh ;
+    ash:isExample true .
+
+ashd:risk-contribution-huachen a owl:NamedIndividual, ash:RiskContribution ;
+    ash:riskContributionOf ashd:portfolio-risk-snapshot-demo ;
+    ash:riskContributionFor ashd:portfolio-demo ;
+    ash:riskContributionPct 22.5 ;
+    ash:marginalRiskContribution 0.14 ;
+    rdfs:label "华辰智造风险贡献 22.5%"@zh ;
+    ash:isExample true .
+
+ashd:risk-contribution-ningyuan a owl:NamedIndividual, ash:RiskContribution ;
+    ash:riskContributionOf ashd:portfolio-risk-snapshot-demo ;
+    ash:riskContributionFor ashd:portfolio-demo ;
+    ash:riskContributionPct 15.0 ;
+    ash:marginalRiskContribution 0.09 ;
+    rdfs:label "宁源新能源风险贡献 15.0%"@zh ;
+    ash:isExample true .
+
+ashd:risk-contribution-jingkang a owl:NamedIndividual, ash:RiskContribution ;
+    ash:riskContributionOf ashd:portfolio-risk-snapshot-demo ;
+    ash:riskContributionFor ashd:portfolio-demo ;
+    ash:riskContributionPct 9.0 ;
+    ash:marginalRiskContribution 0.05 ;
+    rdfs:label "景康生物风险贡献 9.0%"@zh ;
+    ash:isExample true .
+
+# ----- trade points, sizing and order intents -----
+
+ashd:entry-price-huachen a owl:NamedIndividual, ash:EntryPrice ;
+    ash:priceLevelValue 35.00 ;
+    ash:priceLevelBasis "MA20 与 17 倍 PE 区间下沿"@zh ;
+    rdfs:label "华辰智造买点 35.00"@zh ;
+    ash:isExample true .
+
+ashd:stop-price-huachen a owl:NamedIndividual, ash:StopPrice ;
+    ash:priceLevelValue 30.50 ;
+    ash:priceLevelBasis "成本减 2 倍 ATR，并低于前低"@zh ;
+    rdfs:label "华辰智造止损价 30.50"@zh ;
+    ash:isExample true .
+
+ashd:target-price-huachen a owl:NamedIndividual, ash:TargetPrice ;
+    ash:priceLevelValue 45.00 ;
+    ash:priceLevelBasis "2027 年 22 倍 PE"@zh ;
+    rdfs:label "华辰智造目标价 45.00"@zh ;
+    ash:isExample true .
+
+ashd:entry-trigger-huachen a owl:NamedIndividual, ash:EntryTrigger ;
+    ash:triggerType "PRICE" ;
+    ash:triggerCondition "价格回踩 35.00 且 MA20 不破"@zh ;
+    rdfs:label "华辰智造买入触发条件"@zh ;
+    ash:isExample true .
+
+ashd:exit-trigger-huachen-rebalance a owl:NamedIndividual, ash:ExitTrigger ;
+    ash:triggerType "REBALANCE" ;
+    ash:triggerCondition "单票权重 > 10% 时减仓至 10%"@zh ;
+    rdfs:label "华辰智造再平衡触发条件"@zh ;
+    ash:isExample true .
+
+ashd:exit-trigger-huachen-stop a owl:NamedIndividual, ash:ExitTrigger ;
+    ash:triggerType "PRICE" ;
+    ash:triggerCondition "价格 ≤ 30.50 或 ≥ 45.00"@zh ;
+    rdfs:label "华辰智造止损止盈触发条件"@zh ;
+    ash:isExample true .
+
+ashd:sizing-huachen-add a owl:NamedIndividual, ash:PositionSizing ;
+    ash:sizingForPlan ashd:trade-plan-huachen-add ;
+    ash:usesSizingMethod ashs:sizing-fixed-fractional ;
+    ash:sizingQuantity 20000 ;
+    ash:sizingWeight 0.085 ;
+    ash:projectedWeight 0.205 ;
+    ash:riskAmount 18000 ;
+    ash:sizingRiskAmount 18000 ;
+    ash:sizingAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "华辰智造加仓仓位测算"@zh ;
+    ash:isExample true .
+
+ashd:sizing-huachen-reduce a owl:NamedIndividual, ash:PositionSizing ;
+    ash:sizingForPlan ashd:trade-plan-huachen-reduce ;
+    ash:usesSizingMethod ashs:sizing-equal-weight ;
+    ash:sizingQuantity 20000 ;
+    ash:sizingWeight 0.02 ;
+    ash:projectedWeight 0.10 ;
+    ash:riskAmount 0 ;
+    ash:sizingRiskAmount 0 ;
+    ash:sizingAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "华辰智造减仓仓位测算"@zh ;
+    ash:isExample true .
+
+ashd:sizing-huachen-bracket a owl:NamedIndividual, ash:PositionSizing ;
+    ash:sizingForPlan ashd:trade-plan-huachen-bracket ;
+    ash:usesSizingMethod ashs:sizing-equal-weight ;
+    ash:sizingQuantity 120000 ;
+    ash:sizingWeight 0.12 ;
+    ash:projectedWeight 0 ;
+    ash:riskAmount 0 ;
+    ash:sizingRiskAmount 0 ;
+    ash:sizingAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "华辰智造止损止盈仓位测算"@zh ;
+    ash:isExample true .
+
+ashd:sizing-huachen-trim a owl:NamedIndividual, ash:PositionSizing ;
+    ash:sizingForPlan ashd:trade-plan-huachen-trim-2026-11 ;
+    ash:usesSizingMethod ashs:sizing-equal-weight ;
+    ash:sizingQuantity 10000 ;
+    ash:sizingWeight 0.01 ;
+    ash:projectedWeight 0.11 ;
+    ash:riskAmount 0 ;
+    ash:sizingRiskAmount 0 ;
+    ash:sizingAsOf "2026-10-31"^^xsd:date ;
+    rdfs:label "华辰智造 2026-11 减仓测算"@zh ;
+    ash:isExample true .
+
+ashd:trade-plan-huachen-add a owl:NamedIndividual, ash:EntryPlan ;
+    ash:planId "TP-2026-HC-ADD" ;
+    ash:planSide "BUY" ;
+    ash:planStatus "BLOCKED" ;
+    ash:planAsOf "2026-11-03"^^xsd:date ;
+    ash:planValidUntil "2026-11-30"^^xsd:date ;
+    ash:planForSecurity ashd:sec-huachen-a ;
+    ash:planForPortfolio ashd:portfolio-demo ;
+    ash:planForAccount ashd:account-demo ;
+    ash:plannedQuantity 20000 ;
+    ash:plannedNotional 700000 ;
+    ash:plannedWeight 0.085 ;
+    ash:rewardRiskRatio 2.4 ;
+    ash:hasEntryPrice ashd:entry-price-huachen ;
+    ash:hasStopPrice ashd:stop-price-huachen ;
+    ash:hasTargetPrice ashd:target-price-huachen ;
+    ash:hasEntryTrigger ashd:entry-trigger-huachen ;
+    ash:hasTradeSizing ashd:sizing-huachen-add ;
+    ash:hasOrderIntent ashd:order-intent-huachen-add ;
+    ash:tradePlanOfDecision ashd:decision-huachen-2026q4 ;
+    rdfs:label "华辰智造加仓计划（先减仓）"@zh ;
+    rdfs:comment "当前权重 12% 已超过 10% 上限；按 12% + 8.5% 计算的预计权重 20.5% 触发 R154，买入计划受阻；应先执行减仓计划并重新测算。"@zh ;
+    ash:isExample true .
+
+ashd:trade-plan-huachen-reduce a owl:NamedIndividual, ash:ExitPlan ;
+    ash:planId "TP-2026-HC-REDUCE" ;
+    ash:planSide "SELL" ;
+    ash:planStatus "READY" ;
+    ash:planAsOf "2026-11-03"^^xsd:date ;
+    ash:planValidUntil "2026-11-30"^^xsd:date ;
+    ash:planForSecurity ashd:sec-huachen-a ;
+    ash:planForPortfolio ashd:portfolio-demo ;
+    ash:planForAccount ashd:account-demo ;
+    ash:plannedQuantity 20000 ;
+    ash:plannedNotional 736000 ;
+    ash:plannedWeight 0.02 ;
+    ash:exitPlanForPosition ashd:position-huachen ;
+    ash:hasExitTrigger ashd:exit-trigger-huachen-rebalance ;
+    ash:hasTradeSizing ashd:sizing-huachen-reduce ;
+    ash:hasOrderIntent ashd:order-intent-huachen-reduce ;
+    ash:tradePlanOfDecision ashd:decision-huachen-2026q4 ;
+    rdfs:label "华辰智造减仓至 10% 计划"@zh ;
+    ash:isExample true .
+
+ashd:trade-plan-huachen-bracket a owl:NamedIndividual, ash:ExitPlan ;
+    ash:planId "TP-2026-HC-BRACKET" ;
+    ash:planSide "SELL" ;
+    ash:planStatus "ACTIVE" ;
+    ash:planAsOf "2026-10-31"^^xsd:date ;
+    ash:planValidUntil "2027-03-31"^^xsd:date ;
+    ash:planForSecurity ashd:sec-huachen-a ;
+    ash:planForPortfolio ashd:portfolio-demo ;
+    ash:planForAccount ashd:account-demo ;
+    ash:plannedQuantity 120000 ;
+    ash:plannedNotional 4416000 ;
+    ash:plannedWeight 0.12 ;
+    ash:exitPlanForPosition ashd:position-huachen ;
+    ash:hasStopPrice ashd:stop-price-huachen ;
+    ash:hasTargetPrice ashd:target-price-huachen ;
+    ash:hasExitTrigger ashd:exit-trigger-huachen-stop ;
+    ash:hasTradeSizing ashd:sizing-huachen-bracket ;
+    ash:tradePlanOfDecision ashd:decision-huachen-2026q4 ;
+    rdfs:label "华辰智造止损止盈计划"@zh ;
+    ash:isExample true .
+
+ashd:trade-plan-huachen-trim-2026-11 a owl:NamedIndividual, ash:ExitPlan ;
+    ash:planId "TP-2026-HC-TRIM" ;
+    ash:planSide "SELL" ;
+    ash:planStatus "FILLED" ;
+    ash:planAsOf "2026-10-31"^^xsd:date ;
+    ash:planValidUntil "2026-11-07"^^xsd:date ;
+    ash:planForSecurity ashd:sec-huachen-a ;
+    ash:planForPortfolio ashd:portfolio-demo ;
+    ash:planForAccount ashd:account-demo ;
+    ash:plannedQuantity 10000 ;
+    ash:plannedNotional 362000 ;
+    ash:plannedWeight 0.01 ;
+    ash:exitPlanForPosition ashd:position-huachen ;
+    ash:hasExitTrigger ashd:exit-trigger-huachen-rebalance ;
+    ash:hasTradeSizing ashd:sizing-huachen-trim ;
+    ash:hasOrderIntent ashd:order-intent-huachen-trim ;
+    ash:tradePlanOfDecision ashd:decision-huachen-2026q4 ;
+    rdfs:label "华辰智造 2026-11 减仓计划（已成交）"@zh ;
+    ash:isExample true .
+
+ashd:order-intent-huachen-add a owl:NamedIndividual, ash:OrderIntent ;
+    ash:orderIntentOf ashd:trade-plan-huachen-add ;
+    ash:orderIntentId "OI-2026-HC-ADD" ;
+    ash:orderIntentSide "BUY" ;
+    ash:orderIntentQuantity 20000 ;
+    ash:orderIntentPrice 35.00 ;
+    ash:orderIntentStatus "PENDING_APPROVAL" ;
+    ash:intentRealizedBy ashd:order-huachen-add ;
+    rdfs:label "华辰智造加仓订单意图"@zh ;
+    ash:isExample true .
+
+ashd:order-intent-huachen-reduce a owl:NamedIndividual, ash:OrderIntent ;
+    ash:orderIntentOf ashd:trade-plan-huachen-reduce ;
+    ash:orderIntentId "OI-2026-HC-REDUCE" ;
+    ash:orderIntentSide "SELL" ;
+    ash:orderIntentQuantity 20000 ;
+    ash:orderIntentPrice 36.80 ;
+    ash:orderIntentStatus "APPROVED" ;
+    ash:intentRealizedBy ashd:order-huachen-reduce ;
+    rdfs:label "华辰智造减仓订单意图"@zh ;
+    ash:isExample true .
+
+ashd:order-intent-huachen-trim a owl:NamedIndividual, ash:OrderIntent ;
+    ash:orderIntentOf ashd:trade-plan-huachen-trim-2026-11 ;
+    ash:orderIntentId "OI-2026-HC-TRIM" ;
+    ash:orderIntentSide "SELL" ;
+    ash:orderIntentQuantity 10000 ;
+    ash:orderIntentPrice 36.20 ;
+    ash:orderIntentStatus "FILLED" ;
+    ash:intentRealizedBy ashd:order-huachen-trim-2026-11 ;
+    rdfs:label "华辰智造 2026-11 减仓订单意图"@zh ;
+    ash:isExample true .
+
+ashd:order-huachen-add a owl:NamedIndividual, ash:Order ;
+    ash:orderId "ORD-2026-HC-ADD" ;
+    ash:orderSide "BUY" ;
+    ash:orderQuantity 20000 ;
+    ash:orderPrice 35.00 ;
+    ash:orderStatus "PENDING" ;
+    ash:orderFor ashd:sec-huachen-a ;
+    ash:placedBy ashd:investor-demo ;
+    rdfs:label "华辰智造加仓订单（等待减仓与审批）"@zh ;
+    ash:isExample true .
+
+ashd:order-huachen-reduce a owl:NamedIndividual, ash:Order ;
+    ash:orderId "ORD-2026-HC-REDUCE" ;
+    ash:orderSide "SELL" ;
+    ash:orderQuantity 20000 ;
+    ash:orderPrice 36.80 ;
+    ash:orderStatus "PENDING" ;
+    ash:orderFor ashd:sec-huachen-a ;
+    ash:placedBy ashd:investor-demo ;
+    rdfs:label "华辰智造减仓订单"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:hasOrder ashd:order-huachen-add, ashd:order-huachen-reduce, ashd:order-huachen-trim-2026-11 .
+
+# ----- execution, outcome and post-trade review -----
+
+ashd:order-huachen-trim-2026-11 a owl:NamedIndividual, ash:Order ;
+    ash:orderId "ORD-2026-HC-TRIM" ;
+    ash:orderSide "SELL" ;
+    ash:orderQuantity 10000 ;
+    ash:orderPrice 36.20 ;
+    ash:orderStatus "FILLED" ;
+    ash:orderFor ashd:sec-huachen-a ;
+    ash:placedBy ashd:investor-demo ;
+    rdfs:label "华辰智造 2026-11 减仓订单（已成交）"@zh ;
+    ash:isExample true .
+
+ashd:trade-huachen-trim-2026-11 a owl:NamedIndividual, ash:Trade ;
+    ash:executionPrice 36.20 ;
+    ash:executionQuantity 10000 ;
+    ash:tradeDate "2026-11-01"^^xsd:date ;
+    ash:settlementDate "2026-11-02"^^xsd:date ;
+    ash:generatedFromOrder ashd:order-huachen-trim-2026-11 ;
+    ash:hasExecutionQuality ashd:execution-quality-huachen-trim ;
+    ash:hasTradeCost ashd:trade-cost-huachen-trim ;
+    rdfs:label "华辰智造 2026-11-01 减仓成交"@zh ;
+    ash:isExample true .
+
+ashd:portfolio-demo ash:hasTrade ashd:trade-huachen-trim-2026-11 .
+
+ashd:execution-quality-huachen-trim a owl:NamedIndividual, ash:ExecutionQuality ;
+    ash:executionQualityOf ashd:trade-huachen-trim-2026-11 ;
+    ash:slippageBps 12 ;
+    ash:fillRate 1.0 ;
+    ash:executionLatencyMs 350 ;
+    ash:marketImpactBps 8 ;
+    ash:dataAsOf "2026-11-01"^^xsd:date ;
+    rdfs:label "华辰智造减仓执行质量"@zh ;
+    ash:isExample true .
+
+ashd:trade-cost-huachen-trim a owl:NamedIndividual, ash:TradeCost ;
+    ash:costRate 0.05 ;
+    rdfs:label "华辰智造减仓交易成本"@zh ;
+    ash:isExample true .
+
+ashd:outcome-huachen-trim-2026-11 a owl:NamedIndividual, ash:DecisionOutcome ;
+    ash:outcomeOf ashd:decision-huachen-2026q4 ;
+    ash:outcomeFromTrade ashd:trade-huachen-trim-2026-11 ;
+    ash:realizedReturn 15.8 ;
+    ash:realizedPnlAmount 50000 ;
+    ash:holdingPeriodDays 200 ;
+    ash:maxAdverseExcursion -8.2 ;
+    ash:maxFavorableExcursion 18.6 ;
+    ash:outcomeStatus "PROFIT" ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "华辰智造减仓决策结果"@zh ;
+    ash:isExample true .
+
+ashd:post-trade-review-huachen-2026-11 a owl:NamedIndividual, ash:PostTradeReview ;
+    ash:reviewsDecision ashd:decision-huachen-2026q4 ;
+    ash:reviewsTrade ashd:trade-huachen-trim-2026-11 ;
+    ash:reviewVerdict "PROCESS_IMPROVE" ;
+    ash:reviewScore 78 ;
+    ash:processScore 82 ;
+    ash:outcomeScore 70 ;
+    ash:reviewCompletedDate "2026-11-03"^^xsd:date ;
+    ash:reviewDueDate "2026-11-05"^^xsd:date ;
+    ash:reviewOverdueDays 0 ;
+    ash:hasReviewFinding ashd:finding-huachen-projected-weight ;
+    ash:hasLesson ashd:lesson-huachen-projected-weight ;
+    ash:hasAttribution ashd:attribution-huachen-trim ;
+    ash:resultsInRevision ashd:rule-revision-r24 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "华辰智造 2026-11 交易后复盘"@zh ;
+    ash:isExample true .
+
+ashd:finding-huachen-projected-weight a owl:NamedIndividual, ash:ReviewFinding ;
+    ash:findingOfReview ashd:post-trade-review-huachen-2026-11 ;
+    ash:findingType "RULE_GAP" ;
+    ash:findingSeverity "high" ;
+    ash:findingRecommendation "R06 只看当前权重，未检查加仓后的预计权重；新增 R154 预计权重规则。"@zh ;
+    ash:findingOccurrenceCount 2 ;
+    rdfs:label "复盘发现：缺少预计权重检查"@zh ;
+    ash:isExample true .
+
+ashd:lesson-huachen-projected-weight a owl:NamedIndividual, ash:LessonLearned ;
+    ash:lessonOfReview ashd:post-trade-review-huachen-2026-11 ;
+    ash:lessonText "减仓后仍按旧权重加仓，导致权重再次接近上限。"@zh ;
+    ash:lessonAction "交易前强制检查 projectedWeight，并在计划中保留减仓前置条件。"@zh ;
+    ash:lessonStatus "DONE" ;
+    rdfs:label "经验：加仓前必须检查预计权重"@zh ;
+    ash:isExample true .
+
+ashd:attribution-huachen-trim a owl:NamedIndividual, ash:PerformanceAttribution ;
+    ash:attributionOfReview ashd:post-trade-review-huachen-2026-11 ;
+    ash:attributionEffect "SELECTION" ;
+    ash:attributionPct 62.0 ;
+    rdfs:label "华辰智造减仓结果归因"@zh ;
+    ash:isExample true .
+
+ashd:rule-revision-r24 a owl:NamedIndividual, ash:RuleRevision ;
+    ash:revisionFromReview ashd:post-trade-review-huachen-2026-11 ;
+    ash:revisionOfRule ashd:rule-concentration ;
+    ash:revisionId "RR-2026-001" ;
+    ash:revisionRationale "复盘发现 R06 只检查当前权重、漏掉加仓后的预计权重；新增 R154 预计权重规则并把检查前移到计划阶段。"@zh ;
+    ash:revisionEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:revisionStatus "ADOPTED" ;
+    ash:dataAsOf "2026-11-04"^^xsd:date ;
+    rdfs:label "规则修订：R06 增加预计权重检查（R154）"@zh ;
+    ash:isExample true .
+
+# ----- decision cycle and context -----
+
+ashd:decision-context-huachen-2026-11 a owl:NamedIndividual, ash:DecisionContext ;
+    ash:contextOfDecision ashd:decision-huachen-2026q4 ;
+    ash:contextAsOf "2026-11-03"^^xsd:date ;
+    ash:marketRegime "range" ;
+    ash:contextAccountState ashd:account-state-demo-2026-11 ;
+    ash:contextRiskBudget ashd:risk-budget-demo ;
+    ash:contextRiskSnapshot ashd:portfolio-risk-snapshot-demo ;
+    rdfs:label "华辰智造加仓决策上下文"@zh ;
+    ash:isExample true .
+
+ashd:decision-cycle-huachen a owl:NamedIndividual, ash:DecisionCycle ;
+    ash:cycleOfPortfolio ashd:portfolio-demo ;
+    ash:cycleId "DC-2026-HC-001" ;
+    ash:cycleNumber 1 ;
+    ash:cycleStatus "REVIEWED" ;
+    ash:cycleForSecurity ashd:sec-huachen-a ;
+    ash:hasCycleDecision ashd:decision-huachen-2026q4 ;
+    ash:hasCycleExecution ashd:trade-huachen-trim-2026-11 ;
+    ash:hasCycleReview ashd:post-trade-review-huachen-2026-11 ;
+    ash:hasLifecycleStage ashs:stage-review ;
+    rdfs:label "华辰智造决策周期"@zh ;
+    ash:isExample true .
+
+ashd:decision-huachen-2026q4
+    ash:hasDecisionContext ashd:decision-context-huachen-2026-11 ;
+    ash:hasTradePlan ashd:trade-plan-huachen-add, ashd:trade-plan-huachen-reduce, ashd:trade-plan-huachen-bracket, ashd:trade-plan-huachen-trim-2026-11 ;
+    ash:hasOutcome ashd:outcome-huachen-trim-2026-11 ;
+    ash:hasPostTradeReview ashd:post-trade-review-huachen-2026-11 ;
+    ash:hasDecisionLevel ashs:level-tactical ;
+    ash:decisionCycleOf ashd:decision-cycle-huachen .
+
+ashd:position-huachen ash:exitPlanOfPosition ashd:trade-plan-huachen-reduce, ashd:trade-plan-huachen-bracket, ashd:trade-plan-huachen-trim-2026-11 .

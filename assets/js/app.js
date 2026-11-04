@@ -69,6 +69,11 @@
     "scheme-emotion-cycle": { label: "情绪周期", color: "#d97757" },
     "scheme-seat-style": { label: "席位风格", color: "#8fb7a2" },
     "scheme-skill-topic": { label: "技能主题", color: "#a58cc9" },
+    "scheme-decision-stage": { label: "决策生命周期", color: "#d97706" },
+    "scheme-position-status": { label: "持仓状态", color: "#0f766e" },
+    "scheme-sizing-method": { label: "仓位测算", color: "#2563eb" },
+    "scheme-review-verdict": { label: "复盘结论", color: "#7c3aed" },
+    "scheme-decision-level": { label: "决策层级", color: "#b45309" },
   };
 
   const CORE_GRAPH_IDS = [
@@ -104,6 +109,34 @@
     "InvestmentHorizon",
     "DecisionService",
     "DecisionPolicy",
+    "Account",
+    "AccountState",
+    "PositionState",
+    "PositionLot",
+    "CashMovement",
+    "RiskBudget",
+    "RiskBudgetAllocation",
+    "RiskLimit",
+    "RiskUtilization",
+    "PortfolioRiskSnapshot",
+    "RiskContribution",
+    "TradePlan",
+    "EntryPlan",
+    "ExitPlan",
+    "PriceLevel",
+    "EntryTrigger",
+    "ExitTrigger",
+    "PositionSizing",
+    "OrderIntent",
+    "ExecutionQuality",
+    "DecisionOutcome",
+    "PostTradeReview",
+    "ReviewFinding",
+    "LessonLearned",
+    "PerformanceAttribution",
+    "RuleRevision",
+    "DecisionCycle",
+    "DecisionContext",
   ];
 
   const TYPE_ORDER = {
@@ -1574,15 +1607,47 @@
       Portfolio: [0.82, 0.10],
       Position: [0.66, 0.08],
       InvestmentHorizon: [0.72, 0.88],
+      Account: [0.06, 0.16],
+      AccountState: [0.10, 0.28],
+      CashMovement: [0.04, 0.36],
+      PositionState: [0.30, 0.30],
+      PositionLot: [0.38, 0.22],
+      RiskBudget: [0.84, 0.14],
+      RiskLimit: [0.90, 0.24],
+      RiskUtilization: [0.86, 0.28],
+      PortfolioRiskSnapshot: [0.78, 0.22],
+      RiskBudgetAllocation: [0.90, 0.34],
+      RiskContribution: [0.82, 0.34],
+      TradePlan: [0.36, 0.58],
+      EntryPlan: [0.30, 0.64],
+      ExitPlan: [0.44, 0.66],
+      PositionSizing: [0.24, 0.58],
+      PriceLevel: [0.18, 0.70],
+      EntryTrigger: [0.20, 0.54],
+      ExitTrigger: [0.34, 0.74],
+      OrderIntent: [0.50, 0.72],
+      ExecutionQuality: [0.60, 0.94],
+      DecisionOutcome: [0.48, 0.94],
+      PostTradeReview: [0.38, 0.92],
+      ReviewFinding: [0.30, 0.96],
+      LessonLearned: [0.22, 0.94],
+      RuleRevision: [0.16, 0.88],
+      PerformanceAttribution: [0.54, 0.90],
+      DecisionCycle: [0.06, 0.66],
+      DecisionContext: [0.06, 0.46],
     };
+    const unplaced = nodes.filter((node) => !positions[node.id]);
+    const radius = Math.min(width, height) * 0.32;
+    unplaced.forEach((node, index) => {
+      const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(1, unplaced.length);
+      node.x = width / 2 + Math.cos(angle) * radius;
+      node.y = height / 2 + Math.sin(angle) * radius * 0.82;
+    });
     nodes.forEach((node) => {
       const point = positions[node.id];
       if (point) {
         node.x = point[0] * width;
         node.y = point[1] * height;
-      } else {
-        node.x = width / 2;
-        node.y = height / 2;
       }
     });
   }

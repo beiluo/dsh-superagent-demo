@@ -25,7 +25,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
     rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.8.0" ;
+    owl:versionInfo "1.9.0" ;
     ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
 
 # ===========================================================================
@@ -37,7 +37,7 @@ ashd:odrl-profile a owl:Ontology ;
     dcterms:title "A 股投资决策 ODRL Profile"@zh ;
     dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.8.0" .
+    owl:versionInfo "1.9.0" .
 
 ashd:leftOperand-humanApproval a odrl:LeftOperand ;
     skos:prefLabel "人工批准状态"@zh, "human approval"@en ;
@@ -440,3 +440,93 @@ ashd:policy-hot-money-data
         odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
     ] ;
     rdfs:label "龙虎榜与游资数据使用政策"@zh .
+
+
+# ===== Decision lifecycle risk-budget policy =====
+ashd:asset-risk-budget a odrl:Asset, ash:InformationObject ;
+    rdfs:label "组合风险预算与风险限额"@zh ;
+    rdfs:comment "组合风险资本、单笔风险、单票上限、回撤与 VaR 限额，用于约束交易计划。"@zh ;
+    odrl:hasPolicy ashd:policy-trade-lifecycle ;
+    ash:isExample true .
+
+ashd:asset-trade-plan a odrl:Asset, ash:InformationObject ;
+    rdfs:label "交易计划与订单意图"@zh ;
+    rdfs:comment "买点、卖点、仓位、风险金额与订单意图，必须经人工确认后才能执行。"@zh ;
+    odrl:hasPolicy ashd:policy-trade-lifecycle ;
+    ash:isExample true .
+
+ashd:asset-post-trade-review a odrl:Asset, ash:InformationObject ;
+    rdfs:label "交易后复盘与规则修订"@zh ;
+    rdfs:comment "执行质量、结果、复盘发现、经验教训与规则修订记录。"@zh ;
+    odrl:hasPolicy ashd:policy-trade-lifecycle ;
+    ash:isExample true .
+
+ashd:policy-trade-lifecycle
+    a odrl:Agreement, ash:DecisionPolicy ;
+    odrl:uid ashd:policy-trade-lifecycle ;
+    odrl:profile ashd:odrl-profile ;
+    odrl:conflict odrl:prohibit ;
+    dcterms:title "交易决策生命周期风险预算协议"@zh, "Trade lifecycle risk-budget agreement"@en ;
+    dcterms:description "交易计划必须满足组合风险预算与单票上限；风险预算超限、硬性限额突破或复盘逾期时不得新增风险敞口；执行后必须记录执行质量并完成复盘。"@zh ;
+    ash:policyVersion "1.3.0" ;
+    ash:policyStatus "active" ;
+    ash:reviewDate "2027-06-30"^^xsd:date ;
+    ash:isExample true ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-risk-budget, ashd:asset-trade-plan ;
+        odrl:action odrl:read, odrl:use, odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-riskBudgetUtilization ;
+            odrl:operator odrl:lt ;
+            odrl:rightOperand 100.0
+        ] , [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "investment-decision-support"@en
+        ] ;
+        odrl:duty [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:attribute ;
+            odrl:target ashd:asset-source-notice
+        ] , [
+            a odrl:Duty ;
+            odrl:assignee ashd:party-investment-service ;
+            odrl:action odrl:reviewPolicy ;
+            odrl:target ashd:asset-post-trade-review
+        ]
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-order-intent ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-humanApproval ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand false
+        ] ;
+        odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
+    ] , [
+        a odrl:Prohibition ;
+        odrl:assigner ashd:party-investment-service ;
+        odrl:assignee ashd:party-investor ;
+        odrl:target ashd:asset-trade-plan ;
+        odrl:action odrl:execute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ashd:leftOperand-riskBudgetUtilization ;
+            odrl:operator odrl:gte ;
+            odrl:rightOperand 100.0
+        ] ;
+        odrl:remedy [ a odrl:Duty ; odrl:action odrl:reviewPolicy ; odrl:assignee ashd:party-compliance ]
+    ] ;
+    rdfs:label "交易决策生命周期风险预算政策"@zh ;
+    rdfs:comment "把风险预算、人工批准与复盘义务写入 ODRL，交易执行前必须通过策略检查。"@zh .

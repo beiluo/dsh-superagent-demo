@@ -302,6 +302,115 @@ def compose_portfolio(data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def compose_trade(data: dict[str, Any]) -> str:
+    company = data.get("company") or {}
+    security = data.get("security") or {}
+    account = data.get("account") or {}
+    account_state = account.get("state") or {}
+    position = data.get("position") or {}
+    position_state = position.get("state") or {}
+    budget = data.get("riskBudget") or {}
+    plans = data.get("plans") or {}
+    entry = plans.get("entry") or {}
+    reduce_plan = plans.get("reduce") or {}
+    review = data.get("review") or {}
+    outcome = data.get("outcome") or {}
+    execution = data.get("execution") or {}
+    quality = execution.get("quality") or {}
+    scope = data.get("scope") or "company"
+    title = "组合风险预算与交易检查" if scope == "portfolio" else f"买卖决策检查 · {company.get('label') or '—'}"
+    lines = [f"### {title}"]
+    lines.append("")
+    lines.append(f"**结论**：{data.get('summary') or '—'}")
+    if scope == "portfolio" and (data.get("portfolio") or {}).get("label"):
+        lines.append(f"**组合**：{data['portfolio']['label']}")
+    code = security.get("code") or ""
+    lines.append(
+        f"**账户**：{account.get('code') or '—'} · 现金 {fmt_money(account_state.get('cashBalance'))} · "
+        f"购买力 {fmt_money(account_state.get('buyingPower'))} · 总资产 {fmt_money(account_state.get('totalEquity'))}"
+        + (f"（{account_state.get('asOf')}）" if account_state.get("asOf") else "")
+    )
+    if position:
+        lines.append(
+            f"**持仓**：权重 {fmt_weight(position.get('weight'))} · 成本 {fmt_price(position.get('avgCost'))} · "
+            f"现价 {fmt_price(position_state.get('lastPrice'))} · 浮盈亏 {fmt_money(position_state.get('unrealizedPnl'))} · "
+            f"可卖 {fmt_num(position_state.get('availableQuantity'))}（T+1 与冻结已扣除）"
+        )
+    if budget:
+        lines.append(
+            f"**风险预算**：使用率 {fmt_pct(budget.get('utilization'))}（已用 {fmt_money(budget.get('used'))} / "
+            f"总额 {fmt_money(budget.get('total'))}，剩余 {fmt_money(budget.get('remaining'))}） · "
+            f"单笔上限 {fmt_money(budget.get('riskPerTrade'))} · 单票上限 {fmt_weight(budget.get('maxSingleNameWeight'))}"
+        )
+    if entry:
+        sizing = entry.get("sizing") or {}
+        lines.append("")
+        lines.append(f"**买入计划** `{entry.get('planId')}` · {entry.get('status') or '—'}")
+        lines.append(
+            f"- 买点 {fmt_price((entry.get('entryPrice') or {}).get('value'))} · "
+            f"止损 {fmt_price((entry.get('stopPrice') or {}).get('value'))} · "
+            f"目标 {fmt_price((entry.get('targetPrice') or {}).get('value'))} · "
+            f"盈亏比 {fmt_num(entry.get('rewardRiskRatio'))} · "
+            f"数量 {fmt_num(sizing.get('quantity'))} · 预计权重 {fmt_weight(sizing.get('projectedWeight'))}"
+        )
+        if entry.get("orderIntent"):
+            intent = entry["orderIntent"]
+            lines.append(
+                f"- 订单意图 {intent.get('id')} · {intent.get('side')} {fmt_num(intent.get('quantity'))} 股 @ "
+                f"{fmt_price(intent.get('price'))} · {intent.get('status')}"
+            )
+        for detail in (data.get("buy") or {}).get("reasons") or []:
+            lines.append(f"- **阻断**：{detail}")
+    if reduce_plan:
+        lines.append("")
+        lines.append(f"**卖出计划** `{reduce_plan.get('planId')}` · {reduce_plan.get('status') or '—'}")
+        lines.append(
+            f"- 减仓 {fmt_num(reduce_plan.get('quantity'))} 股 · 权重变化 {fmt_weight(reduce_plan.get('weight'))} · "
+            f"止损 {fmt_price(((plans.get('bracket') or {}).get('stopPrice') or {}).get('value'))} · "
+            f"目标 {fmt_price(((plans.get('bracket') or {}).get('targetPrice') or {}).get('value'))}"
+        )
+        for detail in (data.get("sell") or {}).get("reasons") or []:
+            lines.append(f"- **阻断**：{detail}")
+    limits = data.get("limits") or {}
+    if limits.get("buy"):
+        lines.append("")
+        lines.append("**买入限制**")
+        for item in limits["buy"]:
+            lines.append(f"- {item}")
+    if limits.get("sell"):
+        lines.append("")
+        lines.append("**卖出限制**")
+        for item in limits["sell"]:
+            lines.append(f"- {item}")
+    if outcome or review:
+        lines.append("")
+        lines.append("**执行与复盘闭环**")
+        if outcome:
+            lines.append(
+                f"- 结果：收益 {fmt_pct(outcome.get('realizedReturn'))} · 盈亏 {fmt_money(outcome.get('realizedPnl'))} · "
+                f"持有 {fmt_num(outcome.get('holdingDays'))} 天 · 最大不利偏移 {fmt_pct(outcome.get('maxAdverseExcursion'))} · "
+                f"{outcome.get('status') or '—'}"
+            )
+        if quality:
+            lines.append(
+                f"- 执行质量：滑点 {fmt_num(quality.get('slippageBps'))} bps · 成交率 {fmt_pct((quality.get('fillRate') or 0) * 100)} · "
+                f"延迟 {fmt_num(quality.get('latencyMs'))} ms · 市场冲击 {fmt_num(quality.get('marketImpactBps'))} bps"
+            )
+        if review:
+            lines.append(
+                f"- 复盘：{review.get('verdict') or '—'} · 综合 {fmt_num(review.get('score'))}/100 · "
+                f"过程 {fmt_num(review.get('processScore'))} · 结果 {fmt_num(review.get('outcomeScore'))} · "
+                f"逾期 {fmt_num(review.get('overdueDays'))} 天"
+            )
+            for item in review.get("findings") or []:
+                lines.append(f"  - 发现：{item.get('recommendation') or item.get('label')}（重复 {item.get('occurrenceCount')} 次）")
+            for item in review.get("revisions") or []:
+                lines.append(f"  - 规则修订：{item.get('id')} → {((item.get('rule') or {}).get('label')) or '—'} · {item.get('status')}")
+    lines.append("")
+    lines.append(f"**说明**：{data.get('dataNote') or ''}")
+    return "\n".join(lines)
+
+
 def compose_rule(data: dict[str, Any]) -> str:
     rule = data.get("rule") or {}
     affected = data.get("affected") or []

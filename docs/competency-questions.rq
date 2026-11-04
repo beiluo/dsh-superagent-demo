@@ -161,3 +161,156 @@ SELECT ?decision ?decisionId WHERE {
             ash:decisionId ?decisionId .
   FILTER NOT EXISTS { ?decision ash:hasRiskAssessment ?risk }
 }
+
+# --- CQ ---
+# CQ11: What are the current cash, buying power, equity and position state?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?accountCode ?cashBalance ?buyingPower ?totalEquity ?asOf WHERE {
+  ?account a ash:SecuritiesAccount ;
+           ash:accountCode ?accountCode ;
+           ash:hasAccountState ?state .
+  ?state ash:cashBalance ?cashBalance ;
+         ash:buyingPower ?buyingPower ;
+         ash:totalEquity ?totalEquity ;
+         ash:dataAsOf ?asOf .
+}
+
+# --- CQ ---
+# CQ12: How much risk budget is used, and what are the per-trade and
+#       single-name limits?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?portfolio ?utilization ?remaining ?riskPerTrade ?maxSingleNameWeight WHERE {
+  ?portfolio a ash:Portfolio ;
+             ash:hasRiskBudget ?budget .
+  ?budget a ash:RiskBudget ;
+          ash:riskBudgetUtilization ?utilization ;
+          ash:riskBudgetRemaining ?remaining ;
+          ash:riskPerTrade ?riskPerTrade ;
+          ash:maxSingleNameWeight ?maxSingleNameWeight .
+}
+
+# --- CQ ---
+# CQ13: Given entry, stop and risk budget, what quantity and weight should
+#       the plan use?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?plan ?entryPrice ?stopPrice ?quantity ?weight ?riskAmount ?projectedWeight WHERE {
+  ?plan a ash:EntryPlan ;
+        ash:hasEntryPrice ?entry ;
+        ash:hasStopPrice ?stop ;
+        ash:hasPositionSizing ?sizing .
+  ?entry ash:priceLevelValue ?entryPrice .
+  ?stop ash:priceLevelValue ?stopPrice .
+  ?sizing ash:sizingQuantity ?quantity ;
+          ash:sizingWeight ?weight ;
+          ash:riskAmount ?riskAmount ;
+          ash:projectedWeight ?projectedWeight .
+}
+
+# --- CQ ---
+# CQ14: Which buy plans are blocked because projected weight exceeds the
+#       single-name limit?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?plan ?planStatus ?projectedWeight ?maxSingleNameWeight WHERE {
+  ?plan a ash:EntryPlan ;
+        ash:planStatus ?planStatus ;
+        ash:hasPositionSizing ?sizing ;
+        ash:planForPortfolio ?portfolio .
+  ?sizing ash:projectedWeight ?projectedWeight .
+  ?portfolio ash:hasRiskBudget ?budget .
+  ?budget ash:maxSingleNameWeight ?maxSingleNameWeight .
+  FILTER (?projectedWeight > ?maxSingleNameWeight)
+}
+
+# --- CQ ---
+# CQ15: Which sell plans fit the available quantity, and what are the stop
+#       and target prices?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?plan ?availableQuantity ?plannedQuantity ?stopPrice ?targetPrice WHERE {
+  ?plan a ash:ExitPlan ;
+        ash:exitPlanForPosition ?position ;
+        ash:plannedQuantity ?plannedQuantity .
+  ?position ash:hasPositionState ?state .
+  ?state ash:availableQuantity ?availableQuantity .
+  OPTIONAL { ?plan ash:hasStopPrice ?stopNode . ?stopNode ash:priceLevelValue ?stopPrice }
+  OPTIONAL { ?plan ash:hasTargetPrice ?targetNode . ?targetNode ash:priceLevelValue ?targetPrice }
+  FILTER (?plannedQuantity <= ?availableQuantity)
+}
+
+# --- CQ ---
+# CQ16: How are trade plan, order intent, order, trade and execution quality
+#       linked?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?plan ?intent ?order ?trade ?slippageBps WHERE {
+  ?plan a ash:TradePlan ;
+        ash:hasOrderIntent ?intent .
+  ?intent ash:intentRealizedBy ?order .
+  ?trade ash:generatedFromOrder ?order ;
+         ash:hasExecutionQuality ?quality .
+  ?quality ash:slippageBps ?slippageBps .
+}
+
+# --- CQ ---
+# CQ17: What was the outcome of a decision: return, PnL, holding period and
+#       excursions?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?decision ?realizedReturn ?realizedPnl ?holdingDays ?maxAdverseExcursion ?maxFavorableExcursion ?outcomeStatus WHERE {
+  ?decision a ash:InvestmentDecision ;
+            ash:hasOutcome ?outcome .
+  ?outcome ash:realizedReturn ?realizedReturn ;
+           ash:realizedPnlAmount ?realizedPnl ;
+           ash:holdingPeriodDays ?holdingDays ;
+           ash:maxAdverseExcursion ?maxAdverseExcursion ;
+           ash:maxFavorableExcursion ?maxFavorableExcursion ;
+           ash:outcomeStatus ?outcomeStatus .
+}
+
+# --- CQ ---
+# CQ18: Which recurring review findings triggered a rule revision?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?finding ?severity ?occurrenceCount ?revision ?rule ?revisionStatus WHERE {
+  ?review a ash:PostTradeReview ;
+          ash:hasReviewFinding ?finding ;
+          ash:resultsInRevision ?revision .
+  ?finding ash:findingSeverity ?severity ;
+           ash:findingOccurrenceCount ?occurrenceCount .
+  ?revision ash:revisionOfRule ?rule ;
+            ash:revisionStatus ?revisionStatus .
+  FILTER (?occurrenceCount >= 2)
+}
+
+# --- CQ ---
+# CQ19: What are the ordered stages of the decision lifecycle service?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX service: <http://www.daml.org/services/owl-s/1.2/Service.owl#>
+PREFIX process: <http://www.daml.org/services/owl-s/1.2/Process.owl#>
+SELECT ?service ?stepLabel WHERE {
+  ?service a service:Service ;
+           service:describedBy ?model .
+  ?model process:composedOf ?sequence .
+  ?sequence process:components ?list .
+  ?list rdf:rest*/rdf:first ?perform .
+  ?perform process:process ?step .
+  ?step rdfs:label ?stepLabel .
+  FILTER (LANG(?stepLabel) = "zh")
+}
+
+# --- CQ ---
+# CQ20: Which entities carry a risk-budget, buying-power or execution breach?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?entity ?type WHERE {
+  {
+    ?entity a ash:RiskBudgetExceeded .
+    BIND ("RiskBudgetExceeded" AS ?type)
+  } UNION {
+    ?entity a ash:EntryBlocked .
+    BIND ("EntryBlocked" AS ?type)
+  } UNION {
+    ?entity a ash:BuyingPowerInsufficient .
+    BIND ("BuyingPowerInsufficient" AS ?type)
+  } UNION {
+    ?entity a ash:ExecutionSlippageBreach .
+    BIND ("ExecutionSlippageBreach" AS ?type)
+  }
+}

@@ -32,6 +32,19 @@ RULE_THRESHOLDS: dict[str, dict[str, float]] = {
     "R19": {"broken_board_count_min": 2},
     "R20": {"revenue_growth_min": 20.0},
     "R21": {"theme_heat_min": 80.0},
+    # R152-R161 are the decision-lifecycle rules (risk budget, per-trade
+    # risk, projected weight, buying power, stop/target, slippage, review and
+    # hard-limit halt). Rules that compare two facts have no fixed threshold.
+    "R152": {"utilization_min": 100.0},
+    "R153": {},
+    "R154": {},
+    "R155": {},
+    "R156": {},
+    "R157": {},
+    "R158": {"slippage_bps_max": 50.0},
+    "R159": {"review_overdue_days_min": 5},
+    "R160": {"finding_occurrence_min": 2},
+    "R161": {"hard_limit_utilization_min": 100.0},
 }
 
 SIGNAL_STATUS_LABELS = {

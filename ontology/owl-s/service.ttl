@@ -31,7 +31,7 @@
     dcterms:description "可审计 A 股投资决策服务的 OWL-S Profile、流程模型与 WSDL Grounding。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/OWL-S/> ;
     rdfs:seeAlso <https://www.daml.org/services/owl-s/1.2/overview/> ;
-    owl:versionInfo "1.8.0" ;
+    owl:versionInfo "1.9.0" ;
     ash:designNote "OWL-S 是 W3C Member Submission；服务端点、WSDL 文档和操作名均为示意，不指向生产系统。"@zh .
 
 # ===========================================================================
@@ -353,4 +353,297 @@ ashd:ground-decision a grounding:WsdlAtomicProcessGrounding ;
     grounding:wsdlService "https://example.org/ashare-decision/service" ;
     grounding:wsdlPort "DecisionPort" ;
     grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "DecisionPortType" ; grounding:operation "generateDecision" ] ;
+    ash:isExample true .
+
+
+# ===========================================================================
+# Domain expansion 1.3 — decision lifecycle service
+# ===========================================================================
+# A second service makes the decision lifecycle explicit: account snapshot,
+# risk-budget check, trade point, sizing, constraint gate, order intent,
+# execution review and rule iteration. The endpoint is illustrative.
+
+ashd:svc-trade-lifecycle a service:Service, ash:DecisionService ;
+    service:presents ashd:profile-trade-lifecycle ;
+    service:describedBy ashd:process-trade-lifecycle ;
+    service:supports ashd:grounding-trade-lifecycle ;
+    ash:serviceVersion "1.3.0" ;
+    ash:endpointStatus "illustrative" ;
+    ash:humanApprovalRequired true ;
+    rdfs:label "A 股交易决策生命周期服务"@zh, "A-Share Trade Decision Lifecycle Service"@en ;
+    rdfs:comment "从账户与持仓状态出发，经风险预算、买卖点、仓位测算、约束检查、订单意图、执行质量到复盘的闭环服务。"@zh ;
+    ash:isExample true ;
+    ash:exampleNote "示例服务，不连接真实账户或交易通道。"@zh .
+
+ashd:precond-risk-budget a expr:Condition ;
+    expr:expressionLanguage ashd:logic-swrl ;
+    expr:expressionBody "组合风险预算使用率低于 100%；单笔计划风险不超过 riskPerTradeLimit；预计单票权重不超过 maxSingleNameWeight。"@zh ;
+    rdfs:label "风险预算前置条件"@zh ;
+    ash:isExample true .
+
+ashd:profile-trade-lifecycle a profile:Profile ;
+    profile:serviceName "A-Share Trade Decision Lifecycle Service" ;
+    profile:textDescription "读取账户与持仓状态，按组合风险预算计算买卖点与仓位，经过约束与人工审批后生成订单意图，并记录执行质量、结果与复盘，把发现回写为规则修订。" ;
+    profile:serviceClassification <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#service-classification-decision> ;
+    profile:serviceProduct <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#product-decision-report> ;
+    profile:serviceCategory ashd:category-decision-support ;
+    profile:has_process ashd:process-trade-lifecycle ;
+    profile:hasInput
+        ashd:in-account-state ,
+        ashd:in-risk-budget ,
+        ashd:in-market-snapshot ,
+        ashd:in-trade-policy ;
+    profile:hasOutput
+        ashd:out-trade-plan ,
+        ashd:out-order-intent-lifecycle ,
+        ashd:out-execution-quality ,
+        ashd:out-post-review ,
+        ashd:out-rule-revision ;
+    profile:hasPrecondition
+        ashd:precond-data-freshness ,
+        ashd:precond-risk-budget ,
+        ashd:precond-policy-active ,
+        ashd:precond-not-restricted ;
+    rdfs:label "交易决策生命周期 Profile"@zh ;
+    ash:isExample true .
+
+ashd:in-account-state a process:Input ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#AccountState> ;
+    rdfs:label "账户与持仓状态"@zh ;
+    rdfs:comment "现金、购买力、持仓可卖数量、成本与浮盈亏快照。"@zh ;
+    ash:isExample true .
+
+ashd:in-risk-budget a process:Input ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RiskBudget> ;
+    rdfs:label "组合风险预算"@zh ;
+    rdfs:comment "总风险资本、单笔风险、单票与行业上限、回撤和 VaR 限额。"@zh ;
+    ash:isExample true .
+
+ashd:in-market-snapshot a process:Input ;
+    process:parameterType <http://www.w3.org/2001/XMLSchema#anyURI> ;
+    rdfs:label "行情与风险快照"@zh ;
+    rdfs:comment "最新价、技术指标、波动率与市场状态快照。"@zh ;
+    ash:isExample true .
+
+ashd:in-trade-policy a process:Input ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#DecisionPolicy> ;
+    rdfs:label "交易与数据政策"@zh ;
+    rdfs:comment "ODRL 交易护栏、人工批准与数据使用政策。"@zh ;
+    ash:isExample true .
+
+ashd:out-trade-plan a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#TradePlan> ;
+    rdfs:label "交易计划"@zh ;
+    rdfs:comment "含买点、止损、目标、仓位、风险金额与有效期的计划。"@zh ;
+    ash:isExample true .
+
+ashd:out-order-intent-lifecycle a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#OrderIntent> ;
+    rdfs:label "订单意图"@zh ;
+    rdfs:comment "等待人工确认、不直接触发交易的订单意图。"@zh ;
+    ash:isExample true .
+
+ashd:out-execution-quality a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ExecutionQuality> ;
+    rdfs:label "执行质量"@zh ;
+    rdfs:comment "滑点、成交率、延迟与市场冲击。"@zh ;
+    ash:isExample true .
+
+ashd:out-post-review a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PostTradeReview> ;
+    rdfs:label "交易后复盘"@zh ;
+    rdfs:comment "过程评分、结果评分、复盘发现与经验教训。"@zh ;
+    ash:isExample true .
+
+ashd:out-rule-revision a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#RuleRevision> ;
+    rdfs:label "规则修订"@zh ;
+    rdfs:comment "由复盘发现触发的规则或阈值修订记录。"@zh ;
+    ash:isExample true .
+
+ashd:step-account-snapshot a process:AtomicProcess ;
+    process:hasInput ashd:in-account-state, ashd:in-market-snapshot ;
+    process:hasOutput ashd:lc-account-validated ;
+    rdfs:label "01 账户与持仓快照"@zh ;
+    rdfs:comment "校验现金、购买力、可卖数量、冻结数量与持仓成本。"@zh ;
+    ash:isExample true .
+
+ashd:lc-account-validated a process:Output ;
+    process:parameterType <http://www.w3.org/2001/XMLSchema#anyURI> ;
+    rdfs:label "已校验账户状态"@zh ;
+    ash:isExample true .
+
+ashd:step-budget-check a process:AtomicProcess ;
+    process:hasInput ashd:lc-account-validated, ashd:in-risk-budget ;
+    process:hasOutput ashd:lc-budget-checked ;
+    rdfs:label "02 风险预算检查"@zh ;
+    rdfs:comment "检查总预算使用率、单笔风险、单票上限、回撤与 VaR 限额。"@zh ;
+    ash:isExample true .
+
+ashd:lc-budget-checked a process:Output ;
+    process:parameterType <http://www.w3.org/2001/XMLSchema#anyURI> ;
+    rdfs:label "风险预算结果"@zh ;
+    ash:isExample true .
+
+ashd:step-trade-point a process:AtomicProcess ;
+    process:hasInput ashd:lc-budget-checked, ashd:in-market-snapshot ;
+    process:hasOutput ashd:lc-trade-points ;
+    rdfs:label "03 买卖点与触发条件"@zh ;
+    rdfs:comment "根据估值、技术位与 ATR 计算买点、止损、目标和触发条件。"@zh ;
+    ash:isExample true .
+
+ashd:lc-trade-points a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#PriceLevel> ;
+    rdfs:label "价格点位"@zh ;
+    ash:isExample true .
+
+ashd:step-sizing a process:AtomicProcess ;
+    process:hasInput ashd:lc-trade-points, ashd:in-risk-budget ;
+    process:hasOutput ashd:out-trade-plan ;
+    rdfs:label "04 仓位测算"@zh ;
+    rdfs:comment "按单笔风险金额、止损距离与预计权重计算数量，生成交易计划。"@zh ;
+    ash:isExample true .
+
+ashd:step-constraint-gate a process:AtomicProcess ;
+    process:hasInput ashd:out-trade-plan, ashd:in-trade-policy, ashd:in-risk-budget ;
+    process:hasOutput ashd:lc-constraint-result ;
+    rdfs:label "05 约束与审批"@zh ;
+    rdfs:comment "检查预计权重、购买力、限制名单、适当性与 ODRL 人工批准。"@zh ;
+    ash:isExample true .
+
+ashd:lc-constraint-result a process:Output ;
+    process:parameterType <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#ComplianceCheck> ;
+    rdfs:label "约束检查结果"@zh ;
+    ash:isExample true .
+
+ashd:step-order-intent a process:AtomicProcess ;
+    process:hasInput ashd:lc-constraint-result, ashd:out-trade-plan ;
+    process:hasOutput ashd:out-order-intent-lifecycle ;
+    rdfs:label "06 订单意图"@zh ;
+    rdfs:comment "把通过约束的交易计划转为等待人工确认的订单意图。"@zh ;
+    ash:isExample true .
+
+ashd:step-execution-review a process:AtomicProcess ;
+    process:hasInput ashd:out-order-intent-lifecycle, ashd:in-market-snapshot ;
+    process:hasOutput ashd:out-execution-quality, ashd:out-post-review ;
+    rdfs:label "07 执行与复盘"@zh ;
+    rdfs:comment "记录成交、滑点、结果与过程，生成复盘发现和经验教训。"@zh ;
+    ash:isExample true .
+
+ashd:step-rule-iteration a process:AtomicProcess ;
+    process:hasInput ashd:out-post-review ;
+    process:hasOutput ashd:out-rule-revision ;
+    rdfs:label "08 规则迭代"@zh ;
+    rdfs:comment "把重复高严重度发现转为规则修订，进入下一轮决策。"@zh ;
+    ash:isExample true .
+
+ashd:process-trade-lifecycle a process:CompositeProcess ;
+    process:hasInput
+        ashd:in-account-state ,
+        ashd:in-risk-budget ,
+        ashd:in-market-snapshot ,
+        ashd:in-trade-policy ;
+    process:hasOutput
+        ashd:out-trade-plan ,
+        ashd:out-order-intent-lifecycle ,
+        ashd:out-execution-quality ,
+        ashd:out-post-review ,
+        ashd:out-rule-revision ;
+    process:hasPrecondition
+        ashd:precond-data-freshness ,
+        ashd:precond-risk-budget ,
+        ashd:precond-policy-active ,
+        ashd:precond-not-restricted ;
+    process:composedOf [
+        a process:Sequence ;
+        process:components (
+            [ a process:Perform ; process:process ashd:step-account-snapshot ]
+            [ a process:Perform ; process:process ashd:step-budget-check ]
+            [ a process:Perform ; process:process ashd:step-trade-point ]
+            [ a process:Perform ; process:process ashd:step-sizing ]
+            [ a process:Perform ; process:process ashd:step-constraint-gate ]
+            [ a process:Perform ; process:process ashd:step-order-intent ]
+            [ a process:Perform ; process:process ashd:step-execution-review ]
+            [ a process:Perform ; process:process ashd:step-rule-iteration ]
+        )
+    ] ;
+    rdfs:label "交易决策生命周期流程"@zh ;
+    rdfs:comment "账户快照 → 风险预算 → 买卖点 → 仓位测算 → 约束审批 → 订单意图 → 执行复盘 → 规则迭代。"@zh ;
+    ash:isExample true .
+
+ashd:grounding-trade-lifecycle a grounding:WsdlGrounding ;
+    grounding:hasAtomicProcessGrounding
+        ashd:ground-account-snapshot ,
+        ashd:ground-budget-check ,
+        ashd:ground-trade-point ,
+        ashd:ground-sizing ,
+        ashd:ground-constraint-gate ,
+        ashd:ground-order-intent ,
+        ashd:ground-execution-review ,
+        ashd:ground-rule-iteration ;
+    rdfs:label "交易决策生命周期 WSDL Grounding（示意）"@zh ;
+    ash:isExample true .
+
+ashd:ground-account-snapshot a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-account-snapshot ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "snapshotAccount" ] ;
+    ash:isExample true .
+
+ashd:ground-budget-check a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-budget-check ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "checkRiskBudget" ] ;
+    ash:isExample true .
+
+ashd:ground-trade-point a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-trade-point ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "computeTradePoints" ] ;
+    ash:isExample true .
+
+ashd:ground-sizing a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-sizing ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "sizePosition" ] ;
+    ash:isExample true .
+
+ashd:ground-constraint-gate a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-constraint-gate ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "gateConstraints" ] ;
+    ash:isExample true .
+
+ashd:ground-order-intent a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-order-intent ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "createOrderIntent" ] ;
+    ash:isExample true .
+
+ashd:ground-execution-review a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-execution-review ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "reviewExecution" ] ;
+    ash:isExample true .
+
+ashd:ground-rule-iteration a grounding:WsdlAtomicProcessGrounding ;
+    grounding:owlsProcess ashd:step-rule-iteration ;
+    grounding:wsdlDocument "https://example.org/ashare-lifecycle/service.wsdl" ;
+    grounding:wsdlService "https://example.org/ashare-lifecycle/service" ;
+    grounding:wsdlPort "LifecyclePort" ;
+    grounding:wsdlOperation [ a grounding:WsdlOperationRef ; grounding:portType "LifecyclePortType" ; grounding:operation "reviseRules" ] ;
     ash:isExample true .
