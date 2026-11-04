@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlparse
 
+from .acquisition import DEFAULT_ALLOWED_HOSTS
+
 ROOT = Path(__file__).resolve().parents[1]
 
 DEFAULT_ALLOWED_ORIGINS = (
@@ -117,6 +119,10 @@ class Settings:
     market_data_quote_ttl_seconds: int = 60
     market_data_financial_ttl_seconds: int = 21_600
     market_data_short_term_ttl_seconds: int = 300
+    acquisition_enabled: bool = True
+    acquisition_timeout_seconds: float = 8.0
+    acquisition_max_bytes: int = 2_000_000
+    acquisition_allowed_hosts: tuple[str, ...] = DEFAULT_ALLOWED_HOSTS
 
     @property
     def configured(self) -> bool:
@@ -175,5 +181,11 @@ class Settings:
             ),
             market_data_short_term_ttl_seconds=_env_int(
                 "MARKET_DATA_SHORT_TERM_TTL_SECONDS", 300, minimum=30
+            ),
+            acquisition_enabled=_env_bool("ACQUISITION_ENABLED", True),
+            acquisition_timeout_seconds=_env_float("ACQUISITION_TIMEOUT_SECONDS", 8.0, minimum=2.0),
+            acquisition_max_bytes=_env_int("ACQUISITION_MAX_BYTES", 2_000_000, minimum=10_000),
+            acquisition_allowed_hosts=_env_csv(
+                "ACQUISITION_ALLOWED_HOSTS", DEFAULT_ALLOWED_HOSTS
             ),
         )

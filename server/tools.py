@@ -1,16 +1,24 @@
 """Tool surface exposed to the ontology agent.
 
-Every tool is read-only and returns a compact JSON payload plus citations that
-point back into the static ontology explorer.
+Every tool is read-only except :func:`acquire_data`, which fetches a public
+dataset and writes the resulting facts into the runtime (in-memory) ontology.
+Results are compact JSON payloads plus citations that point back into the
+static ontology explorer.
 """
 
 from __future__ import annotations
 
 import re
+from datetime import date
 from typing import Any
 
+from .acquisition import (
+    SUPPORTED_FIELDS,
+    AcquisitionError,
+    AcquisitionService,
+)
 from .marketdata import MarketDataError
-from .ontology import CompanyKnowledge, OntologyStore, local_name
+from .ontology import CompanyKnowledge, OntologyStore, SUPPORTED_MERGE_FIELDS, local_name
 from .query import (
     COMPARISON_FIELDS,
     METRIC_FIELDS,
@@ -29,6 +37,7 @@ TOOL_LABELS = {
     "get_company_analysis": "读取企业画像与规则信号",
     "compare_companies": "本体同口径多股对比",
     "screen_companies": "执行本体规则筛选",
+    "acquire_data": "Agent 自取缺失数据并接入本体",
     "get_portfolio_analysis": "检查组合与集中度",
     "get_rule": "解释 SWRL 规则",
     "get_policies": "读取 ODRL 政策",
@@ -99,6 +108,56 @@ TOOLS: list[dict[str, Any]] = [
                     },
                 },
                 "required": ["companies"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "acquire_data",
+            "description": (
+                "当工具结果显示 missingData 或 ruleSummary.unknown（例如缺龙虎榜净买入、封单、连板、"
+                "炸板、竞价、情绪数据）时，由 Agent 自己从公开数据源抓取、校验并写入本体，再返回更新后的"
+                "规则信号。不要要求用户补数据源或预先写适配器。内置数据源覆盖东方财富龙虎榜、龙虎榜买方"
+                "席位与涨停池；其他公开数据可通过 source 传入声明式数据源（url + fields JSONPath 映射）"
+                "自行接入，注册后本次进程内复用。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "company": {
+                        "type": "string",
+                        "description": "真实 A 股的 6 位代码或证券简称，例如 000417、合百集团。",
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {"type": "string", "enum": sorted(SUPPORTED_FIELDS)},
+                        "description": "可选，要补齐的字段；省略则自动补齐该股当前缺失的字段。",
+                    },
+                    "sources": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": (
+                            "可选，指定内置数据源 id：eastmoney-billboard、"
+                            "eastmoney-billboard-seats、eastmoney-limit-pool。省略则按字段自动选择。"
+                        ),
+                    },
+                    "source": {
+                        "type": "object",
+                        "description": (
+                            "可选，Agent 自带的声明式数据源：{id,label,url,params,select:{path,match},"
+                            "fields:{字段:{path,type,scale}},asOfPath,lookbackDays,attribution}。"
+                            "仅允许 HTTPS 公开金融域名。"
+                        ),
+                        "additionalProperties": True,
+                    },
+                    "asOf": {
+                        "type": "string",
+                        "description": "可选，数据日期 YYYY-MM-DD，默认今天；历史复盘时使用。",
+                    },
+                },
+                "required": ["company"],
                 "additionalProperties": False,
             },
         },
@@ -500,6 +559,127 @@ def _summary(knowledge: CompanyKnowledge, signals: list[dict[str, Any]]) -> dict
     }
 
 
+_SHORT_TERM_FIELDS = {
+    "dragonTigerNetBuy",
+    "hotMoneySeatCount",
+    "sealAmount",
+    "limitUpDays",
+    "brokenBoardCount",
+    "firstLimitUpTime",
+    "auctionPriceChange",
+    "auctionVolumeRatio",
+    "sentimentScore",
+    "themeHeatScore",
+    "hasNewsCatalyst",
+}
+
+_SOURCE_PLANS: dict[str, list[str]] = {
+    "dragonTigerNetBuy": ["eastmoney-billboard"],
+    "hotMoneySeatCount": ["eastmoney-billboard-seats"],
+    "sealAmount": ["eastmoney-limit-pool"],
+    "limitUpDays": ["eastmoney-limit-pool"],
+    "brokenBoardCount": ["eastmoney-limit-pool"],
+    "firstLimitUpTime": ["eastmoney-limit-pool"],
+}
+
+_INSTITUTIONAL_MARKERS = (
+    "机构专用",
+    "沪股通",
+    "深股通",
+    "陆股通",
+    "基金",
+    "社保",
+    "保险",
+    "QFII",
+    "券商自营",
+    "交易单元",
+)
+
+
+def _missing_data(data: dict[str, Any]) -> list[dict[str, Any]]:
+    short = data.get("shortTerm") or {}
+    missing: list[dict[str, Any]] = []
+    for field, meta in SUPPORTED_FIELDS.items():
+        if field not in _SHORT_TERM_FIELDS or short.get(field) is not None:
+            continue
+        missing.append(
+            {
+                "field": field,
+                "label": meta["label"],
+                "rules": meta["rules"],
+                "acquirable": field in _SOURCE_PLANS,
+                "sources": _SOURCE_PLANS.get(field, []),
+                "hint": meta["hint"],
+            }
+        )
+    return missing
+
+
+def _acquisition_service(store: OntologyStore) -> AcquisitionService | None:
+    if getattr(store, "acquisition_enabled", True) is False:
+        return None
+    service = getattr(store, "acquisition", None)
+    if service is None:
+        service = AcquisitionService()
+        store.acquisition = service
+    return service
+
+
+def _classify_seats(rows: list[Any], *, limit: int = 20) -> list[dict[str, Any]]:
+    """Split exchange-published seats into hot-money brokerages and institutions."""
+
+    seats: list[dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        name = str(row.get("name") or "").strip()
+        if not name:
+            continue
+        seat_type = "institution" if any(marker in name for marker in _INSTITUTIONAL_MARKERS) else "hot-money"
+        seat = {"name": name, "type": seat_type}
+        for key in ("netBuy", "buy", "sell", "riseProbability3Day"):
+            if row.get(key) is not None:
+                seat[key] = row[key]
+        seats.append(seat)
+        if len(seats) >= limit:
+            break
+    return seats
+
+
+def _context_for_company(data: dict[str, Any]) -> dict[str, Any]:
+    security = data.get("security") or {}
+    company = data.get("company") or {}
+    code = str(security.get("code") or company.get("companyCode") or "")
+    exchange_code = str((security.get("exchange") or {}).get("id") or "")
+    market = "1" if exchange_code.endswith("sse") else "0"
+    return {
+        "code": code,
+        "market": market,
+        "secid": f"{market}.{code}",
+        "exchange": exchange_code,
+    }
+
+
+def _rule_changes(before: list[dict[str, Any]], after: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    before_map = {item.get("ruleId"): item for item in before}
+    after_map = {item.get("ruleId"): item for item in after}
+    changes: list[dict[str, Any]] = []
+    for rule_id in sorted(set(before_map) | set(after_map)):
+        old = before_map.get(rule_id) or {}
+        new = after_map.get(rule_id) or {}
+        if old.get("status") == new.get("status") and old.get("detail") == new.get("detail"):
+            continue
+        changes.append(
+            {
+                "ruleId": rule_id,
+                "before": old.get("status") or "unknown",
+                "after": new.get("status") or "unknown",
+                "detail": new.get("detail") or "",
+            }
+        )
+    return changes
+
+
 def _company_analysis(store: OntologyStore, query: str) -> dict[str, Any]:
     names = store.company_names()
     subject = store.find_company(query)
@@ -563,6 +743,8 @@ def _company_analysis(store: OntologyStore, query: str) -> dict[str, Any]:
         if item["status"] == "triggered":
             citations.extend(_rule_citation(store, item["ruleId"]))
     citations.extend(knowledge.citations)
+    if data.get("dataMode") == "real":
+        data["missingData"] = _missing_data(data)
     return {
         "ok": True,
         "tool": "get_company_analysis",
@@ -642,6 +824,8 @@ def _load_company_data(store: OntologyStore, query: str) -> dict[str, Any]:
             "ash:hasValuation/ash:peTtm、ash:hasLimitUpStreak；规则为 ash:RuleArtifact。"
         ),
     }
+    if knowledge.data_mode == "real":
+        data["missingData"] = _missing_data(knowledge.to_dict())
     if refresh_error is not None:
         data["dataNote"] += f" 本次刷新失败（{refresh_error.message}），使用上次抓取的事实。"
     return {
@@ -650,6 +834,238 @@ def _load_company_data(store: OntologyStore, query: str) -> dict[str, Any]:
         "data": data,
         "citations": _dedupe(knowledge.citations[:4]),
     }
+
+
+def _acquire(store: OntologyStore, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Fetch a public dataset and integrate the facts into the runtime graph."""
+
+    company = str(arguments.get("company") or "").strip()
+    if not company:
+        return _error("acquire_data", "missing_company", "请提供要补齐数据的真实 A 股代码或简称。")
+
+    before = _company_analysis(store, company)
+    if not before.get("ok"):
+        error = before.get("error") or {}
+        extra = {key: value for key, value in error.items() if key not in {"code", "message"}}
+        return _error(
+            "acquire_data",
+            error.get("code") or "company_not_found",
+            error.get("message") or "没有找到该证券。",
+            **extra,
+        )
+    data = before.get("data") or {}
+    if data.get("dataMode") != "real":
+        return _error(
+            "acquire_data",
+            "not_real_company",
+            "只能为真实 A 股获取并接入公开数据；示例公司是合成示例，不能伪造真实数据。",
+        )
+
+    requested = arguments.get("fields")
+    if requested is not None and not isinstance(requested, list):
+        return _error("acquire_data", "invalid_fields", "fields 必须是字段名数组。")
+    requested_fields = [str(item) for item in requested] if requested else []
+    unknown = [item for item in requested_fields if item not in SUPPORTED_FIELDS]
+    if unknown:
+        return _error(
+            "acquire_data",
+            "unknown_field",
+            "不支持的数据字段。",
+            unknown=unknown,
+            available=sorted(SUPPORTED_FIELDS),
+        )
+
+    missing = data.get("missingData") or []
+    missing_fields = [item["field"] for item in missing]
+    fields = requested_fields or missing_fields
+    if not fields:
+        return {
+            "ok": True,
+            "tool": "acquire_data",
+            "data": {
+                "company": {"label": (data.get("company") or {}).get("label"), "code": _code_of(data)},
+                "message": "当前没有缺失的可获取短线字段。",
+                "acquired": {},
+                "remainingMissing": [],
+            },
+            "citations": [],
+        }
+
+    as_of = arguments.get("asOf")
+    if as_of is not None:
+        as_of = str(as_of).strip()
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", as_of):
+            return _error("acquire_data", "invalid_as_of", "asOf 必须是 YYYY-MM-DD。")
+        try:
+            date.fromisoformat(as_of)
+        except ValueError:
+            return _error("acquire_data", "invalid_as_of", "asOf 不是有效日期。")
+
+    context = _context_for_company(data)
+    if as_of:
+        context["base_date"] = as_of
+    service = _acquisition_service(store)
+    if service is None:
+        return _error(
+            "acquire_data",
+            "acquisition_disabled",
+            "服务端已关闭 Agent 自驱数据获取。",
+        )
+    datasets: list[Any] = []
+    errors: list[dict[str, Any]] = []
+    values: dict[str, Any] = {}
+    custom = arguments.get("source")
+
+    if custom is not None:
+        if not isinstance(custom, dict):
+            return _error("acquire_data", "invalid_source", "source 必须是声明式数据源对象。")
+        try:
+            dataset = service.fetch_custom(custom, context)
+        except AcquisitionError as exc:
+            return _error(
+                "acquire_data",
+                exc.code,
+                exc.message,
+                sources=service.list_sources(),
+                missing=missing,
+            )
+        values.update(dataset.values)
+        datasets.append(dataset)
+        try:
+            service.register_source(custom)
+        except AcquisitionError as exc:
+            errors.append({"sourceId": str(custom.get("id") or "custom"), "code": exc.code, "message": exc.message})
+    else:
+        source_ids = arguments.get("sources")
+        if source_ids is not None and not isinstance(source_ids, list):
+            return _error("acquire_data", "invalid_sources", "sources 必须是数据源 id 数组。")
+        selected: list[str] = [str(item) for item in source_ids] if source_ids else []
+        if not selected:
+            for field in fields:
+                for source_id in _SOURCE_PLANS.get(field, []):
+                    if source_id not in selected:
+                        selected.append(source_id)
+        if not selected:
+            return _error(
+                "acquire_data",
+                "no_builtin_source",
+                "这些字段没有内置数据源；请用 source 传入声明式数据源（url + fields 映射）自行接入。",
+                missing=missing,
+                builtin=service.list_sources(),
+            )
+        for source_id in selected:
+            try:
+                dataset = service.fetch(source_id, context)
+            except AcquisitionError as exc:
+                errors.append({"sourceId": source_id, "code": exc.code, "message": exc.message})
+                continue
+            values.update(dataset.values)
+            datasets.append(dataset)
+
+    seats = values.pop("seats", None)
+    if isinstance(seats, list):
+        classified = _classify_seats(seats)
+        if classified:
+            values["seats"] = classified
+
+    merge_values = {
+        key: value
+        for key, value in values.items()
+        if value is not None and (key in SUPPORTED_MERGE_FIELDS or key == "seats")
+    }
+    if not merge_values:
+        message = "没有获取到可写入本体的数据。"
+        if errors:
+            message += " " + "；".join(item["message"] for item in errors)
+        return _error(
+            "acquire_data",
+            "no_data",
+            message,
+            errors=errors,
+            sources=[dataset.as_dict() for dataset in datasets],
+            missing=missing,
+        )
+
+    label = "、".join(dict.fromkeys(dataset.label for dataset in datasets)) or "公开数据源"
+    source_url = datasets[0].url if datasets else ""
+    as_of_value = max((dataset.as_of for dataset in datasets), default="") or (as_of or "")
+    attribution = "；".join(sorted({dataset.attribution for dataset in datasets if dataset.attribution}))
+    as_of_by_field = {
+        key: dataset.as_of
+        for dataset in datasets
+        for key in dataset.values
+        if dataset.as_of
+    }
+    try:
+        store.merge_short_term(
+            _code_of(data),
+            merge_values,
+            source_label=label,
+            source_url=source_url,
+            as_of=as_of_value,
+            as_of_by_field=as_of_by_field,
+            attribution=attribution,
+        )
+    except ValueError as exc:
+        return _error("acquire_data", "merge_failed", str(exc))
+
+    after = _company_analysis(store, _code_of(data))
+    after_data = after.get("data") or {}
+    changes = _rule_changes(data.get("signals") or [], after_data.get("signals") or [])
+    relevant_rules = {
+        rule_id
+        for field in fields
+        for rule_id in SUPPORTED_FIELDS[field]["rules"]
+    }
+    relevant_rules.update(item["ruleId"] for item in changes)
+    signals = [
+        signal
+        for signal in after_data.get("signals") or []
+        if signal.get("ruleId") in relevant_rules
+    ]
+    acquired = {key: value for key, value in merge_values.items() if key != "seats"}
+    if "seats" in merge_values:
+        acquired["hotMoneySeatCount"] = sum(
+            1 for seat in merge_values["seats"] if seat.get("type") == "hot-money"
+        )
+        acquired["seats"] = [
+            {"name": seat["name"], "type": seat.get("type")}
+            for seat in merge_values["seats"]
+        ]
+    remaining = [
+        item
+        for item in (after_data.get("missingData") or [])
+        if item["field"] in fields
+    ]
+    return {
+        "ok": True,
+        "tool": "acquire_data",
+        "data": {
+            "company": {
+                "label": (after_data.get("company") or {}).get("label"),
+                "code": _code_of(after_data),
+            },
+            "dataMode": "real",
+            "acquired": acquired,
+            "sources": [dataset.as_dict() for dataset in datasets],
+            "errors": errors,
+            "asOf": as_of_value,
+            "ruleChanges": changes,
+            "ruleSummary": after_data.get("ruleSummary"),
+            "signals": signals,
+            "shortTerm": after_data.get("shortTerm"),
+            "dataNote": after_data.get("dataNote"),
+            "remainingMissing": remaining,
+        },
+        "summary": after.get("summary"),
+        "citations": after.get("citations") or [],
+    }
+
+
+def _code_of(data: dict[str, Any]) -> str:
+    security = data.get("security") or {}
+    company = data.get("company") or {}
+    return str(security.get("code") or company.get("companyCode") or "")
 
 
 def _screen(store: OntologyStore, rule_id: str | None) -> dict[str, Any]:
@@ -973,6 +1389,8 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
         if name == "screen_companies":
             rule_id = arguments.get("rule_id")
             return _screen(store, str(rule_id) if rule_id else None)
+        if name == "acquire_data":
+            return _acquire(store, arguments)
         if name == "get_portfolio_analysis":
             return _portfolio(store)
         if name == "get_rule":
@@ -1001,11 +1419,13 @@ def call_tool(store: OntologyStore, name: str, arguments: dict[str, Any] | None)
 
 
 # The LLM works directly against the ontology: schema discovery, a data-loading
-# primitive for external facts, and arbitrary read-only SPARQL.  The curated
-# analysis tools remain available to the deterministic rules-mode fallback, but
-# are deliberately hidden from the LLM so ontology usage is agent-generated.
+# primitive for external facts, agent-driven acquisition of missing public data,
+# and arbitrary read-only SPARQL.  The curated analysis tools remain available to
+# the deterministic rules-mode fallback, but are deliberately hidden from the LLM
+# so ontology usage is agent-generated.
 LLM_TOOL_NAMES: tuple[str, ...] = (
     "load_company_data",
+    "acquire_data",
     "describe_ontology",
     "sparql_query",
 )

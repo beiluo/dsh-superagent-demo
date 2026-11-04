@@ -359,6 +359,7 @@ def test_status_reports_query_capabilities(client_factory):
     assert data["query"]["realScreening"] is False
     assert data["query"]["tools"] == [
         "load_company_data",
+        "acquire_data",
         "describe_ontology",
         "sparql_query",
     ]

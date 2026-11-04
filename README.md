@@ -45,7 +45,7 @@ A 股投资决策涉及至少八类语义问题：
 | 决策如何推理？ | SWRL | 26 条无副作用 Horn 规则，覆盖筛选、风险、止损、集中度与合规 |
 | 服务如何调用？ | OWL-S | Profile / Process Model / Grounding 三视角的七步决策服务 |
 | 政策如何治理？ | ODRL | 权限、禁止、义务、约束、冲突策略与 profile 扩展 |
-| 如何把语义链变成可对话分析？ | Agent | 服务端只读工具 + 本体规则 + 可选 LLM，回答带可追溯证据 |
+| 如何把语义链变成可对话分析？ | Agent | 服务端工具 + 本体规则 + 可选 LLM，缺失数据由 Agent 自取并接入，回答带可追溯证据 |
 
 设计参考 **FIBO**（Financial Industry Business Ontology）的模块化、定义优先、可追溯与 OWL 2
 建模思路；领域内容为独立编写，**不复用 FIBO 本体文本，也不声称是 FIBO 的官方扩展**。
@@ -174,7 +174,7 @@ python3 scripts/build_data.py   # 或 make build
 │   ├── ontology.py                    # 读取 Turtle、映射真实 A 股快照、构建企业/组合事实
 │   ├── marketdata.py                  # 真实 A 股公开行情/年报/日线适配器（可替换）
 │   ├── rules.py                       # SWRL 阈值与确定性信号评估
-│   ├── tools.py                       # 14 个只读本体工具（LLM 模式只暴露 3 项通用能力）
+│   ├── tools.py                       # 16 个本体工具（LLM 模式暴露 4 项通用能力）
 │   ├── query.py                       # 属性路径查询、多股对比、证据链、约束与情景模拟
 │   ├── sparql.py                      # Agent 生成的只读 SPARQL 与图式发现
 │   ├── namespaces.py                  # 本体与运行时命名空间
@@ -357,11 +357,14 @@ FIBO 的模块、类和关系数量要高出一个数量级以上。若目标是
 
 [![Agent 区块](docs/evidence/agent-section.png)](docs/evidence/agent-section.png)
 
-Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 三项能力：加载外部事实、读取本体图式、执行自生成的只读 SPARQL；所有公司、财报、行情、估值、规则、决策、证据、组合与 ODRL 政策查询都由 Agent 自己写，不再通过固定分析工具。
+Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 四项能力：加载外部事实、补齐缺失公开数据、读取本体图式、执行自生成的只读 SPARQL；所有公司、财报、行情、估值、规则、决策、证据、组合与 ODRL 政策查询都由 Agent 自己写，不再通过固定分析工具。
 
 ### LLM 模式：Agent 直接使用本体
 
 - `load_company_data`：真实 A 股先把公开行情、年报、估值与短线快照写入运行时本体图；示例公司已在本体中。只返回公司标识、来源与日期，不返回分析结论；
+- `acquire_data`：本体图缺少可获取的短线公开数据（龙虎榜净买入/席位、封单、连板、炸板）时，
+  Agent 自己抓取、校验并写入运行内存本体；内置东方财富龙虎榜、买方席位和涨停池，也可传入
+  声明式 `source`（HTTPS + 字段 JSON 路径映射）接入其它公开数据；
 - `describe_ontology`：读取类、对象属性、数据属性、命名空间前缀和示例查询，可按 `focus` 检索
   “财务”“决策”“规则”“组合”等词汇；
 - `sparql_query`：执行 Agent 自己生成的只读 SPARQL。任意关系、聚合、属性路径、否定/缺失条件、
@@ -371,7 +374,7 @@ Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 三项能力
 服务端把生成查询限制在只读范围：只接受 `SELECT`/`ASK`，拒绝 `INSERT`/`DELETE`/`LOAD` 等更新、
 `CONSTRUCT`/`DESCRIBE`，以及会访问远程端点的 `SERVICE`/`FROM`；查询最长 4,000 字符，单次最多
 返回 50 行，长字面量会截断。解析失败只返回安全错误、可用前缀和下一步提示。LLM 的工具面在服务端
-固定为上面三项；如果模型尝试调用 `get_company_analysis` 等隐藏的固定工具，会得到
+固定为上面四项；如果模型尝试调用 `get_company_analysis` 等隐藏的固定工具，会得到
 `tool_not_available`，而不是被执行。
 
 [![Agent 生成并编排只读 SPARQL 的查询路径](docs/evidence/open-query-after.png)](docs/evidence/open-query-after.png)
@@ -397,6 +400,10 @@ Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 三项能力
 8. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 
+LLM 模式下，数据不再需要“用户先补数据源、工程师先写适配器”：Agent 看到 `missingData` 后自行
+抓取、校验、写入本体并复算规则；同一进程内写过的来源可复用。抓取只读公开 HTTPS 接口，限制
+金融域名、公网地址、响应大小和超时。
+
 可以这样问，验证 LLM 的自由查询层：**哪些公司的决策缺少风险评估？**（否定条件）、**每家公司分别
 有几条证据？**（聚合）、**从公司沿 `aboutCompany` 反向能找到哪些决策？**（路径与方向）、**示例公司中
 谁的 ROE 最高、对应 PE 是多少？**（联表与排序）。
@@ -409,8 +416,8 @@ Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 三项能力
 `sparql_query` 读取 `shortTerm` 字段中的 MA5/MA20/MA60、连板/炸板、龙虎榜净买入和主题热度
 （有则显示），并对照 R16–R21 的规则文本判断。
 
-LLM 模式由服务端做工具循环；模型只会看到图式发现、事实加载与自生成 SPARQL 三项能力，所有
-本体查询路径由模型自己决定。没有 key 或 LLM 调用失败时自动回退到确定性的规则模式，此时才使用
+LLM 模式由服务端做工具循环；模型只会看到图式发现、事实加载、缺失数据自取与自生成 SPARQL 四项
+能力，所有本体查询路径由模型自己决定。没有 key 或 LLM 调用失败时自动回退到确定性的规则模式，此时才使用
 固定分析工具。两种模式使用同一套本体事实和引用，回答里的证据 chip 可以跳回 Explorer 的 IRI 详情。
 
 回答会同时给出 **“本体查询路径”**：把本次加载的事实、读取的图式、生成的 SPARQL 和结果串成

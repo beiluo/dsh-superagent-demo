@@ -101,6 +101,10 @@ LLM_MODEL=deepseek-chat
 | `MARKET_DATA_QUOTE_TTL_SECONDS` | 否 | `60` | 行情缓存秒数 |
 | `MARKET_DATA_FINANCIAL_TTL_SECONDS` | 否 | `21600` | 年报/财务指标缓存秒数 |
 | `MARKET_DATA_SHORT_TERM_TTL_SECONDS` | 否 | `300` | 日线/均线/连板快照缓存秒数 |
+| `ACQUISITION_ENABLED` | 否 | `true` | 是否允许 Agent 自驱抓取缺失公开数据 |
+| `ACQUISITION_TIMEOUT_SECONDS` | 否 | `8` | 单个数据源请求超时 |
+| `ACQUISITION_MAX_BYTES` | 否 | `2000000` | 单个响应体上限 |
+| `ACQUISITION_ALLOWED_HOSTS` | 否 | 见代码 | 允许的公开金融域名后缀，逗号分隔 |
 
 ### 3.3 密钥轮换
 
@@ -182,11 +186,12 @@ GitHub Pages 不能运行 Python。它只负责静态页面：
 
 ### 6.1 LLM 模式：Agent 直接使用本体
 
-Agent 不把整份 Turtle 塞进 prompt，也不使用固定的分析工具。LLM 模式只暴露三项通用能力：
+Agent 不把整份 Turtle 塞进 prompt，也不使用固定的分析工具。LLM 模式只暴露四项通用能力：
 
 | 能力 | 作用 |
 | --- | --- |
 | `load_company_data` | 把真实 A 股的公开行情、年报、估值与短线快照写入运行时本体图；只返回公司标识、来源与日期，不返回分析结论 |
+| `acquire_data` | 当本体图缺少可获取的短线公开数据（龙虎榜净买入/席位、封单、连板、炸板）时，由 Agent 自己抓取、校验并写入运行内存本体；也可用声明式 `source` 接入其它公开接口 |
 | `describe_ontology` | 读取类、对象属性、数据属性、命名空间前缀与示例查询；可按 `focus` 检索 |
 | `sparql_query` | 执行 Agent 自己生成的只读 SPARQL，支持任意图模式、聚合、路径与否定条件 |
 
@@ -198,8 +203,12 @@ Agent 不把整份 Turtle 塞进 prompt，也不使用固定的分析工具。LL
 - 禁止 `SERVICE` 与 `FROM`，不会从查询里访问远程端点或加载外部文件；
 - 查询最长 4,000 字符，单次最多返回 50 行，长字面量会截断；
 - 执行失败只返回安全错误、可用前缀和 `describe_ontology` 提示，不返回 traceback；
-- 工具面在服务端固定为上面三项；模型调用 `get_company_analysis`、`check_constraints` 等隐藏工具会得到
+- 工具面在服务端固定为上面四项；模型调用 `get_company_analysis`、`check_constraints` 等隐藏工具会得到
   `tool_not_available`，不会被执行。
+
+数据缺失时，LLM 先从 `load_company_data` 的 `missingData` 知道缺哪些短线字段，再调用
+`acquire_data` 抓取并写入本体；写入后仍用 SPARQL 查询事实。`acquire_data` 只读公开 HTTPS
+金融接口，不修改仓库中的 Turtle 文件。
 
 ### 6.2 规则模式：确定性回退
 
@@ -360,10 +369,81 @@ SPARQL 完成。
 - 运行时 IRI 位于 `.../a-share/real#`，不写回 Turtle 文件；
 - 行情缓存 60 秒、财报缓存 6 小时、短线日线缓存 5 分钟；规则模式的 `screen_companies` 不包含
   真实公司，真实横截面请用 `query_ontology` 的 `universe=real`；LLM 模式用 `sparql_query` 查询；
-- 真实 A 股的短线字段目前覆盖均线、连板/炸板；龙虎榜净买入、封单和新闻催化需要额外数据源，
-  暂标为“无法评估”；
+- 真实 A 股的短线字段目前覆盖均线、连板/炸板；龙虎榜净买入/席位、封单等缺失字段由 Agent 通过
+  `acquire_data` 自行抓取并写入运行内存本体，不再要求用户预先提供数据源或写适配器；
 - 数据来自东方财富公开网页接口，可能延迟、限流或改版；生产环境应替换为持牌数据源；
 - `MARKET_DATA_ENABLED=false` 可完全关闭真实数据查询；关闭后 Agent 只分析示例公司。
+
+---
+
+## 6.5 Agent 自驱数据获取
+
+目标：**缺数据由 Agent 自己去取、自己接入**，不再要求用户先补数据源或由工程师为每个来源写
+Python 适配器。
+
+### 流程
+
+1. `load_company_data`（LLM 模式）或 `get_company_analysis`（规则模式）返回真实 A 股画像；
+   缺失的短线字段进入 `missingData`，相关规则显示为“无法评估”；
+2. Agent 调用 `acquire_data`（省略 `fields` 时自动补齐缺失字段）；
+3. 服务端 `server/acquisition.py` 按**声明式数据源**执行 GET：URL 模板、参数、列表选择、
+   字段→JSON 路径映射、类型/倍率转换，返回事实与来源；
+4. `OntologyStore.merge_short_term` 把事实写入运行内存 RDF 图（`ash:LimitUpStreak`、
+   `ash:DragonTigerList`、席位、竞价快照、情绪指标、主题热度等），并保留来源、日期与
+   `dataQualityFlag="agent-acquired"`；
+5. 规则引擎立即重算，`acquire_data` 返回规则状态变化、更新后的 `shortTerm`、仍缺字段与
+   数据来源；LLM 模式随后用 `sparql_query` 查询写入后的事实，规则模式据此回答。
+
+抓取到的事实会保存在每只证券的覆盖层里，后续行情/年报刷新不会把它们静默清掉；覆盖层默认
+1 小时后过期，过期后再次分析会重新获取。它们只写入内存，不修改仓库中的 Turtle 文件。
+
+### 内置数据源
+
+| 数据源 id | 获取字段 | 说明 |
+| --- | --- | --- |
+| `eastmoney-billboard` | 龙虎榜净买入/买入额/卖出额 | 按交易日回溯，未上榜不写入 |
+| `eastmoney-billboard-seats` | 买方营业部席位与净买入 | 机构/陆股通/基金等单列，营业部席位推断为游资 |
+| `eastmoney-limit-pool` | 连板天数、炸板次数、封单金额、首次涨停时间 | 当日涨停池，未涨停不写入 |
+
+### Agent 自行接入新数据源
+
+内置数据源不够时，Agent 可以在 `source` 参数里直接传入声明式数据源，成功后注册到当前进程，
+后续问题可复用：
+
+```json
+{
+  "id": "my-auction-source",
+  "label": "公开竞价快照",
+  "url": "https://example.eastmoney.com/auction",
+  "params": {"code": "{code}", "date": "{yyyymmdd}"},
+  "select": {"path": "data.rows", "match": {"code": "{code}"}},
+  "asOfPath": "date",
+  "fields": {
+    "auctionPriceChange": {"path": "premiumPct", "type": "float"},
+    "auctionVolumeRatio": {"path": "volumeRatio", "type": "float", "scale": 1.0}
+  }
+}
+```
+
+字段类型支持 `float`、`int`、`bool`、`str`、`time` 与 `rows`（席位列表）。模板变量包括
+`{code}`、`{market}`、`{secid}`、`{date}`、`{yyyymmdd}` 和 `{year}`。字段路径是简化的
+JSONPath：`a.b[0].c`。
+
+### 安全边界
+
+- 只允许 `https`，且主机必须在 `ACQUISITION_ALLOWED_HOSTS`（默认东方财富、新浪、腾讯、
+  巨潮、交易所等公开金融域名）内；
+- 每次解析目标域名并拒绝内网、本机、链路本地等非全局地址；不跟随重定向；
+- 只发 `GET`，不携带 Cookie、密钥或用户凭据；
+- 超时、响应体大小与字段路径数量都有上限；
+- `ACQUISITION_ENABLED=false` 可完全关闭该能力。
+
+### 已知限制
+
+- 个人交易日志、账户持仓等非公开数据无法从公开接口获取，Agent 会明确说明需要用户提供；
+- 新闻催化暂未接入可核对的公开来源，仍标为“无法评估”；
+- 竞价快照/情绪指标/主题热度已支持写入，但尚未有内置数据源，可由 Agent 用 `source` 接入；
+- 数据为公开网页接口，可能延迟、限流或改版；生产环境应替换为持牌数据源。
 
 ---
 

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
+import time
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -29,6 +30,33 @@ def normalize_text(text: Any) -> str:
 
 def _clean(text: Any) -> str:
     return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
+def _as_number(value: Any) -> float | None:
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+# Agent-acquired facts expire so a stale overlay does not override a later
+# provider refresh forever.  A new analysis can re-acquire them.
+ACQUIRED_FACTS_TTL_SECONDS = 3600
+
+# Short-term facts that may be merged from an agent-acquired dataset.
+SUPPORTED_MERGE_FIELDS = {
+    "dragonTigerNetBuy",
+    "sealAmount",
+    "limitUpDays",
+    "brokenBoardCount",
+    "firstLimitUpTime",
+    "auctionPriceChange",
+    "auctionVolumeRatio",
+    "sentimentScore",
+    "themeHeatScore",
+}
 
 
 @dataclass
@@ -56,6 +84,12 @@ class CompanyKnowledge:
             )
             if self.notes:
                 note += " 部分数据缺失：" + "；".join(self.notes)
+            if self.short_term.get("agentAcquired"):
+                note += (
+                    f" 短线数据由 Agent 从{self.short_term.get('source') or '公开数据源'}获取"
+                    f"（各字段日期见 shortTerm.asOfByField，最新 "
+                    f"{self.short_term.get('asOf') or '日期未知'}）并写入本体。"
+                )
         else:
             note = "所有公司、财务、行情、决策、规则与政策均为本体中的合成示例，不构成投资建议。"
         return {
@@ -96,6 +130,8 @@ class OntologyStore:
         self._real_companies: set[URIRef] = set()
         self._real_entities: dict[str, set[URIRef]] = {}
         self._real_notes: dict[str, list[str]] = {}
+        self._real_snapshots: dict[str, RealCompanySnapshot] = {}
+        self._acquired_short_term: dict[str, dict[str, Any]] = {}
         self._industry_labels: dict[str, URIRef] | None = None
 
     # ------------------------------------------------------------------
@@ -427,6 +463,29 @@ class OntologyStore:
 
         security_ref = snapshot.security
         code = security_ref.code
+        acquired = self._acquired_short_term.get(code)
+        if (
+            acquired
+            and time.time() - float(acquired.get("acquiredAt") or 0) > ACQUIRED_FACTS_TTL_SECONDS
+        ):
+            self._acquired_short_term.pop(code, None)
+            acquired = None
+        if acquired:
+            merged_short = dict(snapshot.short_term or {})
+            for key, value in (acquired.get("values") or {}).items():
+                if value is not None:
+                    merged_short[key] = value
+            merged_short["asOf"] = acquired.get("asOf") or merged_short.get("asOf")
+            merged_short["asOfByField"] = {
+                **(merged_short.get("asOfByField") or {}),
+                **(acquired.get("asOfByField") or {}),
+            }
+            merged_short["source"] = acquired.get("source_label") or merged_short.get("source")
+            merged_short["sourceUrl"] = acquired.get("source_url") or merged_short.get("sourceUrl")
+            merged_short["attribution"] = acquired.get("attribution") or ""
+            merged_short["acquired"] = True
+            snapshot = replace(snapshot, short_term=merged_short)
+        self._real_snapshots[code] = snapshot
         company = ASHREAL[f"company-{code}"]
         security = ASHREAL[f"security-{code}"]
         quote = ASHREAL[f"quote-{code}"]
@@ -550,9 +609,34 @@ class OntologyStore:
 
         entities = {company, security, quote, valuation}
 
-        # Short-term limit-up streak (MA fields live on the security).
+        # Short-term facts may come from the quote adapter or from an
+        # agent-acquired public dataset.  Keep provenance per snapshot.
         short_as_of = short.get("asOf") or as_of
-        if short.get("limitUpDays") is not None or short.get("brokenBoardCount") is not None:
+        short_source = short.get("source") or SOURCE_LABEL
+        short_source_url = short.get("sourceUrl") or SOURCE_URL
+        short_quality = "agent-acquired" if short.get("acquired") else "public-api"
+        field_dates = short.get("asOfByField") or {}
+
+        def short_date(*fields: str) -> str:
+            for field_name in fields:
+                value = field_dates.get(field_name)
+                if value:
+                    return str(value)
+            return short_as_of
+
+        def add_short_provenance(entity: URIRef, as_of_value: str | None = None) -> None:
+            self.graph.add((entity, ASH.dataAsOf, Literal(as_of_value or short_as_of, datatype=XSD.date)))
+            self.graph.add((entity, ASH.dataSource, Literal(short_source)))
+            self.graph.add((entity, DCTERMS.source, Literal(short_source_url)))
+            self.graph.add((entity, ASH.dataQualityFlag, Literal(short_quality)))
+            self.graph.add((entity, ASH.isExample, Literal(False)))
+
+        # Limit-up streak and seal amount.
+        if (
+            short.get("limitUpDays") is not None
+            or short.get("brokenBoardCount") is not None
+            or short.get("sealAmount") is not None
+        ):
             streak = ASHREAL[f"streak-{code}"]
             self.graph.add((streak, RDF.type, ASH.LimitUpStreak))
             self.graph.add((security, ASH.hasLimitUpStreak, streak))
@@ -562,22 +646,89 @@ class OntologyStore:
                 self.graph.add((streak, ASH.brokenBoardCount, Literal(int(short["brokenBoardCount"]))))
             if short.get("sealAmount") is not None:
                 self.graph.add((streak, ASH.sealAmount, Literal(short["sealAmount"])))
-            self.graph.add((streak, ASH.dataAsOf, Literal(short_as_of, datatype=XSD.date)))
-            self.graph.add((streak, ASH.dataSource, Literal(SOURCE_LABEL)))
-            self.graph.add((streak, ASH.isExample, Literal(False)))
+            if short.get("firstLimitUpTime") is not None:
+                self.graph.add((streak, ASH.firstLimitUpTime, Literal(str(short["firstLimitUpTime"]))))
+            add_short_provenance(
+                streak,
+                short_date("limitUpDays", "brokenBoardCount", "sealAmount", "firstLimitUpTime"),
+            )
             self.graph.add((streak, RDFS.label, Literal(f"{company_name} 连板快照", lang="zh")))
             entities.add(streak)
 
-        if short.get("dragonTigerNetBuy") is not None:
+        # Dragon-tiger list and its seats.
+        if short.get("dragonTigerNetBuy") is not None or short.get("seats"):
             dragon = ASHREAL[f"dragon-tiger-{code}"]
             self.graph.add((dragon, RDF.type, ASH.DragonTigerList))
             self.graph.add((security, ASH.hasDragonTigerList, dragon))
-            self.graph.add((dragon, ASH.dragonTigerNetBuy, Literal(short["dragonTigerNetBuy"])))
-            self.graph.add((dragon, ASH.dataAsOf, Literal(short_as_of, datatype=XSD.date)))
-            self.graph.add((dragon, ASH.dataSource, Literal(SOURCE_LABEL)))
-            self.graph.add((dragon, ASH.isExample, Literal(False)))
+            if short.get("dragonTigerNetBuy") is not None:
+                self.graph.add((dragon, ASH.dragonTigerNetBuy, Literal(short["dragonTigerNetBuy"])))
+            add_short_provenance(dragon, short_date("dragonTigerNetBuy", "seats"))
             self.graph.add((dragon, RDFS.label, Literal(f"{company_name} 龙虎榜快照", lang="zh")))
             entities.add(dragon)
+
+            for index, seat in enumerate(short.get("seats") or []):
+                if not isinstance(seat, dict):
+                    continue
+                seat_name = str(seat.get("name") or "").strip()
+                if not seat_name:
+                    continue
+                seat_type = str(seat.get("type") or "broker")
+                seat_iri = ASHREAL[f"seat-{code}-{index}"]
+                self.graph.add(
+                    (seat_iri, RDF.type, ASH.HotMoneySeat if seat_type == "hot-money" else ASH.DragonTigerSeat)
+                )
+                self.graph.add((seat_iri, RDFS.label, Literal(seat_name, lang="zh")))
+                self.graph.add((seat_iri, ASH.seatName, Literal(seat_name)))
+                self.graph.add((seat_iri, ASH.seatType, Literal(seat_type)))
+                net_buy = _as_number(seat.get("netBuy"))
+                if net_buy is not None:
+                    self.graph.add((seat_iri, ASH.seatNetBuy, Literal(net_buy)))
+                add_short_provenance(seat_iri, short_date("seats"))
+                self.graph.add((dragon, ASH.hasDragonTigerSeat, seat_iri))
+                entities.add(seat_iri)
+
+        # Auction snapshot (public open/auction facts).
+        if short.get("auctionPriceChange") is not None or short.get("auctionVolumeRatio") is not None:
+            auction = ASHREAL[f"auction-{code}"]
+            self.graph.add((auction, RDF.type, ASH.AuctionSnapshot))
+            self.graph.add((security, ASH.hasAuctionSnapshot, auction))
+            if short.get("auctionPriceChange") is not None:
+                self.graph.add((auction, ASH.auctionPriceChange, Literal(short["auctionPriceChange"])))
+            if short.get("auctionVolumeRatio") is not None:
+                self.graph.add((auction, ASH.auctionVolumeRatio, Literal(short["auctionVolumeRatio"])))
+            add_short_provenance(
+                auction, short_date("auctionPriceChange", "auctionVolumeRatio")
+            )
+            self.graph.add((auction, RDFS.label, Literal(f"{company_name} 竞价快照", lang="zh")))
+            entities.add(auction)
+
+        # Market sentiment index.
+        if short.get("sentimentScore") is not None:
+            sentiment = ASHREAL[f"sentiment-{code}"]
+            self.graph.add((sentiment, RDF.type, ASH.SentimentIndex))
+            self.graph.add((security, ASH.hasSentimentIndex, sentiment))
+            self.graph.add((sentiment, ASH.sentimentScore, Literal(short["sentimentScore"])))
+            if short.get("marketBreadth") is not None:
+                self.graph.add((sentiment, ASH.marketBreadth, Literal(short["marketBreadth"])))
+            add_short_provenance(sentiment, short_date("sentimentScore", "marketBreadth"))
+            self.graph.add((sentiment, RDFS.label, Literal(f"{company_name} 情绪指标", lang="zh")))
+            entities.add(sentiment)
+
+        # Theme heat is attached to the company's industry concept.
+        if short.get("themeHeatScore") is not None:
+            theme = self._first(company, ASH.primaryIndustry)
+            if not isinstance(theme, URIRef) and snapshot.industry:
+                theme = self._map_industry(snapshot.industry)
+                self.graph.add((company, ASH.primaryIndustry, theme))
+            if isinstance(theme, URIRef):
+                heat = ASHREAL[f"theme-heat-{code}"]
+                self.graph.add((heat, RDF.type, ASH.ThemeHeat))
+                self.graph.add((theme, ASH.hasThemeHeat, heat))
+                self.graph.add((company, ASH.hasThemeExposure, theme))
+                self.graph.add((heat, ASH.themeHeatScore, Literal(short["themeHeatScore"])))
+                add_short_provenance(heat, short_date("themeHeatScore"))
+                self.graph.add((heat, RDFS.label, Literal(f"{company_name} 主题热度", lang="zh")))
+                entities.add(heat)
 
         # Annual report.
         financials = snapshot.financials or {}
@@ -638,6 +789,64 @@ class OntologyStore:
             ),
         )
         return company
+
+    def merge_short_term(
+        self,
+        code: str,
+        values: dict[str, Any],
+        *,
+        source_label: str,
+        source_url: str,
+        as_of: str = "",
+        as_of_by_field: dict[str, str] | None = None,
+        attribution: str = "",
+    ) -> URIRef:
+        """Merge agent-acquired short-term facts into a real company.
+
+        The values are kept in a per-company overlay and re-applied after every
+        provider refresh, so a later quote/analytics refresh cannot silently
+        wipe the facts the agent just integrated.  Existing candidates are
+        replaced only for the keys explicitly acquired.
+        """
+
+        if not isinstance(code, str) or not code:
+            raise ValueError("缺少证券代码。")
+        snapshot = self._real_snapshots.get(code)
+        if snapshot is None:
+            raise ValueError("该证券尚未加载真实 A 股快照，无法合并数据。")
+        cleaned = {
+            key: value
+            for key, value in (values or {}).items()
+            if value is not None and (key in SUPPORTED_MERGE_FIELDS or key == "seats")
+        }
+        if not cleaned:
+            raise ValueError("没有可合并的字段。")
+        acquired = self._acquired_short_term.setdefault(
+            code,
+            {
+                "values": {},
+                "asOf": "",
+                "asOfByField": {},
+                "source_label": "",
+                "source_url": "",
+                "attribution": "",
+            },
+        )
+        acquired["values"].update(cleaned)
+        acquired["asOf"] = as_of or acquired.get("asOf") or snapshot.as_of()
+        acquired["asOfByField"].update(
+            {
+                key: value
+                for key, value in (as_of_by_field or {}).items()
+                if value and (key in cleaned or key == "seats")
+            }
+        )
+        acquired["source_label"] = source_label or acquired.get("source_label") or SOURCE_LABEL
+        acquired["source_url"] = source_url or acquired.get("source_url") or SOURCE_URL
+        acquired["attribution"] = attribution or acquired.get("attribution") or ""
+        acquired["acquiredAt"] = time.time()
+        self._knowledge_cache.pop(ASHREAL[f"company-{code}"], None)
+        return self.register_real_company(snapshot)
 
     def _map_industry(self, label: str) -> URIRef:
         canonical = normalize_text(label)
@@ -930,6 +1139,10 @@ class OntologyStore:
         dragon = dragon if isinstance(dragon, URIRef) else None
         news = self._first(security, ASH.hasNewsCatalyst)
         news = news if isinstance(news, URIRef) else None
+        auction = self._first(security, ASH.hasAuctionSnapshot)
+        auction = auction if isinstance(auction, URIRef) else None
+        sentiment = self._first(security, ASH.hasSentimentIndex)
+        sentiment = sentiment if isinstance(sentiment, URIRef) else None
 
         hot_seats: list[Any] | None = None
         if isinstance(dragon, URIRef):
@@ -948,6 +1161,21 @@ class OntologyStore:
                 theme_heat = heat
                 theme_heat_score = score
 
+        code = self._text(security, ASH.securityCode) or ""
+        as_of_by_field: dict[str, str] = {}
+
+        def note_date(entity: Any, *fields: str) -> None:
+            value = self._date(entity, ASH.dataAsOf)
+            if value:
+                for field_name in fields:
+                    as_of_by_field[field_name] = value
+
+        note_date(streak, "limitUpDays", "brokenBoardCount", "sealAmount", "firstLimitUpTime")
+        note_date(dragon, "dragonTigerNetBuy", "hotMoneySeatCount")
+        note_date(auction, "auctionPriceChange", "auctionVolumeRatio")
+        note_date(sentiment, "sentimentScore")
+        note_date(theme_heat, "themeHeatScore")
+
         short: dict[str, Any] = {
             "ma5": self._num(security, ASH.ma5),
             "ma20": self._num(security, ASH.ma20),
@@ -955,19 +1183,33 @@ class OntologyStore:
             "limitUpDays": self._num(streak, ASH.limitUpDays),
             "brokenBoardCount": self._num(streak, ASH.brokenBoardCount),
             "sealAmount": self._num(streak, ASH.sealAmount),
+            "firstLimitUpTime": self._text(streak, ASH.firstLimitUpTime),
             "dragonTigerNetBuy": self._num(dragon, ASH.dragonTigerNetBuy),
             "hotMoneySeatCount": len(hot_seats) if hot_seats is not None else None,
             "themeHeatScore": theme_heat_score,
             "hasNewsCatalyst": True if news is not None else None,
+            "auctionPriceChange": self._num(auction, ASH.auctionPriceChange),
+            "auctionVolumeRatio": self._num(auction, ASH.auctionVolumeRatio),
+            "sentimentScore": self._num(sentiment, ASH.sentimentScore),
             "asOf": self._date(streak, ASH.dataAsOf)
             or self._date(dragon, ASH.dataAsOf)
+            or self._date(auction, ASH.dataAsOf)
+            or self._date(sentiment, ASH.dataAsOf)
             or self._date(theme_heat, ASH.dataAsOf),
+            "asOfByField": as_of_by_field,
             "source": self._text(streak, ASH.dataSource)
             or self._text(dragon, ASH.dataSource)
+            or self._text(auction, ASH.dataSource)
+            or self._text(sentiment, ASH.dataSource)
             or self._text(theme_heat, ASH.dataSource)
             or "",
+            "agentAcquired": bool(code and code in self._acquired_short_term),
         }
-        refs = [item for item in (streak, dragon, theme_heat, news) if item is not None]
+        refs = [
+            item
+            for item in (streak, dragon, auction, sentiment, theme_heat, news)
+            if item is not None
+        ]
         refs.extend(hot_seats or [])
         return short, refs
 
