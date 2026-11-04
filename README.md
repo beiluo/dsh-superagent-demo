@@ -419,6 +419,7 @@ Agent 不是把整份 Turtle 塞进 prompt。LLM 模式只给 Agent 四项能力
    判断买入/卖出计划是否可执行并给出限制清单；
 9. `evaluate_cognition`：按五引擎认知流程读取市场、板块、个股、事件、机会、风险收益、判断、
    行为规则与结果验证，输出非持仓/已持仓场景结论、反向证据审查、判断版本与失效条件；
+   示例公司使用完整 `AnalysisCase`，真实 A 股使用只读回退并明确标出缺失维度，不伪造胜率；
 10. `get_portfolio_analysis`、`get_rule`、`get_policies`、`search_ontology`、`list_companies`：
    组合、规则、ODRL 政策、本体词汇与公司列表。
 

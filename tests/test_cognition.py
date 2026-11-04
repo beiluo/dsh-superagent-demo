@@ -145,3 +145,117 @@ def test_cognition_rules_are_registered(store: OntologyStore):
     for rule_id in ("R162", "R163", "R164", "R165", "R166", "R167", "R168", "R169"):
         assert rule_id in rules
         assert rules[rule_id]["status"] == "active"
+
+
+def _youyan_snapshot():
+    from dataclasses import replace
+
+    from server.marketdata import SecurityRef
+    from tests.test_real_data import _snapshot
+
+    base = _snapshot()
+    return replace(
+        base,
+        security=SecurityRef(
+            code="600206",
+            name="有研新材",
+            secid="1.600206",
+            exchange_code="SSE",
+            exchange_label="上海证券交易所",
+            segment_code="main",
+            segment_label="主板",
+        ),
+        quote={
+            "code": "600206",
+            "name": "有研新材",
+            "lastPrice": 34.9,
+            "changePct": 9.99,
+            "volume": 77_432_400,
+            "turnoverRate": 9.15,
+            "marketCap": 29_544_711_287,
+            "asOf": "2026-11-04",
+            "source": base.source_label,
+            "quality": "public-api",
+        },
+        valuation={
+            "peTtm": 104.5,
+            "pb": 6.6,
+            "asOf": "2026-11-04",
+            "source": base.source_label,
+            "quality": "public-api",
+        },
+        financials={
+            "period": "2025",
+            "fiscalYearEnd": "2025-12-31",
+            "revenue": 9_542_126_754,
+            "netProfit": 264_789_582,
+            "roe": 6.5,
+            "roa": 3.46,
+            "debtRatio": 34.86,
+            "interestCoverage": -1.99,
+            "operatingCashFlow": -78_811_720,
+            "revenueGrowth": 4.33,
+            "profitGrowth": 79.29,
+            "eps": 0.313,
+            "asOf": "2025-12-31",
+            "source": base.source_label,
+            "quality": "public-api",
+        },
+        industry="半导体",
+        short_term={
+            "ma5": 33.18,
+            "ma20": 38.97,
+            "ma60": 46.4,
+            "limitUpDays": 1,
+            "brokenBoardCount": 0,
+            "asOf": "2026-11-04",
+            "source": base.source_label,
+        },
+    )
+
+
+def test_real_company_cognition_fallback_marks_missing_dimensions():
+    from server.marketdata import MarketDataProvider
+    from tests.test_real_data import FakeProvider
+
+    store = OntologyStore(ROOT, market_data=FakeProvider(_youyan_snapshot()))
+    result = call_tool(store, "evaluate_cognition", {"company": "有研新材"})
+    assert result["ok"] is True
+    data = result["data"]
+    assert data["dataMode"] == "real"
+    assert data["scenario"] == "non_position"
+    assert data["decision"]["code"] == "watch"
+    assert data["market"] is None
+    assert data["stock"]["trendDirection"] == "下降"
+    assert data["stock"]["trendStage"] == "启动"
+    assert data["stock"]["structure"] == "跌破 MA20 后单日反弹"
+    assert data["opportunity"]["counterEvidenceReviewed"] is True
+    assert data["opportunity"]["counterEvidenceCount"] >= 3
+    assert data["riskReward"]["expectedRewardRiskRatio"] is None
+    assert "历史判断记录" in " ".join(data["missingDimensions"])
+    assert "真实数据模式" in data["dataNote"]
+
+
+def test_real_company_test_phrase_routes_to_cognition():
+    import asyncio
+
+    from server.agent import AgentService
+    from server.marketdata import MarketDataProvider
+    from server.settings import Settings
+    from tests.test_real_data import FakeProvider
+
+    store = OntologyStore(ROOT, market_data=FakeProvider(_youyan_snapshot()))
+    settings = Settings(
+        root=ROOT,
+        llm_api_key="",
+        rate_limit_per_minute=100,
+        rate_limit_per_hour=100,
+        daily_request_budget=100,
+        max_request_bytes=24_000,
+        market_data_enabled=True,
+    )
+    result = asyncio.run(AgentService(store, settings, llm=None).analyze("用有研新材给我做一个测试"))
+    assert result.steps[0]["tool"] == "evaluate_cognition"
+    assert "有研新材" in result.answer
+    assert "观望" in result.answer
+    assert "真实公开行情" in result.answer

@@ -536,6 +536,57 @@ class AgentService:
         lines.append("真实 A 股请用 6 位证券代码或证券简称，例如 600519、贵州茅台。")
         return "\n\n".join(lines)
 
+    def _cognition_company_text(self, question: str) -> str | None:
+        """Extract a real-company query from a cognition/test question."""
+
+        code = re.search(r"(?<!\d)(\d{6})(?!\d)", question)
+        if code:
+            return code.group(1)
+        text = question.strip()
+        for prefix in (
+            "按五引擎交易认知体系分析",
+            "按五引擎认知体系分析",
+            "五引擎交易认知体系",
+            "用",
+            "对",
+            "分析",
+            "测试",
+            "帮我",
+            "给我",
+            "做一个",
+            "做一次",
+            "请",
+            "按",
+            "一下",
+        ):
+            if text.startswith(prefix):
+                text = text[len(prefix) :].strip()
+        text = re.sub(r"[（(]\s*\d{6}\s*[)）]", "", text).strip()
+        changed = True
+        while changed:
+            changed = False
+            for suffix in (
+                "给我做一个测试",
+                "给我做一次测试",
+                "做一次测试",
+                "做一个测试",
+                "的测试",
+                "测试一下",
+                "测试",
+                "怎么样",
+                "如何",
+                "吗",
+                "？",
+                "?",
+                "。",
+            ):
+                if text.endswith(suffix):
+                    text = text[: -len(suffix)].strip()
+                    changed = True
+                    break
+        text = re.split(r"[，,。；;！!？?\s]", text)[0].strip()
+        return text if 2 <= len(text) <= 12 else None
+
     def _company_query_text(self, question: str) -> str:
         query = question.strip().rstrip("？?。.!！")
         for prefix in ("分析一下", "请分析", "分析", "研究一下", "帮我看看", "看看", "查一下", "介绍一下", "介绍"):
@@ -683,6 +734,9 @@ class AgentService:
             "该不该持有",
             "值得继续持有",
             "为什么值得买",
+            "做一个测试",
+            "做一次测试",
+            "测试一下",
         )
         policy_words = ("政策", "odrl", "合规", "治理", "人工批准")
         search_words = ("本体", "类", "属性", "概念", "定义", "解释", "是什么", "是啥", "含义")
@@ -726,6 +780,9 @@ class AgentService:
                     "继续持有",
                     "该不该",
                     "为什么值得买",
+                    "做一个测试",
+                    "做一次测试",
+                    "测试一下",
                 )
             )
         ):
@@ -736,8 +793,9 @@ class AgentService:
                 if any(word in lower for word in entry_words)
                 else ("held" if any(word in lower for word in held_words) else "auto")
             )
+            company = self.store._label(companies[0]) if companies else self._cognition_company_text(question)
             return "cognition", {
-                "company": self.store._label(companies[0]) if companies else None,
+                "company": company,
                 "scenario": scenario,
             }
         if any(word in lower for word in trade_words):
