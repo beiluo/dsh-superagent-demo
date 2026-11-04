@@ -20,6 +20,7 @@ KIND_LABELS = {
 
 STATUS_LABELS = {"triggered": "触发", "clear": "未触发", "unknown": "未知"}
 SEVERITY_LABELS = {"high": "高", "medium": "中", "low": "低"}
+STAGE_LABEL = {"launch": "启动", "confirm": "确认", "extend": "延续", "decline": "衰退"}
 
 BOUNDARY = "**边界**：以上全部为本体中的合成示例数据，不构成投资建议；本体不连接真实行情或交易通道。"
 BOUNDARY_REAL = (
@@ -703,4 +704,192 @@ def compose_scenario(data: dict[str, Any]) -> str:
         lines.append("上述假设没有改变现有规则状态。")
     lines.append("")
     lines.append(f"**说明**：{data.get('dataNote') or ''}")
+    return "\n".join(lines)
+
+
+def compose_cognition(data: dict[str, Any]) -> str:
+    company = data.get("company") or {}
+    security = data.get("security") or {}
+    case = data.get("case") or {}
+    market = data.get("market") or {}
+    sector = data.get("sector") or {}
+    stock = data.get("stock") or {}
+    event = data.get("event") or {}
+    opportunity = data.get("opportunity") or {}
+    risk_reward = data.get("riskReward") or {}
+    judgment = data.get("judgment") or {}
+    decision = data.get("decision") or {}
+    behavior = data.get("behaviorPlan") or {}
+    verification = data.get("verification") or {}
+    revisions = data.get("revisions") or []
+    scenario = data.get("scenario") or "non_position"
+    scenario_label = "已持仓" if scenario == "held" else "非持仓"
+
+    label = company.get("label") or "证券"
+    code = security.get("code")
+    title = f"### 五引擎交易认知 · {label}" + (f"（{code}）" if code else "") + f" · {scenario_label}"
+    lines = [title]
+    lines.append("")
+    lines.append(
+        f"**结论**：计算结论为 **{decision.get('label') or '—'}**"
+        + (
+            f"；本体记录为 {decision.get('recordedLabel')}（{'一致' if decision.get('consistent') else '不一致，需复核'}）"
+            if decision.get("recordedLabel")
+            else "；本体暂无判断记录"
+        )
+    )
+    if case.get("caseId"):
+        lines.append(
+            f"**案例**：`{case['caseId']}` · 版本 v{case.get('version') or '—'} · "
+            f"判断 v{judgment.get('version') or '—'} · 数据截止 {case.get('asOf') or '—'}"
+        )
+    lines.append(f"**判断模型**：{data.get('judgmentModel') or '—'}（不做加权评分）")
+    lines.append("")
+
+    lines.append("**① 市场认知**")
+    lines.append(
+        f"- {market.get('summary') or '缺少市场认知。'}"
+    )
+    lines.append(
+        f"- 趋势 {market.get('trend') or '—'} · 广度 {market.get('breadth') or '—'} · "
+        f"情绪 {market.get('sentiment') or '—'} · 流动性 {market.get('liquidity') or '—'} · "
+        f"风险偏好分数 {fmt_num(market.get('riskAppetiteScore'))} · 短线生态 {market.get('shortTermEcology') or '—'}"
+    )
+    lines.append("")
+
+    lines.append("**② 机会识别**")
+    if sector:
+        lines.append(
+            f"- 板块：{sector.get('summary') or '—'}"
+        )
+    lines.append(
+        f"- 个股：{stock.get('summary') or '—'}（趋势 {stock.get('trendDirection') or '—'} · "
+        f"阶段 {stock.get('trendStage') or '—'} · 位置 {stock.get('pricePosition') or '—'} · "
+        f"结构 {stock.get('structure') or '—'} · 质量 {stock.get('quality') or '—'}）"
+    )
+    vp = stock.get("volumePrice") or []
+    if vp:
+        lines.append(
+            "- 量价：" + "；".join(
+                f"{item.get('type') or item.get('code')}"
+                + (f"（{item.get('meaning')}）" if item.get("meaning") else "")
+                for item in vp
+            )
+        )
+    auction = stock.get("auction") or []
+    if auction:
+        lines.append("- 竞价：" + "；".join(f"{item.get('type')}：{item.get('note')}" for item in auction))
+    intraday = stock.get("intraday") or []
+    if intraday:
+        lines.append("- 盘中：" + "；".join(f"{item.get('type')}：{item.get('note')}" for item in intraday))
+    if event:
+        lines.append(
+            f"- 事件：{event.get('summary') or '—'}（真实 {event.get('verified')} · 相关 {event.get('businessRelevant')} · "
+            f"已反映 {event.get('alreadyPriced')} · 价格确认 {event.get('priceConfirmation')}）"
+        )
+    stage = (opportunity.get("stage") or {}).get("label") or STAGE_LABEL.get(opportunity.get("stageCode"), opportunity.get("stageCode")) or "—"
+    lines.append(
+        f"- 机会阶段：**{stage}** · 结论：{opportunity.get('verdict') or '—'}"
+    )
+    if opportunity.get("supportingSummary"):
+        lines.append(f"- 支持证据：{opportunity['supportingSummary']}")
+    if opportunity.get("counterSummary"):
+        lines.append(
+            f"- 反向证据：{opportunity['counterSummary']}"
+            f"（已审查 {opportunity.get('counterEvidenceReviewed')}）"
+        )
+    lines.append(
+        f"- 风险收益：盈亏比 {fmt_num(risk_reward.get('expectedRewardRiskRatio'))} · "
+        f"潜在收益 {fmt_num(risk_reward.get('potentialGainPct'))}% · "
+        f"潜在亏损 {fmt_num(risk_reward.get('potentialLossPct'))}% · "
+        f"计划仓位 {fmt_weight(risk_reward.get('plannedPositionWeight'))}"
+    )
+    if risk_reward.get("winRateBasis"):
+        lines.append(f"- 胜率依据：{risk_reward['winRateBasis']}")
+    lines.append("")
+
+    lines.append("**③ 交易判断**")
+    lines.append(f"- {decision.get('summary') or '—'}")
+    if decision.get("reasons"):
+        for reason in decision.get("reasons")[:4]:
+            lines.append(f"  - {reason}")
+    failed = [
+        item for item in data.get("checks") or []
+        if item.get("status") in {"fail", "unknown"}
+    ]
+    if failed:
+        lines.append("- 检查提示")
+        for item in failed[:8]:
+            status = "阻断" if item.get("blocking") else "提示"
+            lines.append(f"  - **{status}** `{item.get('id')}` {item.get('label')}：{item.get('detail')}")
+    else:
+        lines.append(f"- {len(data.get('checks') or [])} 项检查全部通过。")
+    if judgment.get("invalidation"):
+        lines.append(f"- 失效条件：{judgment['invalidation']}")
+    lines.append("")
+
+    lines.append("**④ 行为管理**")
+    rules = behavior.get("rules") or []
+    primary = behavior.get("primaryRules") or []
+    if primary:
+        lines.append("- 当前主规则")
+        for rule in primary:
+            lines.append(
+                f"  - **{rule.get('action', {}).get('label') or rule.get('actionCode')}**：{rule.get('condition')}"
+                f"（优先级 {rule.get('priority')}）"
+            )
+    others = [rule for rule in rules if rule not in primary]
+    if others:
+        lines.append("- 其他条件")
+        for rule in others[:7]:
+            lines.append(
+                f"  - **{rule.get('action', {}).get('label') or rule.get('actionCode')}**：{rule.get('condition')}"
+            )
+    position = data.get("position") or {}
+    trade_context = data.get("tradeContext") or {}
+    budget = trade_context.get("riskBudget") or {}
+    if position:
+        state = position.get("state") or {}
+        lines.append(
+            f"- 当前持仓：权重 {fmt_weight(position.get('weight'))} · 成本 {fmt_price(position.get('avgCost'))} · "
+            f"现价 {fmt_price(state.get('lastPrice'))} · 可卖 {fmt_num(state.get('availableQuantity'))}"
+        )
+    if budget:
+        lines.append(
+            f"- 风险预算：使用率 {fmt_pct(budget.get('utilization'))} · 单票上限 {fmt_weight(budget.get('maxSingleNameWeight'))}"
+        )
+    lines.append("")
+
+    lines.append("**⑤ 结果验证**")
+    if verification:
+        result = (verification.get("result") or {}).get("label") or verification.get("resultCode") or "—"
+        lines.append(
+            f"- 验证结论：**{result}** · 收益 {fmt_num(verification.get('returnPct'))}% · "
+            f"最大不利偏移 {fmt_num(verification.get('maxAdverseExcursion'))}% · "
+            f"最大有利偏移 {fmt_num(verification.get('maxFavorableExcursion'))}% · "
+            f"逻辑仍成立 {verification.get('logicStillValid')}"
+        )
+        if verification.get("lesson"):
+            lines.append(f"- 验证经验：{verification['lesson']}")
+    else:
+        lines.append("- 尚未形成结果验证；新判断应标记待验证。")
+    if revisions:
+        lines.append("- 判断版本变化")
+        for revision in revisions:
+            lines.append(
+                f"  - v{revision.get('fromVersion')} → v{revision.get('toVersion')}：{revision.get('reason')}"
+            )
+            if revision.get("triggerEvidence"):
+                labels = "、".join(
+                    item.get("label") or item.get("id") or ""
+                    for item in revision["triggerEvidence"]
+                )
+                lines.append(f"    - 触发证据：{labels}")
+    lines.append("")
+    lines.append(
+        "**与 1.9 的差异**：1.9 的 `evaluate_trade` 在已有决策后检查执行约束；"
+        "本流程先判断机会是否成立，把买入与持仓分开，并把判断版本、行为规则与结果验证写成同一案例。"
+    )
+    lines.append("")
+    lines.append(f"**边界**：{data.get('dataNote') or ''}")
     return "\n".join(lines)

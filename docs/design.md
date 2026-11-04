@@ -1,9 +1,10 @@
 # A 股投资决策本体 — 设计说明
 
-> 版本：1.9.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
+> 版本：1.10.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
 
 本文说明本体“为什么这样建模”、每层使用了哪些 W3C 构造、跨层链路如何工作，以及当前实现的边界。
-1.1 与 1.9 的领域清单分别见 [expansion-1.1.md](expansion-1.1.md) 与 [expansion-1.9.md](expansion-1.9.md)。
+1.1、1.9 与 1.10 的领域清单分别见 [expansion-1.1.md](expansion-1.1.md)、
+[expansion-1.9.md](expansion-1.9.md) 与 [expansion-1.10.md](expansion-1.10.md)。
 自然语言标签与定义在 Turtle 中；本文是设计说明，不是本体的替代物。
 
 ---
@@ -150,8 +151,8 @@ FIBO 的官方扩展，也不受 FIBO 治理机构背书。
 .../a-share/odrl
 ```
 
-每个模块都声明 `owl:Ontology` 与 `owl:versionInfo "1.0.0"`；聚合入口声明
-`owl:versionIRI .../a-share/1.0.0`。
+每个模块都声明 `owl:Ontology` 与 `owl:versionInfo "1.10.0"`；聚合入口声明
+`owl:versionIRI .../a-share/1.10.0`。
 
 ### 4.3 版本策略
 
@@ -269,8 +270,8 @@ ash:Entity
 
 ### 6.2 属性
 
-- 167 个对象属性；
-- 284 个数据属性；
+- 317 个对象属性；
+- 494 个数据属性；
 - 每个属性有 `rdfs:domain`、`rdfs:range` 和中英文标签；
 - 典型属性：
   - `ash:hasSecurity` / `ash:issuedBy`；
@@ -307,7 +308,7 @@ RDFS 推断主要依赖：
 
 ### 7.1 类限制
 
-100 条 `owl:Restriction`，代表性约束：
+223 条 `owl:Restriction`，代表性约束：
 
 | 类 | 约束 |
 | --- | --- |
@@ -357,7 +358,7 @@ RDFS 推断主要依赖：
 
 ### 7.4 不相交
 
-6 组 `owl:AllDisjointClasses`：
+20 组 `owl:AllDisjointClasses`：
 
 - 市场参与者子类；
 - `Security` / `Index`；
@@ -380,9 +381,9 @@ RDFS 推断主要依赖：
 
 ---
 
-## 8. SKOS 层：十四套概念方案
+## 8. SKOS 层：二十二套概念方案
 
-文件：`ontology/skos/taxonomy.ttl`（1,532 条三元组）
+文件：`ontology/skos/taxonomy.ttl`（1,979 条三元组）
 
 ### 8.1 方案
 
@@ -402,8 +403,16 @@ RDFS 推断主要依赖：
 | `ashs:scheme-sizing-method` | 4 | 固定比例、ATR、等权、凯利上限 |
 | `ashs:scheme-review-verdict` | 5 | 过程正确、过程待改进、规则需修订、结果含运气/体现能力 |
 | `ashs:scheme-decision-level` | 4 | 战略配置、战术配置、交易执行、复盘迭代 |
+| `ashs:scheme-opportunity-stage` | 4 | 启动、确认、延续、衰退 |
+| `ashs:scheme-judgment-scenario` | 2 | 非持仓、已持仓 |
+| `ashs:scheme-judgment-decision` | 6 | 买入、持有、加仓、减仓、卖出、观望 |
+| `ashs:scheme-volume-price-pattern` | 13 | 8 种量价行为 + 1 个组合父概念 + 4 个组合序列 |
+| `ashs:scheme-auction-behavior` | 8 | 高开、低开、抢筹、衰退、弱转强、强转弱、封单增强、封单衰减 |
+| `ashs:scheme-intraday-behavior` | 8 | 主动拉升、冲高回落、回踩承接、横盘换手、突破加速、跌破失守、尾盘抢筹、尾盘兑现 |
+| `ashs:scheme-behavior-action` | 7 | 建仓、加仓、持有、减仓、止盈、止损、观望 |
+| `ashs:scheme-verification-result` | 4 | 逻辑成立、逻辑减弱、逻辑失效、待验证 |
 
-合计 173 个概念。
+合计 225 个概念。
 
 ### 8.2 构造
 
@@ -517,15 +526,15 @@ SWRL 基于开放世界与一阶 Horn 逻辑，本项目刻意不表达：
 
 ## 10. OWL-S 层：服务
 
-文件：`ontology/owl-s/service.ttl`（628 条三元组）
+文件：`ontology/owl-s/service.ttl`（895 条三元组）
 
 ### 10.1 三个视角
 
 | OWL-S 视角 | 本项目的表达 |
 | --- | --- |
 | Profile | 服务名称、描述、分类、输入、输出、前置条件、类别 |
-| Process Model | 2 个 `CompositeProcess`：决策服务 7 步，生命周期服务 8 步 |
-| Grounding | 2 个 `WsdlGrounding`，共 15 个 `WsdlAtomicProcessGrounding` + WSDL 操作名 |
+| Process Model | 3 个 `CompositeProcess`：决策服务 7 步，生命周期服务 8 步，交易认知服务 7 步 |
+| Grounding | 3 个 `WsdlGrounding`，共 22 个 `WsdlAtomicProcessGrounding` + WSDL 操作名 |
 
 ### 10.2 七步流程
 
@@ -558,6 +567,19 @@ SWRL 基于开放世界与一阶 Horn 逻辑，本项目刻意不表达：
 执行质量、交易后复盘和规则修订。前置条件新增“风险预算使用率低于 100%、单笔风险不超过
 riskPerTradeLimit、预计单票权重不超过 maxSingleNameWeight”。
 
+### 10.2.2 交易认知服务（1.10）
+
+`svc-trading-cognition` 把五引擎判断体系写成服务契约：
+
+```text
+01 市场认知 → 02 个股认知 → 03 事件认知 → 04 机会识别
+→ 05 交易判断 → 06 行为管理 → 07 结果验证
+```
+
+输入为认知标的、行情/风险快照、账户与持仓状态和交易政策；输出为市场认知、个股认知、
+事件认知、机会评估、交易判断、行为规则和结果验证。前置条件新增“反向证据逐条审查、判断包含
+失效条件、非持仓与已持仓使用不同流程、判断版本变化记录触发证据”。
+
 ### 10.3 规范状态
 
 OWL-S 1.2 是 W3C Member Submission（2004-11-22），不是 W3C Recommendation。本仓库显式记录
@@ -568,7 +590,7 @@ OWL-S 作为语义服务契约。
 
 ## 11. ODRL 层：政策
 
-文件：`ontology/odrl/policies.ttl`（499 条三元组）
+文件：`ontology/odrl/policies.ttl`（607 条三元组）
 
 ### 11.1 政策清单
 
@@ -580,6 +602,7 @@ OWL-S 作为语义服务契约。
 | `policy-ai-analysis` | `odrl:Agreement` | AI 辅助分析 | 允许 read/use/reproduce；约束 purpose、recipient isA QualifiedInvestor；禁止绕过人工审批执行订单；义务 attribute/reviewPolicy |
 | `policy-hot-money-data` | `odrl:Set` | 龙虎榜/游资数据 | 允许 read/derive；约束 purpose/recipient；禁止自动执行订单；义务 attribute/reviewPolicy |
 | `policy-trade-lifecycle` | `odrl:Agreement` | 风险预算、交易计划、复盘 | 允许 read/use/derive；约束预算使用率 < 100%；禁止未审批或预算超限时执行；义务标注来源并完成复盘 |
+| `policy-trading-cognition` | `odrl:Agreement` | 交易判断、机会评估、结果验证 | 允许用于投资决策支持；禁止反向证据未审查、市场风险偏好过低或未人工批准时执行；义务标注来源并完成结果验证 |
 
 ### 11.2 关键构造
 
@@ -657,6 +680,26 @@ ODRL 政策是**声明式**的。本仓库：
 “从数据到投资决策”的七步服务。新增 ODRL 政策 `policy-trade-lifecycle` 把风险预算、人工批准
 和复盘义务写成可检查约束。详见 [expansion-1.9.md](expansion-1.9.md)。
 
+### 13.1 交易认知扩展（1.10）
+
+1.10 回应“为什么值得买、买入后什么情况下继续持有或卖出的判断体系”问题，新增五引擎认知层：
+
+1. **市场认知**：`MarketCognition`、`SectorCognition` 记录市场趋势、广度、情绪、流动性、
+   风险偏好、短线生态与板块趋势/资金/扩散/龙头/题材持续性；
+2. **个股认知**：`StockCognition` 组合趋势阶段、价格结构、`VolumePriceBehavior`、
+   `AuctionBehavior` 与 `IntradayBehavior`；
+3. **事件认知**：`EventCognition` 判断事件真实性、业务相关性、是否已反映、板块共振与价格确认；
+4. **机会评估**：`OpportunityAssessment` 汇总支持证据、反向证据、机会阶段与
+   `RiskRewardAssessment`，不做加权评分；
+5. **交易判断**：`TradingJudgment` 按 `non_position`/`held` 两套流程形成结论，配套
+   `BehaviorRule`、`JudgmentRevision` 与 `OutcomeVerification`。
+
+`AnalysisCase` 把五个引擎串成一个可追溯案例；新增 OWL-S 服务 `svc-trading-cognition`
+（七步：市场认知 → 个股认知 → 事件认知 → 机会识别 → 交易判断 → 行为管理 → 结果验证）与
+ODRL 政策 `policy-trading-cognition`。Agent 新增 `evaluate_cognition`，与
+`evaluate_trade` 分工：前者判断机会与持仓逻辑，后者检查计划能否执行。详见
+[expansion-1.10.md](expansion-1.10.md)。
+
 ## 14. 校验与测试
 
 ### 14.1 结构校验
@@ -679,15 +722,15 @@ ODRL 政策是**声明式**的。本仓库：
 
 ```text
 modules: 7
-triples: 44372
-classes: 337
-object properties: 258
-data properties: 395
-SKOS concepts: 173
-SWRL rules: 161
-OWL-S services: 2
-ODRL policies: 6
-OWL RL closure: 34487 -> 69413 triples (34926 inferred)
+triples: 47958
+classes: 363
+object properties: 317
+data properties: 494
+SKOS concepts: 225
+SWRL rules: 169
+OWL-S services: 3
+ODRL policies: 7
+OWL RL closure: 37236 -> 78339 triples (41103 inferred)
 warnings: 0
 ```
 
@@ -696,13 +739,13 @@ warnings: 0
 使用 Firefox + Playwright 做冒烟检查：
 
 - 页面标题与数据快照加载；
-- 3,742 个实体、161 条规则、15 个流程步骤、6 项政策渲染；
+- 4,058 个实体、169 条规则、22 个流程步骤、7 项政策渲染；
 - 搜索 `InvestmentDecision` 返回 1 条；
 - 点击实体详情显示 8 条 OWL 限制；
 - 规则严重程度筛选、政策 tab、概念树、示例 tab 交互正常；
 - 短线面板：6 个 KPI、4 步剧本、3 张方法论卡、情绪六阶段、R16–R26 规则、游资科技短线决策；
 - 技能目录：50 个技能、821 个章节、20 个主题、1,327 条短原话可在 Explorer 检索；
-- 图谱四种模式：核心全景 51 节点、全部类 337 节点、决策链 47 节点/带标签边、SKOS 173 节点；
+- 图谱四种模式：核心全景 51 节点、全部类 363 节点、决策链 47 节点/带标签边、SKOS 225 节点；
 - 图谱缩放、图例隐藏/恢复、节点聚焦、跳转 Explorer/SKOS 均正常；
 - 桌面与 390px 手机视口无横向滚动、无 console error；
 - 截图见 `docs/evidence/`。
@@ -756,12 +799,12 @@ index.html + assets/js/app.js
 图谱使用原生 SVG 与自实现力导向布局，不引入 D3 或图表库：
 
 - **核心全景**：51 个核心类节点，保证可读性；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
-- **全部类**：337 个类节点，用于查看完整扩展域；
+- **全部类**：363 个类节点，用于查看完整扩展域；
 - **决策链**：19 个核心类的手工布局，边标签显示对象属性，适合讲解决策路径；
-- **SKOS 分类**：173 个概念，按十四套 ConceptScheme 着色，边为 `broader`；
+- **SKOS 分类**：225 个概念，按二十二套 ConceptScheme 着色，边为 `broader`；
 - **交互**：滚轮缩放、拖拽平移、图例筛选、节点聚焦、`标签`开关；点击节点在右侧显示类/概念详情；
 - **联动**：详情中的“在 Explorer 中打开”跳转到实体浏览器；“在 SKOS 分类中查看”跳转到概念树；
-- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、294 节点全部类并缩放查看；
+- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、363 节点全部类并缩放查看；
 - **规模评估**：图谱下方固定展示类/属性/概念/三元组规模，并明确“参考实现而非 FIBO 级行业本体”。
 
 图谱节点与边全部来自 `DATA.classes`、`DATA.objectProperties`、`DATA.concepts`，没有手工维护的第二份图数据。

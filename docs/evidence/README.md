@@ -54,6 +54,9 @@ These captures document the browser work for the A-share ontology tickets.
 | `decision-layer-before-agent.png` | Same baseline, rules mode, question “华辰智造的买点、卖点和仓位限制是什么？” | 1240 × 1062 | Baseline: the question is treated as ordinary company analysis; R06 is reported but there is no account, risk-budget, sizing or buy/sell limit answer. |
 | `decision-layer-after-agent.png` | 1.9 branch, same rules-mode server, question, viewport and scroll position | 1240 × 1062 | `evaluate_trade` reads the account, position, 77.5% risk-budget utilization, 10% single-name cap and blocked entry plan; shows the buy/sell limits and approval gate. |
 | `decision-layer-after-review.png` | Same 1.9 answer, scrolled to the bottom | 1240 × 1062 | Closed loop: 12 bps slippage, 15.8% realized return, PROCESS_IMPROVE review, recurring finding and rule revision RR-2026-001; query path shows R152–R161. |
+| `cognition-before.png` | `main` at `2472cbb` (1.9), before the 1.10 cognition branch; static page on `127.0.0.1:8013` | 1440 × 1000 | Baseline hero: 337 classes, 44,372 triples, 161 rules, 173 concepts; version v1.9.0; 6 ODRL policies. |
+| `cognition-after.png` | 1.10 ticket branch, same page, viewport and theme on `127.0.0.1:8014` | 1440 × 1000 | Hero after the expansion: 363 classes, 47,958 triples, 169 rules, 225 concepts; version v1.10.0; 7 ODRL policies. |
+| `cognition-explorer-after.png` | 1.10 ticket branch, Explorer opened at `#entity=class:MarketCognition`, same viewport | 1440 × 1000 | The new `市场认知 Market Cognition` class detail: definition, superclass, OWL restrictions (data date, summary, regime) and the 4,058-entity browser. |
 
 The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
 not a mockup. Most after captures use the actual FastAPI backend and the real `index.html`; no LLM
@@ -83,10 +86,12 @@ before this ticket, and the after captures are from the ticket branch served on
 the sticky header was hidden for these screenshots; both sides of each pair use the same viewport,
 question and treatment. The baseline is a real capture of the previous implementation, not a mockup.
 
-The page was served by `uvicorn server.main:app`; screenshots were taken with Playwright/Chromium.
+The page was served by `uvicorn server.main:app`; screenshots were taken with Playwright/Chromium (the cognition pair uses the bundled Firefox headless CLI).
 All example content is synthetic; the `real-data-*` pair additionally shows a live public-data query
 against Eastmoney's anonymous JSON endpoints. The `trace-*` pair uses the same rules-mode scenario
 (before/after the change) and the same 1440 × 1000 viewport; `trace-after-detail.png` is a close-up
 of the changed panel. LLM-mode trace rendering was checked in Chromium against a stubbed
 `/api/agent/analyze` response for the rules-mode pairs; the `open-query-*` pair was captured against
 the live provider. See the repository README for the disclaimer.
+
+The `cognition-*` pair uses the same static page and 1440 × 1000 viewport: the baseline is the `main` worktree at `2472cbb` before this ticket, and the after capture is the ticket branch. Both were served by `python3 -m http.server` and rendered with the bundled Firefox headless CLI; the intended difference is the regenerated `assets/js/data.js` snapshot and the version badge; `cognition-explorer-after.png` additionally opens the new `MarketCognition` class in the Explorer.

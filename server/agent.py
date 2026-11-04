@@ -15,6 +15,7 @@ from .answers import (
     compose_compare,
     compose_comparison,
     compose_constraints,
+    compose_cognition,
     compose_evidence,
     compose_list,
     compose_policies,
@@ -59,6 +60,7 @@ SYSTEM_PROMPT = """你是「ASHARE · 本体股票分析 Agent」，服务于一
 - 证据链用属性路径和反向遍历；否定/缺失条件用 FILTER NOT EXISTS；聚合用 GROUP BY；排序用 ORDER BY。只允许 SELECT/ASK，禁止更新、SERVICE/FROM 远程加载；必须写 LIMIT，单次最多返回 50 行。
 - 一个复杂问题可以多轮“生成→执行→按结果修正”，最多 6 轮；不要重复相同查询，也不要一次生成过多无目标查询。
 - 组合/合规问题：查询 Portfolio、Position、ODRL 政策与约束，明确哪些输入（权重、风险分数、人工批准、合规结论）缺失；不要声称执行了实际未执行的检查。
+- 认知/判断问题：1.10 新增 MarketCognition、SectorCognition、StockCognition、EventCognition、OpportunityAssessment、RiskRewardAssessment、TradingJudgment、BehaviorRule、JudgmentRevision、OutcomeVerification 与 AnalysisCase。涉及“市场认知 → 机会识别 → 交易判断 → 行为管理 → 结果验证”、买入机会、持仓逻辑或判断版本变化时，查询这些类与关系；不要用加权评分替代反向证据审查。
 - 情景问题：只读查询不能修改图；说明假设与规则阈值，不要假装重算或预测。
 - 数据缺失与自驱获取：load_company_data 返回的 missingData 会列出缺失的短线字段。需要这些事实时，先调用 acquire_data（省略 fields 即自动补齐缺失字段），由你自己从公开数据源抓取、校验并写入本体，再用 SPARQL 查询更新后的事实。不要要求用户补数据源、贴接口或预先写适配器；内置数据源覆盖东方财富龙虎榜、买方席位与涨停池，其他公开数据可用 source 传入声明式数据源（HTTPS 公开金融域名 + url + fields 映射）自行接入。只有个人交易日志等非公开数据，才说明需要用户提供并列出所需字段。同一问题内不要重复抓取相同数据。
 
@@ -486,6 +488,9 @@ class AgentService:
         elif intent == "trade":
             result = await run("evaluate_trade", value)
             answer = compose_trade(result.get("data") or {}) if result.get("ok") else self._tool_error_answer(result)
+        elif intent == "cognition":
+            result = await run("evaluate_cognition", value)
+            answer = compose_cognition(result.get("data") or {}) if result.get("ok") else self._tool_error_answer(result)
         elif intent == "portfolio":
             result = await run("get_portfolio_analysis", {})
             answer = compose_portfolio(result.get("data") or {}) if result.get("ok") else self._tool_error_answer(result)
@@ -661,6 +666,24 @@ class AgentService:
             "仓位测算",
             "仓位怎么定",
         )
+        cognition_words = (
+            "认知",
+            "机会识别",
+            "交易判断",
+            "行为管理",
+            "结果验证",
+            "五引擎",
+            "五个引擎",
+            "判断体系",
+            "交易体系",
+            "买入机会",
+            "持仓逻辑",
+            "持仓管理",
+            "继续持有",
+            "该不该持有",
+            "值得继续持有",
+            "为什么值得买",
+        )
         policy_words = ("政策", "odrl", "合规", "治理", "人工批准")
         search_words = ("本体", "类", "属性", "概念", "定义", "解释", "是什么", "是啥", "含义")
         list_words = ("公司", "标的", "列表", "清单", "有什么")
@@ -686,6 +709,37 @@ class AgentService:
         explicit_industry = bool(spec.get("industry"))
         real_universe = is_real_universe_question(question)
 
+        if any(word in lower for word in cognition_words) and (
+            companies
+            or any(
+                word in lower
+                for word in (
+                    "体系",
+                    "五引擎",
+                    "五个引擎",
+                    "机会识别",
+                    "交易判断",
+                    "行为管理",
+                    "结果验证",
+                    "买入机会",
+                    "持仓逻辑",
+                    "继续持有",
+                    "该不该",
+                    "为什么值得买",
+                )
+            )
+        ):
+            held_words = ("持有", "持仓", "减仓", "卖出", "清仓", "持仓管理")
+            entry_words = ("买入机会", "该不该买", "为什么值得买", "建仓", "值得买")
+            scenario = (
+                "non_position"
+                if any(word in lower for word in entry_words)
+                else ("held" if any(word in lower for word in held_words) else "auto")
+            )
+            return "cognition", {
+                "company": self.store._label(companies[0]) if companies else None,
+                "scenario": scenario,
+            }
         if any(word in lower for word in trade_words):
             has_buy = any(word in lower for word in ("买", "加仓", "建仓"))
             has_sell = any(word in lower for word in ("卖", "减仓", "清仓", "止盈"))

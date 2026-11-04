@@ -28,7 +28,7 @@
     dcterms:description "使用 SWRL RDF 具体语法编码的可执行决策与风险规则。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/SWRL/> ;
     rdfs:seeAlso <https://www.w3.org/Submission/SWRL/> ;
-    owl:versionInfo "1.9.0" ;
+    owl:versionInfo "1.10.0" ;
     ash:designNote "SWRL 是 W3C Member Submission，不是 Recommendation；本层明确标注规范状态，并在工程实现中由规则引擎执行。"@zh .
 
 # ===========================================================================
@@ -4258,3 +4258,246 @@ ashd:rule-hard-limit-halt
     swrl:head (
         [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingHalted ; swrl:argument1 ashd:var-lc-utilization ]
     ) .
+
+# ===========================================================================
+# Domain expansion 1.10 — trading cognition rules
+# ===========================================================================
+# These rules encode only monotone gates from the cognition pipeline:
+# market veto, risk-reward threshold, counter-evidence completeness, stage
+# consistency, judgment versioning and outcome verification. Scenario-specific
+# position sizing and human approval remain outside SWRL.
+
+ashd:rule-cognition-market-veto
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R162" ;
+    rdfs:label "市场风险偏好否决"@zh, "Market risk-appetite veto"@en ;
+    rdfs:comment "市场认知的风险偏好分数低于 30 时，推断市场否决，新增风险敞口应暂停。"@zh ;
+    ash:ruleIf "marketRiskAppetiteScore < 30"@zh ;
+    ash:ruleThen "市场认知被推断为 ash:MarketVeto"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 2 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的市场环境否决原则；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:MarketCognition ;
+    ash:ruleUses ash:marketRiskAppetiteScore ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketCognition ; swrl:argument1 ashd:var-cog-market ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:marketRiskAppetiteScore ; swrl:argument1 ashd:var-cog-market ; swrl:argument2 ashd:var-cog-appetite ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-cog-appetite "30.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:MarketVeto ; swrl:argument1 ashd:var-cog-market ]
+    ) .
+ashd:var-cog-market a swrl:Variable ; rdfs:label "?marketCognition" .
+ashd:var-cog-appetite a swrl:Variable ; rdfs:label "?riskAppetiteScore" .
+
+ashd:rule-cognition-risk-reward
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R163" ;
+    rdfs:label "风险收益不足"@zh, "Risk-reward insufficient"@en ;
+    rdfs:comment "预期盈亏比低于 2.0 时，推断风险收益不足，机会即使成立也不值得重仓。"@zh ;
+    ash:ruleIf "expectedRewardRiskRatio < 2.0"@zh ;
+    ash:ruleThen "风险收益评估被推断为 ash:RiskRewardInsufficient"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 9 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的风险收益门槛；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:RiskRewardAssessment ;
+    ash:ruleUses ash:expectedRewardRiskRatio ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RiskRewardAssessment ; swrl:argument1 ashd:var-cog-rr ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:expectedRewardRiskRatio ; swrl:argument1 ashd:var-cog-rr ; swrl:argument2 ashd:var-cog-rrvalue ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ashd:var-cog-rrvalue "2.0"^^xsd:decimal ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:RiskRewardInsufficient ; swrl:argument1 ashd:var-cog-rr ]
+    ) .
+ashd:var-cog-rr a swrl:Variable ; rdfs:label "?riskReward" .
+ashd:var-cog-rrvalue a swrl:Variable ; rdfs:label "?rewardRiskRatio" .
+
+ashd:rule-cognition-counter-evidence
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R164" ;
+    rdfs:label "反向证据未审查"@zh, "Counter-evidence not reviewed"@en ;
+    rdfs:comment "存在反向证据但没有完成审查时，推断判断证据不完整。"@zh ;
+    ash:ruleIf "counterEvidenceCount ≥ 1 且 counterEvidenceReviewed = false"@zh ;
+    ash:ruleThen "机会评估被推断为 ash:JudgmentIncomplete"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 8 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的反向证据审查原则；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:OpportunityAssessment ;
+    ash:ruleUses ash:counterEvidenceCount, ash:counterEvidenceReviewed ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:OpportunityAssessment ; swrl:argument1 ashd:var-cog-opp ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:counterEvidenceCount ; swrl:argument1 ashd:var-cog-opp ; swrl:argument2 ashd:var-cog-count ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ashd:var-cog-count "1"^^xsd:integer ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:counterEvidenceReviewed ; swrl:argument1 ashd:var-cog-opp ; swrl:argument2 ashd:var-cog-reviewed ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-reviewed "false"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:JudgmentIncomplete ; swrl:argument1 ashd:var-cog-opp ]
+    ) .
+ashd:var-cog-opp a swrl:Variable ; rdfs:label "?opportunity" .
+ashd:var-cog-count a swrl:Variable ; rdfs:label "?counterEvidenceCount" .
+ashd:var-cog-reviewed a swrl:Variable ; rdfs:label "?counterEvidenceReviewed" .
+
+ashd:rule-cognition-decline-buy
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R165" ;
+    rdfs:label "衰退期买入阻断"@zh, "Entry blocked in declining opportunity"@en ;
+    rdfs:comment "机会阶段已进入衰退而判断仍为买入时，推断买入受阻。"@zh ;
+    ash:ruleIf "opportunityStageCode = decline 且 judgmentDecisionCode = buy"@zh ;
+    ash:ruleThen "交易判断被推断为 ash:EntryBlocked"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 6 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的机会阶段与决策一致性原则；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJudgment ;
+    ash:ruleUses ash:judgmentFromAssessment, ash:opportunityStageCode, ash:judgmentDecisionCode ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJudgment ; swrl:argument1 ashd:var-cog-judgment ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:judgmentDecisionCode ; swrl:argument1 ashd:var-cog-judgment ; swrl:argument2 ashd:var-cog-decision ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-decision "buy"^^xsd:string ) ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ash:judgmentFromAssessment ; swrl:argument1 ashd:var-cog-judgment ; swrl:argument2 ashd:var-cog-assessment ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:opportunityStageCode ; swrl:argument1 ashd:var-cog-assessment ; swrl:argument2 ashd:var-cog-stage ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-stage "decline"^^xsd:string ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:EntryBlocked ; swrl:argument1 ashd:var-cog-judgment ]
+    ) .
+ashd:var-cog-judgment a swrl:Variable ; rdfs:label "?tradingJudgment" .
+ashd:var-cog-decision a swrl:Variable ; rdfs:label "?judgmentDecisionCode" .
+ashd:var-cog-assessment a swrl:Variable ; rdfs:label "?opportunityAssessment" .
+ashd:var-cog-stage a swrl:Variable ; rdfs:label "?opportunityStageCode" .
+
+ashd:rule-cognition-judgment-revised
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R166" ;
+    rdfs:label "判断版本已更新"@zh, "Judgment version updated"@en ;
+    rdfs:comment "判断修订后的版本号高于修订前版本号时，推断判断已更新。"@zh ;
+    ash:ruleIf "revisionToVersion > revisionFromVersion"@zh ;
+    ash:ruleThen "判断修订被推断为 ash:JudgmentUpdated"@zh ;
+    ash:severity "medium" ;
+    ash:rulePriority 20 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的判断版本化要求；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:JudgmentRevision ;
+    ash:ruleUses ash:revisionFromVersion, ash:revisionToVersion ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:JudgmentRevision ; swrl:argument1 ashd:var-cog-revision ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:revisionFromVersion ; swrl:argument1 ashd:var-cog-revision ; swrl:argument2 ashd:var-cog-from ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:revisionToVersion ; swrl:argument1 ashd:var-cog-revision ; swrl:argument2 ashd:var-cog-to ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ashd:var-cog-to ashd:var-cog-from ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:JudgmentUpdated ; swrl:argument1 ashd:var-cog-revision ]
+    ) .
+ashd:var-cog-revision a swrl:Variable ; rdfs:label "?judgmentRevision" .
+ashd:var-cog-from a swrl:Variable ; rdfs:label "?fromVersion" .
+ashd:var-cog-to a swrl:Variable ; rdfs:label "?toVersion" .
+
+ashd:rule-cognition-logic-invalidated
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R167" ;
+    rdfs:label "结果证伪逻辑"@zh, "Outcome invalidated logic"@en ;
+    ash:ruleIf "verificationLogicStillValid = false"@zh ;
+    ash:ruleThen "结果验证被推断为 ash:LogicInvalidated"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 4 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "验证" ;
+    ash:ruleBasis "Issue #22 的结果验证原则；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:OutcomeVerification ;
+    ash:ruleUses ash:verificationLogicStillValid ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:OutcomeVerification ; swrl:argument1 ashd:var-cog-verification ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:verificationLogicStillValid ; swrl:argument1 ashd:var-cog-verification ; swrl:argument2 ashd:var-cog-valid ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-valid "false"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:LogicInvalidated ; swrl:argument1 ashd:var-cog-verification ]
+    ) .
+ashd:var-cog-verification a swrl:Variable ; rdfs:label "?outcomeVerification" .
+ashd:var-cog-valid a swrl:Variable ; rdfs:label "?logicStillValid" .
+
+ashd:rule-cognition-held-invalid
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R168" ;
+    rdfs:label "持仓逻辑失效"@zh, "Held logic invalidated"@en ;
+    rdfs:comment "已持仓判断的原始逻辑不再成立时，推断需要减仓或退出。"@zh ;
+    ash:ruleIf "judgmentScenarioCode = held 且 judgmentLogicStillValid = false"@zh ;
+    ash:ruleThen "交易判断被推断为 ash:ExitRequired"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 3 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的持仓管理原则；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:TradingJudgment ;
+    ash:ruleUses ash:judgmentScenarioCode, ash:judgmentLogicStillValid ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:TradingJudgment ; swrl:argument1 ashd:var-cog-held ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:judgmentScenarioCode ; swrl:argument1 ashd:var-cog-held ; swrl:argument2 ashd:var-cog-scenario ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-scenario "held"^^xsd:string ) ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:judgmentLogicStillValid ; swrl:argument1 ashd:var-cog-held ; swrl:argument2 ashd:var-cog-held-valid ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-held-valid "false"^^xsd:boolean ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:ExitRequired ; swrl:argument1 ashd:var-cog-held ]
+    ) .
+ashd:var-cog-held a swrl:Variable ; rdfs:label "?heldJudgment" .
+ashd:var-cog-scenario a swrl:Variable ; rdfs:label "?judgmentScenarioCode" .
+ashd:var-cog-held-valid a swrl:Variable ; rdfs:label "?judgmentLogicStillValid" .
+
+ashd:rule-cognition-opportunity-invalidated
+    a swrl:Imp, ash:RuleArtifact ;
+    ash:ruleId "R169" ;
+    rdfs:label "机会阶段衰退"@zh, "Opportunity stage declined"@en ;
+    ash:ruleIf "opportunityStageCode = decline"@zh ;
+    ash:ruleThen "机会评估被推断为 ash:OpportunityInvalidated"@zh ;
+    ash:severity "high" ;
+    ash:rulePriority 7 ;
+    ash:ruleStatus "active" ;
+    ash:ruleVersion "1.10.0" ;
+    ash:ruleOwner "投资决策委员会" ;
+    ash:ruleCategory "认知" ;
+    ash:ruleBasis "Issue #22 的机会阶段原则；阈值为示例"@zh ;
+    ash:ruleEffectiveFrom "2026-11-04"^^xsd:date ;
+    ash:appliesTo ash:OpportunityAssessment ;
+    ash:ruleUses ash:opportunityStageCode ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:OpportunityAssessment ; swrl:argument1 ashd:var-cog-decline ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ash:opportunityStageCode ; swrl:argument1 ashd:var-cog-decline ; swrl:argument2 ashd:var-cog-decline-code ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:equal ; swrl:arguments ( ashd:var-cog-decline-code "decline"^^xsd:string ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:ClassAtom ; swrl:classPredicate ash:OpportunityInvalidated ; swrl:argument1 ashd:var-cog-decline ]
+    ) .
+ashd:var-cog-decline a swrl:Variable ; rdfs:label "?decliningOpportunity" .
+ashd:var-cog-decline-code a swrl:Variable ; rdfs:label "?declineStageCode" .

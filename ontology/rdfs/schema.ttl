@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.9.0" .
+    owl:versionInfo "1.10.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -5663,3 +5663,1113 @@ ash:maxSingleNameWeight a owl:DatatypeProperty ;
     rdfs:range xsd:decimal ;
     rdfs:label "单票权重上限"@zh, "max single-name weight"@en ;
     rdfs:comment "风险预算允许的单一证券最大权重，取值 0—1；与投资者画像的单票上限分别治理。"@zh .
+
+# ===========================================================================
+# Domain expansion 1.10 — trading cognition pipeline
+# ===========================================================================
+# The five engines turn separate analysis dimensions into one decision process:
+# market cognition -> opportunity identification -> trading judgment ->
+# behavior management -> outcome verification. The model keeps buy-side and
+# holding-side flows separate through the judgment scenario.
+
+# ---------------------------------------------------------------------------
+# 1.10 — cognition engines and analysis case
+# ---------------------------------------------------------------------------
+
+ash:CognitionEngine a owl:Class ;
+    rdfs:subClassOf ash:Entity ;
+    rdfs:label "认知引擎"@zh, "Cognition Engine"@en ;
+    rdfs:comment "把一类市场证据组织成结构化判断输出的认知引擎；引擎不是独立 Agent，也不各自生成报告。"@zh .
+
+ash:MarketCognitionEngine a owl:Class ;
+    rdfs:subClassOf ash:CognitionEngine ;
+    rdfs:label "市场认知引擎"@zh, "Market Cognition Engine"@en ;
+    rdfs:comment "识别市场趋势、广度、情绪、流动性、风险偏好与短线生态，输出市场环境判断。"@zh .
+
+ash:StockCognitionEngine a owl:Class ;
+    rdfs:subClassOf ash:CognitionEngine ;
+    rdfs:label "个股认知引擎"@zh, "Stock Cognition Engine"@en ;
+    rdfs:comment "识别个股趋势阶段、价格位置、关键位、价格结构、量价行为、竞价与盘中行为，输出个股状态。"@zh .
+
+ash:EventCognitionEngine a owl:Class ;
+    rdfs:subClassOf ash:CognitionEngine ;
+    rdfs:label "事件认知引擎"@zh, "Event Cognition Engine"@en ;
+    rdfs:comment "把政策、产业、公司、资金、市场与风险事件关联到个股与板块，判断事件是否真实、相关、已反映和可被价格确认。"@zh .
+
+ash:OpportunityEngine a owl:Class ;
+    rdfs:subClassOf ash:CognitionEngine ;
+    rdfs:label "交易机会引擎"@zh, "Trading Opportunity Engine"@en ;
+    rdfs:comment "在机会结构、支持证据、反向证据和风险收益之间形成机会评估，输出机会阶段与交易信号。"@zh .
+
+ash:TradingDecisionEngine a owl:Class ;
+    rdfs:subClassOf ash:CognitionEngine ;
+    rdfs:label "交易决策引擎"@zh, "Trading Decision Engine"@en ;
+    rdfs:comment "把机会评估转换成买入、持有、加仓、减仓、卖出或观望的决策，并给出失效条件与行为规则。"@zh .
+
+ash:AnalysisCase a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "交易分析案例"@zh, "Analysis Case"@en ;
+    rdfs:comment "围绕一只证券和一个交易场景，把五个引擎的认知输出、判断、行为规则与结果验证串成可追溯案例。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.10 — market, sector, stock and event cognition
+# ---------------------------------------------------------------------------
+
+ash:MarketCognition a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "市场认知"@zh, "Market Cognition"@en ;
+    rdfs:comment "某一时点的市场环境判断：趋势、广度、情绪、流动性、风险偏好与短线生态，而不是行情数据堆叠。"@zh .
+
+ash:SectorCognition a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "板块认知"@zh, "Sector Cognition"@en ;
+    rdfs:comment "行业、板块或题材的趋势、资金、扩散、龙头、个股地位与题材持续性判断。"@zh .
+
+ash:StockCognition a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "个股认知"@zh, "Stock Cognition"@en ;
+    rdfs:comment "个股趋势阶段、价格结构、量价行为、竞价与盘中行为的组合判断。"@zh .
+
+ash:EventCognition a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "事件认知"@zh, "Event Cognition"@en ;
+    rdfs:comment "对事件真实性、业务相关性、是否已被市场反映、板块共振与价格确认的结构化判断。"@zh .
+
+ash:VolumePriceBehavior a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "量价行为"@zh, "Volume-Price Behavior"@en ;
+    rdfs:comment "价格上涨/下跌与成交量扩张/收缩的组合行为，以及多步量价序列；成交量只作为供需证据，不推断具体资金主体意图。"@zh .
+
+ash:AuctionBehavior a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "竞价行为"@zh, "Auction Behavior"@en ;
+    rdfs:comment "集合竞价阶段的高开、低开、抢筹、衰退、弱转强、强转弱、封单增强与封单衰减。"@zh .
+
+ash:IntradayBehavior a owl:Class ;
+    rdfs:subClassOf ash:InformationObject ;
+    rdfs:label "盘中行为"@zh, "Intraday Behavior"@en ;
+    rdfs:comment "盘中主动拉升、冲高回落、回踩承接、横盘换手、突破加速、跌破失守、尾盘抢筹与尾盘兑现。"@zh .
+
+ash:OpportunityAssessment a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "机会评估"@zh, "Opportunity Assessment"@en ;
+    rdfs:comment "机会结构、机会阶段、支持证据、反向证据、确认条件与风险收益的组合评估。"@zh .
+
+ash:RiskRewardAssessment a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "风险收益评估"@zh, "Risk-Reward Assessment"@en ;
+    rdfs:comment "胜率依据、潜在收益、潜在亏损、盈亏比、仓位、失效条件与交易成本的结构化评估。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.10 — trading judgment, behavior management and verification
+# ---------------------------------------------------------------------------
+
+ash:TradingJudgment a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "交易判断"@zh, "Trading Judgment"@en ;
+    rdfs:comment "一次可版本化的结构化交易判断：场景、市场状态、个股状态、核心机会、支持与反向证据、机会阶段、胜率依据、盈亏比、计划、决策与失效条件。"@zh .
+
+ash:BehaviorRule a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "行为管理规则"@zh, "Behavior Rule"@en ;
+    rdfs:comment "买入后或持仓中的加仓、持有、减仓、止盈、止损与观望条件，按交易场景分别使用。"@zh .
+
+ash:JudgmentRevision a owl:Class ;
+    rdfs:subClassOf ash:DecisionObject ;
+    rdfs:label "判断修订"@zh, "Judgment Revision"@en ;
+    rdfs:comment "记录是什么新事件或新证据改变了上一版交易判断，以及改变了哪个字段。"@zh .
+
+ash:OutcomeVerification a owl:Class ;
+    rdfs:subClassOf ash:AssessmentResult ;
+    rdfs:label "结果验证"@zh, "Outcome Verification"@en ;
+    rdfs:comment "用真实市场结果检验判断逻辑是否成立，并把偏差回写为经验或规则修订。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.10 — rule-inferred cognition states
+# ---------------------------------------------------------------------------
+
+ash:MarketVeto a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "市场否决"@zh, "Market Veto"@en ;
+    rdfs:comment "市场风险偏好过低或处于退潮阶段，新增风险敞口应被否决的状态。"@zh .
+
+ash:RiskRewardInsufficient a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "风险收益不足"@zh, "Risk-Reward Insufficient"@en ;
+    rdfs:comment "预期盈亏比低于交易门槛，机会即使成立也不值得行动的状态。"@zh .
+
+ash:JudgmentIncomplete a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "判断证据不完整"@zh, "Judgment Incomplete"@en ;
+    rdfs:comment "存在反向证据但没有完成审查，或缺少失效条件，判断不能视为完成的状态。"@zh .
+
+ash:OpportunityInvalidated a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "机会失效"@zh, "Opportunity Invalidated"@en ;
+    rdfs:comment "机会阶段进入衰退、价格结构破位或反向证据占据主导，原交易逻辑不再成立的状态。"@zh .
+
+ash:JudgmentUpdated a owl:Class ;
+    rdfs:subClassOf ash:Signal ;
+    rdfs:label "判断已修订"@zh, "Judgment Updated"@en ;
+    rdfs:comment "判断版本因新证据发生变更、需要保留旧版本与变更原因的状态。"@zh .
+
+ash:LogicInvalidated a owl:Class ;
+    rdfs:subClassOf ash:RiskSignal ;
+    rdfs:label "结果证伪逻辑"@zh, "Logic Invalidated"@en ;
+    rdfs:comment "结果验证显示原始交易逻辑失效、需要修订判断或规则的状态。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.10 — object properties
+# ---------------------------------------------------------------------------
+
+ash:caseOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:Security ;
+    rdfs:label "案例标的"@zh, "case of security"@en ;
+    rdfs:comment "分析案例对应的证券。"@zh .
+
+ash:caseOfCompany a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:ListedCompany ;
+    rdfs:label "案例公司"@zh, "case of company"@en ;
+    rdfs:comment "分析案例对应的上市公司。"@zh .
+
+ash:caseScenario a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range skos:Concept ;
+    rdfs:label "案例交易场景"@zh, "case scenario"@en ;
+    rdfs:comment "非持仓寻找买入机会，或已持仓判断是否继续持有。"@zh .
+
+ash:caseUsesEngine a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:CognitionEngine ;
+    rdfs:label "案例使用引擎"@zh, "case uses engine"@en ;
+    rdfs:comment "分析案例涉及的一个认知引擎。"@zh .
+
+ash:hasMarketCognition a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:MarketCognition ;
+    rdfs:label "市场认知输出"@zh, "has market cognition"@en ;
+    rdfs:comment "案例中的市场环境判断。"@zh .
+
+ash:hasSectorCognition a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:SectorCognition ;
+    rdfs:label "板块认知输出"@zh, "has sector cognition"@en ;
+    rdfs:comment "案例中的板块与题材判断。"@zh .
+
+ash:hasStockCognition a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:StockCognition ;
+    rdfs:label "个股认知输出"@zh, "has stock cognition"@en ;
+    rdfs:comment "案例中的个股趋势、价格结构与交易行为判断。"@zh .
+
+ash:hasEventCognition a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:EventCognition ;
+    rdfs:label "事件认知输出"@zh, "has event cognition"@en ;
+    rdfs:comment "案例中的事件背景与持续性判断。"@zh .
+
+ash:hasOpportunityAssessment a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:OpportunityAssessment ;
+    rdfs:label "机会评估输出"@zh, "has opportunity assessment"@en ;
+    rdfs:comment "案例中的机会结构、证据与风险收益判断。"@zh .
+
+ash:hasTradingJudgment a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:TradingJudgment ;
+    rdfs:label "交易判断输出"@zh, "has trading judgment"@en ;
+    rdfs:comment "案例的当前交易判断版本。"@zh .
+
+ash:hasBehaviorRule a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:BehaviorRule ;
+    rdfs:label "行为管理规则"@zh, "has behavior rule"@en ;
+    rdfs:comment "判断对应的加仓、持有、减仓、止盈、止损或观望条件。"@zh .
+
+ash:hasOutcomeVerification a owl:ObjectProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range ash:OutcomeVerification ;
+    rdfs:label "结果验证输出"@zh, "has outcome verification"@en ;
+    rdfs:comment "用市场结果验证判断逻辑的记录。"@zh .
+
+ash:hasJudgmentRevision a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:JudgmentRevision ;
+    rdfs:label "判断修订记录"@zh, "has judgment revision"@en ;
+    rdfs:comment "该判断从旧版本演变到新版本时留下的修订记录。"@zh .
+
+ash:cognitionOfRegime a owl:ObjectProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range ash:MarketRegime ;
+    rdfs:label "认知市场状态"@zh, "cognition of market regime"@en ;
+    rdfs:comment "市场认知引用的市场状态实例。"@zh .
+
+ash:cognitionOfBreadth a owl:ObjectProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range ash:MarketBreadth ;
+    rdfs:label "认知市场宽度"@zh, "cognition of market breadth"@en ;
+    rdfs:comment "市场认知引用的市场宽度实例。"@zh .
+
+ash:cognitionOfSentiment a owl:ObjectProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range ash:SentimentCycle ;
+    rdfs:label "认知情绪周期"@zh, "cognition of sentiment cycle"@en ;
+    rdfs:comment "市场认知引用的情绪周期实例。"@zh .
+
+ash:sectorCognitionOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range ash:Security ;
+    rdfs:label "板块认知标的"@zh, "sector cognition of security"@en ;
+    rdfs:comment "板块认知服务的个股，用于判断个股是否获得板块共振。"@zh .
+
+ash:cognitionOfSector a owl:ObjectProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range skos:Concept ;
+    rdfs:label "认知板块概念"@zh, "cognition of sector"@en ;
+    rdfs:comment "板块认知引用的行业或题材概念。"@zh .
+
+ash:cognitionOfThemeHeat a owl:ObjectProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range ash:ThemeHeat ;
+    rdfs:label "认知主题热度"@zh, "cognition of theme heat"@en ;
+    rdfs:comment "板块认知引用的主题热度与生命周期实例。"@zh .
+
+ash:stockCognitionOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range ash:Security ;
+    rdfs:label "个股认知标的"@zh, "stock cognition of security"@en ;
+    rdfs:comment "个股认知对应的证券。"@zh .
+
+ash:cognitionTrendState a owl:ObjectProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range ash:TrendState ;
+    rdfs:label "认知趋势状态"@zh, "cognition trend state"@en ;
+    rdfs:comment "个股认知引用的趋势方向、阶段与质量状态。"@zh .
+
+ash:cognitionPricePattern a owl:ObjectProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range ash:PricePattern ;
+    rdfs:label "认知价格形态"@zh, "cognition price pattern"@en ;
+    rdfs:comment "个股认知引用的突破、回踩、整理或破位形态。"@zh .
+
+ash:hasVolumePriceBehavior a owl:ObjectProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range ash:VolumePriceBehavior ;
+    rdfs:label "量价行为"@zh, "has volume-price behavior"@en ;
+    rdfs:comment "个股认知引用的单步或多步量价行为。"@zh .
+
+ash:hasAuctionBehavior a owl:ObjectProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range ash:AuctionBehavior ;
+    rdfs:label "竞价行为"@zh, "has auction behavior"@en ;
+    rdfs:comment "个股认知引用的集合竞价行为。"@zh .
+
+ash:hasIntradayBehavior a owl:ObjectProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range ash:IntradayBehavior ;
+    rdfs:label "盘中行为"@zh, "has intraday behavior"@en ;
+    rdfs:comment "个股认知引用的盘中交易行为。"@zh .
+
+ash:volumePriceBehaviorOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range ash:Security ;
+    rdfs:label "量价行为标的"@zh, "volume-price behavior of security"@en ;
+    rdfs:comment "量价行为观测的证券。"@zh .
+
+ash:auctionBehaviorOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:AuctionBehavior ;
+    rdfs:range ash:Security ;
+    rdfs:label "竞价行为标的"@zh, "auction behavior of security"@en ;
+    rdfs:comment "竞价行为观测的证券。"@zh .
+
+ash:behaviorFromAuction a owl:ObjectProperty ;
+    rdfs:domain ash:AuctionBehavior ;
+    rdfs:range ash:AuctionSnapshot ;
+    rdfs:label "竞价行为来源"@zh, "behavior from auction"@en ;
+    rdfs:comment "竞价行为引用的集合竞价快照。"@zh .
+
+ash:intradayBehaviorOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:IntradayBehavior ;
+    rdfs:range ash:Security ;
+    rdfs:label "盘中行为标的"@zh, "intraday behavior of security"@en ;
+    rdfs:comment "盘中行为观测的证券。"@zh .
+
+ash:eventCognitionOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range ash:Security ;
+    rdfs:label "事件认知标的"@zh, "event cognition of security"@en ;
+    rdfs:comment "事件认知对应或关联的证券。"@zh .
+
+ash:eventCognitionOfEvent a owl:ObjectProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range ash:InformationObject ;
+    rdfs:label "认知事件"@zh, "cognition of event"@en ;
+    rdfs:comment "事件认知引用的新闻、公告或公司事件。"@zh .
+
+ash:opportunityForSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:Security ;
+    rdfs:label "机会评估标的"@zh, "opportunity for security"@en ;
+    rdfs:comment "机会评估对应的证券。"@zh .
+
+ash:fromMarketCognition a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:MarketCognition ;
+    rdfs:label "来自市场认知"@zh, "from market cognition"@en ;
+    rdfs:comment "机会评估引用的市场认知输出。"@zh .
+
+ash:fromSectorCognition a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:SectorCognition ;
+    rdfs:label "来自板块认知"@zh, "from sector cognition"@en ;
+    rdfs:comment "机会评估引用的板块认知输出。"@zh .
+
+ash:fromStockCognition a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:StockCognition ;
+    rdfs:label "来自个股认知"@zh, "from stock cognition"@en ;
+    rdfs:comment "机会评估引用的个股认知输出。"@zh .
+
+ash:fromEventCognition a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:EventCognition ;
+    rdfs:label "来自事件认知"@zh, "from event cognition"@en ;
+    rdfs:comment "机会评估引用的事件认知输出。"@zh .
+
+ash:hasRiskReward a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:RiskRewardAssessment ;
+    rdfs:label "风险收益评估"@zh, "has risk-reward assessment"@en ;
+    rdfs:comment "机会评估引用的风险收益判断。"@zh .
+
+ash:opportunitySupportingEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "支持证据"@zh, "supporting evidence"@en ;
+    rdfs:comment "支持机会成立的可追溯证据。"@zh .
+
+ash:opportunityCounterEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "反向证据"@zh, "counter evidence"@en ;
+    rdfs:comment "不支持机会或可能使逻辑失效的反向证据。"@zh .
+
+ash:hasOpportunityStage a owl:ObjectProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range skos:Concept ;
+    rdfs:label "机会阶段"@zh, "has opportunity stage"@en ;
+    rdfs:comment "机会处于启动、确认、延续还是衰退阶段。"@zh .
+
+ash:riskRewardForSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range ash:Security ;
+    rdfs:label "风险收益标的"@zh, "risk-reward for security"@en ;
+    rdfs:comment "风险收益评估对应的证券。"@zh .
+
+ash:judgmentOfSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:Security ;
+    rdfs:label "判断标的"@zh, "judgment of security"@en ;
+    rdfs:comment "交易判断对应的证券。"@zh .
+
+ash:judgmentForCase a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:AnalysisCase ;
+    rdfs:label "判断所属案例"@zh, "judgment for case"@en ;
+    rdfs:comment "交易判断所属的分析案例。"@zh .
+
+ash:judgmentFromAssessment a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:OpportunityAssessment ;
+    rdfs:label "判断依据评估"@zh, "judgment from assessment"@en ;
+    rdfs:comment "交易判断所依据的机会评估。"@zh .
+
+ash:judgmentHasPlan a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:TradePlan ;
+    rdfs:label "判断交易计划"@zh, "judgment has plan"@en ;
+    rdfs:comment "交易判断对应的买入或卖出计划。"@zh .
+
+ash:judgmentLinkedDecision a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:InvestmentDecision ;
+    rdfs:label "关联投资决策"@zh, "judgment linked decision"@en ;
+    rdfs:comment "交易判断关联的可执行投资决策记录。"@zh .
+
+ash:judgmentBasedOn a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "判断依据"@zh, "judgment based on"@en ;
+    rdfs:comment "支持当前判断的证据。"@zh .
+
+ash:judgmentCounterEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "判断反向证据"@zh, "judgment counter evidence"@en ;
+    rdfs:comment "已经审查、可能推翻当前判断的反向证据。"@zh .
+
+ash:hasJudgmentScenario a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range skos:Concept ;
+    rdfs:label "交易场景"@zh, "has judgment scenario"@en ;
+    rdfs:comment "非持仓寻找买入机会，或已持仓管理已有交易。"@zh .
+
+ash:hasJudgmentDecision a owl:ObjectProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range skos:Concept ;
+    rdfs:label "判断结论"@zh, "has judgment decision"@en ;
+    rdfs:comment "买入、持有、加仓、减仓、卖出或观望。"@zh .
+
+ash:behaviorForJudgment a owl:ObjectProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range ash:TradingJudgment ;
+    rdfs:label "行为规则所属判断"@zh, "behavior for judgment"@en ;
+    rdfs:comment "行为管理规则对应的交易判断。"@zh .
+
+ash:behaviorOnSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range ash:Security ;
+    rdfs:label "行为规则标的"@zh, "behavior on security"@en ;
+    rdfs:comment "行为管理规则作用的证券。"@zh .
+
+ash:hasBehaviorAction a owl:ObjectProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range skos:Concept ;
+    rdfs:label "行为动作"@zh, "has behavior action"@en ;
+    rdfs:comment "加仓、持有、减仓、止盈、止损或观望。"@zh .
+
+ash:revisionOfJudgment a owl:ObjectProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range ash:TradingJudgment ;
+    rdfs:label "修订的判断"@zh, "revision of judgment"@en ;
+    rdfs:comment "被修订的交易判断。"@zh .
+
+ash:revisionTriggerEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "修订触发证据"@zh, "revision trigger evidence"@en ;
+    rdfs:comment "导致判断版本变化的新事件或新证据。"@zh .
+
+ash:verificationOfJudgment a owl:ObjectProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range ash:TradingJudgment ;
+    rdfs:label "验证的判断"@zh, "verification of judgment"@en ;
+    rdfs:comment "被市场结果检验的交易判断。"@zh .
+
+ash:verificationEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range ash:Evidence ;
+    rdfs:label "验证证据"@zh, "verification evidence"@en ;
+    rdfs:comment "用于验证判断逻辑成立或失效的市场证据。"@zh .
+
+ash:hasVerificationResult a owl:ObjectProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range skos:Concept ;
+    rdfs:label "验证结论"@zh, "has verification result"@en ;
+    rdfs:comment "逻辑成立、逻辑减弱、逻辑失效或待验证。"@zh .
+
+ash:producedByEngine a owl:ObjectProperty ;
+    rdfs:domain ash:Entity ;
+    rdfs:range ash:CognitionEngine ;
+    rdfs:label "由引擎产生"@zh, "produced by engine"@en ;
+    rdfs:comment "认知输出、判断或验证记录由哪个认知引擎产生。"@zh .
+
+# ---------------------------------------------------------------------------
+# 1.10 — data properties
+# ---------------------------------------------------------------------------
+
+ash:caseId a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range xsd:string ;
+    rdfs:label "案例编号"@zh, "case id"@en ;
+    rdfs:comment "分析案例的唯一业务编号。"@zh .
+
+ash:caseScenarioCode a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range xsd:string ;
+    rdfs:label "案例场景代码"@zh, "case scenario code"@en ;
+    rdfs:comment "non_position 表示非持仓寻找买入机会，held 表示已持仓管理。"@zh .
+
+ash:caseAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range xsd:date ;
+    rdfs:label "案例基准日"@zh, "case as of"@en ;
+    rdfs:comment "案例所基于数据的截止日期。"@zh .
+
+ash:caseSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range xsd:string ;
+    rdfs:label "案例摘要"@zh, "case summary"@en ;
+    rdfs:comment "对当前场景、核心机会与判断结论的一段式摘要。"@zh .
+
+ash:caseVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:AnalysisCase ;
+    rdfs:range xsd:integer ;
+    rdfs:label "案例版本"@zh, "case version"@en ;
+    rdfs:comment "案例因新证据更新时递增的版本号。"@zh .
+
+ash:marketRegimeCode a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场状态代码"@zh, "market regime code"@en ;
+    rdfs:comment "offense、defense、range、ebb、repair 等市场状态代码。"@zh .
+
+ash:marketTrendState a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场趋势"@zh, "market trend state"@en ;
+    rdfs:comment "上涨、下跌或震荡。"@zh .
+
+ash:marketBreadthState a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场广度"@zh, "market breadth state"@en ;
+    rdfs:comment "普涨、局部上涨或普跌。"@zh .
+
+ash:marketSentimentState a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场情绪"@zh, "market sentiment state"@en ;
+    rdfs:comment "升温、高潮、分歧、退潮或修复。"@zh .
+
+ash:marketLiquidityState a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场流动性"@zh, "market liquidity state"@en ;
+    rdfs:comment "放量、缩量或成交活跃度变化。"@zh .
+
+ash:marketRiskAppetiteScore a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "风险偏好分数"@zh, "market risk appetite score"@en ;
+    rdfs:comment "0—100 的示例风险偏好分数，用于市场否决门槛，不是收益预测。"@zh .
+
+ash:marketShortTermEcology a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "短线生态"@zh, "short-term ecology"@en ;
+    rdfs:comment "连板高度、晋级率、炸板率与高位接力环境。"@zh .
+
+ash:marketCognitionSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:MarketCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "市场认知摘要"@zh, "market cognition summary"@en ;
+    rdfs:comment "面向交易的市场状态结论，例如适合低位启动、不宜追高加速。"@zh .
+
+ash:sectorTrendState a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "板块趋势"@zh, "sector trend state"@en ;
+    rdfs:comment "板块走强、走弱或震荡。"@zh .
+
+ash:sectorCapitalState a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "板块资金"@zh, "sector capital state"@en ;
+    rdfs:comment "资金参与增强或减弱。"@zh .
+
+ash:sectorDiffusionState a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "板块扩散"@zh, "sector diffusion state"@en ;
+    rdfs:comment "龙头独涨、核心扩散或集体异动。"@zh .
+
+ash:sectorLeaderState a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "龙头表现"@zh, "sector leader state"@en ;
+    rdfs:comment "领涨、加速、分歧或走弱。"@zh .
+
+ash:stockSectorPosition a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "个股板块地位"@zh, "stock sector position"@en ;
+    rdfs:comment "龙头、核心、跟随或补涨。"@zh .
+
+ash:themePersistenceState a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "题材持续性"@zh, "theme persistence state"@en ;
+    rdfs:comment "新题材、持续发酵或衰退。"@zh .
+
+ash:sectorCognitionSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:SectorCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "板块认知摘要"@zh, "sector cognition summary"@en ;
+    rdfs:comment "个股上涨是自身驱动还是板块共振的结论。"@zh .
+
+ash:stockTrendDirection a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "趋势方向"@zh, "stock trend direction"@en ;
+    rdfs:comment "上升、下降或横盘。"@zh .
+
+ash:stockTrendStage a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "趋势阶段"@zh, "stock trend stage"@en ;
+    rdfs:comment "启动、加速、延续、衰竭或反转。"@zh .
+
+ash:stockPricePosition a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "价格位置"@zh, "stock price position"@en ;
+    rdfs:comment "低位、中位或高位。"@zh .
+
+ash:stockKeyLevel a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "关键位置"@zh, "stock key level"@en ;
+    rdfs:comment "支撑、压力、前高或平台的描述。"@zh .
+
+ash:stockPriceStructure a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "价格结构"@zh, "stock price structure"@en ;
+    rdfs:comment "突破、回踩、整理或破位。"@zh .
+
+ash:stockVolatilityState a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "波动特征"@zh, "stock volatility state"@en ;
+    rdfs:comment "波动收敛或波动扩张。"@zh .
+
+ash:stockTrendQuality a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "趋势质量"@zh, "stock trend quality"@en ;
+    rdfs:comment "稳定、脆弱、加速或衰退。"@zh .
+
+ash:stockCognitionSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:StockCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "个股认知摘要"@zh, "stock cognition summary"@en ;
+    rdfs:comment "个股所处阶段与交易意义的结论。"@zh .
+
+ash:volumePriceType a owl:DatatypeProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "量价行为类型"@zh, "volume-price type"@en ;
+    rdfs:comment "放量上涨、缩量回踩、放量滞涨等中文名称。"@zh .
+
+ash:volumePriceTypeCode a owl:DatatypeProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "量价行为代码"@zh, "volume-price type code"@en ;
+    rdfs:comment "供规则和 Agent 使用的稳定代码，例如 volume_breakout。"@zh .
+
+ash:priceChangePct a owl:DatatypeProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "价格变化"@zh, "price change pct"@en ;
+    rdfs:comment "观测窗口内的价格变化百分比。"@zh .
+
+ash:volumeChangePct a owl:DatatypeProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "成交量变化"@zh, "volume change pct"@en ;
+    rdfs:comment "观测窗口内的成交量变化百分比。"@zh .
+
+ash:volumePriceSequence a owl:DatatypeProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "量价组合序列"@zh, "volume-price sequence"@en ;
+    rdfs:comment "例如放量突破、缩量回踩、再次放量上涨的组合。"@zh .
+
+ash:volumePriceMeaning a owl:DatatypeProperty ;
+    rdfs:domain ash:VolumePriceBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "交易意义"@zh, "volume-price meaning"@en ;
+    rdfs:comment "该量价行为对供需与交易判断的意义。"@zh .
+
+ash:auctionBehaviorType a owl:DatatypeProperty ;
+    rdfs:domain ash:AuctionBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "竞价行为类型"@zh, "auction behavior type"@en ;
+    rdfs:comment "高开、低开、竞价抢筹、弱转强等。"@zh .
+
+ash:auctionBehaviorCode a owl:DatatypeProperty ;
+    rdfs:domain ash:AuctionBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "竞价行为代码"@zh, "auction behavior code"@en ;
+    rdfs:comment "供规则和 Agent 使用的稳定代码。"@zh .
+
+ash:auctionBehaviorNote a owl:DatatypeProperty ;
+    rdfs:domain ash:AuctionBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "竞价行为说明"@zh, "auction behavior note"@en ;
+    rdfs:comment "竞价行为与开盘承接的关系说明。"@zh .
+
+ash:intradayBehaviorType a owl:DatatypeProperty ;
+    rdfs:domain ash:IntradayBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "盘中行为类型"@zh, "intraday behavior type"@en ;
+    rdfs:comment "主动拉升、冲高回落、回踩承接、跌破失守等。"@zh .
+
+ash:intradayBehaviorCode a owl:DatatypeProperty ;
+    rdfs:domain ash:IntradayBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "盘中行为代码"@zh, "intraday behavior code"@en ;
+    rdfs:comment "供规则和 Agent 使用的稳定代码。"@zh .
+
+ash:intradayBehaviorNote a owl:DatatypeProperty ;
+    rdfs:domain ash:IntradayBehavior ;
+    rdfs:range xsd:string ;
+    rdfs:label "盘中行为说明"@zh, "intraday behavior note"@en ;
+    rdfs:comment "盘中行为对短周期力量变化的意义。"@zh .
+
+ash:eventType a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "事件类型"@zh, "event type"@en ;
+    rdfs:comment "政策、产业、公司、资金、市场或风险事件。"@zh .
+
+ash:eventVerified a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "事件是否真实"@zh, "event verified"@en ;
+    rdfs:comment "事件来源是否可追溯、事实是否成立。"@zh .
+
+ash:eventBusinessRelevant a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "事件是否相关"@zh, "event business relevant"@en ;
+    rdfs:comment "事件是否与个股业务、产业链或题材直接相关。"@zh .
+
+ash:eventAlreadyPriced a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "是否已反映"@zh, "event already priced"@en ;
+    rdfs:comment "市场是否已经通过价格和成交反映了该事件。"@zh .
+
+ash:eventSectorResonance a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "板块是否共振"@zh, "event sector resonance"@en ;
+    rdfs:comment "事件是否带动板块形成共振。"@zh .
+
+ash:eventPriceConfirmation a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "价格是否确认"@zh, "event price confirmation"@en ;
+    rdfs:comment "个股价格与量能是否确认事件逻辑。"@zh .
+
+ash:eventCounterEvidence a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "事件反向证据"@zh, "event counter evidence"@en ;
+    rdfs:comment "利好兑现、减持、监管或价格不确认等反向证据。"@zh .
+
+ash:eventCognitionSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:EventCognition ;
+    rdfs:range xsd:string ;
+    rdfs:label "事件认知摘要"@zh, "event cognition summary"@en ;
+    rdfs:comment "事件背景、持续性与交易意义的结论。"@zh .
+
+ash:opportunityStructure a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "机会结构"@zh, "opportunity structure"@en ;
+    rdfs:comment "趋势、位置、量价、竞价与板块共同形成的结构描述。"@zh .
+
+ash:opportunityStageCode a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "机会阶段代码"@zh, "opportunity stage code"@en ;
+    rdfs:comment "launch、confirm、extend 或 decline。"@zh .
+
+ash:opportunityConfirmation a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "机会确认条件"@zh, "opportunity confirmation"@en ;
+    rdfs:comment "需要出现哪些价格、成交或板块条件才算机会确认。"@zh .
+
+ash:supportingEvidenceSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "支持证据摘要"@zh, "supporting evidence summary"@en ;
+    rdfs:comment "支持买入或持有的核心证据摘要。"@zh .
+
+ash:counterEvidenceSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "反向证据摘要"@zh, "counter evidence summary"@en ;
+    rdfs:comment "不支持交易或可能使逻辑失效的证据摘要。"@zh .
+
+ash:counterEvidenceCount a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:integer ;
+    rdfs:label "反向证据数量"@zh, "counter evidence count"@en ;
+    rdfs:comment "已识别的反向证据条数。"@zh .
+
+ash:counterEvidenceReviewed a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "反向证据已审查"@zh, "counter evidence reviewed"@en ;
+    rdfs:comment "是否逐条检查并给出处置，而不是只做加权扣分。"@zh .
+
+ash:opportunityVerdict a owl:DatatypeProperty ;
+    rdfs:domain ash:OpportunityAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "机会结论"@zh, "opportunity verdict"@en ;
+    rdfs:comment "机会成立、条件成立但需等待、或机会不成立。"@zh .
+
+ash:winRateBasis a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "胜率依据"@zh, "win rate basis"@en ;
+    rdfs:comment "历史相似场景样本、条件与统计口径；不允许 LLM 凭感觉生成胜率。"@zh .
+
+ash:winRateSampleSize a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:integer ;
+    rdfs:label "胜率样本数"@zh, "win rate sample size"@en ;
+    rdfs:comment "计算胜率所使用的历史样本数量。"@zh .
+
+ash:winRateSource a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "胜率来源"@zh, "win rate source"@en ;
+    rdfs:comment "样本库、策略回测或研究记录的名称。"@zh .
+
+ash:potentialGainPct a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "潜在收益"@zh, "potential gain pct"@en ;
+    rdfs:comment "判断正确时相对入场价的潜在收益百分比。"@zh .
+
+ash:potentialLossPct a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "潜在亏损"@zh, "potential loss pct"@en ;
+    rdfs:comment "判断错误时相对入场价的潜在亏损百分比。"@zh .
+
+ash:expectedRewardRiskRatio a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "预期盈亏比"@zh, "expected reward-risk ratio"@en ;
+    rdfs:comment "潜在收益与潜在亏损的比值，用于交易门槛判断。"@zh .
+
+ash:plannedPositionWeight a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "计划仓位"@zh, "planned position weight"@en ;
+    rdfs:comment "按风险收益与组合约束给出的计划权重，取值 0—1。"@zh .
+
+ash:riskRewardInvalidation a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "风险收益失效条件"@zh, "risk-reward invalidation"@en ;
+    rdfs:comment "什么价格、成交或事件出现时必须承认判断错误。"@zh .
+
+ash:tradingCostNote a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "交易成本说明"@zh, "trading cost note"@en ;
+    rdfs:comment "手续费、印花税、滑点与冲击成本对交易价值的影响。"@zh .
+
+ash:riskRewardVerdict a owl:DatatypeProperty ;
+    rdfs:domain ash:RiskRewardAssessment ;
+    rdfs:range xsd:string ;
+    rdfs:label "风险收益结论"@zh, "risk-reward verdict"@en ;
+    rdfs:comment "值得交易、仅小仓位试错或风险收益不足。"@zh .
+
+ash:judgmentScenarioCode a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "判断场景代码"@zh, "judgment scenario code"@en ;
+    rdfs:comment "non_position 或 held；两套流程不共用判断规则。"@zh .
+
+ash:judgmentDecisionCode a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "判断结论代码"@zh, "judgment decision code"@en ;
+    rdfs:comment "buy、hold、add、reduce、sell 或 watch。"@zh .
+
+ash:judgmentCoreOpportunity a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "核心机会"@zh, "judgment core opportunity"@en ;
+    rdfs:comment "当前交易逻辑的一句话表达。"@zh .
+
+ash:judgmentMarketState a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "判断时市场状态"@zh, "judgment market state"@en ;
+    rdfs:comment "决策时点的市场环境摘要。"@zh .
+
+ash:judgmentStockState a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "判断时个股状态"@zh, "judgment stock state"@en ;
+    rdfs:comment "决策时点的趋势、位置与量价状态摘要。"@zh .
+
+ash:judgmentSupportingSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "支持证据摘要"@zh, "judgment supporting summary"@en ;
+    rdfs:comment "支持当前决策的证据摘要。"@zh .
+
+ash:judgmentCounterSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "反向证据摘要"@zh, "judgment counter summary"@en ;
+    rdfs:comment "已审查的反向证据与处置摘要。"@zh .
+
+ash:judgmentInvalidation a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "判断失效条件"@zh, "judgment invalidation"@en ;
+    rdfs:comment "出现什么新证据必须改变判断。"@zh .
+
+ash:judgmentVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:integer ;
+    rdfs:label "判断版本"@zh, "judgment version"@en ;
+    rdfs:comment "同一案例中判断记录的版本号，从 1 开始递增。"@zh .
+
+ash:judgmentOriginalLogic a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "原始交易逻辑"@zh, "judgment original logic"@en ;
+    rdfs:comment "已持仓场景中回顾的原始买入逻辑。"@zh .
+
+ash:judgmentLogicStillValid a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "原始逻辑是否仍成立"@zh, "judgment logic still valid"@en ;
+    rdfs:comment "已持仓场景中，原始买入逻辑当前是否仍然成立。"@zh .
+
+ash:judgmentConfidenceBasis a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:string ;
+    rdfs:label "置信度依据"@zh, "judgment confidence basis"@en ;
+    rdfs:comment "置信度来自样本、证据完整度与反向证据审查，而不是主观打分。"@zh .
+
+ash:judgmentAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:TradingJudgment ;
+    rdfs:range xsd:date ;
+    rdfs:label "判断时点"@zh, "judgment as of"@en ;
+    rdfs:comment "该版本判断所基于数据的时点。"@zh .
+
+ash:behaviorRuleId a owl:DatatypeProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "行为规则编号"@zh, "behavior rule id"@en ;
+    rdfs:comment "加仓、持有、减仓、止盈、止损或观望规则的唯一编号。"@zh .
+
+ash:behaviorActionCode a owl:DatatypeProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "行为动作代码"@zh, "behavior action code"@en ;
+    rdfs:comment "add、hold、reduce、take_profit、stop 或 watch。"@zh .
+
+ash:behaviorCondition a owl:DatatypeProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "行为触发条件"@zh, "behavior condition"@en ;
+    rdfs:comment "触发该动作的价格、成交、板块或事件条件。"@zh .
+
+ash:behaviorPriority a owl:DatatypeProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range xsd:integer ;
+    rdfs:label "行为优先级"@zh, "behavior priority"@en ;
+    rdfs:comment "数字越小优先级越高；止损通常优先于加仓。"@zh .
+
+ash:behaviorAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:BehaviorRule ;
+    rdfs:range xsd:date ;
+    rdfs:label "行为规则时点"@zh, "behavior as of"@en ;
+    rdfs:comment "规则生效或复核的日期。"@zh .
+
+ash:judgmentRevisionId a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "判断修订编号"@zh, "judgment revision id"@en ;
+    rdfs:comment "判断修订记录的唯一编号。"@zh .
+
+ash:revisionFromVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:integer ;
+    rdfs:label "修订前版本"@zh, "revision from version"@en ;
+    rdfs:comment "被修订判断的旧版本号。"@zh .
+
+ash:revisionToVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:integer ;
+    rdfs:label "修订后版本"@zh, "revision to version"@en ;
+    rdfs:comment "修订后判断的新版本号。"@zh .
+
+ash:revisionReason a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "修订原因"@zh, "revision reason"@en ;
+    rdfs:comment "哪个新事件或新证据改变了判断。"@zh .
+
+ash:revisionChangedField a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "变更字段"@zh, "revision changed field"@en ;
+    rdfs:comment "例如 decision、opportunity_stage、invalidation。"@zh .
+
+ash:revisionSummary a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:string ;
+    rdfs:label "修订摘要"@zh, "revision summary"@en ;
+    rdfs:comment "从旧判断到新判断的变化摘要。"@zh .
+
+ash:revisionAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:JudgmentRevision ;
+    rdfs:range xsd:date ;
+    rdfs:label "修订时点"@zh, "revision as of"@en ;
+    rdfs:comment "新证据出现并触发修订的时点。"@zh .
+
+ash:verificationId a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:string ;
+    rdfs:label "验证编号"@zh, "verification id"@en ;
+    rdfs:comment "结果验证记录的唯一编号。"@zh .
+
+ash:verificationResultCode a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:string ;
+    rdfs:label "验证结论代码"@zh, "verification result code"@en ;
+    rdfs:comment "logic_held、logic_weakened、logic_invalidated 或 pending。"@zh .
+
+ash:verificationReturnPct a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "验证期收益"@zh, "verification return pct"@en ;
+    rdfs:comment "从判断时点到验证时点的示例收益率。"@zh .
+
+ash:verificationMaxAdverseExcursion a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大不利偏移"@zh, "verification max adverse excursion"@en ;
+    rdfs:comment "验证期内相对判断时点的最大不利价格偏移。"@zh .
+
+ash:verificationMaxFavorableExcursion a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "最大有利偏移"@zh, "verification max favorable excursion"@en ;
+    rdfs:comment "验证期内相对判断时点的最大有利价格偏移。"@zh .
+
+ash:verificationLogicStillValid a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "逻辑是否仍成立"@zh, "verification logic still valid"@en ;
+    rdfs:comment "结果验证后原始判断逻辑是否仍然成立。"@zh .
+
+ash:verificationLesson a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:string ;
+    rdfs:label "验证经验"@zh, "verification lesson"@en ;
+    rdfs:comment "从结果与逻辑的偏差中沉淀的经验或规则修订线索。"@zh .
+
+ash:verificationAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:OutcomeVerification ;
+    rdfs:range xsd:date ;
+    rdfs:label "验证时点"@zh, "verification as of"@en ;
+    rdfs:comment "结果验证所基于数据的时点。"@zh .

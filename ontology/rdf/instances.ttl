@@ -23,7 +23,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf11-concepts/> ;
     dcterms:conformsTo <https://www.w3.org/TR/turtle/> ;
     dcterms:source "Synthetic example data generated for this ontology design."@en ;
-    owl:versionInfo "1.9.0" .
+    owl:versionInfo "1.10.0" .
 
 # ===========================================================================
 # Market structure
@@ -25778,3 +25778,848 @@ ashd:decision-huachen-2026q4
     ash:decisionCycleOf ashd:decision-cycle-huachen .
 
 ashd:position-huachen ash:exitPlanOfPosition ashd:trade-plan-huachen-reduce, ashd:trade-plan-huachen-bracket, ashd:trade-plan-huachen-trim-2026-11 .
+
+# ===========================================================================
+# Domain expansion 1.10 — trading cognition examples
+# ===========================================================================
+# Two cases share one market cognition:
+#   * 游资科技 — non-position, seeking an entry after a high-level breakout.
+#   * 华辰智造 — held position, changing from hold to reduce after new evidence.
+# All facts are synthetic and only demonstrate the reasoning structure.
+
+# ----- cognition engines -----
+
+ashd:engine-market-cognition a owl:NamedIndividual, ash:MarketCognitionEngine ;
+    rdfs:label "市场认知引擎（示例）"@zh ;
+    rdfs:comment "读取市场趋势、广度、情绪、流动性、风险偏好与板块状态。"@zh ;
+    ash:isExample true .
+
+ashd:engine-stock-cognition a owl:NamedIndividual, ash:StockCognitionEngine ;
+    rdfs:label "个股认知引擎（示例）"@zh ;
+    rdfs:comment "读取趋势阶段、价格结构、量价、竞价与盘中行为。"@zh ;
+    ash:isExample true .
+
+ashd:engine-event-cognition a owl:NamedIndividual, ash:EventCognitionEngine ;
+    rdfs:label "事件认知引擎（示例）"@zh ;
+    rdfs:comment "判断事件真实性、相关性、是否已反映与价格确认。"@zh ;
+    ash:isExample true .
+
+ashd:engine-opportunity a owl:NamedIndividual, ash:OpportunityEngine ;
+    rdfs:label "交易机会引擎（示例）"@zh ;
+    rdfs:comment "把机会结构、支持证据、反向证据与风险收益组织成机会评估。"@zh ;
+    ash:isExample true .
+
+ashd:engine-decision a owl:NamedIndividual, ash:TradingDecisionEngine ;
+    rdfs:label "交易决策引擎（示例）"@zh ;
+    rdfs:comment "把机会评估转换为分场景的决策、行为规则与结果验证。"@zh ;
+    ash:isExample true .
+
+# ----- shared market cognition, 2026-11-03 -----
+
+ashd:regime-repair-20261103 a owl:NamedIndividual, ash:MarketRegime ;
+    ash:hasMarketBreadth ashd:breadth-20261103 ;
+    ash:hasSentimentCycle ashd:sentiment-cycle-20261103 ;
+    rdfs:label "2026-11-03 震荡修复市场状态"@zh ;
+    ash:isExample true .
+
+ashd:breadth-20261103 a owl:NamedIndividual, ash:MarketBreadth ;
+    ash:marketBreadth 52.0 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "2026-11-03 市场宽度 52"@zh ;
+    ash:isExample true .
+
+ashd:sentiment-cycle-20261103 a owl:NamedIndividual, ash:SentimentCycle ;
+    ash:hasEmotionStage ashs:emotion-ferment ;
+    ash:emotionStageCode "repair" ;
+    ash:hasMarketHeight ashd:market-height-20261103 ;
+    ash:hasMoneyEffect ashd:money-effect-20261103 ;
+    ash:hasLossEffect ashd:loss-effect-20261103 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "2026-11-03 情绪修复"@zh ;
+    ash:isExample true .
+
+ashd:market-height-20261103 a owl:NamedIndividual, ash:MarketHeight ;
+    ash:marketHeight 3 ;
+    ash:limitUpCount 42 ;
+    ash:limitDownCount 15 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "2026-11-03 市场高度 3 板"@zh ;
+    ash:isExample true .
+
+ashd:money-effect-20261103 a owl:NamedIndividual, ash:MoneyEffect ;
+    ash:moneyEffectScore 54 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "2026-11-03 赚钱效应 54"@zh ;
+    ash:isExample true .
+
+ashd:loss-effect-20261103 a owl:NamedIndividual, ash:LossEffect ;
+    ash:lossEffectScore 46 ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "2026-11-03 亏钱效应 46"@zh ;
+    ash:isExample true .
+
+ashd:market-cognition-20261103 a owl:NamedIndividual, ash:MarketCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:cognitionOfRegime ashd:regime-repair-20261103 ;
+    ash:cognitionOfBreadth ashd:breadth-20261103 ;
+    ash:cognitionOfSentiment ashd:sentiment-cycle-20261103 ;
+    ash:marketRegimeCode "repair" ;
+    ash:marketTrendState "震荡" ;
+    ash:marketBreadthState "局部上涨" ;
+    ash:marketSentimentState "修复" ;
+    ash:marketLiquidityState "放量" ;
+    ash:marketRiskAppetiteScore 55.0 ;
+    ash:marketShortTermEcology "连板高度 3，晋级率 45%，炸板率 22%" ;
+    ash:marketCognitionSummary "震荡修复阶段，成交额恢复、短线情绪改善，但高位接力分歧仍大；适合低位启动和趋势确认，不宜追高加速。" ;
+    ash:producedByEngine ashd:engine-market-cognition ;
+    rdfs:label "2026-11-03 市场认知"@zh ;
+    ash:isExample true .
+
+# ----- 游资科技: sector, stock, behaviors -----
+
+ashd:sector-cognition-youzi-20261103 a owl:NamedIndividual, ash:SectorCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:sectorCognitionOfSecurity ashd:sec-youzi-a ;
+    ash:cognitionOfSector ashs:theme-ai ;
+    ash:cognitionOfThemeHeat ashd:theme-heat-ai ;
+    ash:sectorTrendState "走强" ;
+    ash:sectorCapitalState "增强" ;
+    ash:sectorDiffusionState "核心扩散" ;
+    ash:sectorLeaderState "加速但分歧加大" ;
+    ash:stockSectorPosition "核心" ;
+    ash:themePersistenceState "持续发酵" ;
+    ash:sectorCognitionSummary "AI 主题仍处主升，核心扩散但高位龙头分歧；个股属于核心跟随，具备板块共振但非独立驱动。" ;
+    ash:producedByEngine ashd:engine-market-cognition ;
+    rdfs:label "游资科技 2026-11-03 板块认知"@zh ;
+    ash:isExample true .
+
+ashd:trend-youzi-20261103 a owl:NamedIndividual, ash:TrendState ;
+    rdfs:label "游资科技 2026-11-03 趋势状态"@zh ;
+    ash:isExample true .
+
+ashd:pattern-youzi-breakout a owl:NamedIndividual, ash:BreakoutPattern ;
+    rdfs:label "游资科技 2026-11-03 放量突破后回踩形态"@zh ;
+    ash:isExample true .
+
+ashd:vp-youzi-breakout a owl:NamedIndividual, ash:VolumePriceBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:volumePriceBehaviorOfSecurity ashd:sec-youzi-a ;
+    ash:volumePriceType "放量突破" ;
+    ash:volumePriceTypeCode "volume_breakout" ;
+    ash:priceChangePct 5.2 ;
+    ash:volumeChangePct 68.0 ;
+    ash:volumePriceSequence "放量突破 → 缩量回踩 → 再次放量上涨" ;
+    ash:volumePriceMeaning "突破得到成交确认，回踩缩量说明抛压有限；再次放量才构成确认。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "游资科技放量突破"@zh ;
+    ash:isExample true .
+
+ashd:vp-youzi-pullback a owl:NamedIndividual, ash:VolumePriceBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:volumePriceBehaviorOfSecurity ashd:sec-youzi-a ;
+    ash:volumePriceType "缩量回踩" ;
+    ash:volumePriceTypeCode "shrink_pullback" ;
+    ash:priceChangePct -1.8 ;
+    ash:volumeChangePct -42.0 ;
+    ash:volumePriceMeaning "回踩 18.50 缩量，抛压减弱，符合突破回踩结构。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "游资科技缩量回踩"@zh ;
+    ash:isExample true .
+
+ashd:auction-behavior-youzi-20261103 a owl:NamedIndividual, ash:AuctionBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:auctionBehaviorOfSecurity ashd:sec-youzi-a ;
+    ash:behaviorFromAuction ashd:auction-youzi-20261103 ;
+    ash:auctionBehaviorType "弱转强" ;
+    ash:auctionBehaviorCode "weak_to_strong" ;
+    ash:auctionBehaviorNote "竞价预期 -2%，实际高开 +3.2%，竞价量比 2.6，开盘承接增强；但不能据此直接认定全天走强。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "游资科技竞价弱转强"@zh ;
+    ash:isExample true .
+
+ashd:intraday-youzi-pullback a owl:NamedIndividual, ash:IntradayBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:intradayBehaviorOfSecurity ashd:sec-youzi-a ;
+    ash:intradayBehaviorType "回踩承接" ;
+    ash:intradayBehaviorCode "pullback_support" ;
+    ash:intradayBehaviorNote "开盘冲高后回踩 18.60 获得承接，未跌破 18.50。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "游资科技盘中回踩承接"@zh ;
+    ash:isExample true .
+
+ashd:intraday-youzi-breakout a owl:NamedIndividual, ash:IntradayBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:intradayBehaviorOfSecurity ashd:sec-youzi-a ;
+    ash:intradayBehaviorType "突破加速" ;
+    ash:intradayBehaviorCode "breakout_accelerate" ;
+    ash:intradayBehaviorNote "午后放量站上 19.20，突破后价格运动加快，但尾盘未继续加速。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "游资科技盘中突破加速"@zh ;
+    ash:isExample true .
+
+ashd:stock-cognition-youzi-20261103 a owl:NamedIndividual, ash:StockCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:stockCognitionOfSecurity ashd:sec-youzi-a ;
+    ash:cognitionTrendState ashd:trend-youzi-20261103 ;
+    ash:cognitionPricePattern ashd:pattern-youzi-breakout ;
+    ash:hasVolumePriceBehavior ashd:vp-youzi-breakout, ashd:vp-youzi-pullback ;
+    ash:hasAuctionBehavior ashd:auction-behavior-youzi-20261103 ;
+    ash:hasIntradayBehavior ashd:intraday-youzi-pullback, ashd:intraday-youzi-breakout ;
+    ash:stockTrendDirection "上升" ;
+    ash:stockTrendStage "加速" ;
+    ash:stockPricePosition "高位" ;
+    ash:stockKeyLevel "支撑 18.50；前高 20.80" ;
+    ash:stockPriceStructure "突破后回踩" ;
+    ash:stockVolatilityState "扩张" ;
+    ash:stockTrendQuality "脆弱" ;
+    ash:stockCognitionSummary "中期上升趋势加速，价格处高位；放量突破后缩量回踩、竞价弱转强，但 RSI 68、换手 18.4%，趋势质量偏脆弱。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "游资科技 2026-11-03 个股认知"@zh ;
+    ash:isExample true .
+
+ashd:event-cognition-youzi-20261103 a owl:NamedIndividual, ash:EventCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:eventCognitionOfSecurity ashd:sec-youzi-a ;
+    ash:eventCognitionOfEvent ashd:catalyst-youzi ;
+    ash:eventType "产业政策" ;
+    ash:eventVerified true ;
+    ash:eventBusinessRelevant true ;
+    ash:eventAlreadyPriced false ;
+    ash:eventSectorResonance true ;
+    ash:eventPriceConfirmation true ;
+    ash:eventCounterEvidence "政策已发布一周，部分利好可能已被预期；高位换手 18.4%，存在利好兑现风险。" ;
+    ash:eventCognitionSummary "AI 政策催化真实且与公司数据要素业务相关，板块形成共振，价格与成交确认；但事件已部分被预期，持续性依赖后续订单/业绩验证。" ;
+    ash:producedByEngine ashd:engine-event-cognition ;
+    rdfs:label "游资科技 2026-11-03 事件认知"@zh ;
+    ash:isExample true .
+
+# ----- 游资科技: evidence, opportunity, risk-reward and judgment -----
+
+ashd:evidence-youzi-breakout a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "合成分时与成交（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    rdfs:label "游资科技 2026-11-03 放量突破与回踩证据"@zh ;
+    ash:isExample true .
+
+ashd:evidence-youzi-auction a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "合成集合竞价（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    rdfs:label "游资科技 2026-11-03 竞价弱转强证据"@zh ;
+    ash:isExample true .
+
+ashd:evidence-youzi-sector a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "合成主题热度（示例）" ;
+    ash:hasSource ashd:source-industry-research ;
+    rdfs:label "AI 主题核心扩散证据"@zh ;
+    ash:isExample true .
+
+ashd:evidence-youzi-counter-high a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "合成行情（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    rdfs:label "游资科技高位过热反向证据（RSI 68、换手 18.4%）"@zh ;
+    ash:isExample true .
+
+ashd:evidence-youzi-counter-priced a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "合成新闻时间线（示例）" ;
+    ash:hasSource ashd:source-industry-research ;
+    rdfs:label "AI 政策已部分被预期反向证据"@zh ;
+    ash:isExample true .
+
+ashd:rr-youzi-20261103 a owl:NamedIndividual, ash:RiskRewardAssessment ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:riskRewardForSecurity ashd:sec-youzi-a ;
+    ash:winRateBasis "历史相似四连板后放量突破且板块核心扩散样本 42 个，3 日胜率 57%，平均最大有利偏移 12.4%，平均最大不利偏移 7.1%。" ;
+    ash:winRateSampleSize 42 ;
+    ash:winRateSource "本体合成样本库（示例）" ;
+    ash:potentialGainPct 12.5 ;
+    ash:potentialLossPct 6.0 ;
+    ash:expectedRewardRiskRatio 2.08 ;
+    ash:plannedPositionWeight 0.007 ;
+    ash:riskRewardInvalidation "跌破 18.50 或竞价量比小于 1.5 时判断失效。" ;
+    ash:tradingCostNote "按双边约 0.12% 成本与 0.3% 滑点估算，对 2.08 的盈亏比影响有限。" ;
+    ash:riskRewardVerdict "可小仓位试错，盈亏比刚过 2.0 门槛，不足以重仓。" ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技 2026-11-03 风险收益评估"@zh ;
+    ash:isExample true .
+
+ashd:opportunity-youzi-20261103 a owl:NamedIndividual, ash:OpportunityAssessment ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:opportunityForSecurity ashd:sec-youzi-a ;
+    ash:fromMarketCognition ashd:market-cognition-20261103 ;
+    ash:fromSectorCognition ashd:sector-cognition-youzi-20261103 ;
+    ash:fromStockCognition ashd:stock-cognition-youzi-20261103 ;
+    ash:fromEventCognition ashd:event-cognition-youzi-20261103 ;
+    ash:hasRiskReward ashd:rr-youzi-20261103 ;
+    ash:opportunityStructure "上升趋势加速 + 高位平台放量突破 + 板块核心扩散 + 竞价弱转强" ;
+    ash:hasOpportunityStage ashs:stage-confirm ;
+    ash:opportunityStageCode "confirm" ;
+    ash:opportunityConfirmation "突破后缩量回踩不破 18.50，再次放量站上 19.20，竞价量比不低于 2。" ;
+    ash:opportunitySupportingEvidence ashd:evidence-youzi-quote, ashd:evidence-youzi-dtl, ashd:evidence-youzi-breakout, ashd:evidence-youzi-auction, ashd:evidence-youzi-sector ;
+    ash:opportunityCounterEvidence ashd:evidence-youzi-counter-high, ashd:evidence-youzi-counter-priced ;
+    ash:supportingEvidenceSummary "板块核心扩散、放量突破、缩量回踩、竞价弱转强、政策事件真实且价格确认。" ;
+    ash:counterEvidenceSummary "RSI 68、换手 18.4%、四连板高位、政策部分兑现；已逐条审查，用 5% 风险预算和 18.50 失效线控制。" ;
+    ash:counterEvidenceCount 2 ;
+    ash:counterEvidenceReviewed true ;
+    ash:opportunityVerdict "机会成立，但属于高位加速，只适合小仓位试错与严格止损。" ;
+    ash:producedByEngine ashd:engine-opportunity ;
+    rdfs:label "游资科技 2026-11-03 机会评估"@zh ;
+    ash:isExample true .
+
+ashd:entry-price-youzi a owl:NamedIndividual, ash:EntryPrice ;
+    ash:priceLevelValue 18.60 ;
+    ash:priceLevelBasis "突破平台上沿与回踩承接区"@zh ;
+    rdfs:label "游资科技买点 18.60"@zh ;
+    ash:isExample true .
+
+ashd:stop-price-youzi a owl:NamedIndividual, ash:StopPrice ;
+    ash:priceLevelValue 17.20 ;
+    ash:priceLevelBasis "突破平台下沿再留 7.5% 缓冲"@zh ;
+    rdfs:label "游资科技止损价 17.20"@zh ;
+    ash:isExample true .
+
+ashd:target-price-youzi a owl:NamedIndividual, ash:TargetPrice ;
+    ash:priceLevelValue 21.00 ;
+    ash:priceLevelBasis "前高与短线情绪溢价区间"@zh ;
+    rdfs:label "游资科技目标价 21.00"@zh ;
+    ash:isExample true .
+
+ashd:entry-trigger-youzi a owl:NamedIndividual, ash:EntryTrigger ;
+    ash:triggerType "AUCTION" ;
+    ash:triggerCondition "竞价量比不低于 2 且开盘 30 分钟不破 18.50"@zh ;
+    rdfs:label "游资科技建仓触发条件"@zh ;
+    ash:isExample true .
+
+ashd:sizing-youzi-entry a owl:NamedIndividual, ash:PositionSizing ;
+    ash:sizingForPlan ashd:plan-youzi-entry ;
+    ash:usesSizingMethod ashs:sizing-fixed-fractional ;
+    ash:sizingQuantity 14000 ;
+    ash:sizingWeight 0.007 ;
+    ash:projectedWeight 0.007 ;
+    ash:riskAmount 19600 ;
+    ash:sizingRiskAmount 19600 ;
+    ash:sizingAsOf "2026-11-03"^^xsd:date ;
+    rdfs:label "游资科技建仓仓位测算"@zh ;
+    ash:isExample true .
+
+ashd:plan-youzi-entry a owl:NamedIndividual, ash:EntryPlan ;
+    ash:planId "TP-2026-YZ-ENTRY" ;
+    ash:planSide "BUY" ;
+    ash:planStatus "READY" ;
+    ash:planAsOf "2026-11-03"^^xsd:date ;
+    ash:planValidUntil "2026-11-10"^^xsd:date ;
+    ash:planForSecurity ashd:sec-youzi-a ;
+    ash:planForPortfolio ashd:portfolio-demo ;
+    ash:planForAccount ashd:account-demo ;
+    ash:plannedQuantity 14000 ;
+    ash:plannedNotional 260400 ;
+    ash:plannedWeight 0.007 ;
+    ash:rewardRiskRatio 2.08 ;
+    ash:hasEntryPrice ashd:entry-price-youzi ;
+    ash:hasStopPrice ashd:stop-price-youzi ;
+    ash:hasTargetPrice ashd:target-price-youzi ;
+    ash:hasEntryTrigger ashd:entry-trigger-youzi ;
+    ash:hasTradeSizing ashd:sizing-youzi-entry ;
+    ash:tradePlanOfDecision ashd:decision-youzi-2026 ;
+    rdfs:label "游资科技 2026-11-03 建仓计划"@zh ;
+    ash:isExample true .
+
+ashd:judgment-youzi-20261103 a owl:NamedIndividual, ash:TradingJudgment ;
+    ash:judgmentOfSecurity ashd:sec-youzi-a ;
+    ash:judgmentForCase ashd:case-youzi-non-position ;
+    ash:judgmentFromAssessment ashd:opportunity-youzi-20261103 ;
+    ash:hasJudgmentScenario ashs:scenario-non-position ;
+    ash:judgmentScenarioCode "non_position" ;
+    ash:hasJudgmentDecision ashs:decision-buy ;
+    ash:judgmentDecisionCode "buy" ;
+    ash:judgmentCoreOpportunity "AI 板块核心扩散 + 个股放量突破平台 + 竞价弱转强，形成高位加速机会；只做小仓位试错。" ;
+    ash:judgmentMarketState "震荡修复，风险偏好中性偏多，高位接力分歧大" ;
+    ash:judgmentStockState "中期上升加速、高位突破回踩、量价确认、趋势质量脆弱" ;
+    ash:judgmentSupportingSummary "板块核心扩散、放量突破、回踩缩量、竞价弱转强、事件真实且价格确认。" ;
+    ash:judgmentCounterSummary "RSI 68、换手 18.4%、四连板高位、政策部分兑现；已审查，用小仓位和 18.50 失效线控制。" ;
+    ash:judgmentInvalidation "跌破 18.50、竞价量比小于 1.5、板块龙头断板或放量滞涨时判断失效。" ;
+    ash:judgmentVersion 2 ;
+    ash:judgmentOriginalLogic "11-02 首版判断为观望：四连板后高位且竞价预期为负，等待竞价与板块确认。" ;
+    ash:judgmentLogicStillValid true ;
+    ash:judgmentConfidenceBasis "42 个历史相似样本，3 日胜率 57%；反向证据已逐条审查；置信度来自样本与证据，不是主观评分。" ;
+    ash:judgmentAsOf "2026-11-03"^^xsd:date ;
+    ash:judgmentHasPlan ashd:plan-youzi-entry ;
+    ash:judgmentLinkedDecision ashd:decision-youzi-2026 ;
+    ash:judgmentBasedOn ashd:evidence-youzi-quote, ashd:evidence-youzi-dtl, ashd:evidence-youzi-breakout, ashd:evidence-youzi-auction, ashd:evidence-youzi-sector ;
+    ash:judgmentCounterEvidence ashd:evidence-youzi-counter-high, ashd:evidence-youzi-counter-priced ;
+    ash:hasBehaviorRule ashd:behavior-youzi-enter, ashd:behavior-youzi-add, ashd:behavior-youzi-reduce, ashd:behavior-youzi-stop, ashd:behavior-youzi-take-profit, ashd:behavior-youzi-watch ;
+    ash:hasJudgmentRevision ashd:revision-youzi-20261103 ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技 2026-11-03 交易判断 v2"@zh ;
+    ash:isExample true .
+
+ashd:behavior-youzi-enter a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-YZ-ENTER" ;
+    ash:behaviorForJudgment ashd:judgment-youzi-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-youzi-a ;
+    ash:hasBehaviorAction ashs:behavior-enter ;
+    ash:behaviorActionCode "enter" ;
+    ash:behaviorCondition "竞价量比不低于 2 且开盘 30 分钟不破 18.50，板块核心扩散"@zh ;
+    ash:behaviorPriority 10 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技建仓规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-youzi-add a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-YZ-ADD" ;
+    ash:behaviorForJudgment ashd:judgment-youzi-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-youzi-a ;
+    ash:hasBehaviorAction ashs:behavior-add ;
+    ash:behaviorActionCode "add" ;
+    ash:behaviorCondition "再次放量站上 20.80 且板块扩散、预计权重不超过 2%"@zh ;
+    ash:behaviorPriority 20 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技加仓规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-youzi-reduce a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-YZ-REDUCE" ;
+    ash:behaviorForJudgment ashd:judgment-youzi-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-youzi-a ;
+    ash:hasBehaviorAction ashs:behavior-reduce ;
+    ash:behaviorActionCode "reduce" ;
+    ash:behaviorCondition "冲高回落且量价背离，或单日涨幅超过 15% 后封单衰减"@zh ;
+    ash:behaviorPriority 5 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技减仓规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-youzi-stop a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-YZ-STOP" ;
+    ash:behaviorForJudgment ashd:judgment-youzi-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-youzi-a ;
+    ash:hasBehaviorAction ashs:behavior-stop ;
+    ash:behaviorActionCode "stop" ;
+    ash:behaviorCondition "跌破 18.50 或炸板且封单衰减"@zh ;
+    ash:behaviorPriority 1 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技止损规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-youzi-take-profit a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-YZ-TAKE-PROFIT" ;
+    ash:behaviorForJudgment ashd:judgment-youzi-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-youzi-a ;
+    ash:hasBehaviorAction ashs:behavior-take-profit ;
+    ash:behaviorActionCode "take_profit" ;
+    ash:behaviorCondition "达到 21.00 或盈亏比降至 1.5 以下"@zh ;
+    ash:behaviorPriority 15 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技止盈规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-youzi-watch a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-YZ-WATCH" ;
+    ash:behaviorForJudgment ashd:judgment-youzi-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-youzi-a ;
+    ash:hasBehaviorAction ashs:behavior-watch ;
+    ash:behaviorActionCode "watch" ;
+    ash:behaviorCondition "竞价量比小于 1.5 或板块龙头断板，放弃本次机会"@zh ;
+    ash:behaviorPriority 30 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技观望规则"@zh ;
+    ash:isExample true .
+
+ashd:revision-youzi-20261103 a owl:NamedIndividual, ash:JudgmentRevision ;
+    ash:judgmentRevisionId "JR-YZ-20261103" ;
+    ash:revisionOfJudgment ashd:judgment-youzi-20261103 ;
+    ash:revisionFromVersion 1 ;
+    ash:revisionToVersion 2 ;
+    ash:revisionReason "11-03 竞价从预期 -2% 转为实际 +3.2%，板块核心扩散，原观望判断被新证据推翻。" ;
+    ash:revisionChangedField "decision" ;
+    ash:revisionTriggerEvidence ashd:evidence-youzi-auction, ashd:evidence-youzi-sector ;
+    ash:revisionSummary "观望 → 买入（小仓位试错）；机会阶段从启动升级为确认。" ;
+    ash:revisionAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技判断修订：观望转买入"@zh ;
+    ash:isExample true .
+
+ashd:verification-youzi-20261103 a owl:NamedIndividual, ash:OutcomeVerification ;
+    ash:verificationId "OV-YZ-20261103" ;
+    ash:verificationOfJudgment ashd:judgment-youzi-20261103 ;
+    ash:hasVerificationResult ashs:verification-held ;
+    ash:verificationResultCode "logic_held" ;
+    ash:verificationReturnPct 4.2 ;
+    ash:verificationMaxAdverseExcursion -1.2 ;
+    ash:verificationMaxFavorableExcursion 6.1 ;
+    ash:verificationLogicStillValid true ;
+    ash:verificationLesson "首日验证逻辑成立，但盘中最大不利偏移 -1.2%，高位加速交易必须预埋止损。" ;
+    ash:verificationAsOf "2026-11-03"^^xsd:date ;
+    ash:verificationEvidence ashd:evidence-youzi-breakout ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "游资科技判断首日结果验证"@zh ;
+    ash:isExample true .
+
+ashd:case-youzi-non-position a owl:NamedIndividual, ash:AnalysisCase ;
+    ash:caseId "AC-YZ-20261103" ;
+    ash:caseOfSecurity ashd:sec-youzi-a ;
+    ash:caseOfCompany ashd:company-youzi ;
+    ash:caseScenario ashs:scenario-non-position ;
+    ash:caseScenarioCode "non_position" ;
+    ash:caseAsOf "2026-11-03"^^xsd:date ;
+    ash:caseSummary "非持仓场景：AI 主题核心扩散、个股放量突破后回踩、竞价弱转强；机会确认但高位脆弱，判断为小仓位买入并预埋失效条件。" ;
+    ash:caseVersion 2 ;
+    ash:caseUsesEngine ashd:engine-market-cognition, ashd:engine-stock-cognition, ashd:engine-event-cognition, ashd:engine-opportunity, ashd:engine-decision ;
+    ash:hasMarketCognition ashd:market-cognition-20261103 ;
+    ash:hasSectorCognition ashd:sector-cognition-youzi-20261103 ;
+    ash:hasStockCognition ashd:stock-cognition-youzi-20261103 ;
+    ash:hasEventCognition ashd:event-cognition-youzi-20261103 ;
+    ash:hasOpportunityAssessment ashd:opportunity-youzi-20261103 ;
+    ash:hasTradingJudgment ashd:judgment-youzi-20261103 ;
+    ash:hasOutcomeVerification ashd:verification-youzi-20261103 ;
+    rdfs:label "游资科技非持仓分析案例"@zh ;
+    ash:isExample true .
+
+ashd:sec-youzi-a ash:hasAuctionSnapshot ashd:auction-youzi-20261103 ;
+    ash:hasPricePattern ashd:pattern-youzi-breakout ;
+    ash:hasTrendState ashd:trend-youzi-20261103 .
+
+# ----- 华辰智造: held position, sector, stock and behaviors -----
+
+ashd:catalyst-huachen-order a owl:NamedIndividual, ash:NewsCatalyst ;
+    ash:catalystType ashs:theme-ai ;
+    ash:dataAsOf "2026-11-01"^^xsd:date ;
+    ash:dataSource "合成产业新闻（示例）" ;
+    rdfs:label "工业自动化订单增长催化（示例）"@zh ;
+    ash:isExample true .
+
+ashd:sector-cognition-huachen-20261103 a owl:NamedIndividual, ash:SectorCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:sectorCognitionOfSecurity ashd:sec-huachen-a ;
+    ash:cognitionOfSector ashs:industry-advanced-manufacturing ;
+    ash:cognitionOfThemeHeat ashd:theme-heat-ai ;
+    ash:sectorTrendState "走强" ;
+    ash:sectorCapitalState "增强" ;
+    ash:sectorDiffusionState "核心扩散" ;
+    ash:sectorLeaderState "分歧" ;
+    ash:stockSectorPosition "核心" ;
+    ash:themePersistenceState "持续发酵" ;
+    ash:sectorCognitionSummary "高端制造与 AI 主题仍强，但板块内部开始分化；华辰属于核心但非龙头，板块共振仍在、强度下降。" ;
+    ash:producedByEngine ashd:engine-market-cognition ;
+    rdfs:label "华辰智造 2026-11-03 板块认知"@zh ;
+    ash:isExample true .
+
+ashd:trend-huachen-20261103 a owl:NamedIndividual, ash:TrendState ;
+    rdfs:label "华辰智造 2026-11-03 趋势状态"@zh ;
+    ash:isExample true .
+
+ashd:pattern-huachen-pullback a owl:NamedIndividual, ash:PricePattern ;
+    rdfs:label "华辰智造 2026-11-03 回踩后跌破再收回形态"@zh ;
+    ash:isExample true .
+
+ashd:vp-huachen-am a owl:NamedIndividual, ash:VolumePriceBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:volumePriceBehaviorOfSecurity ashd:sec-huachen-a ;
+    ash:volumePriceType "放量上涨" ;
+    ash:volumePriceTypeCode "volume_advance" ;
+    ash:priceChangePct 2.1 ;
+    ash:volumeChangePct 35.0 ;
+    ash:volumePriceMeaning "上午放量推进，趋势延续，但未突破前高 38.80。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "华辰智造上午放量上涨"@zh ;
+    ash:isExample true .
+
+ashd:vp-huachen-pm a owl:NamedIndividual, ash:VolumePriceBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:volumePriceBehaviorOfSecurity ashd:sec-huachen-a ;
+    ash:volumePriceType "高位放量→冲高回落→跌破支撑" ;
+    ash:volumePriceTypeCode "seq_high_breakdown" ;
+    ash:priceChangePct -2.4 ;
+    ash:volumeChangePct 62.0 ;
+    ash:volumePriceSequence "高位放量 → 冲高回落 → 跌破 MA20 36.50" ;
+    ash:volumePriceMeaning "下午放量跌破 36.50，虽尾盘收回 36.80，但抛压增加，持有逻辑降级。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "华辰智造下午放量跌破支撑"@zh ;
+    ash:isExample true .
+
+ashd:auction-behavior-huachen-20261103 a owl:NamedIndividual, ash:AuctionBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:auctionBehaviorOfSecurity ashd:sec-huachen-a ;
+    ash:auctionBehaviorType "强转弱" ;
+    ash:auctionBehaviorCode "strong_to_weak" ;
+    ash:auctionBehaviorNote "高开 +1.2%、竞价量比 1.1，开盘后未能延续，竞价强转弱。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "华辰智造竞价强转弱"@zh ;
+    ash:isExample true .
+
+ashd:intraday-huachen-fade a owl:NamedIndividual, ash:IntradayBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:intradayBehaviorOfSecurity ashd:sec-huachen-a ;
+    ash:intradayBehaviorType "冲高回落" ;
+    ash:intradayBehaviorCode "fade" ;
+    ash:intradayBehaviorNote "午后冲高 38.10 后回落，抛压增加。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "华辰智造盘中冲高回落"@zh ;
+    ash:isExample true .
+
+ashd:intraday-huachen-breakdown a owl:NamedIndividual, ash:IntradayBehavior ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:intradayBehaviorOfSecurity ashd:sec-huachen-a ;
+    ash:intradayBehaviorType "跌破失守" ;
+    ash:intradayBehaviorCode "breakdown" ;
+    ash:intradayBehaviorNote "14:10 放量跌破 MA20 36.50，最低 36.20，尾盘收回 36.80，但失守已发生。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "华辰智造盘中跌破 MA20"@zh ;
+    ash:isExample true .
+
+ashd:stock-cognition-huachen-20261103 a owl:NamedIndividual, ash:StockCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:stockCognitionOfSecurity ashd:sec-huachen-a ;
+    ash:cognitionTrendState ashd:trend-huachen-20261103 ;
+    ash:cognitionPricePattern ashd:pattern-huachen-pullback ;
+    ash:hasVolumePriceBehavior ashd:vp-huachen-am, ashd:vp-huachen-pm ;
+    ash:hasAuctionBehavior ashd:auction-behavior-huachen-20261103 ;
+    ash:hasIntradayBehavior ashd:intraday-huachen-fade, ashd:intraday-huachen-breakdown ;
+    ash:stockTrendDirection "上升" ;
+    ash:stockTrendStage "延续" ;
+    ash:stockPricePosition "中位" ;
+    ash:stockKeyLevel "MA20 36.50；前高 38.80；止损 30.50" ;
+    ash:stockPriceStructure "回踩后跌破又收回" ;
+    ash:stockVolatilityState "扩张" ;
+    ash:stockTrendQuality "转弱" ;
+    ash:stockCognitionSummary "中期上升趋势尚未破坏，但下午放量跌破 MA20 36.50 后收回，量价与盘中行为转弱，趋势质量由稳定降为脆弱。" ;
+    ash:producedByEngine ashd:engine-stock-cognition ;
+    rdfs:label "华辰智造 2026-11-03 个股认知"@zh ;
+    ash:isExample true .
+
+ashd:event-cognition-huachen-20261103 a owl:NamedIndividual, ash:EventCognition ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:eventCognitionOfSecurity ashd:sec-huachen-a ;
+    ash:eventCognitionOfEvent ashd:catalyst-huachen-order ;
+    ash:eventType "公司订单" ;
+    ash:eventVerified true ;
+    ash:eventBusinessRelevant true ;
+    ash:eventAlreadyPriced true ;
+    ash:eventSectorResonance true ;
+    ash:eventPriceConfirmation false ;
+    ash:eventCounterEvidence "订单利好已在 10 月上涨中部分反映；下午放量跌破 MA20，价格未确认。" ;
+    ash:eventCognitionSummary "订单增长与 AI/高端制造主题相关，板块仍有共振，但利好已部分反映、价格未确认，事件不能支撑继续加仓。" ;
+    ash:producedByEngine ashd:engine-event-cognition ;
+    rdfs:label "华辰智造 2026-11-03 事件认知"@zh ;
+    ash:isExample true .
+
+# ----- 华辰智造: evidence, risk-reward, opportunity and judgment -----
+
+ashd:evidence-huachen-order a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-01"^^xsd:date ;
+    ash:dataSource "合成产业新闻（示例）" ;
+    ash:hasSource ashd:source-industry-research ;
+    rdfs:label "华辰智造订单增长证据"@zh ;
+    ash:isExample true .
+
+ashd:evidence-huachen-pm-breakdown a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "合成分时（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    rdfs:label "华辰智造 14:10 放量跌破 MA20 证据"@zh ;
+    ash:isExample true .
+
+ashd:evidence-huachen-weight a owl:NamedIndividual, ash:Evidence ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:dataSource "本体风险预算（示例）" ;
+    ash:hasSource ashd:source-sse ;
+    rdfs:label "华辰智造单票权重 12% 超过 10% 硬限额证据"@zh ;
+    ash:isExample true .
+
+ashd:rr-huachen-20261103 a owl:NamedIndividual, ash:RiskRewardAssessment ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:riskRewardForSecurity ashd:sec-huachen-a ;
+    ash:winRateBasis "历史相似趋势延续且板块核心样本 68 个，20 日胜率 61%，平均盈亏比 2.4；本次额外触发集中度硬限额。" ;
+    ash:winRateSampleSize 68 ;
+    ash:winRateSource "本体合成样本库（示例）" ;
+    ash:potentialGainPct 22.3 ;
+    ash:potentialLossPct 8.0 ;
+    ash:expectedRewardRiskRatio 2.75 ;
+    ash:plannedPositionWeight 0.10 ;
+    ash:riskRewardInvalidation "跌破 33.00 或订单/毛利逻辑被证伪；放量跌破 36.50 触发降级审查。" ;
+    ash:tradingCostNote "减仓 2 万股按 0.05% 成本与 12 bps 滑点估算，对剩余仓位的风险收益影响很小。" ;
+    ash:riskRewardVerdict "风险收益仍可接受，但仓位必须从 12% 降至 10%。" ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造 2026-11-03 风险收益评估"@zh ;
+    ash:isExample true .
+
+ashd:opportunity-huachen-20261103 a owl:NamedIndividual, ash:OpportunityAssessment ;
+    ash:dataAsOf "2026-11-03"^^xsd:date ;
+    ash:opportunityForSecurity ashd:sec-huachen-a ;
+    ash:fromMarketCognition ashd:market-cognition-20261103 ;
+    ash:fromSectorCognition ashd:sector-cognition-huachen-20261103 ;
+    ash:fromStockCognition ashd:stock-cognition-huachen-20261103 ;
+    ash:fromEventCognition ashd:event-cognition-huachen-20261103 ;
+    ash:hasRiskReward ashd:rr-huachen-20261103 ;
+    ash:opportunityStructure "中期上升趋势 + 板块核心 + 订单事件，但高位放量跌破 MA20，机会结构转弱" ;
+    ash:hasOpportunityStage ashs:stage-decline ;
+    ash:opportunityStageCode "decline" ;
+    ash:opportunityConfirmation "重新放量站上 38.80 且板块扩散、单票权重不超过 10%，才恢复加仓条件。" ;
+    ash:opportunitySupportingEvidence ashd:evidence-huachen-report, ashd:evidence-huachen-quote, ashd:evidence-huachen-industry, ashd:evidence-huachen-order ;
+    ash:opportunityCounterEvidence ashd:evidence-huachen-pm-breakdown, ashd:evidence-huachen-weight ;
+    ash:supportingEvidenceSummary "中期趋势未破、板块仍强、订单事件真实、风险收益 2.75。" ;
+    ash:counterEvidenceSummary "下午放量跌破 36.50、单票权重 12% 超过 10% 硬限额、订单利好部分反映；已审查，减仓至 10%。" ;
+    ash:counterEvidenceCount 2 ;
+    ash:counterEvidenceReviewed true ;
+    ash:opportunityVerdict "机会仍在但已转弱；原持有逻辑部分失效，叠加单票权重超限，应减仓至 10%。" ;
+    ash:producedByEngine ashd:engine-opportunity ;
+    rdfs:label "华辰智造 2026-11-03 机会评估"@zh ;
+    ash:isExample true .
+
+ashd:judgment-huachen-20261103 a owl:NamedIndividual, ash:TradingJudgment ;
+    ash:judgmentOfSecurity ashd:sec-huachen-a ;
+    ash:judgmentForCase ashd:case-huachen-held ;
+    ash:judgmentFromAssessment ashd:opportunity-huachen-20261103 ;
+    ash:hasJudgmentScenario ashs:scenario-held ;
+    ash:judgmentScenarioCode "held" ;
+    ash:hasJudgmentDecision ashs:decision-reduce ;
+    ash:judgmentDecisionCode "reduce" ;
+    ash:judgmentCoreOpportunity "高端制造 + AI 主题下的中期趋势与订单增长；但当前更重要的是控制单票集中度与量价转弱风险。" ;
+    ash:judgmentMarketState "震荡修复，风险偏好中性偏多，高位接力分歧大" ;
+    ash:judgmentStockState "中期上升延续、高位回踩跌破 MA20 后收回、量价转弱" ;
+    ash:judgmentSupportingSummary "趋势未破、板块仍强、订单事件真实、风险收益 2.75。" ;
+    ash:judgmentCounterSummary "下午放量跌破 36.50、单票权重 12% 超过 10% 硬限额、事件已部分反映；已审查，减仓至 10%。" ;
+    ash:judgmentInvalidation "跌破 33.00 或订单/毛利逻辑被证伪；若重新放量站上 38.80 且板块扩散，可恢复加仓评估。" ;
+    ash:judgmentVersion 2 ;
+    ash:judgmentOriginalLogic "2026-10-31 增持逻辑：高端制造订单增长 + AI 主题 + 19.8 倍 PE，预计 2027 年 22 倍 PE 对应 45 元。" ;
+    ash:judgmentLogicStillValid true ;
+    ash:judgmentConfidenceBasis "68 个历史样本、20 日胜率 61%、盈亏比 2.75；反向证据已审查；减仓主要由硬限额与量价转弱触发，不是看跌预测。" ;
+    ash:judgmentAsOf "2026-11-03"^^xsd:date ;
+    ash:judgmentHasPlan ashd:trade-plan-huachen-reduce ;
+    ash:judgmentLinkedDecision ashd:decision-huachen-2026q4 ;
+    ash:judgmentBasedOn ashd:evidence-huachen-report, ashd:evidence-huachen-quote, ashd:evidence-huachen-industry, ashd:evidence-huachen-order ;
+    ash:judgmentCounterEvidence ashd:evidence-huachen-pm-breakdown, ashd:evidence-huachen-weight ;
+    ash:hasBehaviorRule ashd:behavior-huachen-hold, ashd:behavior-huachen-reduce, ashd:behavior-huachen-add, ashd:behavior-huachen-take-profit, ashd:behavior-huachen-stop ;
+    ash:hasJudgmentRevision ashd:revision-huachen-20261103 ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造 2026-11-03 交易判断 v2"@zh ;
+    ash:isExample true .
+
+ashd:behavior-huachen-hold a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-HC-HOLD" ;
+    ash:behaviorForJudgment ashd:judgment-huachen-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-huachen-a ;
+    ash:hasBehaviorAction ashs:behavior-hold ;
+    ash:behaviorActionCode "hold" ;
+    ash:behaviorCondition "价格不低于 36.50、成交额不超过 20 日均量 1.5 倍、板块维持核心扩散"@zh ;
+    ash:behaviorPriority 10 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造持有规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-huachen-reduce a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-HC-REDUCE" ;
+    ash:behaviorForJudgment ashd:judgment-huachen-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-huachen-a ;
+    ash:hasBehaviorAction ashs:behavior-reduce ;
+    ash:behaviorActionCode "reduce" ;
+    ash:behaviorCondition "单票权重超过 10% 或放量跌破 36.50"@zh ;
+    ash:behaviorPriority 2 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造减仓规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-huachen-add a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-HC-ADD" ;
+    ash:behaviorForJudgment ashd:judgment-huachen-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-huachen-a ;
+    ash:hasBehaviorAction ashs:behavior-add ;
+    ash:behaviorActionCode "add" ;
+    ash:behaviorCondition "重新放量站上 38.80 且板块扩散、减仓后预计权重不超过 10%"@zh ;
+    ash:behaviorPriority 20 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造加仓规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-huachen-take-profit a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-HC-TAKE-PROFIT" ;
+    ash:behaviorForJudgment ashd:judgment-huachen-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-huachen-a ;
+    ash:hasBehaviorAction ashs:behavior-take-profit ;
+    ash:behaviorActionCode "take_profit" ;
+    ash:behaviorCondition "达到 45.00 或盈亏比降至 1.5 以下"@zh ;
+    ash:behaviorPriority 15 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造止盈规则"@zh ;
+    ash:isExample true .
+
+ashd:behavior-huachen-stop a owl:NamedIndividual, ash:BehaviorRule ;
+    ash:behaviorRuleId "BR-HC-STOP" ;
+    ash:behaviorForJudgment ashd:judgment-huachen-20261103 ;
+    ash:behaviorOnSecurity ashd:sec-huachen-a ;
+    ash:hasBehaviorAction ashs:behavior-stop ;
+    ash:behaviorActionCode "stop" ;
+    ash:behaviorCondition "跌破 33.00 或订单/毛利逻辑被证伪"@zh ;
+    ash:behaviorPriority 1 ;
+    ash:behaviorAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造止损规则"@zh ;
+    ash:isExample true .
+
+ashd:revision-huachen-20261103 a owl:NamedIndividual, ash:JudgmentRevision ;
+    ash:judgmentRevisionId "JR-HC-20261103" ;
+    ash:revisionOfJudgment ashd:judgment-huachen-20261103 ;
+    ash:revisionFromVersion 1 ;
+    ash:revisionToVersion 2 ;
+    ash:revisionReason "下午 14:10 放量跌破 MA20 36.50，最低 36.20，尾盘收回 36.80；同时单票权重 12% 超过 10% 硬限额。新增量价与集中度证据改变了持有判断。" ;
+    ash:revisionChangedField "decision" ;
+    ash:revisionTriggerEvidence ashd:evidence-huachen-pm-breakdown, ashd:evidence-huachen-weight ;
+    ash:revisionSummary "持有 → 减仓至 10%；原始中期逻辑未完全失效，但风险收益与仓位约束要求降低暴露。" ;
+    ash:revisionAsOf "2026-11-03"^^xsd:date ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造判断修订：持有转减仓"@zh ;
+    ash:isExample true .
+
+ashd:verification-huachen-20261103 a owl:NamedIndividual, ash:OutcomeVerification ;
+    ash:verificationId "OV-HC-20261103" ;
+    ash:verificationOfJudgment ashd:judgment-huachen-20261103 ;
+    ash:hasVerificationResult ashs:verification-weakened ;
+    ash:verificationResultCode "logic_weakened" ;
+    ash:verificationReturnPct -0.8 ;
+    ash:verificationMaxAdverseExcursion -2.1 ;
+    ash:verificationMaxFavorableExcursion 1.4 ;
+    ash:verificationLogicStillValid true ;
+    ash:verificationLesson "价格收回但量能未恢复，持有逻辑降级；单票硬限额应在判断阶段而不是执行阶段解决。" ;
+    ash:verificationAsOf "2026-11-03"^^xsd:date ;
+    ash:verificationEvidence ashd:evidence-huachen-pm-breakdown ;
+    ash:producedByEngine ashd:engine-decision ;
+    rdfs:label "华辰智造判断当日结果验证"@zh ;
+    ash:isExample true .
+
+ashd:case-huachen-held a owl:NamedIndividual, ash:AnalysisCase ;
+    ash:caseId "AC-HC-20261103" ;
+    ash:caseOfSecurity ashd:sec-huachen-a ;
+    ash:caseOfCompany ashd:company-huachen ;
+    ash:caseScenario ashs:scenario-held ;
+    ash:caseScenarioCode "held" ;
+    ash:caseAsOf "2026-11-03"^^xsd:date ;
+    ash:caseSummary "已持仓场景：原始增持逻辑部分成立，但下午放量跌破 MA20 后收回、单票权重 12% 超过 10% 硬限额，判断由持有改为减仓至 10%。" ;
+    ash:caseVersion 2 ;
+    ash:caseUsesEngine ashd:engine-market-cognition, ashd:engine-stock-cognition, ashd:engine-event-cognition, ashd:engine-opportunity, ashd:engine-decision ;
+    ash:hasMarketCognition ashd:market-cognition-20261103 ;
+    ash:hasSectorCognition ashd:sector-cognition-huachen-20261103 ;
+    ash:hasStockCognition ashd:stock-cognition-huachen-20261103 ;
+    ash:hasEventCognition ashd:event-cognition-huachen-20261103 ;
+    ash:hasOpportunityAssessment ashd:opportunity-huachen-20261103 ;
+    ash:hasTradingJudgment ashd:judgment-huachen-20261103 ;
+    ash:hasOutcomeVerification ashd:verification-huachen-20261103 ;
+    rdfs:label "华辰智造已持仓分析案例"@zh ;
+    ash:isExample true .
+
+ashd:sec-huachen-a ash:hasNewsCatalyst ashd:catalyst-huachen-order ;
+    ash:hasPricePattern ashd:pattern-huachen-pullback ;
+    ash:hasTrendState ashd:trend-huachen-20261103 .

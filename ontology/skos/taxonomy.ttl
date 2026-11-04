@@ -21,7 +21,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/skos-reference/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/skos-primer/> ;
-    owl:versionInfo "1.9.0" .
+    owl:versionInfo "1.10.0" .
 
 # ===========================================================================
 # Concept schemes
@@ -1618,3 +1618,412 @@ ashs:level-review a skos:Concept ;
     skos:prefLabel "复盘迭代"@zh, "Review & Iteration"@en ;
     skos:notation "DL-REVIEW" ;
     skos:definition "根据结果与过程复盘修订规则、阈值和流程。"@zh .
+
+# ===========================================================================
+# Domain expansion 1.10 — trading cognition taxonomies
+# ===========================================================================
+
+ashs:scheme-opportunity-stage a skos:ConceptScheme ;
+    skos:prefLabel "机会阶段"@zh, "Opportunity Stage"@en ;
+    skos:definition "交易机会从启动到衰退的阶段，用于区分“发现机会”和“机会已经失效”。"@zh ;
+    skos:hasTopConcept ashs:stage-launch , ashs:stage-confirm , ashs:stage-extend , ashs:stage-decline .
+
+ashs:stage-launch a skos:Concept ;
+    skos:inScheme ashs:scheme-opportunity-stage ;
+    skos:topConceptOf ashs:scheme-opportunity-stage ;
+    skos:prefLabel "启动"@zh, "Launch"@en ;
+    skos:notation "launch" ;
+    skos:definition "价格与成交刚刚出现异动，机会结构尚未完成确认。"@zh .
+
+ashs:stage-confirm a skos:Concept ;
+    skos:inScheme ashs:scheme-opportunity-stage ;
+    skos:topConceptOf ashs:scheme-opportunity-stage ;
+    skos:prefLabel "确认"@zh, "Confirmed"@en ;
+    skos:notation "confirm" ;
+    skos:definition "突破、回踩或竞价承接得到成交与板块确认。"@zh .
+
+ashs:stage-extend a skos:Concept ;
+    skos:inScheme ashs:scheme-opportunity-stage ;
+    skos:topConceptOf ashs:scheme-opportunity-stage ;
+    skos:prefLabel "延续"@zh, "Extending"@en ;
+    skos:notation "extend" ;
+    skos:definition "趋势与量价继续支持原逻辑，机会仍在延续。"@zh .
+
+ashs:stage-decline a skos:Concept ;
+    skos:inScheme ashs:scheme-opportunity-stage ;
+    skos:topConceptOf ashs:scheme-opportunity-stage ;
+    skos:prefLabel "衰退"@zh, "Declining"@en ;
+    skos:notation "decline" ;
+    skos:definition "量价、板块或事件转弱，原机会结构正在失效。"@zh .
+
+ashs:scheme-judgment-scenario a skos:ConceptScheme ;
+    skos:prefLabel "交易判断场景"@zh, "Trading Judgment Scenario"@en ;
+    skos:definition "买入机会与持仓管理使用两套判断流程，但共享市场、板块、个股与事件认知。"@zh ;
+    skos:hasTopConcept ashs:scenario-non-position , ashs:scenario-held .
+
+ashs:scenario-non-position a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-scenario ;
+    skos:topConceptOf ashs:scheme-judgment-scenario ;
+    skos:prefLabel "非持仓"@zh, "Non-position"@en ;
+    skos:notation "non_position" ;
+    skos:definition "当前没有持仓，目标是寻找买入机会或放弃。"@zh .
+
+ashs:scenario-held a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-scenario ;
+    skos:topConceptOf ashs:scheme-judgment-scenario ;
+    skos:prefLabel "已持仓"@zh, "Held"@en ;
+    skos:notation "held" ;
+    skos:definition "当前已有持仓，目标是判断继续持有、加仓、减仓或卖出。"@zh .
+
+ashs:scheme-judgment-decision a skos:ConceptScheme ;
+    skos:prefLabel "交易判断结论"@zh, "Trading Judgment Decision"@en ;
+    skos:definition "一次交易判断允许的离散结论；买入与持仓管理共享词汇，但由不同流程产生。"@zh ;
+    skos:hasTopConcept ashs:decision-buy , ashs:decision-hold , ashs:decision-add , ashs:decision-reduce , ashs:decision-sell , ashs:decision-watch .
+
+ashs:decision-buy a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-decision ;
+    skos:topConceptOf ashs:scheme-judgment-decision ;
+    skos:prefLabel "买入"@zh, "Buy"@en ;
+    skos:notation "buy" ;
+    skos:definition "机会确认且风险收益满足门槛，允许按计划建仓。"@zh .
+
+ashs:decision-hold a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-decision ;
+    skos:topConceptOf ashs:scheme-judgment-decision ;
+    skos:prefLabel "持有"@zh, "Hold"@en ;
+    skos:notation "hold" ;
+    skos:definition "原始或当前逻辑仍成立，继续持有但不新增风险。"@zh .
+
+ashs:decision-add a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-decision ;
+    skos:topConceptOf ashs:scheme-judgment-decision ;
+    skos:prefLabel "加仓"@zh, "Add"@en ;
+    skos:notation "add" ;
+    skos:definition "原逻辑增强且组合约束允许，按计划增加仓位。"@zh .
+
+ashs:decision-reduce a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-decision ;
+    skos:topConceptOf ashs:scheme-judgment-decision ;
+    skos:prefLabel "减仓"@zh, "Reduce"@en ;
+    skos:notation "reduce" ;
+    skos:definition "风险、集中度或量价转弱，降低部分暴露。"@zh .
+
+ashs:decision-sell a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-decision ;
+    skos:topConceptOf ashs:scheme-judgment-decision ;
+    skos:prefLabel "卖出"@zh, "Sell"@en ;
+    skos:notation "sell" ;
+    skos:definition "原始逻辑失效或触发止损，退出持仓。"@zh .
+
+ashs:decision-watch a skos:Concept ;
+    skos:inScheme ashs:scheme-judgment-decision ;
+    skos:topConceptOf ashs:scheme-judgment-decision ;
+    skos:prefLabel "观望"@zh, "Watch"@en ;
+    skos:notation "watch" ;
+    skos:definition "机会未确认或证据不足，等待而不行动。"@zh .
+
+ashs:scheme-volume-price-pattern a skos:ConceptScheme ;
+    skos:prefLabel "量价行为模式"@zh, "Volume-Price Pattern"@en ;
+    skos:definition "价格与成交量组合成的可验证量价行为，以及由多个单步行为组成的序列。"@zh ;
+    skos:hasTopConcept ashs:vp-volume-advance , ashs:vp-shrink-advance , ashs:vp-volume-decline , ashs:vp-shrink-decline , ashs:vp-volume-breakout , ashs:vp-shrink-pullback , ashs:vp-volume-stall , ashs:vp-divergence .
+
+ashs:vp-volume-advance a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "放量上涨"@zh, "Volume-backed advance"@en ;
+    skos:notation "volume_advance" ;
+    skos:definition "价格上涨且成交扩张，买方参与增强。"@zh .
+
+ashs:vp-shrink-advance a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "缩量上涨"@zh, "Shrinking-volume advance"@en ;
+    skos:notation "shrink_advance" ;
+    skos:definition "价格上涨但成交收缩，上涨参与度不足。"@zh .
+
+ashs:vp-volume-decline a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "放量下跌"@zh, "Volume-backed decline"@en ;
+    skos:notation "volume_decline" ;
+    skos:definition "价格下跌且成交扩张，抛售压力增强。"@zh .
+
+ashs:vp-shrink-decline a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "缩量下跌"@zh, "Shrinking-volume decline"@en ;
+    skos:notation "shrink_decline" ;
+    skos:definition "价格下跌但成交收缩，抛售参与度减弱。"@zh .
+
+ashs:vp-volume-breakout a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "放量突破"@zh, "Volume breakout"@en ;
+    skos:notation "volume_breakout" ;
+    skos:definition "突破关键价格且成交扩张，突破获得成交确认。"@zh .
+
+ashs:vp-shrink-pullback a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "缩量回踩"@zh, "Shrinking-volume pullback"@en ;
+    skos:notation "shrink_pullback" ;
+    skos:definition "回踩关键位置且成交收缩，抛售压力可能减弱。"@zh .
+
+ashs:vp-volume-stall a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "放量滞涨"@zh, "Volume stall"@en ;
+    skos:notation "volume_stall" ;
+    skos:definition "成交扩张但价格推进困难，供给压力值得警惕。"@zh .
+
+ashs:vp-divergence a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "量价背离"@zh, "Volume-price divergence"@en ;
+    skos:notation "divergence" ;
+    skos:definition "价格与成交变化不协调，原趋势可能出现变化。"@zh .
+
+ashs:vp-sequence a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:topConceptOf ashs:scheme-volume-price-pattern ;
+    skos:prefLabel "量价组合"@zh, "Volume-price sequence"@en ;
+    skos:notation "sequence" ;
+    skos:definition "由多个单步量价行为组成、比孤立指标更有交易价值的序列。"@zh ;
+    skos:narrower ashs:vp-seq-breakout-pullback , ashs:vp-seq-stall , ashs:vp-seq-reversal , ashs:vp-seq-high-breakdown .
+
+ashs:vp-seq-breakout-pullback a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:broader ashs:vp-sequence ;
+    skos:prefLabel "放量突破→缩量回踩→再次放量上涨"@zh, "Breakout, pullback, re-advance"@en ;
+    skos:notation "seq_breakout_pullback" ;
+    skos:definition "突破得到确认、回踩缩量、再次放量，趋势延续概率较高。"@zh .
+
+ashs:vp-seq-stall a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:broader ashs:vp-sequence ;
+    skos:prefLabel "放量上涨→持续放量但不推进"@zh, "Advance then stall"@en ;
+    skos:notation "seq_stall" ;
+    skos:definition "持续放量而价格不再推进，可能进入派发或分歧。"@zh .
+
+ashs:vp-seq-reversal a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:broader ashs:vp-sequence ;
+    skos:prefLabel "缩量下跌→放量反包"@zh, "Shrinking decline then reversal"@en ;
+    skos:notation "seq_reversal" ;
+    skos:definition "抛售衰竭后放量反包，原有弱势可能反转。"@zh .
+
+ashs:vp-seq-high-breakdown a skos:Concept ;
+    skos:inScheme ashs:scheme-volume-price-pattern ;
+    skos:broader ashs:vp-sequence ;
+    skos:prefLabel "高位放量→冲高回落→跌破支撑"@zh, "High-volume fade and breakdown"@en ;
+    skos:notation "seq_high_breakdown" ;
+    skos:definition "高位放量后冲高回落并跌破关键支撑，原趋势可能失效。"@zh .
+
+ashs:scheme-auction-behavior a skos:ConceptScheme ;
+    skos:prefLabel "竞价行为"@zh, "Auction Behavior"@en ;
+    skos:definition "集合竞价阶段的价格与参与度变化，用于判断开盘前后的初始买卖力量。"@zh ;
+    skos:hasTopConcept ashs:auction-high-open , ashs:auction-low-open , ashs:auction-bid-up , ashs:auction-decay , ashs:auction-weak-to-strong , ashs:auction-strong-to-weak , ashs:auction-seal-strengthen , ashs:auction-seal-decay .
+
+ashs:auction-high-open a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "高开"@zh, "High open"@en ;
+    skos:notation "high_open" ;
+    skos:definition "竞价价格明显高于昨日收盘。"@zh .
+
+ashs:auction-low-open a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "低开"@zh, "Low open"@en ;
+    skos:notation "low_open" ;
+    skos:definition "竞价价格明显低于昨日收盘。"@zh .
+
+ashs:auction-bid-up a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "竞价抢筹"@zh, "Bid accumulation"@en ;
+    skos:notation "bid_up" ;
+    skos:definition "竞价价格和成交参与度同步增强。"@zh .
+
+ashs:auction-decay a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "竞价衰退"@zh, "Auction decay"@en ;
+    skos:notation "decay" ;
+    skos:definition "竞价价格或成交参与度明显减弱。"@zh .
+
+ashs:auction-weak-to-strong a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "弱转强"@zh, "Weak-to-strong"@en ;
+    skos:notation "weak_to_strong" ;
+    skos:definition "竞价阶段出现明显改善。"@zh .
+
+ashs:auction-strong-to-weak a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "强转弱"@zh, "Strong-to-weak"@en ;
+    skos:notation "strong_to_weak" ;
+    skos:definition "竞价阶段出现明显恶化。"@zh .
+
+ashs:auction-seal-strengthen a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "封单增强"@zh, "Seal strengthening"@en ;
+    skos:notation "seal_strengthen" ;
+    skos:definition "涨停封单持续增强。"@zh .
+
+ashs:auction-seal-decay a skos:Concept ;
+    skos:inScheme ashs:scheme-auction-behavior ;
+    skos:topConceptOf ashs:scheme-auction-behavior ;
+    skos:prefLabel "封单衰减"@zh, "Seal decay"@en ;
+    skos:notation "seal_decay" ;
+    skos:definition "涨停封单明显减少。"@zh .
+
+ashs:scheme-intraday-behavior a skos:ConceptScheme ;
+    skos:prefLabel "盘中行为"@zh, "Intraday Behavior"@en ;
+    skos:definition "盘中关键交易时点的买卖力量变化，用于验证竞价力量能否持续。"@zh ;
+    skos:hasTopConcept ashs:intraday-rally , ashs:intraday-fade , ashs:intraday-pullback-support , ashs:intraday-sideways , ashs:intraday-breakout-accelerate , ashs:intraday-breakdown , ashs:intraday-tail-bid , ashs:intraday-tail-sell .
+
+ashs:intraday-rally a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "主动拉升"@zh, "Active rally"@en ;
+    skos:notation "rally" ;
+    skos:definition "短时间内价格快速上行。"@zh .
+
+ashs:intraday-fade a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "冲高回落"@zh, "Fade from high"@en ;
+    skos:notation "fade" ;
+    skos:definition "上涨后出现明显抛压。"@zh .
+
+ashs:intraday-pullback-support a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "回踩承接"@zh, "Pullback support"@en ;
+    skos:notation "pullback_support" ;
+    skos:definition "回落后获得买盘支持。"@zh .
+
+ashs:intraday-sideways a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "横盘换手"@zh, "Sideways turnover"@en ;
+    skos:notation "sideways" ;
+    skos:definition "价格稳定但成交持续发生。"@zh .
+
+ashs:intraday-breakout-accelerate a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "突破加速"@zh, "Breakout acceleration"@en ;
+    skos:notation "breakout_accelerate" ;
+    skos:definition "突破后价格运动加快。"@zh .
+
+ashs:intraday-breakdown a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "跌破失守"@zh, "Breakdown"@en ;
+    skos:notation "breakdown" ;
+    skos:definition "关键支撑被有效跌破。"@zh .
+
+ashs:intraday-tail-bid a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "尾盘抢筹"@zh, "Tail-end bid"@en ;
+    skos:notation "tail_bid" ;
+    skos:definition "尾盘成交与价格出现明显正向变化。"@zh .
+
+ashs:intraday-tail-sell a skos:Concept ;
+    skos:inScheme ashs:scheme-intraday-behavior ;
+    skos:topConceptOf ashs:scheme-intraday-behavior ;
+    skos:prefLabel "尾盘兑现"@zh, "Tail-end selling"@en ;
+    skos:notation "tail_sell" ;
+    skos:definition "尾盘出现集中卖出压力。"@zh .
+
+ashs:scheme-behavior-action a skos:ConceptScheme ;
+    skos:prefLabel "行为管理动作"@zh, "Behavior Management Action"@en ;
+    skos:definition "买入之后或持仓期间允许的行为动作；每个动作都绑定触发条件与优先级。"@zh ;
+    skos:hasTopConcept ashs:behavior-enter , ashs:behavior-add , ashs:behavior-hold , ashs:behavior-reduce , ashs:behavior-take-profit , ashs:behavior-stop , ashs:behavior-watch .
+
+ashs:behavior-enter a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "建仓"@zh, "Enter"@en ;
+    skos:notation "enter" ;
+    skos:definition "机会确认后按计划建立初始仓位。"@zh .
+
+ashs:behavior-add a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "加仓"@zh, "Add"@en ;
+    skos:notation "add" ;
+    skos:definition "原逻辑增强且组合约束允许时增加仓位。"@zh .
+
+ashs:behavior-hold a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "持有"@zh, "Hold"@en ;
+    skos:notation "hold" ;
+    skos:definition "逻辑仍成立且未触发减仓或退出条件。"@zh .
+
+ashs:behavior-reduce a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "减仓"@zh, "Reduce"@en ;
+    skos:notation "reduce" ;
+    skos:definition "风险、集中度或量价转弱时降低暴露。"@zh .
+
+ashs:behavior-take-profit a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "止盈"@zh, "Take profit"@en ;
+    skos:notation "take_profit" ;
+    skos:definition "达到目标或盈亏比恶化时兑现部分收益。"@zh .
+
+ashs:behavior-stop a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "止损"@zh, "Stop loss"@en ;
+    skos:notation "stop" ;
+    skos:definition "失效条件触发时退出，避免损失扩大。"@zh .
+
+ashs:behavior-watch a skos:Concept ;
+    skos:inScheme ashs:scheme-behavior-action ;
+    skos:topConceptOf ashs:scheme-behavior-action ;
+    skos:prefLabel "观望"@zh, "Watch"@en ;
+    skos:notation "watch" ;
+    skos:definition "条件不足时不行动，等待新证据。"@zh .
+
+ashs:scheme-verification-result a skos:ConceptScheme ;
+    skos:prefLabel "结果验证结论"@zh, "Outcome Verification Result"@en ;
+    skos:definition "用真实市场结果检验判断逻辑，而不是只看盈亏结果。"@zh ;
+    skos:hasTopConcept ashs:verification-held , ashs:verification-weakened , ashs:verification-invalidated , ashs:verification-pending .
+
+ashs:verification-held a skos:Concept ;
+    skos:inScheme ashs:scheme-verification-result ;
+    skos:topConceptOf ashs:scheme-verification-result ;
+    skos:prefLabel "逻辑成立"@zh, "Logic held"@en ;
+    skos:notation "logic_held" ;
+    skos:definition "结果与原始逻辑一致，判断过程得到支持。"@zh .
+
+ashs:verification-weakened a skos:Concept ;
+    skos:inScheme ashs:scheme-verification-result ;
+    skos:topConceptOf ashs:scheme-verification-result ;
+    skos:prefLabel "逻辑减弱"@zh, "Logic weakened"@en ;
+    skos:notation "logic_weakened" ;
+    skos:definition "结果部分支持原逻辑，但关键条件已经转弱。"@zh .
+
+ashs:verification-invalidated a skos:Concept ;
+    skos:inScheme ashs:scheme-verification-result ;
+    skos:topConceptOf ashs:scheme-verification-result ;
+    skos:prefLabel "逻辑失效"@zh, "Logic invalidated"@en ;
+    skos:notation "logic_invalidated" ;
+    skos:definition "结果或新证据表明原始逻辑不再成立。"@zh .
+
+ashs:verification-pending a skos:Concept ;
+    skos:inScheme ashs:scheme-verification-result ;
+    skos:topConceptOf ashs:scheme-verification-result ;
+    skos:prefLabel "待验证"@zh, "Pending"@en ;
+    skos:notation "pending" ;
+    skos:definition "判断时点过近，尚未形成可验证的结果窗口。"@zh .
