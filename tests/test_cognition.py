@@ -215,7 +215,6 @@ def _youyan_snapshot():
 
 
 def test_real_company_cognition_fallback_marks_missing_dimensions():
-    from server.marketdata import MarketDataProvider
     from tests.test_real_data import FakeProvider
 
     store = OntologyStore(ROOT, market_data=FakeProvider(_youyan_snapshot()))
@@ -240,7 +239,6 @@ def test_real_company_test_phrase_routes_to_cognition():
     import asyncio
 
     from server.agent import AgentService
-    from server.marketdata import MarketDataProvider
     from server.settings import Settings
     from tests.test_real_data import FakeProvider
 
