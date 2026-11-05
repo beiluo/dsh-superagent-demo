@@ -322,9 +322,24 @@
           <h2 id="rules-title">规则库 / RULE LIBRARY</h2>
         </div>
         <p class="section-lede">
-          229 条规则：169 条可执行 SWRL 规则与 60 条 A 股规则库 V2.0 规范规则。左侧按编号、类别和严重度浏览，右侧查看状态机、证据口径与参数占位。
+          229 条规则：169 条可执行 SWRL 规则与 60 条 A 股业务规则库 V2.0。W3C 规范性的类限制、键与类不相交在 OWL 层单独查看；不要把业务规则当成 OWL 规范。
         </p>
       </div>
+
+      <section class="owl-norms" aria-labelledby="owl-norms-title">
+        <div class="owl-norms-copy">
+          <p class="detail-kicker">OWL 2 DL / FORMAL CONSTRAINTS</p>
+          <h3 id="owl-norms-title">规范在 OWL 层，不在规则表里</h3>
+          <p>类限制、键、类不相交和属性特征是形式规范；SWRL 规则是可执行推理，业务规则库 V2.0 是决策流程规范。</p>
+        </div>
+        <div class="owl-norm-stats">
+          <div><strong id="owl-norm-restrictions">223</strong><span>类限制</span></div>
+          <div><strong id="owl-norm-keys">30</strong><span>键</span></div>
+          <div><strong id="owl-norm-disjoint">20</strong><span>不相交组</span></div>
+          <div><strong id="owl-norm-properties">903</strong><span>类/属性</span></div>
+        </div>
+        <button class="owl-norms-open" id="owl-norms-open" type="button">在 Explorer 查看 OWL 层 →</button>
+      </section>
 
       <div class="rules-layout">
         <section class="rules-table-panel" aria-label="规则列表">
@@ -334,7 +349,7 @@
               <button type="button" class="rule-filter" data-severity="high">高风险 <span id="rule-count-high">102</span></button>
               <button type="button" class="rule-filter" data-severity="medium">中风险 <span id="rule-count-medium">67</span></button>
               <button type="button" class="rule-filter" data-severity="low">低风险 <span id="rule-count-low">0</span></button>
-              <button type="button" class="rule-filter" data-severity="info">规则库 V2.0 <span id="rule-count-info">60</span></button>
+              <button type="button" class="rule-filter" data-severity="info">业务规则 V2.0 <span id="rule-count-info">60</span></button>
             </div>
             <label class="rules-search" for="rule-search">
               <svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m12 12 4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -363,7 +378,7 @@
       </div>
 
       <p class="rule-note">
-        <span>规范状态</span> SWRL 是 W3C Member Submission（2004），不是 W3C Recommendation；本设计对其规范状态与运行限制保持显式。
+        <span>规范边界</span> OWL 2 的结构约束在 OWL 层；SWRL 是 W3C Member Submission（2004），业务规则库 V2.0 不是 W3C 规范。
       </p>
     </section>
 

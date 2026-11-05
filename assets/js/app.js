@@ -40,7 +40,7 @@
     odrl: "ODRL",
   };
 
-  const SEVERITY_LABELS = { high: "高", medium: "中", low: "低", info: "规范" };
+  const SEVERITY_LABELS = { high: "高", medium: "中", low: "低", info: "业务" };
 
   const GRAPH_CLUSTERS = {
     MarketParticipant: { label: "市场参与者", color: "#e26b5f" },
@@ -343,6 +343,27 @@
     });
   }
 
+  function renderOwlNorms() {
+    const restrictions = $("#owl-norm-restrictions");
+    const keys = $("#owl-norm-keys");
+    const disjoint = $("#owl-norm-disjoint");
+    const properties = $("#owl-norm-properties");
+    if (restrictions) restrictions.textContent = number(DATA.stats.restrictions || 0);
+    if (keys) keys.textContent = number(DATA.stats.keys || 0);
+    if (disjoint) disjoint.textContent = number(DATA.stats.disjointGroups || 0);
+    if (properties) properties.textContent = number((DATA.stats.classes || 0) + (DATA.stats.properties || 0));
+    const button = $("#owl-norms-open");
+    if (button) {
+      button.addEventListener("click", () => {
+        state.layer = "rdfs";
+        state.filter = "all";
+        syncFilterChips();
+        renderEntityList();
+        activateView("explorer");
+      });
+    }
+  }
+
   function renderSideStats() {
     const rdf = DATA.layers.find((layer) => layer.key === "rdf");
     const target = $("#side-rdf");
@@ -504,7 +525,7 @@
   }
 
   function ruleSpecCard(rule) {
-    const category = rule.category ? rule.category.label : (rule.ruleCategory || "规范规则");
+    const category = rule.category ? rule.category.label : (rule.ruleCategory || "业务规则");
     return `
       <article class="rule-card rule-card-spec" data-rule-id="${esc(rule.id)}">
         <div class="rule-card-top">
@@ -861,7 +882,7 @@
       const category = rule.format === "specification"
         ? (rule.category ? rule.category.label : rule.ruleCategory)
         : (LAYER_LABELS[rule.layer] || "SWRL");
-      const severity = rule.format === "specification" ? "规范" : (SEVERITY_LABELS[rule.severity] || rule.severity);
+      const severity = rule.format === "specification" ? "业务" : (SEVERITY_LABELS[rule.severity] || rule.severity);
       const severityKey = rule.format === "specification" ? "info" : rule.severity;
       return `<tr data-rule-key="rule:${esc(rule.id)}" class="${`rule:${rule.id}` === state.ruleId ? "is-active" : ""}" tabindex="0">
         <td class="mono rule-code-cell">${esc(rule.ruleId)}</td>
@@ -1948,6 +1969,7 @@
     state.conceptId = (DATA.schemes.find((scheme) => scheme.id === state.schemeId)?.topConcepts?.[0])?.id || null;
     renderTypeCounts();
     renderSideStats();
+    renderOwlNorms();
     renderLayerFilterCounts();
     renderEntityList();
     renderSchemeTabs();
