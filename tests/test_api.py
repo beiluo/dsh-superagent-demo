@@ -115,7 +115,7 @@ def test_rule_explanation(client_factory):
 
 
 def test_v2_rule_explanation(client_factory):
-    response = client_factory().post("/api/agent/analyze", json={"question": "OP-001 是什么规则？"})
+    response = client_factory().post("/api/agent/analyze", json={"question": "OP-001是什么规则？"})
     assert response.status_code == 200
     data = response.json()
     assert data["steps"][0]["tool"] == "get_rule"

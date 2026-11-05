@@ -694,7 +694,7 @@ class AgentService:
     def _detect_intent(self, question: str) -> tuple[str, Any]:
         companies = self.store.find_companies(question)
         prefixed_rule = re.search(
-            r"\b(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)\s*-?\s*(\d{1,3})\b",
+            r"(?<![A-Za-z])(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)\s*-?\s*(\d{1,3})(?![0-9])",
             question,
             re.IGNORECASE,
         )

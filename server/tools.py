@@ -1158,7 +1158,11 @@ def _portfolio(store: OntologyStore) -> dict[str, Any]:
 
 def _get_rule(store: OntologyStore, rule_id: str) -> dict[str, Any]:
     text = str(rule_id or "")
-    prefixed = re.search(r"(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)\s*-?\s*(\d{1,3})", text, re.IGNORECASE)
+    prefixed = re.search(
+        r"(?<![A-Za-z])(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)\s*-?\s*(\d{1,3})(?![0-9])",
+        text,
+        re.IGNORECASE,
+    )
     if prefixed:
         normalized = f"{prefixed.group(1).upper()}-{int(prefixed.group(2)):03d}"
     else:
