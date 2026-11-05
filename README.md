@@ -8,10 +8,10 @@
 [Agent 部署](docs/agent.md) ·
 [能力问题](docs/competency-questions.rq)
 
-[![ASHARE 研究工作台](docs/evidence/terminal-workspace-wide/wide-overview-after.png)](docs/evidence/terminal-workspace-wide/wide-overview-after.png)
+[![ASHARE 研究工作台](docs/evidence/slim-ui/slim-explorer-after.png)](docs/evidence/slim-ui/slim-explorer-after.png)
 
 页面不是静态说明书：它由本体源文件生成，支持全文检索、按层筛选、类/属性/个体详情、SKOS 概念树、
-SWRL 与规则库 V2.0 规则卡片、OWL-S 流程和 ODRL 政策矩阵。
+SWRL 与规则库 V2.0 规则卡片和整体本体图谱；Agent 对话区单独接入服务端。
 
 > 当前在线页面没有配置后端，只能浏览本体；Agent 对话需要单独部署后端并在
 > `assets/js/agent-config.js` 中配置 `apiBase`，步骤见 [`docs/agent.md`](docs/agent.md)。
@@ -340,6 +340,8 @@ Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代�
 
 ## 7. 页面能力
 
+页面只保留本体浏览与 Agent 两组能力：本体部分包括浏览、图谱、分类与规则库，所有七层实体仍可在浏览器的检索与详情里查看。
+
 - **全文检索**：类、对象属性、数据属性、个体、SKOS 概念、规则、服务、政策；
 - **按层筛选**：RDF 实例 / RDFS·OWL / SKOS / SWRL / OWL-S / ODRL；
 - **整体本体图谱**：核心全景 / 全部类 / 决策链 / SKOS 分类四种模式，按领域簇着色，支持缩放、平移、图例筛选和节点详情，并可跳转到 Explorer 或概念树；
@@ -348,11 +350,7 @@ Agent 也支持查询示例公司之外的真实 A 股：输入 6 位证券代�
 - **技能目录**：50 个外部技能、821 个章节、20 个主题作为 `SkillArtifact`/`SkillSection`/`SkillTopic` 编目，可在 Explorer 检索；
 - **原话摘录**：1,327 条公开短句，标注说话者、类型、主题和来源，不复制全文；
 - **规则层**：169 条 SWRL 规则 + 60 条规则库 V2.0 规则，按 OP/VP/AUC/MKT/EVT/POS/RSK/EVA 职责分层；
-- **短线/游资面板**：换手率、连板高度、龙虎榜净买、主题热度、RSI、风险分，叠加首板/连板/反包/退潮剧本、龙虎榜/竞价/复盘方法卡与 R16–R26 规则；
 - **规则卡片**：严重程度/规则库筛选、IF/THEN 或 TRIGGER/SCOPE、类别分层、状态机、证据口径、参数占位与 SWRL 原子展开；
-- **OWL-S 服务**：输入、输出、前置条件、七步流程、grounding 操作；
-- **ODRL 政策矩阵**：权限、禁止、义务三列，约束与补救措施；
-- **决策样例**：建议、目标价、止损、风险、理由、反方观点、证据链与政策；
 - **本体 Agent**：自然语言问题 → 服务端本体工具 → 带规则/决策/政策引用的回答；
 - **密钥边界**：静态页面不含 LLM key，Agent 通过公开 API 调用独立后端；
 - **响应式**：桌面、平板、手机；手机端实体详情为全屏抽屉；

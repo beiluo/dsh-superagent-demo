@@ -177,3 +177,27 @@ rendered with the bundled Chromium headless shell.
 | `wide-rules-after.png` | 1920 × 1080 | Full-width rule table with larger IDs, names, categories and inspector text. |
 | `wide-mobile-before.png` | 390 × 844 | Mobile dashboard at the old type scale. |
 | `wide-mobile-after.png` | 390 × 844 | Mobile dashboard with the larger scale; low-priority columns collapse instead of clipping. |
+
+## Simplified interface: ontology views and Agent only
+
+The `slim-*` pairs record the request to drop non-core features and keep only the ontology views and
+the Agent. Baseline: merged `main` at `7d22c80`; after: this ticket head. Both sides are the same
+static page served by `python3 -m http.server`, rendered with the bundled Chromium headless shell at a
+1440 × 1000 desktop viewport (390 × 844 mobile), with reduced motion. The `desktop-*` pair captures a
+fresh page load: the baseline lands on 总览 with twelve navigation entries, while the after version
+lands on the Ontology Explorer with five. The `explorer-*` pair opens the first entity on both sides so
+the retained browser and inspector can be compared directly. The `mobile-*` pair has the navigation
+drawer open.
+
+The after version keeps Agent, 浏览 (Ontology Explorer), 图谱, 分类 and 规则. It removes 总览, 本体栈,
+短线, OWL-S, ODRL, 示例 and 方法; OWL-S service and ODRL policy entities remain searchable and
+inspectable in the Explorer. No private content or credentials are visible in the captures.
+
+| File | Viewport | What it shows |
+| --- | --- | --- |
+| `slim-desktop-before.png` | 1440 × 1000 | Baseline: the 总览 dashboard and twelve navigation entries. |
+| `slim-desktop-after.png` | 1440 × 1000 | After: Ontology Explorer as the landing view and five navigation entries. |
+| `slim-explorer-before.png` | 1440 × 1000 | Baseline Explorer with the first entity selected. |
+| `slim-explorer-after.png` | 1440 × 1000 | The same Explorer state after the navigation was reduced. |
+| `slim-mobile-before.png` | 390 × 844 | Baseline mobile navigation drawer with twelve entries. |
+| `slim-mobile-after.png` | 390 × 844 | Mobile navigation drawer with Agent, 浏览, 图谱, 分类 and 规则. |
