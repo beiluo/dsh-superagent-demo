@@ -160,3 +160,20 @@ state; the overview/stack/mobile captures are at the top of the page or workspac
 The rewrite keeps the same ontology snapshot and component data; it changes the application
 navigation model, page composition and the rule/stack presentation. No private content or
 credentials are visible in the captures.
+
+## Full-width, larger-type research terminal
+
+The `wide-*` pairs address readability feedback on the app shell: the type scale was raised across the
+work rail, tables, inspectors and forms, and the 1680/1440 px centred caps were removed so the
+workspace fills the viewport. Baseline: merged `main` at `3fb2047`; after: this ticket head. Desktop
+captures are 1920 × 1080; mobile captures are 390 × 844. Both sides use the same state and were
+rendered with the bundled Chromium headless shell.
+
+| File | Viewport | What it shows |
+| --- | --- | --- |
+| `wide-overview-before.png` | 1920 × 1080 | App shell before this change: 13 px body / 8.5 px table type, 1680 px app cap and 1440 px view cap. |
+| `wide-overview-after.png` | 1920 × 1080 | Full-width workspace with a 16 px body and a readable table/dashboard type scale. |
+| `wide-rules-before.png` | 1920 × 1080 | Rule table and detail at the old type scale and capped width. |
+| `wide-rules-after.png` | 1920 × 1080 | Full-width rule table with larger IDs, names, categories and inspector text. |
+| `wide-mobile-before.png` | 390 × 844 | Mobile dashboard at the old type scale. |
+| `wide-mobile-after.png` | 390 × 844 | Mobile dashboard with the larger scale; low-priority columns collapse instead of clipping. |
