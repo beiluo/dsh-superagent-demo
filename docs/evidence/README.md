@@ -104,3 +104,33 @@ The `cognition-*` pair uses the same static page and 1440 × 1000 viewport: the 
 
 
 The `rule-library-*` pair uses the same static page and 1440 × 1000 viewport: the baseline is a detached worktree at `a33c0f9` (1.10) served on `127.0.0.1:8014`, and the after captures are the 1.11 ticket branch served on `127.0.0.1:8015`. Both were served by `python3 -m http.server` and rendered with the bundled Chromium headless shell; the intended difference is the regenerated `assets/js/data.js`/`ontology.json`, the new V2.0 rules and their category/state/evidence/parameter fields. `rule-library-after-detail.png` additionally opens OP-001 in the Explorer.
+
+## Research terminal redesign
+
+The `terminal-*` pairs use the same static page, 1440 × 900 viewport, reduced-motion setting and
+section scroll positions: the baseline is `main` at `f0b600b`, and the after captures are this
+ticket branch. Both sides were served with `python3 -m http.server` and rendered with the bundled
+Chromium headless shell. All content, data snapshots and interactive states are identical; the
+intended difference is the interface theme. The mobile pair is 390 × 844.
+
+| File | Revision / state | Viewport | What it shows |
+| --- | --- | --- | --- |
+| `terminal-hero-before.png` | `main` at `f0b600b` | 1440 × 900 | Warm paper, oversized Song serif masthead, seal, grid background and gradient decision card. |
+| `terminal-hero-after.png` | Ticket branch head | 1440 × 900 | Cool research-note masthead with a dark terminal header and a flat quote/data panel. |
+| `terminal-stack-before.png` | `main` at `f0b600b` | 1440 × 900 | Seven layer cards under the editorial display type. |
+| `terminal-stack-after.png` | Ticket branch head | 1440 × 900 | Compact card grid with mono counts, hairline rules and one restrained accent per card. |
+| `terminal-explorer-before.png` | `main` at `f0b600b` | 1440 × 900 | Explorer with cream inspector panel, orbit decoration and multi-colour type tags. |
+| `terminal-explorer-after.png` | Ticket branch head | 1440 × 900 | Terminal-style explorer: white rows, mono metadata, neutral type tags and a calm inspector. |
+| `terminal-agent-before.png` | `main` at `f0b600b` | 1440 × 900 | Agent section with cream log background, large serif welcome heading and dark rail. |
+| `terminal-agent-after.png` | Ticket branch head | 1440 × 900 | Agent section on the terminal palette: dark instrument rail, white log, sans hierarchy. |
+| `terminal-graph-before.png` | `main` at `f0b600b` | 1440 × 900 | Graph on a blue/teal gradient glow with gold hover halos. |
+| `terminal-graph-after.png` | Ticket branch head | 1440 × 900 | Flat graphite graph canvas, faint 36 px grid, desaturated nodes and no glow. |
+| `terminal-rules-before.png` | `main` at `f0b600b` | 1440 × 900 | Rule library as a burgundy-black section with dark cards. |
+| `terminal-rules-after.png` | Ticket branch head | 1440 × 900 | Rule library as a light data workspace: white cards, mono rule ids, muted severity tags. |
+| `terminal-example-before.png` | `main` at `f0b600b` | 1440 × 900 | Worked example in the warm editorial theme. |
+| `terminal-example-after.png` | Ticket branch head | 1440 × 900 | Worked example as a compact research note with tabular metrics and hairline evidence chain. |
+| `terminal-mobile-before.png` | `main` at `f0b600b` | 390 × 844 | Mobile hero with decorative seal, large serif headline and warm grid paper. |
+| `terminal-mobile-after.png` | Ticket branch head | 390 × 844 | Mobile research terminal: dark bar, compact sans masthead, two-column metric table. |
+
+No application data was changed by this ticket. The captures were taken with browser extensions
+disabled and no credentials or private Feishu content in view.
