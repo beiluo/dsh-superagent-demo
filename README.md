@@ -8,7 +8,7 @@
 [Agent 部署](docs/agent.md) ·
 [能力问题](docs/competency-questions.rq)
 
-[![ASHARE 研究工作台](docs/evidence/terminal-workspace/workspace-overview-after.png)](docs/evidence/terminal-workspace/workspace-overview-after.png)
+[![ASHARE 研究工作台](docs/evidence/terminal-workspace-wide/wide-overview-after.png)](docs/evidence/terminal-workspace-wide/wide-overview-after.png)
 
 页面不是静态说明书：它由本体源文件生成，支持全文检索、按层筛选、类/属性/个体详情、SKOS 概念树、
 SWRL 与规则库 V2.0 规则卡片、OWL-S 流程和 ODRL 政策矩阵。
