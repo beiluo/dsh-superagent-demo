@@ -162,7 +162,8 @@ python3 scripts/build_data.py   # 或 make build
 .
 ├── index.html                         # 本体浏览页面 + Agent 对话区
 ├── assets/
-│   ├── css/style.css                  # 页面样式
+│   ├── css/style.css                  # 页面基础样式
+│   ├── css/terminal.css               # 研报 / 行情终端风格主题层
 │   ├── js/app.js                      # 检索、筛选、详情、概念树、规则/服务/政策渲染
 │   ├── js/agent.js                    # Agent 前端：只调用公开 API，不含密钥
 │   ├── js/agent-config.js             # 公开后端地址；绝不放密钥
