@@ -55,6 +55,7 @@
 
       <div class="sidebar-foot">
         <div class="side-metric"><span>TRIPLES</span><strong>52,810</strong></div>
+        <div class="side-metric"><span>RDF FACT</span><strong id="side-rdf">2,841</strong></div>
         <div class="side-metric"><span>CLASSES</span><strong>389</strong></div>
         <a class="side-download" href="ontology/a-share.ttl" download>Turtle 源文件 ↓</a>
         <div class="side-links">
@@ -184,6 +185,7 @@
               <option value="owl-s">OWL-S</option>
               <option value="odrl">ODRL</option>
               <option value="rdf">RDF 实例</option>
+              <option value="knowledge">Knowledge 知识库</option>
             </select>
           </label>
         </div>
@@ -232,7 +234,7 @@
           <h2 id="graph-title">把本体当作一张图来看</h2>
         </div>
         <p class="section-lede">
-          节点是类或 SKOS 概念，连线是类层次与对象属性。默认展示可读的核心全景，也可切换全部 363 个类；支持缩放、平移和节点聚焦，点击节点可直接打开语义详情。
+          节点是类或 SKOS 概念，连线是类层次与对象属性。默认展示全部 389 个类（标签默认关闭，可点“标签”开启）；也可切到核心全景。支持缩放、平移和节点聚焦，点击节点可直接打开语义详情。
         </p>
       </div>
 
@@ -240,13 +242,13 @@
         <div class="graph-toolbar">
           <div class="graph-modes" id="graph-modes" role="tablist" aria-label="图谱模式">
             <button class="graph-mode is-active" type="button" role="tab" aria-selected="true" data-graph-mode="overview">核心全景</button>
-            <button class="graph-mode" type="button" role="tab" aria-selected="false" data-graph-mode="all">全部类</button>
+            <button class="graph-mode" type="button" role="tab" aria-selected="false" data-graph-mode="all">全部类 389</button>
             <button class="graph-mode" type="button" role="tab" aria-selected="false" data-graph-mode="decision">决策链</button>
             <button class="graph-mode" type="button" role="tab" aria-selected="false" data-graph-mode="taxonomy">SKOS 分类</button>
           </div>
           <div class="graph-legend" id="graph-legend" aria-label="图例与领域筛选"></div>
           <div class="graph-actions">
-            <button class="graph-action" id="graph-label-toggle" type="button" aria-pressed="true" title="显示/隐藏节点标签">标签</button>
+            <button class="graph-action" id="graph-label-toggle" type="button" aria-pressed="false" title="显示/隐藏节点标签">标签</button>
             <button class="graph-action" id="graph-zoom-out" type="button" aria-label="缩小">−</button>
             <button class="graph-action" id="graph-zoom-in" type="button" aria-label="放大">+</button>
             <button class="graph-action graph-reset" id="graph-reset" type="button">重置</button>

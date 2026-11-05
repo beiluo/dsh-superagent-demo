@@ -157,7 +157,7 @@
     activeView: "explorer",
     graphMode: "overview",
     graphSelected: null,
-    graphShowLabels: true,
+    graphShowLabels: false,
     graphHidden: new Set(),
     graphTransform: { x: 0, y: 0, k: 1 },
     graphNodes: [],
@@ -330,6 +330,24 @@
   /* ------------------------------------------------------------------------
      Explorer
   ------------------------------------------------------------------------ */
+
+  function renderLayerFilterCounts() {
+    const select = $("#layer-filter");
+    if (!select) return;
+    const layers = new Map(DATA.layers.map((layer) => [layer.key, layer]));
+    select.querySelectorAll("option").forEach((option) => {
+      const layer = layers.get(option.value);
+      if (!layer) return;
+      const base = option.textContent.split(" · ")[0];
+      option.textContent = `${base} · ${number(layer.count)}`;
+    });
+  }
+
+  function renderSideStats() {
+    const rdf = DATA.layers.find((layer) => layer.key === "rdf");
+    const target = $("#side-rdf");
+    if (target && rdf) target.textContent = number(rdf.triples);
+  }
 
   function renderTypeCounts() {
     const counts = {
@@ -1517,6 +1535,7 @@
         const button = event.target.closest("[data-graph-mode]");
         if (!button) return;
         state.graphMode = button.dataset.graphMode;
+        state.graphShowLabels = state.graphMode !== "all";
         state.graphSelected = null;
         state.graphTransform = { x: 0, y: 0, k: 1 };
         renderGraph();
@@ -1923,10 +1942,13 @@
 
 
   function init() {
-    state.graphMode = window.innerWidth < 700 ? "decision" : "overview";
+    state.graphMode = window.innerWidth < 700 ? "decision" : "all";
+    state.graphShowLabels = state.graphMode !== "all";
     state.schemeId = (DATA.schemes.find((scheme) => scheme.id === "scheme-industry") || DATA.schemes[0])?.id || null;
     state.conceptId = (DATA.schemes.find((scheme) => scheme.id === state.schemeId)?.topConcepts?.[0])?.id || null;
     renderTypeCounts();
+    renderSideStats();
+    renderLayerFilterCounts();
     renderEntityList();
     renderSchemeTabs();
     renderConceptTree();

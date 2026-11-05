@@ -39,6 +39,8 @@ PROFILE = Namespace("http://www.daml.org/services/owl-s/1.2/Profile.owl#")
 PROCESS = Namespace("http://www.daml.org/services/owl-s/1.2/Process.owl#")
 GROUNDING = Namespace("http://www.daml.org/services/owl-s/1.2/Grounding.owl#")
 
+KNOWLEDGE_FILE = "knowledge/youzi.ttl"
+
 MODULE_FILES = [
     "ontology/rdfs/schema.ttl",
     "ontology/owl/ontology.ttl",
@@ -369,7 +371,7 @@ def validate_examples(g: Graph) -> None:
         check(g.value(company, ASH.hasFinancialReport) is not None, f"Company {local(company)} lacks hasFinancialReport")
 
 
-def validate_page_snapshot(g: Graph, classes: set, object_properties: set, data_properties: set, concepts: set) -> None:
+def validate_page_snapshot(g: Graph, classes: set, object_properties: set, data_properties: set, concepts: set, expected_total: int) -> None:
     data_file = ROOT / "assets/js/data.js"
     page_file = ROOT / "index.html"
     check(page_file.exists(), "index.html is missing")
@@ -386,8 +388,8 @@ def validate_page_snapshot(g: Graph, classes: set, object_properties: set, data_
     except Exception as exc:
         errors.append(f"assets/js/data.js is not valid JSON payload: {exc}")
         return
-    check(payload.get("stats", {}).get("totalTriples") == len(g),
-          "Page snapshot is stale: totalTriples differs from the current ontology")
+    check(payload.get("stats", {}).get("totalTriples") == expected_total,
+          "Page snapshot is stale: totalTriples differs from the current ontology + knowledge catalog")
     check(payload.get("stats", {}).get("classes") == len(classes),
           "Page snapshot is stale: class count differs from the current ontology")
     check(payload.get("stats", {}).get("objectProperties") == len(object_properties),
@@ -464,7 +466,13 @@ def main() -> int:
     validate_owl_s(g)
     validate_odrl(g)
     validate_examples(g)
-    validate_page_snapshot(g, classes, object_properties, data_properties, concepts)
+    knowledge_graph = Graph()
+    try:
+        knowledge_graph.parse(ROOT / KNOWLEDGE_FILE, format="turtle")
+    except Exception as exc:
+        errors.append(f"Turtle parse failed: {KNOWLEDGE_FILE}: {exc}")
+    check(len(knowledge_graph) > 0, "Knowledge catalog is empty or missing")
+    validate_page_snapshot(g, classes, object_properties, data_properties, concepts, len(g + knowledge_graph))
     validate_sparql(g)
 
     closure_graph = Graph()

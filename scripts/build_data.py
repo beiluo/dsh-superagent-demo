@@ -109,6 +109,17 @@ MODULES = [
         "desc": "以权限、禁止、义务和约束表达数据使用、决策消费与人工批准交易护栏。",
         "color": "#6d28d9",
     },
+    {
+        "key": "knowledge",
+        "index": "08",
+        "name": "Knowledge",
+        "zh": "知识库",
+        "spec": "Reference corpus / source index",
+        "specUrl": "https://youzi.mdpt.cn/",
+        "file": "knowledge/youzi.ttl",
+        "desc": "独立的游资技能目录与原话摘录：可检索、可追溯，但不计入核心 RDF 业务实例。",
+        "color": "#64748b",
+    },
 ]
 
 
@@ -449,6 +460,8 @@ def parse_individuals(g: Graph, type_sources: dict[Any, str]) -> list[dict[str, 
         if g.value(subject, ASH.isExample) not in (None, Literal(True)):
             continue
         types = [item for item in g.objects(subject, RDF.type) if isinstance(item, URIRef)]
+        knowledge_types = {ASH.SkillCatalog, ASH.SkillArtifact, ASH.SkillSection, ASH.TraderStatement}
+        layer = "knowledge" if knowledge_types.intersection(types) else "rdf"
         out.append(
             {
                 "id": local_name(subject),
@@ -456,8 +469,8 @@ def parse_individuals(g: Graph, type_sources: dict[Any, str]) -> list[dict[str, 
                 "kind": "individual",
                 "label": {"zh": label(g, subject), "en": label_en(g, subject)},
                 "comment": comment(g, subject),
-                "source": source_of(subject, type_sources, "rdf"),
-                "layer": "rdf",
+                "source": source_of(subject, type_sources, layer),
+                "layer": layer,
                 "types": refs(g, types),
                 "facts": object_facts(g, subject, exclude),
                 "exampleNote": lang_literal(g, subject, (ASH.exampleNote,), "zh") or "",
@@ -967,6 +980,9 @@ def build() -> dict[str, Any]:
         elif key == "odrl":
             count = len(policies)
             unit = "项政策"
+        elif key == "knowledge":
+            count = len([item for item in individuals if item["layer"] == "knowledge"])
+            unit = "知识节点"
         else:
             count = 0
             unit = ""
