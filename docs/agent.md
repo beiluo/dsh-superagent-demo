@@ -227,7 +227,7 @@ LLM 的工具列表里：
 | `evaluate_trade` | 账户与持仓状态、组合风险预算、买点/卖点/仓位、预计权重、购买力、T+1 可卖、执行质量与复盘闭环；检查 R152–R161 |
 | `simulate_scenario` | 在内存事实副本上改指标并重跑规则，对比 what-if 前后状态 |
 | `get_portfolio_analysis` | 组合持仓、R05 止损、R06 集中度 |
-| `get_rule` | 规则 IF/THEN、阈值、责任人、当前触发对象 |
+| `get_rule` | 规则 IF/THEN、阈值、责任人、当前触发对象；同时支持 V2.0 的 OP/VP/AUC/MKT/EVT/POS/RSK/EVA 规范规则，返回类别、状态机、后续动作与参数占位 |
 | `get_policies` | ODRL 权限/禁止/义务 |
 | `search_ontology` | 类、属性、个体、概念、规则、政策、服务检索 |
 

@@ -1,10 +1,11 @@
 # A 股投资决策本体 — 设计说明
 
-> 版本：1.10.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
+> 版本：1.11.0 · 设计日期：2026-11 · 规范源：`ontology/**/*.ttl`
 
 本文说明本体“为什么这样建模”、每层使用了哪些 W3C 构造、跨层链路如何工作，以及当前实现的边界。
-1.1、1.9 与 1.10 的领域清单分别见 [expansion-1.1.md](expansion-1.1.md)、
-[expansion-1.9.md](expansion-1.9.md) 与 [expansion-1.10.md](expansion-1.10.md)。
+1.1、1.9、1.10 与 1.11 的领域清单分别见 [expansion-1.1.md](expansion-1.1.md)、
+[expansion-1.9.md](expansion-1.9.md)、[expansion-1.10.md](expansion-1.10.md) 与
+[expansion-1.11.md](expansion-1.11.md)。
 自然语言标签与定义在 Turtle 中；本文是设计说明，不是本体的替代物。
 
 ---
@@ -151,8 +152,8 @@ FIBO 的官方扩展，也不受 FIBO 治理机构背书。
 .../a-share/odrl
 ```
 
-每个模块都声明 `owl:Ontology` 与 `owl:versionInfo "1.10.0"`；聚合入口声明
-`owl:versionIRI .../a-share/1.10.0`。
+每个模块都声明 `owl:Ontology` 与 `owl:versionInfo "1.11.0"`；聚合入口声明
+`owl:versionIRI .../a-share/1.11.0`。
 
 ### 4.3 版本策略
 
@@ -444,7 +445,7 @@ RDFS 推断主要依赖：
 
 ## 9. SWRL 层：规则
 
-文件：`ontology/swrl/rules.ttl`（8,105 条三元组）
+文件：`ontology/swrl/rules.ttl`（13,379 条三元组）
 
 ### 9.1 语法选择
 
@@ -459,6 +460,11 @@ RDFS 推断主要依赖：
 SWRL 规范同时定义了抽象语法与 XML 具体语法；本仓库采用 RDF 具体语法，以便与 OWL 图合并。
 每条规则同时带 `ash:RuleArtifact` 元数据：编号、严重程度、优先级、状态、版本、责任人、生效日、
 适用类和读取属性。
+
+同一文件还包含规则库 V2.0 的 60 条 `ash:DecisionRule` 规范规则。它们不是 `swrl:Imp`，不自动执行；
+每条规则带类别、适用范围、前置条件、输入、观测、触发/反向/否决证据、状态机路径、后续动作、
+失效机制、参数占位、典型场景、反例、验证方法和置信度依据。它们与 SWRL 规则共享
+`ash:RuleArtifact` 身份和同一套分类/状态/证据/输出契约，详见 [expansion-1.11.md](expansion-1.11.md)。
 
 ### 9.2 规则清单
 
@@ -700,6 +706,26 @@ ODRL 政策 `policy-trading-cognition`。Agent 新增 `evaluate_cognition`，与
 `evaluate_trade` 分工：前者判断机会与持仓逻辑，后者检查计划能否执行。详见
 [expansion-1.10.md](expansion-1.10.md)。
 
+### 13.2 规则库 V2.0（1.11）
+
+1.11 把 Issue #25 的 60 条 A 股规则库 V2.0 编码进本体，不把它们做成加权评分器：
+
+1. **职责分层**：`RuleCategory` 与 8 个 `DecisionRule` 子类表达 OP/VP/AUC/MKT/EVT/POS/RSK/EVA
+   的职责、顺序与越权边界；60 条规则通过 `belongsToRuleCategory` 归入类别。
+2. **统一状态机**：`RuleState`、`RuleStateMachine`、`RuleStateTransition` 定义 9 个状态与
+   允许迁移；`RuleStateChange` 记录实际迁移的时间戳、触发证据、反向证据和数据版本。
+3. **输出契约**：`RuleOutput` / `RuleRun` 要求至少输出 rule_id、security_id、as_of、timeframe、
+   position_state、state、触发/支持/反向/缺失证据、参数版本、有效期、后续动作与置信度依据。
+4. **证据与数据质量**：`RuleEvidence` 的触发/支持/反向/缺失子类，加上 7 条
+   `DataQualityConvention`，覆盖价格、成交、时间、横截面、缺失、事件去重与幸存者偏差。
+5. **参数占位**：每条规则有 `RuleParameter`，保存待回测的初始参数、参数版本和分层校准说明；
+   参数状态为 `initial`，不是已证明有效的最优值。
+6. **规则关系与调用顺序**：`ruleNextRule`、`ruleRelatedRule` 和 6 类 `RuleRelation`
+   表达前置、支持、冲突、否决、后续与评估关系；SWRL 仍是可执行子集，规范规则不会自动下单。
+
+示例运行 `rule-run-op-001-20261105` 展示 CANDIDATE 输出，`rule-run-rsk-007-20261105`
+展示交易制度字段缺失时的 DATA_INSUFFICIENT 边界。详见 [expansion-1.11.md](expansion-1.11.md)。
+
 ## 14. 校验与测试
 
 ### 14.1 结构校验
@@ -715,22 +741,23 @@ ODRL 政策 `policy-trading-cognition`。Agent 新增 `evaluate_cognition`，与
 - 检查 OWL-S profile/process/grounding 结构；
 - 检查 ODRL 政策 uid/profile/规则/约束；
 - 检查示例决策字段完整性；
-- 解析 20 条 SPARQL 查询；
+- 解析 28 条 SPARQL 查询；
 - 运行 OWL RL 闭包。
 
 ### 14.2 当前结果
 
 ```text
 modules: 7
-triples: 47958
-classes: 363
-object properties: 317
-data properties: 494
+triples: 52810
+classes: 389
+object properties: 349
+data properties: 554
 SKOS concepts: 225
 SWRL rules: 169
+decision rules (V2.0): 60
 OWL-S services: 3
 ODRL policies: 7
-OWL RL closure: 37236 -> 78339 triples (41103 inferred)
+OWL RL closure: 37929 -> 80057 triples (42128 inferred)
 warnings: 0
 ```
 
@@ -739,13 +766,13 @@ warnings: 0
 使用 Firefox + Playwright 做冒烟检查：
 
 - 页面标题与数据快照加载；
-- 4,058 个实体、169 条规则、22 个流程步骤、7 项政策渲染；
+- 4,375 个实体、229 条规则（169 条 SWRL + 60 条 V2.0）、22 个流程步骤、7 项政策渲染；
 - 搜索 `InvestmentDecision` 返回 1 条；
 - 点击实体详情显示 8 条 OWL 限制；
-- 规则严重程度筛选、政策 tab、概念树、示例 tab 交互正常；
+- 规则严重程度/规则库筛选、政策 tab、概念树、示例 tab 交互正常；
 - 短线面板：6 个 KPI、4 步剧本、3 张方法论卡、情绪六阶段、R16–R26 规则、游资科技短线决策；
 - 技能目录：50 个技能、821 个章节、20 个主题、1,327 条短原话可在 Explorer 检索；
-- 图谱四种模式：核心全景 51 节点、全部类 363 节点、决策链 47 节点/带标签边、SKOS 225 节点；
+- 图谱四种模式：核心全景 51 节点、全部类 389 节点、决策链 47 节点/带标签边、SKOS 225 节点；
 - 图谱缩放、图例隐藏/恢复、节点聚焦、跳转 Explorer/SKOS 均正常；
 - 桌面与 390px 手机视口无横向滚动、无 console error；
 - 截图见 `docs/evidence/`。
@@ -788,7 +815,7 @@ index.html + assets/js/app.js
 6. SKOS 概念树 + 概念详情；
 7. 短线/游资面板：KPI、四步剧本、龙虎榜/竞价/复盘方法卡、情绪六阶段、R16–R26 规则、短线决策样例；
 8. 技能目录：50 个外部技能、821 个章节、20 个主题；
-9. SWRL 规则卡；
+9. 规则卡（SWRL + 规则库 V2.0）；
 10. OWL-S 服务契约与流程；
 11. ODRL 政策矩阵；
 12. 决策样例（建议、风险、证据链、政策、合规）；
@@ -799,12 +826,12 @@ index.html + assets/js/app.js
 图谱使用原生 SVG 与自实现力导向布局，不引入 D3 或图表库：
 
 - **核心全景**：51 个核心类节点，保证可读性；虚线为 `rdfs:subClassOf`，实线为对象属性关系；按 7 个领域簇着色；
-- **全部类**：363 个类节点，用于查看完整扩展域；
+- **全部类**：389 个类节点，用于查看完整扩展域；
 - **决策链**：19 个核心类的手工布局，边标签显示对象属性，适合讲解决策路径；
 - **SKOS 分类**：225 个概念，按二十二套 ConceptScheme 着色，边为 `broader`；
 - **交互**：滚轮缩放、拖拽平移、图例筛选、节点聚焦、`标签`开关；点击节点在右侧显示类/概念详情；
 - **联动**：详情中的“在 Explorer 中打开”跳转到实体浏览器；“在 SKOS 分类中查看”跳转到概念树；
-- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、363 节点全部类并缩放查看；
+- **响应式**：移动端默认展示 19 节点的决策链，仍可切换到 51 节点核心全景、389 节点全部类并缩放查看；
 - **规模评估**：图谱下方固定展示类/属性/概念/三元组规模，并明确“参考实现而非 FIBO 级行业本体”。
 
 图谱节点与边全部来自 `DATA.classes`、`DATA.objectProperties`、`DATA.concepts`，没有手工维护的第二份图数据。

@@ -373,3 +373,74 @@ SELECT ?judgment ?scenario ?decision ?behaviorRule ?action ?condition ?verificat
     ?verification ash:verificationResultCode ?result .
   }
 }
+
+# --- CQ ---
+# CQ25: Which V2.0 rules belong to each responsibility category, and which
+#      state machine do they share?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?categoryCode ?categoryName ?ruleId ?ruleLabel ?stateMachine WHERE {
+  ?category a ash:RuleCategory ;
+            ash:categoryCode ?categoryCode ;
+            ash:categoryName ?categoryName ;
+            ash:categoryHasRule ?rule .
+  ?rule ash:ruleId ?ruleId ;
+        rdfs:label ?ruleLabel ;
+        ash:usesRuleStateMachine ?machine .
+  ?machine rdfs:label ?stateMachine .
+}
+ORDER BY ?categoryCode ?ruleId
+
+# --- CQ ---
+# CQ26: What are the initial parameter placeholders and versions for each rule?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+SELECT ?ruleId ?parameterName ?initialRange ?parameterStatus ?parameterVersion ?calibration WHERE {
+  ?rule a ash:DecisionRule ;
+        ash:ruleId ?ruleId ;
+        ash:hasRuleParameter ?parameter .
+  ?parameter ash:parameterName ?parameterName ;
+             ash:parameterInitialRange ?initialRange ;
+             ash:parameterStatus ?parameterStatus ;
+             ash:parameterVersion ?parameterVersion ;
+             ash:parameterCalibration ?calibration .
+}
+ORDER BY ?ruleId
+
+# --- CQ ---
+# CQ27: Which rule states and transitions does the unified state machine allow?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?stateCode ?stateDescription ?fromCode ?toCode ?transitionKind ?condition WHERE {
+  ?machine a ash:RuleStateMachine ;
+           ash:hasRuleState ?state .
+  ?state ash:stateCode ?stateCode ;
+         ash:stateDescription ?stateDescription .
+  OPTIONAL {
+    ?transition a ash:RuleStateTransition ;
+                ash:transitionOfMachine ?machine ;
+                ash:transitionFrom ?from ;
+                ash:transitionTo ?to ;
+                ash:transitionKind ?transitionKind ;
+                ash:transitionCondition ?condition .
+    ?from ash:stateCode ?fromCode .
+    ?to ash:stateCode ?toCode .
+  }
+}
+ORDER BY ?stateCode ?fromCode ?toCode
+
+# --- CQ ---
+# CQ28: Which rule runs produced DATA_INSUFFICIENT or CONFLICTED, and what
+#      evidence or missing data explains the state?
+PREFIX ash: <https://beiluo.github.io/dsh-superagent-demo/ontology/a-share#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?run ?ruleId ?stateCode ?contrary ?missing WHERE {
+  ?run a ash:RuleRun ;
+       ash:runOfRule ?rule ;
+       ash:runState ?state .
+  ?rule ash:ruleId ?ruleId .
+  ?state ash:stateCode ?stateCode .
+  OPTIONAL { ?run ash:runContraryEvidence ?contrary }
+  OPTIONAL { ?run ash:runMissingData ?missing }
+  FILTER (?stateCode IN ("DATA_INSUFFICIENT", "CONFLICTED"))
+}
+ORDER BY ?run

@@ -1157,10 +1157,15 @@ def _portfolio(store: OntologyStore) -> dict[str, Any]:
 
 
 def _get_rule(store: OntologyStore, rule_id: str) -> dict[str, Any]:
-    match = re.search(r"R?\s*(\d{1,2})", str(rule_id or ""), re.IGNORECASE)
-    if not match:
-        return _error("get_rule", "invalid_rule", "请提供规则编号，例如 R01。")
-    normalized = f"R{int(match.group(1)):02d}"
+    text = str(rule_id or "")
+    prefixed = re.search(r"(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)\s*-?\s*(\d{1,3})", text, re.IGNORECASE)
+    if prefixed:
+        normalized = f"{prefixed.group(1).upper()}-{int(prefixed.group(2)):03d}"
+    else:
+        match = re.search(r"R?\s*(\d{1,2})", text, re.IGNORECASE)
+        if not match:
+            return _error("get_rule", "invalid_rule", "请提供规则编号，例如 R01 或 OP-001。")
+        normalized = f"R{int(match.group(1)):02d}"
     try:
         result = store.rule_effects(normalized)
     except ValueError:
