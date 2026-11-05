@@ -5,168 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A 股投资决策本体：覆盖 RDF、RDFS、OWL 2、SKOS、SWRL、OWL-S 与 ODRL 的模块化语义模型与浏览器；含基于本体、密钥仅在服务端的股票分析 Agent。">
   <meta name="theme-color" content="#0e1318">
-  <title>A 股投资决策本体 · A-Share Investment Decision Ontology</title>
+  <title>ASHARE 研究终端 · A 股投资决策本体</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/terminal.css">
 </head>
-<body>
+<body class="app">
   <a class="skip-link" href="#main">跳至主要内容</a>
 
-  <header class="site-header" id="site-header">
-    <a class="brand" href="#top" aria-label="返回顶部">
+  <header class="topbar" id="site-header">
+    <button class="app-menu" id="app-menu" type="button" aria-expanded="false" aria-controls="sidebar">
+      <span></span><span></span>
+      <span class="sr-only">打开工作区导航</span>
+    </button>
+
+    <a class="brand" href="#overview" aria-label="返回总览">
       <span class="brand-mark" aria-hidden="true">A</span>
       <span class="brand-text">
         <strong>ASHARE</strong>
-        <small>ONTOLOGY / 01</small>
+        <small>SEMANTIC RESEARCH TERMINAL</small>
       </span>
     </a>
 
-    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-      <span></span><span></span>
-      <span class="sr-only">打开导航</span>
-    </button>
+    <form class="global-search" id="global-search" role="search">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 13.2 4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <label class="sr-only" for="global-query">全局搜索</label>
+      <input id="global-query" type="search" placeholder="搜索类、属性、规则、服务…" autocomplete="off">
+      <kbd>/</kbd>
+    </form>
 
-    <nav class="site-nav" id="site-nav" aria-label="主导航">
-      <a href="#overview">概览</a>
-      <a href="#agent">Agent</a>
-      <a href="#stack">语义栈</a>
-      <a href="#explorer">浏览</a>
-      <a href="#graph">图谱</a>
-      <a href="#taxonomy">分类</a>
-      <a href="#short-term">短线</a>
-      <a href="#rules">规则</a>
-      <a href="#services">服务</a>
-      <a href="#policies">政策</a>
-      <a href="#examples">示例</a>
-    </nav>
-
-    <div class="header-meta">
+    <div class="topbar-meta">
+      <span class="snapshot"><i></i> SNAPSHOT 2026-11</span>
       <span class="version-pill">v1.11.0</span>
-      <a class="github-link" href="https://github.com/beiluo/dsh-superagent-demo" target="_blank" rel="noreferrer">
-        GitHub
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3 5 11M3 5v8h8" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-      </a>
+      <a class="github-link" href="https://github.com/beiluo/dsh-superagent-demo" target="_blank" rel="noreferrer">GitHub ↗</a>
     </div>
   </header>
 
-  <main id="main">
-    <!-- ==================================================================
-         Hero
-    =================================================================== -->
-    <section class="hero" id="overview" aria-labelledby="hero-title">
-      <div class="hero-copy reveal">
-        <p class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> SEMANTIC FINANCE / 语义金融</p>
-        <h1 id="hero-title">
-          <span class="h1-line">A 股投资</span>
-          <span class="h1-line h1-accent">决策本体</span>
-        </h1>
-        <p class="hero-lede">
-          把公司、证券、行情、财务、风险、规则、服务与政策放进同一套可推理、可审计、可浏览的语义结构。
-          不是一份术语表，而是一条从数据到决策的完整语义链。
-        </p>
+  <div class="app-body">
+    <aside class="sidebar" id="sidebar" aria-label="工作区导航">
+      <nav class="side-nav">
+        <p class="side-label">WORKSPACE / 工作台</p>
+        <a class="side-link is-active" href="#overview" data-view="overview"><span class="side-index">00</span><span>总览</span><span class="side-count">9</span></a>
+        <a class="side-link" href="#agent" data-view="agent"><span class="side-index">01</span><span>Agent</span><span class="side-count">LLM</span></a>
 
-        <ul class="hero-badges" aria-label="覆盖的语义标准">
-          <li>RDF</li>
-          <li>RDFS</li>
-          <li>OWL 2</li>
-          <li>SKOS</li>
-          <li>SWRL</li>
-          <li>OWL-S</li>
-          <li>ODRL</li>
-        </ul>
+        <p class="side-label">ONTOLOGY / 本体</p>
+        <a class="side-link" href="#stack" data-view="stack"><span class="side-index">02</span><span>语义栈</span><span class="side-count">07</span></a>
+        <a class="side-link" href="#explorer" data-view="explorer"><span class="side-index">03</span><span>浏览</span><span class="side-count">4.3K</span></a>
+        <a class="side-link" href="#graph" data-view="graph"><span class="side-index">04</span><span>图谱</span><span class="side-count">389</span></a>
+        <a class="side-link" href="#taxonomy" data-view="taxonomy"><span class="side-index">05</span><span>分类</span><span class="side-count">225</span></a>
 
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#explorer">
-            浏览本体
-            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-          </a>
-          <a class="btn btn-ghost" href="#agent">
-            问 Agent
-            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-          </a>
-          <a class="btn btn-ghost" href="ontology/a-share.ttl" download>
-            下载 Turtle
-            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v8M5.5 8 9 11.5 12.5 8M4 14h10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-          </a>
+        <p class="side-label">DECISION / 决策</p>
+        <a class="side-link" href="#short-term" data-view="short-term"><span class="side-index">06</span><span>短线</span><span class="side-count">11</span></a>
+        <a class="side-link" href="#rules" data-view="rules"><span class="side-index">07</span><span>规则</span><span class="side-count">229</span></a>
+        <a class="side-link" href="#services" data-view="services"><span class="side-index">08</span><span>服务</span><span class="side-count">03</span></a>
+        <a class="side-link" href="#policies" data-view="policies"><span class="side-index">09</span><span>政策</span><span class="side-count">07</span></a>
+        <a class="side-link" href="#examples" data-view="examples"><span class="side-index">10</span><span>示例</span><span class="side-count">04</span></a>
+
+        <p class="side-label">REFERENCE / 参考</p>
+        <a class="side-link" href="#method" data-view="method"><span class="side-index">11</span><span>方法</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="side-metric"><span>TRIPLES</span><strong>52,810</strong></div>
+        <div class="side-metric"><span>CLASSES</span><strong>389</strong></div>
+        <a class="side-download" href="ontology/a-share.ttl" download>Turtle 源文件 ↓</a>
+        <div class="side-links">
+          <a href="docs/design.md">设计文档</a>
+          <a href="docs/agent.md">Agent 部署</a>
+          <a href="docs/competency-questions.rq">能力问题</a>
+          <a href="https://www.w3.org/standards/semanticweb/" target="_blank" rel="noreferrer">W3C Semantic Web ↗</a>
+        </div>
+        <p>示例数据 · 不构成投资建议</p>
+      </div>
+    </aside>
+
+    <main class="workspace" id="main">
+      <!-- ==================================================================
+           Overview dashboard
+      =================================================================== -->
+      <section class="view is-active" id="overview" data-title="总览" aria-labelledby="overview-title">
+        <header class="overview-head">
+          <div class="overview-head-copy">
+            <p class="view-kicker">A-SHARE SEMANTIC RESEARCH TERMINAL · 00</p>
+            <h1 id="overview-title">市场与决策总览</h1>
+            <p class="overview-lede">把公司、证券、行情、风险、规则与政策收在同一个可追溯的研究工作台里。示例公司走本体推理；真实 A 股查询进入 Agent。</p>
+          </div>
+          <dl class="overview-meta" id="overview-meta">
+            <div><dt>SNAPSHOT</dt><dd>2026-11</dd></div>
+            <div><dt>VERSION</dt><dd>v1.11.0</dd></div>
+            <div><dt>COVERAGE</dt><dd>7 layers</dd></div>
+          </dl>
+        </header>
+
+        <noscript><p class="noscript-note">这个工作台需要 JavaScript 加载本体快照；请启用 JavaScript，或直接阅读 <a href="docs/design.md">设计文档</a>。</p></noscript>
+
+        <div class="standard-strip" aria-label="语义标准覆盖">
+          <span class="standard-strip-label">STANDARDS</span>
+          <span>RDF 1.1</span><span>RDFS</span><span>OWL 2 DL</span><span>SKOS</span><span>SWRL</span><span>OWL-S 1.2</span><span>ODRL 2.2</span>
         </div>
 
-        <dl class="hero-stats" id="hero-stats">
-          <div><dt>三元组</dt><dd>52,810</dd></div>
-          <div><dt>领域类</dt><dd>389</dd></div>
-          <div><dt>规则</dt><dd>229</dd></div>
-          <div><dt>SKOS 概念</dt><dd>225</dd></div>
-        </dl>
-      </div>
+        <div class="overview-grid">
+          <section class="panel panel-span-8" aria-labelledby="monitor-title">
+            <header class="panel-head">
+              <h2 id="monitor-title">DECISION MONITOR <span>/ 决策监控</span></h2>
+              <a href="#examples">全部示例 →</a>
+            </header>
+            <div id="decision-monitor" class="monitor-table"></div>
+          </section>
 
-      <div class="hero-visual reveal">
-        <div class="decision-panel" id="hero-decision" aria-label="示例投资决策">
-          <div class="panel-topline">
-            <span>DECISION OBJECT</span>
-            <span class="panel-status"><i></i> 示例数据</span>
-          </div>
-          <div class="panel-identity">
-            <div>
-              <span class="ticker">600000.SH</span>
-              <h2>华辰智造</h2>
-            </div>
-            <span class="panel-date">2026.10.31</span>
-          </div>
-          <div class="panel-signal">
-            <div>
-              <span class="signal-label">建议 / RECOMMENDATION</span>
-              <strong class="signal-value">增持</strong>
-            </div>
-            <div class="confidence-block">
-              <span>置信度</span>
-              <strong>78<span>%</span></strong>
-              <div class="confidence-bar"><i style="width:78%"></i></div>
-            </div>
-          </div>
-          <div class="panel-grid">
-            <div><span>目标价</span><strong>¥45.00</strong></div>
-            <div><span>止损价</span><strong>¥30.50</strong></div>
-            <div><span>风险等级</span><strong>中</strong></div>
-            <div><span>投资期限</span><strong>3–12 月</strong></div>
-          </div>
-          <div class="panel-spark" aria-hidden="true">
-            <svg viewBox="0 0 360 88" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#d64a3c" stop-opacity=".32"/>
-                  <stop offset="1" stop-color="#d64a3c" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <path d="M0 70 L18 64 L34 67 L52 52 L70 56 L88 46 L106 50 L124 39 L142 43 L160 30 L178 35 L196 26 L214 31 L232 22 L250 27 L268 18 L286 24 L304 15 L322 21 L340 12 L360 16 L360 88 L0 88 Z" fill="url(#spark-fill)"/>
-              <path d="M0 70 L18 64 L34 67 L52 52 L70 56 L88 46 L106 50 L124 39 L142 43 L160 30 L178 35 L196 26 L214 31 L232 22 L250 27 L268 18 L286 24 L304 15 L322 21 L340 12 L360 16" fill="none" stroke="#e8786a" stroke-width="2"/>
-            </svg>
-            <div class="spark-labels"><span>2026.07</span><span>2026.10</span></div>
-          </div>
-          <div class="panel-footer">
-            <span><b>R06</b> 集中度复核</span>
-            <span><b>R08</b> 可审计</span>
-            <span class="panel-policy">2 项 ODRL 政策</span>
-          </div>
-        </div>
-        <div class="hero-visual-note">
-          <span class="note-index">07</span>
-          <p>七层语义栈共享同一组 IRI。<br>从一条建议可以回溯到证据、规则、服务与政策。</p>
-        </div>
-      </div>
-    </section>
+          <aside class="panel panel-span-4 panel-dark" aria-labelledby="dock-title">
+            <header class="panel-head">
+              <h2 id="dock-title">AGENT <span>/ 本体问答</span></h2>
+              <span class="panel-chip">PUBLIC API</span>
+            </header>
+            <p class="dock-lede">问题先决定查询路径：本体属性、证据链、组合约束或情景模拟，再给出带出处的结论。</p>
+            <ul class="dock-prompts" id="dock-prompts"></ul>
+            <a class="dock-cta" href="#agent">打开 Agent 工作区 →</a>
+            <p class="dock-note">LLM 密钥只在服务端；静态页面不包含 <code>LLM_API_KEY</code>。</p>
+          </aside>
 
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <span>RDF 1.1</span><i></i><span>RDFS</span><i></i><span>OWL 2 DL</span><i></i><span>SKOS</span><i></i><span>SWRL</span><i></i><span>OWL-S 1.2</span><i></i><span>ODRL 2.2</span><i></i><span>FIBO-INSPIRED MODULES</span>
-      </div>
-    </div>
+          <section class="panel panel-span-8" aria-labelledby="coverage-title">
+            <header class="panel-head">
+              <h2 id="coverage-title">SEMANTIC COVERAGE <span>/ 语义覆盖</span></h2>
+              <a href="#stack">查看分层 →</a>
+            </header>
+            <div id="coverage-list" class="coverage-list"></div>
+          </section>
+
+          <aside class="panel panel-span-4" aria-labelledby="short-dock-title">
+            <header class="panel-head">
+              <h2 id="short-dock-title">SHORT-TERM <span>/ 短线快照</span></h2>
+              <a href="#short-term">详情 →</a>
+            </header>
+            <div id="short-snapshot" class="short-snapshot"></div>
+          </aside>
+
+          <section class="panel panel-span-7" aria-labelledby="rules-preview-title">
+            <header class="panel-head">
+              <h2 id="rules-preview-title">RULE SIGNALS <span>/ 规则信号</span></h2>
+              <a href="#rules">规则库 →</a>
+            </header>
+            <div id="rule-preview" class="preview-list"></div>
+          </section>
+
+          <aside class="panel panel-span-5" aria-labelledby="policy-preview-title">
+            <header class="panel-head">
+              <h2 id="policy-preview-title">ODRL POLICIES <span>/ 政策</span></h2>
+              <a href="#policies">全部 →</a>
+            </header>
+            <div id="policy-preview" class="preview-list"></div>
+          </aside>
+        </div>
+      </section>
 
     <!-- ==================================================================
          Ontology agent
     =================================================================== -->
-    <section class="section agent-section" id="agent" aria-labelledby="agent-title">
-      <div class="section-head reveal">
+    <section class="view" id="agent" data-title="Agent" aria-labelledby="agent-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">AI / ONTOLOGY AGENT</p>
+          <p class="section-index">01 / ONTOLOGY AGENT</p>
           <h2 id="agent-title">让 Agent 用本体回答，而不是猜</h2>
         </div>
         <p class="section-lede">
@@ -175,7 +172,7 @@
         </p>
       </div>
 
-      <div class="agent-shell reveal">
+      <div class="agent-shell">
         <aside class="agent-rail">
           <div class="agent-status" id="agent-status" data-state="checking" role="status" aria-live="polite">
             <span class="agent-status-dot" aria-hidden="true"></span>
@@ -237,28 +234,38 @@
     <!-- ==================================================================
          Semantic stack
     =================================================================== -->
-    <section class="section stack-section" id="stack" aria-labelledby="stack-title">
-      <div class="section-head reveal">
+    <section class="view" id="stack" data-title="语义栈" aria-labelledby="stack-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">01 / SEMANTIC STACK</p>
+          <p class="section-index">02 / SEMANTIC STACK</p>
           <h2 id="stack-title">七层语义栈，一条决策链</h2>
         </div>
         <p class="section-lede">
           每一层只回答一个问题：数据如何表达、词汇如何定义、约束如何成立、分类如何组织、规则如何推理、服务如何调用、政策如何治理。
         </p>
       </div>
-      <div class="layer-grid" id="layer-grid">
-        <noscript><p>请启用 JavaScript 以查看分层导航，或直接阅读 <a href="docs/design.md">设计文档</a>。</p></noscript>
+      <div class="stack-table" aria-label="七层语义栈覆盖">
+        <div class="stack-table-head">
+          <span>层</span>
+          <span>模块</span>
+          <span>职责</span>
+          <span>规模</span>
+          <span>源文件</span>
+          <span aria-hidden="true"></span>
+        </div>
+        <div class="layer-grid" id="layer-grid">
+          <noscript><p>请启用 JavaScript 以查看分层导航，或直接阅读 <a href="docs/design.md">设计文档</a>。</p></noscript>
+        </div>
       </div>
     </section>
 
     <!-- ==================================================================
          Explorer
     =================================================================== -->
-    <section class="section explorer-section" id="explorer" aria-labelledby="explorer-title">
-      <div class="section-head reveal">
+    <section class="view" id="explorer" data-title="本体浏览" aria-labelledby="explorer-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">02 / ONTOLOGY EXPLORER</p>
+          <p class="section-index">03 / ONTOLOGY EXPLORER</p>
           <h2 id="explorer-title">把每个 IRI 摊开来看</h2>
         </div>
         <p class="section-lede">
@@ -266,7 +273,7 @@
         </p>
       </div>
 
-      <div class="explorer-shell reveal">
+      <div class="explorer-shell">
         <div class="explorer-toolbar">
           <label class="search-wrap" for="ontology-search">
             <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 13.2 4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
@@ -333,10 +340,10 @@
     <!-- ==================================================================
          Ontology graph
     =================================================================== -->
-    <section class="section graph-section" id="graph" aria-labelledby="graph-title">
-      <div class="section-head reveal">
+    <section class="view" id="graph" data-title="本体图谱" aria-labelledby="graph-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">03 / ONTOLOGY GRAPH</p>
+          <p class="section-index">04 / ONTOLOGY GRAPH</p>
           <h2 id="graph-title">把本体当作一张图来看</h2>
         </div>
         <p class="section-lede">
@@ -344,7 +351,7 @@
         </p>
       </div>
 
-      <div class="graph-shell reveal">
+      <div class="graph-shell">
         <div class="graph-toolbar">
           <div class="graph-modes" id="graph-modes" role="tablist" aria-label="图谱模式">
             <button class="graph-mode is-active" type="button" role="tab" aria-selected="true" data-graph-mode="overview">核心全景</button>
@@ -387,10 +394,10 @@
     <!-- ==================================================================
          Taxonomy
     =================================================================== -->
-    <section class="section taxonomy-section" id="taxonomy" aria-labelledby="taxonomy-title">
-      <div class="section-head reveal">
+    <section class="view" id="taxonomy" data-title="SKOS 分类" aria-labelledby="taxonomy-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">04 / SKOS TAXONOMY</p>
+          <p class="section-index">05 / SKOS TAXONOMY</p>
           <h2 id="taxonomy-title">行业、主题与风格，三套概念方案</h2>
         </div>
         <p class="section-lede">
@@ -398,7 +405,7 @@
         </p>
       </div>
 
-      <div class="taxonomy-shell reveal">
+      <div class="taxonomy-shell">
         <div class="tree-pane">
           <div class="scheme-tabs" id="scheme-tabs" role="tablist" aria-label="概念方案"></div>
           <label class="concept-search" for="concept-search">
@@ -421,10 +428,10 @@
     <!-- ==================================================================
          Short-term & hot money
     =================================================================== -->
-    <section class="section short-section" id="short-term" aria-labelledby="short-title">
-      <div class="section-head reveal">
+    <section class="view" id="short-term" data-title="短线" aria-labelledby="short-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">05 / SHORT-TERM &amp; HOT MONEY</p>
+          <p class="section-index">06 / SHORT-TERM &amp; HOT MONEY</p>
           <h2 id="short-title">短周期：先看情绪，再看资金与承接</h2>
         </div>
         <p class="section-lede">
@@ -432,7 +439,7 @@
         </p>
       </div>
 
-      <div class="short-shell reveal">
+      <div class="short-shell">
         <div class="short-kpis" id="short-kpis" aria-label="短线样例指标"></div>
 
         <div class="short-playbook">
@@ -477,28 +484,54 @@
     <!-- ==================================================================
          SWRL rules
     =================================================================== -->
-    <section class="section rule-section" id="rules" aria-labelledby="rules-title">
-      <div class="section-head section-head-light reveal">
+    <section class="view" id="rules" data-title="规则库" aria-labelledby="rules-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">06 / RULE LIBRARY</p>
-          <h2 id="rules-title">把投资逻辑写成可执行的规则</h2>
+          <p class="section-index">07 / RULE LIBRARY</p>
+          <h2 id="rules-title">规则库 / RULE LIBRARY</h2>
         </div>
         <p class="section-lede">
-          规则层同时容纳可执行 SWRL 规则与 60 条 A 股规则库 V2.0 规范规则。每条规则都有编号、类别、状态机、证据口径和参数占位；数据新鲜度、冲突处理与人工批准仍放在规则引擎之外。
+          229 条规则：169 条可执行 SWRL 规则与 60 条 A 股规则库 V2.0 规范规则。左侧按编号、类别和严重度浏览，右侧查看状态机、证据口径与参数占位。
         </p>
       </div>
 
-      <div class="rule-toolbar reveal" id="rule-filters" role="group" aria-label="按严重程度筛选规则">
-        <button type="button" class="rule-filter is-active" data-severity="all">全部 <span id="rule-count-all">229</span></button>
-        <button type="button" class="rule-filter" data-severity="high">高风险 <span id="rule-count-high">102</span></button>
-        <button type="button" class="rule-filter" data-severity="medium">中风险 <span id="rule-count-medium">67</span></button>
-        <button type="button" class="rule-filter" data-severity="low">低风险 <span id="rule-count-low">0</span></button>
-        <button type="button" class="rule-filter" data-severity="info">规则库 V2.0 <span id="rule-count-info">60</span></button>
+      <div class="rules-layout">
+        <section class="rules-table-panel" aria-label="规则列表">
+          <div class="rules-toolbar">
+            <div class="rule-toolbar" id="rule-filters" role="group" aria-label="按严重程度筛选规则">
+              <button type="button" class="rule-filter is-active" data-severity="all">全部 <span id="rule-count-all">229</span></button>
+              <button type="button" class="rule-filter" data-severity="high">高风险 <span id="rule-count-high">102</span></button>
+              <button type="button" class="rule-filter" data-severity="medium">中风险 <span id="rule-count-medium">67</span></button>
+              <button type="button" class="rule-filter" data-severity="low">低风险 <span id="rule-count-low">0</span></button>
+              <button type="button" class="rule-filter" data-severity="info">规则库 V2.0 <span id="rule-count-info">60</span></button>
+            </div>
+            <label class="rules-search" for="rule-search">
+              <svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m12 12 4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+              <input id="rule-search" type="search" placeholder="筛选规则编号或名称…" autocomplete="off">
+            </label>
+            <span class="rules-count" id="rule-result-count">229 条</span>
+          </div>
+          <div class="rules-table-wrap">
+            <table class="rule-table">
+              <thead>
+                <tr><th>编号</th><th>规则</th><th>类别 / 来源</th><th>级别</th><th>版本</th></tr>
+              </thead>
+              <tbody id="rule-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="rule-detail-panel" id="rule-detail" aria-live="polite" aria-label="规则详情">
+          <div class="rule-detail-empty" id="rule-detail-empty">
+            <p class="detail-kicker">RULE INSPECTOR</p>
+            <h3>选择一条规则</h3>
+            <p>规则表按编号、类别和严重度组织；选择任意行查看规则定义、状态机、证据口径、参数占位与关联规则。</p>
+          </div>
+          <div id="rule-detail-content" hidden></div>
+        </aside>
       </div>
 
-      <div class="rule-grid reveal" id="rule-grid"></div>
-
-      <p class="rule-note reveal">
+      <p class="rule-note">
         <span>规范状态</span> SWRL 是 W3C Member Submission（2004），不是 W3C Recommendation；本设计对其规范状态与运行限制保持显式。
       </p>
     </section>
@@ -506,10 +539,10 @@
     <!-- ==================================================================
          OWL-S service
     =================================================================== -->
-    <section class="section service-section" id="services" aria-labelledby="services-title">
-      <div class="section-head reveal">
+    <section class="view" id="services" data-title="OWL-S 服务" aria-labelledby="services-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">07 / OWL-S SERVICE</p>
+          <p class="section-index">08 / OWL-S SERVICE</p>
           <h2 id="services-title">决策不是一个黑箱，而是一份服务契约</h2>
         </div>
         <p class="section-lede">
@@ -517,7 +550,7 @@
         </p>
       </div>
 
-      <div class="service-shell reveal">
+      <div class="service-shell">
         <div class="service-contract">
           <div class="service-badges">
             <span class="status-badge">profile</span>
@@ -563,10 +596,10 @@
     <!-- ==================================================================
          ODRL policies
     =================================================================== -->
-    <section class="section policy-section" id="policies" aria-labelledby="policies-title">
-      <div class="section-head reveal">
+    <section class="view" id="policies" data-title="ODRL 政策" aria-labelledby="policies-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">08 / ODRL POLICIES</p>
+          <p class="section-index">09 / ODRL POLICIES</p>
           <h2 id="policies-title">权限、禁止、义务，都能被机器检查</h2>
         </div>
         <p class="section-lede">
@@ -574,7 +607,7 @@
         </p>
       </div>
 
-      <div class="policy-shell reveal">
+      <div class="policy-shell">
         <div class="policy-tabs" id="policy-tabs" role="tablist" aria-label="选择 ODRL 政策"></div>
         <div class="policy-detail" id="policy-detail" aria-live="polite"></div>
       </div>
@@ -583,10 +616,10 @@
     <!-- ==================================================================
          Example decision
     =================================================================== -->
-    <section class="section example-section" id="examples" aria-labelledby="examples-title">
-      <div class="section-head reveal">
+    <section class="view" id="examples" data-title="示例决策" aria-labelledby="examples-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">09 / WORKED EXAMPLE</p>
+          <p class="section-index">10 / WORKED EXAMPLE</p>
           <h2 id="examples-title">一条建议的完整来路</h2>
         </div>
         <p class="section-lede">
@@ -594,7 +627,7 @@
         </p>
       </div>
 
-      <div class="example-shell reveal">
+      <div class="example-shell">
         <div class="example-nav" id="example-nav" role="tablist" aria-label="选择示例决策"></div>
         <article class="decision-sheet" id="decision-sheet" aria-live="polite"></article>
       </div>
@@ -603,10 +636,10 @@
     <!-- ==================================================================
          Method and downloads
     =================================================================== -->
-    <section class="section method-section" id="method" aria-labelledby="method-title">
-      <div class="section-head reveal">
+    <section class="view" id="method" data-title="方法与产物" aria-labelledby="method-title" hidden>
+      <div class="section-head">
         <div>
-          <p class="section-index">10 / METHOD &amp; ARTIFACTS</p>
+          <p class="section-index">11 / METHOD &amp; ARTIFACTS</p>
           <h2 id="method-title">每一层都能落到一个文件</h2>
         </div>
         <p class="section-lede">
@@ -614,7 +647,7 @@
         </p>
       </div>
 
-      <div class="method-grid reveal">
+      <div class="method-grid">
         <div class="spec-table-wrap">
           <table class="spec-table">
             <thead>
@@ -661,7 +694,7 @@
         </article>
       </div>
 
-      <div class="cq-block reveal">
+      <div class="cq-block">
         <div class="cq-head">
           <div>
             <p class="section-index">COMPETENCY QUESTIONS</p>
@@ -677,23 +710,13 @@
       </p>
     </section>
   </main>
+  </div>
 
-  <footer class="site-footer">
-    <div class="footer-brand">
-      <span class="brand-mark small" aria-hidden="true">A</span>
-      <div>
-        <strong>A 股投资决策本体</strong>
-        <p>A-Share Investment Decision Ontology · v1.11.0</p>
-      </div>
-    </div>
-    <div class="footer-links">
-      <a href="ontology/a-share.ttl">Turtle</a>
-      <a href="docs/design.md">设计文档</a>
-      <a href="docs/agent.md">Agent</a>
-      <a href="docs/competency-questions.rq">能力问题</a>
-      <a href="https://www.w3.org/standards/semanticweb/" target="_blank" rel="noreferrer">W3C Semantic Web</a>
-    </div>
-    <p class="footer-note">参考 FIBO 的模块化设计思路；领域内容独立编写。示例数据，不构成投资建议。</p>
+  <footer class="statusbar" aria-label="终端状态栏">
+    <span class="status-primary">ASHARE / SEMANTIC RESEARCH TERMINAL</span>
+    <span id="status-view">00 / 总览</span>
+    <span id="status-counts">52,810 TRIPLES · 389 CLASSES · 229 RULES</span>
+    <span class="status-right">示例数据 · 不构成投资建议</span>
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

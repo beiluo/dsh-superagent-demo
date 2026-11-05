@@ -134,3 +134,29 @@ intended difference is the interface theme. The mobile pair is 390 × 844.
 
 No application data was changed by this ticket. The captures were taken with browser extensions
 disabled and no credentials or private Feishu content in view.
+
+## Research terminal workspace
+
+The `workspace-*` pairs document the structural rewrite from the previous single-page terminal
+theme to the application shell. Baseline: merged `main` at `3b4e564`; after: this ticket head.
+Both sides were served with `python3 -m http.server` and rendered with the bundled Chromium
+headless shell. Desktop captures are 1440 × 1100; mobile captures are 390 × 844. The baseline
+rules and explorer captures include an opened item so the comparison has the same interaction
+state; the overview/stack/mobile captures are at the top of the page or workspace.
+
+| File | Viewport | What it shows |
+| --- | --- | --- |
+| `workspace-overview-before.png` | 1440 × 1100 | Previous approach: a long page beginning with a marketing masthead, quote card, standards ticker and stacked sections. |
+| `workspace-overview-after.png` | 1440 × 1100 | New shell: graphite work rail, global search, one active workspace and a decision/coverage/short-term dashboard. |
+| `workspace-rules-before.png` | 1440 × 1100 | Previous rule library: a two-column grid of cards with full specification expanded inside each card. |
+| `workspace-rules-after.png` | 1440 × 1100 | New rule library: searchable/filterable master table with a sticky detail inspector for one rule at a time. |
+| `workspace-explorer-before.png` | 1440 × 1100 | Previous Explorer inside the long page, with the cream detail panel and a fixed section header. |
+| `workspace-explorer-after.png` | 1440 × 1100 | Explorer as a full-height workspace pane with the entity selected and the inspector docked at the right. |
+| `workspace-stack-before.png` | 1440 × 1100 | Previous seven-layer stack as a card grid. |
+| `workspace-stack-after.png` | 1440 × 1100 | Stack as a terminal coverage table; clicking a row filters the Explorer. |
+| `workspace-mobile-before.png` | 390 × 844 | Previous long-page mobile hero. |
+| `workspace-mobile-after.png` | 390 × 844 | Mobile workspace with the drawer closed, a single-column dashboard and the terminal status bar. |
+
+The rewrite keeps the same ontology snapshot and component data; it changes the application
+navigation model, page composition and the rule/stack presentation. No private content or
+credentials are visible in the captures.

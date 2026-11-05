@@ -8,7 +8,7 @@
 [Agent 部署](docs/agent.md) ·
 [能力问题](docs/competency-questions.rq)
 
-[![浏览器页面](docs/evidence/expansion-after.png)](docs/evidence/expansion-after.png)
+[![ASHARE 研究工作台](docs/evidence/terminal-workspace/workspace-overview-after.png)](docs/evidence/terminal-workspace/workspace-overview-after.png)
 
 页面不是静态说明书：它由本体源文件生成，支持全文检索、按层筛选、类/属性/个体详情、SKOS 概念树、
 SWRL 与规则库 V2.0 规则卡片、OWL-S 流程和 ODRL 政策矩阵。
@@ -163,7 +163,7 @@ python3 scripts/build_data.py   # 或 make build
 ├── index.html                         # 本体浏览页面 + Agent 对话区
 ├── assets/
 │   ├── css/style.css                  # 页面基础样式
-│   ├── css/terminal.css               # 研报 / 行情终端风格主题层
+│   ├── css/terminal.css               # 终端工作台壳层、页面主题与组件覆盖
 │   ├── js/app.js                      # 检索、筛选、详情、概念树、规则/服务/政策渲染
 │   ├── js/agent.js                    # Agent 前端：只调用公开 API，不含密钥
 │   ├── js/agent-config.js             # 公开后端地址；绝不放密钥
