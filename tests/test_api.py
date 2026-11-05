@@ -114,6 +114,16 @@ def test_rule_explanation(client_factory):
     assert "示例 ST 公司" in data["answer"]
 
 
+def test_v2_rule_explanation(client_factory):
+    response = client_factory().post("/api/agent/analyze", json={"question": "OP-001是什么规则？"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["steps"][0]["tool"] == "get_rule"
+    assert "趋势突破" in data["answer"]
+    assert "机会结构" in data["answer"]
+    assert "参数占位" in data["answer"]
+
+
 def test_invalid_rule_is_reported(client_factory):
     response = client_factory().post("/api/agent/analyze", json={"question": "R00 是什么规则？"})
     assert response.status_code == 200

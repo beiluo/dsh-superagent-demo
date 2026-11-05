@@ -47,7 +47,7 @@
     observation: "观察",
   };
 
-  const SEVERITY_LABELS = { high: "高", medium: "中", low: "低" };
+  const SEVERITY_LABELS = { high: "高", medium: "中", low: "低", info: "规范" };
 
   const GRAPH_CLUSTERS = {
     MarketParticipant: { label: "市场参与者", color: "#e26b5f" },
@@ -311,7 +311,7 @@
       <div class="detail-head">
         <div class="detail-head-top">
           ${typeBadge(entity.kind)}
-          <span class="detail-kind">${esc(layerLabel(entity.layer || "rdf"))}</span>
+          <span class="detail-kind">${esc(entity.kind === "rule" && entity.format === "specification" ? "规则库 V2.0" : layerLabel(entity.layer || "rdf"))}</span>
         </div>
         <h3>${esc(labelOf(entity))}</h3>
         <p class="detail-en">${esc(labelEnOf(entity) || entity.id)}</p>
@@ -373,7 +373,7 @@
       target.innerHTML = `
         <div><dt>三元组</dt><dd>${number(stats.totalTriples)}</dd></div>
         <div><dt>领域类</dt><dd>${number(stats.classes)}</dd></div>
-        <div><dt>SWRL 规则</dt><dd>${number(stats.rules)}</dd></div>
+        <div><dt>规则</dt><dd>${number(stats.rules)}</dd></div>
         <div><dt>SKOS 概念</dt><dd>${number(stats.concepts)}</dd></div>`;
     }
     const validation = $("#validation-text");
@@ -528,7 +528,10 @@
 
   function entityMeta(entity) {
     if (entity.kind === "rule") {
-      return `<b>${esc(entity.ruleId || "RULE")}</b><span>${esc(entity.severity || "")}</span>`;
+      if (entity.format === "specification") {
+        return `<b>${esc(entity.ruleId || "RULE")}</b><span>${esc(entity.ruleCategory || "规范")}</span>`;
+      }
+      return `<b>${esc(entity.ruleId || "RULE")}</b><span>${esc(SEVERITY_LABELS[entity.severity] || entity.severity || "")}</span>`;
     }
     if (entity.kind === "policy") {
       return `<b>${esc(entity.status || "policy")}</b><span>${esc(entity.version || "")}</span>`;
@@ -607,6 +610,77 @@
           </button>`;
       })
       .join("");
+  }
+
+  function ruleSpecSections(entity) {
+    const section = (title, text) => (text ? detailSection(title, `<p>${esc(text)}</p>`) : "");
+    let out = "";
+    out += section("规则定义 / DEFINITION", entity.ruleDefinition);
+    out += section("适用范围 / SCOPE", entity.ruleScope);
+    out += section("前置条件 / PRECONDITIONS", entity.rulePreconditions);
+    out += section("输入数据 / INPUTS", entity.ruleInputData);
+    out += section("观测维度 / OBSERVATIONS", entity.ruleObservations);
+    out += section("触发条件 / TRIGGER", entity.ruleTrigger);
+    out += section("支持证据口径 / SUPPORTING EVIDENCE", entity.ruleSupportingEvidence);
+    out += section("反向证据 / CONTRARY EVIDENCE", entity.ruleContraryEvidence);
+    out += section("否决条件 / VETO", entity.ruleVeto);
+    out += section("状态机路径 / STATE MACHINE", entity.ruleStateMachine);
+    out += section("后续动作 / NEXT ACTIONS", entity.ruleNextActions);
+    out += section("失效机制 / INVALIDATION", entity.ruleInvalidation);
+    out += section("参数初值 / PARAMETERS", entity.ruleParameters);
+    out += section("典型场景 / TYPICAL SCENARIO", entity.ruleTypicalScenario);
+    out += section("反例 / COUNTEREXAMPLE", entity.ruleCounterExample);
+    out += section("验证方法 / VERIFICATION", entity.ruleVerification);
+    out += section("置信度依据 / CONFIDENCE BASIS", entity.ruleConfidenceBasis);
+    out += detailSection("后续规则 / NEXT RULES", refChips(entity.nextRules, "无"));
+    out += detailSection("相关规则 / RELATED RULES", refChips(entity.relatedRules, "无"));
+    out += detailSection(
+      "分层与版本 / LAYERING & VERSION",
+      `<table class="fact-table"><tbody>
+        <tr><th>类别</th><td>${esc(entity.ruleCategory || "—")}</td></tr>
+        <tr><th>类别职责</th><td>${esc(entity.categoryResponsibility || "—")}</td></tr>
+        <tr><th>越权边界</th><td>${esc(entity.categoryBoundary || "—")}</td></tr>
+        <tr><th>状态 / 版本</th><td>${esc(entity.status)} · ${esc(entity.version)}</td></tr>
+        <tr><th>责任人</th><td>${esc(entity.owner)}</td></tr>
+        <tr><th>生效日期</th><td>${esc(entity.effectiveFrom)}</td></tr>
+        <tr><th>参数版本</th><td>${esc(entity.parameterData ? entity.parameterData.version : "—")}</td></tr>
+      </tbody></table>`
+    );
+    if (entity.parameterData) {
+      out += detailSection(
+        "参数占位 / PARAMETER PLACEHOLDER",
+        `<p>${esc(entity.parameterData.name)} · ${esc(entity.parameterData.status)}<br>${esc(entity.parameterData.initialRange)}<br><span class="detail-muted">${esc(entity.parameterData.calibration)} ${esc(entity.parameterData.note)}</span></p>`
+      );
+    }
+    out += detailSection("规则依据 / BASIS", `<p>${esc(entity.ruleBasis || "Issue #25 A股投资决策规则库 V2.0")}</p>`);
+    return out;
+  }
+
+  function ruleSpecCard(rule) {
+    const category = rule.category ? rule.category.label : (rule.ruleCategory || "规范规则");
+    return `
+      <article class="rule-card rule-card-spec" data-rule-id="${esc(rule.id)}">
+        <div class="rule-card-top">
+          <span class="rule-id">${esc(rule.ruleId)}</span>
+          <span class="rule-severity" data-severity="info">${esc(category)}</span>
+        </div>
+        <h3>${esc(labelOf(rule))}</h3>
+        <p>${esc(truncate(rule.ruleDefinition || rule.comment, 118))}</p>
+        <div class="rule-code">
+          <div class="rule-code-row"><span>TRIGGER</span><code>${esc(truncate(rule.ruleTrigger, 86))}</code></div>
+          <div class="rule-code-row"><span>SCOPE</span><code>${esc(truncate(rule.ruleScope, 86))}</code></div>
+        </div>
+        ${ruleTagList(rule.appliesTo)}
+        <div class="rule-card-foot">
+          <span>${esc(rule.ruleCategory)} · ${esc(rule.owner)}</span>
+          <span>${esc(rule.version)} · ${esc(rule.effectiveFrom)}</span>
+        </div>
+        <details>
+          <summary>查看完整规范（含状态机、证据、参数占位）</summary>
+          <div class="rule-spec-detail">${ruleSpecSections(rule)}</div>
+        </details>
+        <button class="text-btn rule-open" type="button" data-open-entity="rule:${esc(rule.id)}">在浏览器中查看</button>
+      </article>`;
   }
 
   function renderDetail(entity) {
@@ -692,6 +766,13 @@
       body += detailSection("下位概念 / NARROWER", refChips(entity.narrower, "叶子概念"));
       body += detailSection("关联概念 / RELATED", refChips(entity.related, "无关联"));
       if (entity.scopeNote) body += detailSection("范围注记 / SCOPE NOTE", `<p>${esc(entity.scopeNote)}</p>`);
+      body += detailFooter(entity);
+    } else if (entity.kind === "rule" && entity.format === "specification") {
+      body += `<div class="rule-code">
+          <div class="rule-code-row"><span>CATEGORY</span><code>${esc(entity.ruleCategory)}</code></div>
+          <div class="rule-code-row"><span>STATE</span><code>${esc(truncate(entity.ruleStateMachine, 120))}</code></div>
+        </div>`;
+      body += ruleSpecSections(entity);
       body += detailFooter(entity);
     } else if (entity.kind === "rule") {
       body += `
@@ -905,7 +986,7 @@
   ------------------------------------------------------------------------ */
 
   function renderRuleCounts() {
-    const counts = { all: DATA.rules.length, high: 0, medium: 0, low: 0 };
+    const counts = { all: DATA.rules.length, high: 0, medium: 0, low: 0, info: 0 };
     DATA.rules.forEach((rule) => {
       if (counts[rule.severity] != null) counts[rule.severity] += 1;
     });
@@ -920,8 +1001,9 @@
     if (!grid) return;
     const visible = DATA.rules.filter((rule) => state.ruleSeverity === "all" || rule.severity === state.ruleSeverity);
     grid.innerHTML = visible
-      .map(
-        (rule) => `
+      .map((rule) => {
+        if (rule.format === "specification") return ruleSpecCard(rule);
+        return `
         <article class="rule-card" data-rule-id="${esc(rule.id)}">
           <div class="rule-card-top">
             <span class="rule-id">${esc(rule.ruleId)}</span>
@@ -945,8 +1027,8 @@
               <div><h4>HEAD</h4><ul>${rule.headAtoms.map((atom) => `<li>${esc(atom.text)}</li>`).join("")}</ul></div>
             </div>
           </details>
-        </article>`
-      )
+        </article>`;
+      })
       .join("");
     if (!visible.length) grid.innerHTML = `<p class="policy-empty">该严重程度下没有规则。</p>`;
   }
@@ -2255,6 +2337,12 @@
       state.ruleSeverity = button.dataset.severity;
       $$("#rule-filters [data-severity]").forEach((item) => item.classList.toggle("is-active", item === button));
       renderRules();
+    });
+    filters.parentElement?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-open-entity]");
+      if (!button) return;
+      selectEntity(button.dataset.openEntity);
+      $("#explorer")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 

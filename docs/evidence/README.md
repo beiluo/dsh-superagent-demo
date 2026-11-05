@@ -57,6 +57,12 @@ These captures document the browser work for the A-share ontology tickets.
 | `cognition-before.png` | `main` at `2472cbb` (1.9), before the 1.10 cognition branch; static page on `127.0.0.1:8013` | 1440 × 1000 | Baseline hero: 337 classes, 44,372 triples, 161 rules, 173 concepts; version v1.9.0; 6 ODRL policies. |
 | `cognition-after.png` | 1.10 ticket branch, same page, viewport and theme on `127.0.0.1:8014` | 1440 × 1000 | Hero after the expansion: 363 classes, 47,958 triples, 169 rules, 225 concepts; version v1.10.0; 7 ODRL policies. |
 | `cognition-explorer-after.png` | 1.10 ticket branch, Explorer opened at `#entity=class:MarketCognition`, same viewport | 1440 × 1000 | The new `市场认知 Market Cognition` class detail: definition, superclass, OWL restrictions (data date, summary, regime) and the 4,058-entity browser. |
+| `rule-library-before-hero.png` | `main` at `a33c0f9` (1.10), before the 1.11 rule-library change; static page on `127.0.0.1:8014` | 1440 × 1000 | Baseline hero: 363 classes, 47,958 triples, 169 rules, 225 concepts; version v1.10.0. |
+| `rule-library-after-hero.png` | 1.11 ticket branch, same page, viewport and theme on `127.0.0.1:8015` | 1440 × 1000 | Hero after the change: 389 classes, 52,810 triples, 229 rules (169 SWRL + 60 V2.0), 225 concepts; version v1.11.0. |
+| `rule-library-before-rules.png` | Same baseline, rule section scrolled to `#rules` | 1440 × 1000 | Baseline rule section: 169 SWRL rules, severity filters only. |
+| `rule-library-after-rules.png` | 1.11 branch, same section and viewport | 1440 × 1000 | Rule section at 229 rules with the “规则库 V2.0” filter (60) and OP-001/OP-002 specification cards showing TRIGGER/SCOPE, category, version and parameter placeholder. |
+| `rule-library-after-detail.png` | 1.11 branch, Explorer opened through a rule card at `#entity=rule:rule-op-001` | 1440 × 1000 | OP-001 detail: definition, scope, trigger, state machine path, evidence and the “规则库 V2.0” layer label. |
+| `rule-library-after-rules-expanded.png` | 1.11 branch, OP-001 card expanded in the rule grid | 1440 × 1000 | Expanded specification card: definition, scope, preconditions, inputs, observations and trigger evidence; the same fields are available in the Explorer detail panel. |
 
 The `agent-before.png` baseline is a real capture of the deployed site before this ticket's UI change,
 not a mockup. Most after captures use the actual FastAPI backend and the real `index.html`; no LLM
@@ -95,3 +101,6 @@ of the changed panel. LLM-mode trace rendering was checked in Chromium against a
 the live provider. See the repository README for the disclaimer.
 
 The `cognition-*` pair uses the same static page and 1440 × 1000 viewport: the baseline is the `main` worktree at `2472cbb` before this ticket, and the after capture is the ticket branch. Both were served by `python3 -m http.server` and rendered with the bundled Firefox headless CLI; the intended difference is the regenerated `assets/js/data.js` snapshot and the version badge; `cognition-explorer-after.png` additionally opens the new `MarketCognition` class in the Explorer.
+
+
+The `rule-library-*` pair uses the same static page and 1440 × 1000 viewport: the baseline is a detached worktree at `a33c0f9` (1.10) served on `127.0.0.1:8014`, and the after captures are the 1.11 ticket branch served on `127.0.0.1:8015`. Both were served by `python3 -m http.server` and rendered with the bundled Chromium headless shell; the intended difference is the regenerated `assets/js/data.js`/`ontology.json`, the new V2.0 rules and their category/state/evidence/parameter fields. `rule-library-after-detail.png` additionally opens OP-001 in the Explorer.

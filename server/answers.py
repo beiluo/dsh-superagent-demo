@@ -19,7 +19,7 @@ KIND_LABELS = {
 }
 
 STATUS_LABELS = {"triggered": "触发", "clear": "未触发", "unknown": "未知"}
-SEVERITY_LABELS = {"high": "高", "medium": "中", "low": "低"}
+SEVERITY_LABELS = {"high": "高", "medium": "中", "low": "低", "info": "规范"}
 STAGE_LABEL = {"launch": "启动", "confirm": "确认", "extend": "延续", "decline": "衰退"}
 
 BOUNDARY = "**边界**：以上全部为本体中的合成示例数据，不构成投资建议；本体不连接真实行情或交易通道。"
@@ -423,6 +423,23 @@ def compose_rule(data: dict[str, Any]) -> str:
         lines.append(f"- **IF**：{rule['ruleIf']}")
     if rule.get("ruleThen"):
         lines.append(f"- **THEN**：{rule['ruleThen']}")
+    if rule.get("format") == "specification":
+        if rule.get("categoryCode"):
+            lines.append(
+                f"- **类别**：{rule.get('ruleCategory') or rule['categoryCode']}"
+                f"；**越权边界**：{rule.get('categoryBoundary') or '—'}"
+            )
+        if rule.get("ruleScope"):
+            lines.append(f"- **适用范围**：{rule['ruleScope']}")
+        if rule.get("ruleStateMachine"):
+            lines.append(f"- **状态机**：{rule['ruleStateMachine']}")
+        if rule.get("ruleNextActions"):
+            lines.append(f"- **后续动作**：{rule['ruleNextActions']}")
+        if rule.get("ruleParameters"):
+            lines.append(
+                f"- **参数占位**：{rule['ruleParameters']}"
+                f"（{rule.get('parameterVersion') or '—'}，{rule.get('parameterStatus') or '—'}）"
+            )
     lines.append(
         f"- **严重程度**：{SEVERITY_LABELS.get(rule.get('severity'), rule.get('severity') or '—')}；**责任人**：{rule.get('owner') or '—'}；"
         f"**版本**：{rule.get('version') or '—'}；**状态**：{rule.get('status') or '—'}。"

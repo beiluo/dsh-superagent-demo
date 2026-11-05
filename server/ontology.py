@@ -1339,6 +1339,10 @@ class OntologyStore:
             if not isinstance(subject, URIRef):
                 continue
             rule_id = self._text(subject, ASH.ruleId) or local_name(subject)
+            definition = self._text(subject, ASH.ruleDefinition)
+            parameter = self._first(subject, ASH.hasRuleParameter)
+            category = self._first(subject, ASH.belongsToRuleCategory)
+            state_machine = self._first(subject, ASH.usesRuleStateMachine)
             rules.append(
                 {
                     "id": local_name(subject),
@@ -1346,6 +1350,19 @@ class OntologyStore:
                     "ruleId": rule_id,
                     "label": self._label(subject),
                     "comment": self._comment(subject),
+                    "format": "specification" if definition else "swrl",
+                    "ruleCategory": self._text(subject, ASH.ruleCategory) or "",
+                    "categoryCode": self._text(category, ASH.categoryCode) if category is not None else "",
+                    "categoryResponsibility": self._text(category, ASH.categoryResponsibility) if category is not None else "",
+                    "categoryBoundary": self._text(category, ASH.categoryBoundary) if category is not None else "",
+                    "ruleDefinition": definition or "",
+                    "ruleScope": self._text(subject, ASH.ruleScope) or "",
+                    "ruleTrigger": self._text(subject, ASH.ruleTrigger) or "",
+                    "ruleStateMachine": self._text(subject, ASH.ruleStateMachine) or "",
+                    "ruleNextActions": self._text(subject, ASH.ruleNextActions) or "",
+                    "ruleParameters": self._text(subject, ASH.ruleParameters) or "",
+                    "parameterVersion": self._text(parameter, ASH.parameterVersion) if parameter is not None else "",
+                    "parameterStatus": self._text(parameter, ASH.parameterStatus) if parameter is not None else "",
                     "ruleIf": self._text(subject, ASH.ruleIf) or "",
                     "ruleThen": self._text(subject, ASH.ruleThen) or "",
                     "severity": self._text(subject, ASH.severity) or "",

@@ -693,10 +693,18 @@ class AgentService:
 
     def _detect_intent(self, question: str) -> tuple[str, Any]:
         companies = self.store.find_companies(question)
-        rule_match = re.search(r"\bR\s?(\d{1,2})\b", question, re.IGNORECASE)
-        if not rule_match:
-            rule_match = re.search(r"规则\s*(\d{1,2})", question)
-        rule_id = f"R{int(rule_match.group(1)):02d}" if rule_match else None
+        prefixed_rule = re.search(
+            r"(?<![A-Za-z])(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)\s*-?\s*(\d{1,3})(?![0-9])",
+            question,
+            re.IGNORECASE,
+        )
+        if prefixed_rule:
+            rule_id = f"{prefixed_rule.group(1).upper()}-{int(prefixed_rule.group(2)):03d}"
+        else:
+            rule_match = re.search(r"\bR\s?(\d{1,2})\b", question, re.IGNORECASE)
+            if not rule_match:
+                rule_match = re.search(r"规则\s*(\d{1,2})", question)
+            rule_id = f"R{int(rule_match.group(1)):02d}" if rule_match else None
         lower = question.lower()
 
         screen_words = ("哪些", "筛选", "候选", "机会", "池", "排名", "符合", "触发", "选出", "挑出")

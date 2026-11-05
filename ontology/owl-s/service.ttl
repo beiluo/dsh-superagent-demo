@@ -31,7 +31,7 @@
     dcterms:description "可审计 A 股投资决策服务的 OWL-S Profile、流程模型与 WSDL Grounding。"@zh ;
     dcterms:conformsTo <https://www.w3.org/Submission/OWL-S/> ;
     rdfs:seeAlso <https://www.daml.org/services/owl-s/1.2/overview/> ;
-    owl:versionInfo "1.10.0" ;
+    owl:versionInfo "1.11.0" ;
     ash:designNote "OWL-S 是 W3C Member Submission；服务端点、WSDL 文档和操作名均为示意，不指向生产系统。"@zh .
 
 # ===========================================================================
@@ -659,7 +659,7 @@ ashd:svc-trading-cognition a service:Service, ash:DecisionService ;
     service:presents ashd:profile-trading-cognition ;
     service:describedBy ashd:process-trading-cognition ;
     service:supports ashd:grounding-trading-cognition ;
-    ash:serviceVersion "1.10.0" ;
+    ash:serviceVersion "1.11.0" ;
     ash:endpointStatus "illustrative" ;
     ash:humanApprovalRequired true ;
     rdfs:label "A 股五引擎交易认知服务"@zh, "A-Share Five-Engine Trading Cognition Service"@en ;

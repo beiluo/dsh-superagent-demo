@@ -24,7 +24,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/rdf-schema/> ;
     dcterms:source <https://spec.edmcouncil.org/fibo/> ;
     rdfs:seeAlso <https://www.w3.org/TR/rdf-schema/> ;
-    owl:versionInfo "1.10.0" .
+    owl:versionInfo "1.11.0" .
 
 # ===========================================================================
 # Top-level classes
@@ -6773,3 +6773,701 @@ ash:verificationAsOf a owl:DatatypeProperty ;
     rdfs:range xsd:date ;
     rdfs:label "验证时点"@zh, "verification as of"@en ;
     rdfs:comment "结果验证所基于数据的时点。"@zh .
+
+# ===========================================================================
+# Rule library V2.0 (Issue #25)
+# ===========================================================================
+# The 60 A-share decision rules are declarative specifications. They share a
+# category layering, one state machine, evidence/data-quality conventions and
+# an output contract. SWRL rules remain the executable subset; these rules are
+# not auto-executed and never produce a trading instruction on their own.
+
+ash:DecisionRule a owl:Class ;
+    rdfs:label "决策规则规范"@zh, "Decision Rule Specification"@en ;
+    rdfs:comment "以业务语言、状态机与证据口径描述的决策规则；与 SWRL 可执行规则共享 RuleArtifact 身份，但不等于可执行 Horn 子句。"@zh .
+
+ash:OpportunityRule a owl:Class ;
+    rdfs:label "机会结构规则"@zh, "Opportunity Rule"@en ;
+    rdfs:comment "OP 类规则：识别可交易的价格结构与机会形态，不独立决定仓位。"@zh .
+
+ash:VolumePriceRule a owl:Class ;
+    rdfs:label "量价证据规则"@zh, "Volume-Price Rule"@en ;
+    rdfs:comment "VP 类规则：判断价格变化是否得到成交行为支持，不单独产生买入信号。"@zh .
+
+ash:AuctionRule a owl:Class ;
+    rdfs:label "竞价证据规则"@zh, "Auction Rule"@en ;
+    rdfs:comment "AUC 类规则：识别开盘前供需与预期变化，不把竞价强弱等同全天趋势。"@zh .
+
+ash:MarketRegimeRule a owl:Class ;
+    rdfs:label "市场环境规则"@zh, "Market Regime Rule"@en ;
+    rdfs:comment "MKT 类规则：判断系统性风险、情绪与板块背景，不用板块热度替代个股判断。"@zh .
+
+ash:EventRule a owl:Class ;
+    rdfs:label "事件证据规则"@zh, "Event Rule"@en ;
+    rdfs:comment "EVT 类规则：判断事件真实性、传导路径和兑现状态，不把新闻标题直接当利好。"@zh .
+
+ash:PositionRule a owl:Class ;
+    rdfs:label "持仓管理规则"@zh, "Position Management Rule"@en ;
+    rdfs:comment "POS 类规则：管理持仓延续、减仓、止盈和加仓，不绕过风险预算与交易约束。"@zh .
+
+ash:RiskRule a owl:Class ;
+    rdfs:label "风险约束规则"@zh, "Risk Constraint Rule"@en ;
+    rdfs:comment "RSK 类规则：过滤不可承受的风险与不合规交易，不预测价格方向。"@zh .
+
+ash:EvaluationRule a owl:Class ;
+    rdfs:label "结果评估规则"@zh, "Evaluation Rule"@en ;
+    rdfs:comment "EVA 类规则：验证规则、决策和执行是否有效，不用单笔盈亏证明规则好坏。"@zh .
+
+ash:RuleCategory a owl:Class ;
+    rdfs:label "规则职责类别"@zh, "Rule Category"@en ;
+    rdfs:comment "规则库的八类职责分层及其责任边界；类别不是打分权重。"@zh .
+
+ash:RuleState a owl:Class ;
+    rdfs:label "规则状态"@zh, "Rule State"@en ;
+    rdfs:comment "统一状态机中的一个状态；状态迁移必须保留时间戳、触发证据、反向证据和数据版本。"@zh .
+
+ash:RuleStateMachine a owl:Class ;
+    rdfs:label "规则状态机"@zh, "Rule State Machine"@en ;
+    rdfs:comment "规则实例共享的统一状态机，定义允许状态、迁移和重新实例化规则。"@zh .
+
+ash:RuleStateTransition a owl:Class ;
+    rdfs:label "规则状态迁移"@zh, "Rule State Transition"@en ;
+    rdfs:comment "统一状态机中的一条允许迁移，记录来源状态、目标状态和迁移条件。"@zh .
+
+ash:RuleOutput a owl:Class ;
+    rdfs:label "规则输出"@zh, "Rule Output"@en ;
+    rdfs:comment "一次规则运行至少输出的状态、证据、边界、后续动作与置信度依据。"@zh .
+
+ash:RuleRun a owl:Class ;
+    rdfs:label "规则运行记录"@zh, "Rule Run"@en ;
+    rdfs:comment "绑定规则、证券、时点和数据版本的一次运行记录，是 RuleOutput 的可追溯实例。"@zh .
+
+ash:RuleStateChange a owl:Class ;
+    rdfs:label "规则状态迁移记录"@zh, "Rule State Change"@en ;
+    rdfs:comment "一次实际发生的状态迁移，保留时间戳、触发证据、反向证据和数据版本。"@zh .
+
+ash:RuleEvidence a owl:Class ;
+    rdfs:label "规则证据"@zh, "Rule Evidence"@en ;
+    rdfs:comment "规则运行中引用的可追溯证据，区分触发、支持、反向与缺失。"@zh .
+
+ash:TriggerEvidence a owl:Class ;
+    rdfs:label "触发证据"@zh, "Trigger Evidence"@en ;
+    rdfs:comment "直接满足规则触发条件的证据。"@zh .
+
+ash:SupportingEvidence a owl:Class ;
+    rdfs:label "支持证据"@zh, "Supporting Evidence"@en ;
+    rdfs:comment "增强规则判断可信度、但不单独触发规则的证据。"@zh .
+
+ash:ContraryEvidence a owl:Class ;
+    rdfs:label "反向证据"@zh, "Contrary Evidence"@en ;
+    rdfs:comment "与规则判断相反、必须暂停升级或重新评估的证据。"@zh .
+
+ash:MissingData a owl:Class ;
+    rdfs:label "缺失数据"@zh, "Missing Data"@en ;
+    rdfs:comment "关键输入缺失或口径不一致；缺失不得解释为没有风险或没有信号。"@zh .
+
+ash:RuleParameter a owl:Class ;
+    rdfs:label "规则参数占位"@zh, "Rule Parameter Placeholder"@en ;
+    rdfs:comment "规则阈值的初始占位；状态为待回测，不是已证明有效的最优值。"@zh .
+
+ash:RuleRelation a owl:Class ;
+    rdfs:label "规则关系"@zh, "Rule Relation"@en ;
+    rdfs:comment "两条规则之间的前置、支持、冲突、否决、后续或评估关系。"@zh .
+
+ash:RuleRelationType a owl:Class ;
+    rdfs:label "规则关系类型"@zh, "Rule Relation Type"@en ;
+    rdfs:comment "规则关系的受控类型，例如 PRECONDITION、SUPPORTS、CONFLICTS、VETOES、FOLLOWED_BY、EVALUATED_BY。"@zh .
+
+ash:DataQualityConvention a owl:Class ;
+    rdfs:label "数据质量约定"@zh, "Data Quality Convention"@en ;
+    rdfs:comment "规则库共用的价格、成交、时间、横截面、缺失、去重与幸存者偏差约定。"@zh .
+
+ash:RuleLibrary a owl:Class ;
+    rdfs:label "规则库"@zh, "Rule Library"@en ;
+    rdfs:comment "一组版本化决策规则及其职责分层、状态机、证据口径和参数占位。"@zh .
+
+ash:DecisionRule rdfs:subClassOf ash:RuleArtifact .
+
+ash:OpportunityRule rdfs:subClassOf ash:DecisionRule .
+
+ash:VolumePriceRule rdfs:subClassOf ash:DecisionRule .
+
+ash:AuctionRule rdfs:subClassOf ash:DecisionRule .
+
+ash:MarketRegimeRule rdfs:subClassOf ash:DecisionRule .
+
+ash:EventRule rdfs:subClassOf ash:DecisionRule .
+
+ash:PositionRule rdfs:subClassOf ash:DecisionRule .
+
+ash:RiskRule rdfs:subClassOf ash:DecisionRule .
+
+ash:EvaluationRule rdfs:subClassOf ash:DecisionRule .
+
+ash:RuleRun rdfs:subClassOf ash:RuleOutput .
+
+ash:TriggerEvidence rdfs:subClassOf ash:RuleEvidence .
+
+ash:SupportingEvidence rdfs:subClassOf ash:RuleEvidence .
+
+ash:ContraryEvidence rdfs:subClassOf ash:RuleEvidence .
+
+ash:RuleEvidence rdfs:subClassOf ash:Evidence .
+
+ash:MissingData rdfs:subClassOf ash:Evidence .
+
+ash:belongsToRuleCategory a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range ash:RuleCategory ;
+    rdfs:label "所属规则类别"@zh, "belongs to rule category"@en ;
+    rdfs:comment "规则所属的职责类别。"@zh .
+
+ash:categoryHasRule a owl:ObjectProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "类别包含规则"@zh, "category has rule"@en ;
+    rdfs:comment "类别包含的规则；与 belongsToRuleCategory 互为反向。"@zh .
+
+ash:categoryRuleClass a owl:ObjectProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range owl:Class ;
+    rdfs:label "类别对应类"@zh, "category rule class"@en ;
+    rdfs:comment "类别对应的 OWL 类，用于按规则类型查询。"@zh .
+
+ash:usesRuleStateMachine a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range ash:RuleStateMachine ;
+    rdfs:label "使用状态机"@zh, "uses rule state machine"@en ;
+    rdfs:comment "规则实例共享的统一状态机。"@zh .
+
+ash:hasRuleState a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateMachine ;
+    rdfs:range ash:RuleState ;
+    rdfs:label "允许状态"@zh, "has rule state"@en ;
+    rdfs:comment "状态机允许的状态。"@zh .
+
+ash:transitionOfMachine a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateTransition ;
+    rdfs:range ash:RuleStateMachine ;
+    rdfs:label "所属状态机"@zh, "transition of machine"@en ;
+    rdfs:comment "迁移所属的统一状态机。"@zh .
+
+ash:transitionFrom a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateTransition ;
+    rdfs:range ash:RuleState ;
+    rdfs:label "迁移来源状态"@zh, "transition from"@en ;
+    rdfs:comment "迁移开始时的状态。"@zh .
+
+ash:transitionTo a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateTransition ;
+    rdfs:range ash:RuleState ;
+    rdfs:label "迁移目标状态"@zh, "transition to"@en ;
+    rdfs:comment "迁移完成后的状态。"@zh .
+
+ash:runOfRule a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRun ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "运行的规则"@zh, "run of rule"@en ;
+    rdfs:comment "本次规则运行对应的规则。"@zh .
+
+ash:changeOfRun a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range ash:RuleRun ;
+    rdfs:label "迁移所属运行"@zh, "change of run"@en ;
+    rdfs:comment "状态迁移记录所属的规则运行。"@zh .
+
+ash:changeFrom a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range ash:RuleState ;
+    rdfs:label "迁移前状态"@zh, "change from"@en ;
+    rdfs:comment "实际发生迁移前的状态。"@zh .
+
+ash:changeTo a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range ash:RuleState ;
+    rdfs:label "迁移后状态"@zh, "change to"@en ;
+    rdfs:comment "实际发生迁移后的状态。"@zh .
+
+ash:changeTriggerEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range ash:TriggerEvidence ;
+    rdfs:label "迁移触发证据"@zh, "change trigger evidence"@en ;
+    rdfs:comment "触发本次状态迁移的证据。"@zh .
+
+ash:changeContraryEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range ash:ContraryEvidence ;
+    rdfs:label "迁移反向证据"@zh, "change contrary evidence"@en ;
+    rdfs:comment "迁移时已审查的反向证据。"@zh .
+
+ash:runSecurity a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRun ;
+    rdfs:range ash:Security ;
+    rdfs:label "运行证券"@zh, "run security"@en ;
+    rdfs:comment "本次规则运行针对的证券。"@zh .
+
+ash:runState a owl:ObjectProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range ash:RuleState ;
+    rdfs:label "运行状态"@zh, "run state"@en ;
+    rdfs:comment "本次运行输出的状态。"@zh .
+
+ash:runTriggerEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range ash:TriggerEvidence ;
+    rdfs:label "触发证据"@zh, "run trigger evidence"@en ;
+    rdfs:comment "直接满足触发条件的证据。"@zh .
+
+ash:runSupportingEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range ash:SupportingEvidence ;
+    rdfs:label "支持证据"@zh, "run supporting evidence"@en ;
+    rdfs:comment "增强判断的支持证据。"@zh .
+
+ash:runContraryEvidence a owl:ObjectProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range ash:ContraryEvidence ;
+    rdfs:label "反向证据"@zh, "run contrary evidence"@en ;
+    rdfs:comment "必须审查的反向证据。"@zh .
+
+ash:runMissingData a owl:ObjectProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range ash:MissingData ;
+    rdfs:label "缺失数据"@zh, "run missing data"@en ;
+    rdfs:comment "关键输入缺失或口径不一致的记录。"@zh .
+
+ash:hasRuleParameter a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range ash:RuleParameter ;
+    rdfs:label "规则参数"@zh, "has rule parameter"@en ;
+    rdfs:comment "规则阈值或参数的初始占位。"@zh .
+
+ash:parameterOfRule a owl:ObjectProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "参数所属规则"@zh, "parameter of rule"@en ;
+    rdfs:comment "参数占位所属的规则。"@zh .
+
+ash:ruleNextRule a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "后续规则"@zh, "next rule"@en ;
+    rdfs:comment "触发后必须继续检查的规则。"@zh .
+
+ash:ruleRelatedRule a owl:ObjectProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "相关规则"@zh, "related rule"@en ;
+    rdfs:comment "定义、证据或防重复设计中提到的相关规则。"@zh .
+
+ash:relationFrom a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRelation ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "关系起点"@zh, "relation from"@en ;
+    rdfs:comment "规则关系的起点规则。"@zh .
+
+ash:relationTo a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRelation ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "关系终点"@zh, "relation to"@en ;
+    rdfs:comment "规则关系的终点规则。"@zh .
+
+ash:relationType a owl:ObjectProperty ;
+    rdfs:domain ash:RuleRelation ;
+    rdfs:range ash:RuleRelationType ;
+    rdfs:label "关系类型"@zh, "relation type"@en ;
+    rdfs:comment "规则关系的受控类型。"@zh .
+
+ash:conventionAppliesTo a owl:ObjectProperty ;
+    rdfs:domain ash:DataQualityConvention ;
+    rdfs:range ash:RuleLibrary ;
+    rdfs:label "约定适用于"@zh, "convention applies to"@en ;
+    rdfs:comment "数据质量约定适用的规则库。"@zh .
+
+ash:libraryHasRule a owl:ObjectProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range ash:DecisionRule ;
+    rdfs:label "规则库包含规则"@zh, "library has rule"@en ;
+    rdfs:comment "规则库包含的规则。"@zh .
+
+ash:libraryHasCategory a owl:ObjectProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range ash:RuleCategory ;
+    rdfs:label "规则库包含类别"@zh, "library has category"@en ;
+    rdfs:comment "规则库包含的职责类别。"@zh .
+
+ash:libraryUsesStateMachine a owl:ObjectProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range ash:RuleStateMachine ;
+    rdfs:label "规则库状态机"@zh, "library uses state machine"@en ;
+    rdfs:comment "规则库统一使用的状态机。"@zh .
+
+ash:libraryRequiresConvention a owl:ObjectProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range ash:DataQualityConvention ;
+    rdfs:label "规则库数据约定"@zh, "library requires convention"@en ;
+    rdfs:comment "规则库必须遵守的数据质量约定。"@zh .
+
+ash:ruleDefinition a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则定义"@zh, "rule definition"@en ;
+    rdfs:comment "规则识别何种可描述、可验证的市场现象。"@zh .
+
+ash:ruleScope a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "适用范围"@zh, "rule scope"@en ;
+    rdfs:comment "规则适用的市场环境、持仓状态、周期和证券范围。"@zh .
+
+ash:rulePreconditions a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "前置条件"@zh, "rule preconditions"@en ;
+    rdfs:comment "规则运行前必须满足的数据与结构条件。"@zh .
+
+ash:ruleInputData a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "输入数据"@zh, "rule input data"@en ;
+    rdfs:comment "规则运行所需的数据字段与来源。"@zh .
+
+ash:ruleObservations a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "观测维度"@zh, "rule observations"@en ;
+    rdfs:comment "规则运行时需要逐项观察的维度。"@zh .
+
+ash:ruleTrigger a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "触发条件"@zh, "rule trigger"@en ;
+    rdfs:comment "必要条件、支持条件与确认口径。"@zh .
+
+ash:ruleSupportingEvidence a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "支持证据口径"@zh, "rule supporting evidence"@en ;
+    rdfs:comment "可以增强规则判断但不单独触发的证据口径。"@zh .
+
+ash:ruleContraryEvidence a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "反向证据口径"@zh, "rule contrary evidence"@en ;
+    rdfs:comment "与规则判断相反、必须暂停升级的证据口径。"@zh .
+
+ash:ruleVeto a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "否决条件"@zh, "rule veto"@en ;
+    rdfs:comment "硬性否决条件；风险约束优先于机会信号。"@zh .
+
+ash:ruleStateMachine a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则状态机路径"@zh, "rule state machine path"@en ;
+    rdfs:comment "该规则在统一状态机中的具体迁移路径与规则特有状态标签。"@zh .
+
+ash:ruleNextActions a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "后续动作"@zh, "rule next actions"@en ;
+    rdfs:comment "触发后需要调用的规则、分析或风险流程。"@zh .
+
+ash:ruleInvalidation a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "失效机制"@zh, "rule invalidation"@en ;
+    rdfs:comment "使规则判断失效或被证伪的条件。"@zh .
+
+ash:ruleParameters a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数说明"@zh, "rule parameters"@en ;
+    rdfs:comment "规则参数初值的业务说明；参数个体保存可版本化的占位文本。"@zh .
+
+ash:ruleTypicalScenario a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "典型场景"@zh, "rule typical scenario"@en ;
+    rdfs:comment "规则成立时较完整的证据链示例。"@zh .
+
+ash:ruleCounterExample a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "反例"@zh, "rule counterexample"@en ;
+    rdfs:comment "容易误判为规则成立的反例。"@zh .
+
+ash:ruleVerification a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "验证方法"@zh, "rule verification"@en ;
+    rdfs:comment "规则有效性的回测、分层与样本外验证方法。"@zh .
+
+ash:ruleConfidenceBasis a owl:DatatypeProperty ;
+    rdfs:domain ash:DecisionRule ;
+    rdfs:range xsd:string ;
+    rdfs:label "置信度依据"@zh, "rule confidence basis"@en ;
+    rdfs:comment "置信度只能来自数据完整性、证据独立性和历史样本表现，不能用模型主观确信代替。"@zh .
+
+ash:ruleOutputStandard a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则输出标准"@zh, "rule output standard"@en ;
+    rdfs:comment "每次规则运行至少输出的字段清单。"@zh .
+
+ash:categoryCode a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range xsd:string ;
+    rdfs:label "类别代码"@zh, "category code"@en ;
+    rdfs:comment "OP、VP、AUC、MKT、EVT、POS、RSK 或 EVA。"@zh .
+
+ash:categoryName a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range xsd:string ;
+    rdfs:label "类别名称"@zh, "category name"@en ;
+    rdfs:comment "职责类别的中文名称。"@zh .
+
+ash:categoryResponsibility a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range xsd:string ;
+    rdfs:label "类别职责"@zh, "category responsibility"@en ;
+    rdfs:comment "该类别负责回答的问题。"@zh .
+
+ash:categoryBoundary a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range xsd:string ;
+    rdfs:label "类别越权边界"@zh, "category boundary"@en ;
+    rdfs:comment "该类别不应越权做的事情。"@zh .
+
+ash:categoryOrder a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleCategory ;
+    rdfs:range xsd:integer ;
+    rdfs:label "类别顺序"@zh, "category order"@en ;
+    rdfs:comment "类别在职责分层中的顺序。"@zh .
+
+ash:stateCode a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleState ;
+    rdfs:range xsd:string ;
+    rdfs:label "状态代码"@zh, "state code"@en ;
+    rdfs:comment "NOT_OBSERVED、WATCHING 等统一状态代码。"@zh .
+
+ash:stateDescription a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleState ;
+    rdfs:range xsd:string ;
+    rdfs:label "状态说明"@zh, "state description"@en ;
+    rdfs:comment "状态的业务含义与迁移要求。"@zh .
+
+ash:stateOrder a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleState ;
+    rdfs:range xsd:integer ;
+    rdfs:label "状态顺序"@zh, "state order"@en ;
+    rdfs:comment "状态在状态机展示中的顺序。"@zh .
+
+ash:stateTerminal a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleState ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "终止状态"@zh, "state terminal"@en ;
+    rdfs:comment "终止状态不能直接回到确认态；重新出现时必须建立新的信号实例。"@zh .
+
+ash:transitionKind a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleStateTransition ;
+    rdfs:range xsd:string ;
+    rdfs:label "迁移类型"@zh, "transition kind"@en ;
+    rdfs:comment "normal、conflict、invalidate、expire、data 或 recovery。"@zh .
+
+ash:transitionCondition a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleStateTransition ;
+    rdfs:range xsd:string ;
+    rdfs:label "迁移条件"@zh, "transition condition"@en ;
+    rdfs:comment "允许该迁移的证据或时间条件。"@zh .
+
+ash:transitionNote a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleStateTransition ;
+    rdfs:range xsd:string ;
+    rdfs:label "迁移注记"@zh, "transition note"@en ;
+    rdfs:comment "迁移的附加约束。"@zh .
+
+ash:parameterName a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数名称"@zh, "parameter name"@en ;
+    rdfs:comment "参数占位的名称。"@zh .
+
+ash:parameterInitialRange a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数初值"@zh, "parameter initial range"@en ;
+    rdfs:comment "待回测的初始参数范围或表达式。"@zh .
+
+ash:parameterUnit a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数单位"@zh, "parameter unit"@en ;
+    rdfs:comment "参数的单位或量纲说明。"@zh .
+
+ash:parameterStatus a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数状态"@zh, "parameter status"@en ;
+    rdfs:comment "initial、backtested、calibrated 或 retired；本库初始为待回测。"@zh .
+
+ash:parameterVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数版本"@zh, "parameter version"@en ;
+    rdfs:comment "可版本化的参数集标识。"@zh .
+
+ash:parameterCalibration a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数校准说明"@zh, "parameter calibration"@en ;
+    rdfs:comment "参数按流动性、波动率、板块和市场状态分层校准的说明。"@zh .
+
+ash:parameterNote a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleParameter ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数备注"@zh, "parameter note"@en ;
+    rdfs:comment "参数的额外约束或使用说明。"@zh .
+
+ash:runAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "运行数据截止时点"@zh, "run as of"@en ;
+    rdfs:comment "本次规则运行使用的数据截止时点。"@zh .
+
+ash:changeAt a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "迁移时点"@zh, "change at"@en ;
+    rdfs:comment "状态迁移实际发生的时间戳。"@zh .
+
+ash:changeDataVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleStateChange ;
+    rdfs:range xsd:string ;
+    rdfs:label "迁移数据版本"@zh, "change data version"@en ;
+    rdfs:comment "状态迁移所使用的数据快照或规则参数版本。"@zh .
+
+ash:runTimeframe a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:string ;
+    rdfs:label "运行周期"@zh, "run timeframe"@en ;
+    rdfs:comment "本次运行使用的 K 线或数据周期。"@zh .
+
+ash:runPositionState a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:string ;
+    rdfs:label "运行持仓状态"@zh, "run position state"@en ;
+    rdfs:comment "FLAT、HELD 等持仓状态。"@zh .
+
+ash:runParametersVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:string ;
+    rdfs:label "参数版本"@zh, "run parameters version"@en ;
+    rdfs:comment "本次运行固定的参数集版本。"@zh .
+
+ash:runValidUntil a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:date ;
+    rdfs:label "输出有效期"@zh, "run valid until"@en ;
+    rdfs:comment "规则输出失效的日期。"@zh .
+
+ash:runNextActions a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:string ;
+    rdfs:label "后续动作"@zh, "run next actions"@en ;
+    rdfs:comment "本次输出建议继续检查的规则或流程。"@zh .
+
+ash:runSourceRefs a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:string ;
+    rdfs:label "来源引用"@zh, "run source refs"@en ;
+    rdfs:comment "证据、数据与规则版本的可追溯引用。"@zh .
+
+ash:runConfidenceBasis a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleOutput ;
+    rdfs:range xsd:string ;
+    rdfs:label "置信度依据"@zh, "run confidence basis"@en ;
+    rdfs:comment "本次输出置信度的数据与证据依据。"@zh .
+
+ash:evidenceRef a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleEvidence ;
+    rdfs:range xsd:string ;
+    rdfs:label "证据引用"@zh, "evidence ref"@en ;
+    rdfs:comment "证据对应的数据、公告、行情或规则版本引用。"@zh .
+
+ash:evidenceAsOf a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleEvidence ;
+    rdfs:range xsd:date ;
+    rdfs:label "证据时点"@zh, "evidence as of"@en ;
+    rdfs:comment "证据所反映数据的日期。"@zh .
+
+ash:evidenceSource a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleEvidence ;
+    rdfs:range xsd:string ;
+    rdfs:label "证据来源"@zh, "evidence source"@en ;
+    rdfs:comment "证据来源说明。"@zh .
+
+ash:evidenceNote a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleEvidence ;
+    rdfs:range xsd:string ;
+    rdfs:label "证据注记"@zh, "evidence note"@en ;
+    rdfs:comment "证据的方向、限制或待核实说明。"@zh .
+
+ash:conventionCode a owl:DatatypeProperty ;
+    rdfs:domain ash:DataQualityConvention ;
+    rdfs:range xsd:string ;
+    rdfs:label "约定代码"@zh, "convention code"@en ;
+    rdfs:comment "数据质量约定的稳定代码。"@zh .
+
+ash:conventionRequirement a owl:DatatypeProperty ;
+    rdfs:domain ash:DataQualityConvention ;
+    rdfs:range xsd:string ;
+    rdfs:label "约定要求"@zh, "convention requirement"@en ;
+    rdfs:comment "规则运行必须遵守的数据质量要求。"@zh .
+
+ash:conventionNote a owl:DatatypeProperty ;
+    rdfs:domain ash:DataQualityConvention ;
+    rdfs:range xsd:string ;
+    rdfs:label "约定注记"@zh, "convention note"@en ;
+    rdfs:comment "约定的示例或边界说明。"@zh .
+
+ash:relationTypeCode a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleRelationType ;
+    rdfs:range xsd:string ;
+    rdfs:label "关系类型代码"@zh, "relation type code"@en ;
+    rdfs:comment "PRECONDITION、SUPPORTS、CONFLICTS、VETOES、FOLLOWED_BY 或 EVALUATED_BY。"@zh .
+
+ash:relationTypeDescription a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleRelationType ;
+    rdfs:range xsd:string ;
+    rdfs:label "关系类型说明"@zh, "relation type description"@en ;
+    rdfs:comment "关系类型的业务含义。"@zh .
+
+ash:ruleLibraryVersion a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则库版本"@zh, "rule library version"@en ;
+    rdfs:comment "规则库的语义版本号。"@zh .
+
+ash:ruleLibraryPrinciple a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则库原则"@zh, "rule library principle"@en ;
+    rdfs:comment "规则库的使用原则，允许多条。"@zh .
+
+ash:ruleLibraryDisclaimer a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range xsd:string ;
+    rdfs:label "规则库声明"@zh, "rule library disclaimer"@en ;
+    rdfs:comment "阈值待验证、输出不是交易指令等边界声明。"@zh .
+
+ash:ruleLibraryCount a owl:DatatypeProperty ;
+    rdfs:domain ash:RuleLibrary ;
+    rdfs:range xsd:integer ;
+    rdfs:label "规则数量"@zh, "rule library count"@en ;
+    rdfs:comment "规则库包含的规则条数。"@zh .
+
+ash:belongsToRuleCategory owl:inverseOf ash:categoryHasRule .
+
+ash:hasRuleParameter owl:inverseOf ash:parameterOfRule .

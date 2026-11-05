@@ -210,6 +210,85 @@ def validate_swrl(g: Graph, classes: set, properties: set) -> None:
         check(head_vars <= body_vars, f"SWRL rule head has unbound variables: {local(rule)} -> {sorted(local(v) for v in head_vars - body_vars)}")
 
 
+def validate_rule_library(g: Graph) -> None:
+    """Validate the declarative V2.0 rule library and its shared machinery."""
+    rules = [item for item in g.subjects(RDF.type, ASH.DecisionRule) if isinstance(item, URIRef)]
+    check(len(rules) == 60, f"Expected 60 V2.0 decision rules, found {len(rules)}")
+    ids: set[str] = set()
+    for rule in rules:
+        rule_id = g.value(rule, ASH.ruleId)
+        check(rule_id is not None, f"Decision rule has no ruleId: {local(rule)}")
+        if rule_id is not None:
+            check(str(rule_id) not in ids, f"Duplicate decision rule id: {rule_id}")
+            ids.add(str(rule_id))
+        check((rule, RDF.type, SWRL.Imp) not in g, f"V2.0 rule must not masquerade as SWRL: {local(rule)}")
+        for predicate, name in [
+            (ASH.ruleDefinition, "ruleDefinition"),
+            (ASH.ruleScope, "ruleScope"),
+            (ASH.rulePreconditions, "rulePreconditions"),
+            (ASH.ruleInputData, "ruleInputData"),
+            (ASH.ruleObservations, "ruleObservations"),
+            (ASH.ruleTrigger, "ruleTrigger"),
+            (ASH.ruleContraryEvidence, "ruleContraryEvidence"),
+            (ASH.ruleVeto, "ruleVeto"),
+            (ASH.ruleStateMachine, "ruleStateMachine"),
+            (ASH.ruleNextActions, "ruleNextActions"),
+            (ASH.ruleInvalidation, "ruleInvalidation"),
+            (ASH.ruleParameters, "ruleParameters"),
+            (ASH.ruleTypicalScenario, "ruleTypicalScenario"),
+            (ASH.ruleCounterExample, "ruleCounterExample"),
+            (ASH.ruleVerification, "ruleVerification"),
+            (ASH.ruleConfidenceBasis, "ruleConfidenceBasis"),
+            (ASH.ruleVersion, "ruleVersion"),
+            (ASH.ruleStatus, "ruleStatus"),
+            (ASH.ruleOwner, "ruleOwner"),
+        ]:
+            check(g.value(rule, predicate) is not None, f"Decision rule {local(rule)} lacks {name}")
+        check(g.value(rule, ASH.belongsToRuleCategory) is not None,
+              f"Decision rule {local(rule)} lacks a rule category")
+        check(g.value(rule, ASH.usesRuleStateMachine) is not None,
+              f"Decision rule {local(rule)} lacks a state machine")
+        check(g.value(rule, ASH.hasRuleParameter) is not None,
+              f"Decision rule {local(rule)} lacks a parameter placeholder")
+        for label in g.objects(rule, RDFS.label):
+            if isinstance(label, Literal) and (label.language or "").startswith("zh"):
+                break
+        else:
+            check(False, f"Decision rule has no Chinese label: {local(rule)}")
+    categories = [item for item in g.subjects(RDF.type, ASH.RuleCategory) if isinstance(item, URIRef)]
+    check(len(categories) == 8, f"Expected 8 rule categories, found {len(categories)}")
+    for category in categories:
+        for predicate, name in [
+            (ASH.categoryCode, "categoryCode"),
+            (ASH.categoryResponsibility, "categoryResponsibility"),
+            (ASH.categoryBoundary, "categoryBoundary"),
+        ]:
+            check(g.value(category, predicate) is not None, f"Rule category {local(category)} lacks {name}")
+        check(any(True for _ in g.objects(category, ASH.categoryHasRule)),
+              f"Rule category {local(category)} has no rules")
+    states = [item for item in g.subjects(RDF.type, ASH.RuleState) if isinstance(item, URIRef)]
+    check(len(states) == 9, f"Expected 9 rule states, found {len(states)}")
+    machine = g.value(next(iter(rules)), ASH.usesRuleStateMachine) if rules else None
+    check(machine is not None, "Rule library has no unified state machine")
+    if machine is not None:
+        check(len(list(g.objects(machine, ASH.hasRuleState))) == 9,
+              "Unified state machine does not expose all 9 states")
+    transitions = [item for item in g.subjects(RDF.type, ASH.RuleStateTransition) if isinstance(item, URIRef)]
+    check(len(transitions) >= 20, f"Expected at least 20 state transitions, found {len(transitions)}")
+    conventions = [item for item in g.subjects(RDF.type, ASH.DataQualityConvention) if isinstance(item, URIRef)]
+    check(len(conventions) == 7, f"Expected 7 data-quality conventions, found {len(conventions)}")
+    runs = [item for item in g.subjects(RDF.type, ASH.RuleRun) if isinstance(item, URIRef)]
+    check(len(runs) >= 2, f"Expected at least 2 example rule runs, found {len(runs)}")
+    for run in runs:
+        for predicate, name in [
+            (ASH.runOfRule, "runOfRule"),
+            (ASH.runState, "runState"),
+            (ASH.runAsOf, "runAsOf"),
+            (ASH.runConfidenceBasis, "runConfidenceBasis"),
+        ]:
+            check(g.value(run, predicate) is not None, f"Rule run {local(run)} lacks {name}")
+
+
 def validate_owl_s(g: Graph) -> None:
     services = list(g.subjects(RDF.type, SERVICE.Service))
     check(len(services) >= 1, "No OWL-S service found")
@@ -381,6 +460,7 @@ def main() -> int:
     validate_owl(g, classes, object_properties, data_properties)
     validate_skos(g, concepts)
     validate_swrl(g, classes, properties)
+    validate_rule_library(g)
     validate_owl_s(g)
     validate_odrl(g)
     validate_examples(g)
@@ -416,6 +496,7 @@ def main() -> int:
     print(f"  data properties: {len(data_properties)}")
     print(f"  SKOS concepts: {len(concepts)}")
     print(f"  SWRL rules: {len(list(g.subjects(RDF.type, SWRL.Imp)))}")
+    print(f"  decision rules (V2.0): {len(list(g.subjects(RDF.type, ASH.DecisionRule)))}")
     print(f"  OWL-S services: {len(list(g.subjects(RDF.type, SERVICE.Service)))}")
     print(f"  ODRL policies: {len(list(g.subjects(RDF.type, ASH.DecisionPolicy)))}")
     print(f"  OWL RL closure: {before} -> {len(closure_graph)} triples ({inferred} inferred)")

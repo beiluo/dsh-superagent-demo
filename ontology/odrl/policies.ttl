@@ -25,7 +25,7 @@
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-vocab/> ;
     rdfs:seeAlso <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.10.0" ;
+    owl:versionInfo "1.11.0" ;
     ash:designNote "策略使用 ODRL 2.2 Core 术语；humanApproval 与 compliancePassed 是显式声明的 profile 扩展左操作数。"@zh .
 
 # ===========================================================================
@@ -37,7 +37,7 @@ ashd:odrl-profile a owl:Ontology ;
     dcterms:title "A 股投资决策 ODRL Profile"@zh ;
     dcterms:description "ODRL 2.2 profile for A-share research data, decision reports and order-intent guardrails."@en ;
     dcterms:conformsTo <https://www.w3.org/TR/odrl-model/> ;
-    owl:versionInfo "1.10.0" .
+    owl:versionInfo "1.11.0" .
 
 ashd:leftOperand-humanApproval a odrl:LeftOperand ;
     skos:prefLabel "人工批准状态"@zh, "human approval"@en ;
@@ -561,7 +561,7 @@ ashd:policy-trading-cognition
     odrl:conflict odrl:prohibit ;
     dcterms:title "五引擎交易认知判断协议"@zh, "Five-engine trading cognition judgment agreement"@en ;
     dcterms:description "交易判断只能用于投资决策支持；反向证据未审查、市场风险偏好过低或人工批准为 false 时不得执行或新增风险；判断变化必须保留版本与触发证据，并用结果验证回写经验。"@zh ;
-    ash:policyVersion "1.10.0" ;
+    ash:policyVersion "1.11.0" ;
     ash:policyStatus "active" ;
     ash:reviewDate "2027-12-31"^^xsd:date ;
     ash:isExample true ;

@@ -114,6 +114,18 @@ def test_rule_catalog_and_policies(store):
         assert policy["prohibitions"]
 
 
+def test_v2_rule_catalog(store):
+    rules = {item["ruleId"]: item for item in store.rules()}
+    specs = {key: item for key, item in rules.items() if item.get("format") == "specification"}
+    assert len(specs) == 60
+    assert {"OP-001", "VP-001", "AUC-001", "MKT-001", "EVT-001", "POS-001", "RSK-001", "EVA-001"} <= set(specs)
+    op = specs["OP-001"]
+    assert op["categoryCode"] == "OP"
+    assert op["ruleScope"]
+    assert op["parameterVersion"] == "OP-001-cn-equity-2026-01"
+    assert op["ruleStateMachine"]
+
+
 def test_search_returns_class_and_rule(store):
     matches = store.search("价值候选")
     kinds = {item["kind"] for item in matches}

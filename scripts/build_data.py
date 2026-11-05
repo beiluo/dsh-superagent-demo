@@ -84,7 +84,7 @@ MODULES = [
         "spec": "SWRL W3C Member Submission",
         "specUrl": "https://www.w3.org/Submission/SWRL/",
         "file": "ontology/swrl/rules.ttl",
-        "desc": "把价值筛选、财务风险、止损、集中度、限制名单和可审计性写成可执行 Horn 规则。",
+        "desc": "把价值筛选、财务风险、止损、集中度、限制名单和可审计性写成可执行 Horn 规则，并纳入 60 条规则库 V2.0 规范规则（共享状态机、证据口径与参数占位）。",
         "color": "#c2410c",
     },
     {
@@ -552,6 +552,16 @@ def atom_text(g: Graph, atom: Any) -> str:
     return "原子"
 
 
+def rule_sort_key(item: dict[str, Any]) -> tuple[int, int, int, str]:
+    rule_id = item.get("ruleId", "")
+    category = re.match(r"(OP|VP|AUC|MKT|EVT|POS|RSK|EVA)-(\d+)", rule_id)
+    if category:
+        order = {"OP": 0, "VP": 1, "AUC": 2, "MKT": 3, "EVT": 4, "POS": 5, "RSK": 6, "EVA": 7}[category.group(1)]
+        return (0, order, int(category.group(2)), rule_id)
+    numeric = re.search(r"(\d+)", rule_id)
+    return (1, int(numeric.group(1)) if numeric else 999, 0, rule_id)
+
+
 def parse_rules(g: Graph, type_sources: dict[Any, str]) -> list[dict[str, Any]]:
     out = []
     for rule in g.subjects(RDF.type, SWRL.Imp):
@@ -564,6 +574,7 @@ def parse_rules(g: Graph, type_sources: dict[Any, str]) -> list[dict[str, Any]]:
                 "id": local_name(rule),
                 "iri": str(rule),
                 "kind": "rule",
+                "format": "swrl",
                 "label": {"zh": label(g, rule), "en": label_en(g, rule)},
                 "comment": comment(g, rule),
                 "source": source_of(rule, type_sources, "swrl"),
@@ -583,7 +594,108 @@ def parse_rules(g: Graph, type_sources: dict[Any, str]) -> list[dict[str, Any]]:
                 "headAtoms": [{"text": atom_text(g, atom)} for atom in head],
             }
         )
-    return sorted(out, key=lambda item: item["ruleId"])
+    return sorted(out, key=rule_sort_key)
+
+
+def _text(g: Graph, subject: Any, predicate: Any) -> str:
+    value = g.value(subject, predicate)
+    return str(value) if value is not None else ""
+
+
+def _date_text(g: Graph, subject: Any, predicate: Any) -> str:
+    value = g.value(subject, predicate)
+    return str(value) if value is not None else ""
+
+
+def parse_decision_rules(g: Graph, type_sources: dict[Any, str]) -> list[dict[str, Any]]:
+    """Parse the declarative V2.0 rule specifications (non-SWRL)."""
+    out = []
+    for rule in g.subjects(RDF.type, ASH.DecisionRule):
+        if not isinstance(rule, URIRef) or not str(rule).startswith(str(ASHD)):
+            continue
+        category = g.value(rule, ASH.belongsToRuleCategory)
+        state_machine = g.value(rule, ASH.usesRuleStateMachine)
+        parameter = g.value(rule, ASH.hasRuleParameter)
+        category_class = next(
+            (
+                item
+                for item in g.objects(category, ASH.categoryRuleClass)
+                if isinstance(item, URIRef)
+            ),
+            None,
+        ) if category is not None else None
+        out.append(
+            {
+                "id": local_name(rule),
+                "iri": str(rule),
+                "kind": "rule",
+                "format": "specification",
+                "label": {"zh": label(g, rule), "en": label_en(g, rule)},
+                "comment": comment(g, rule),
+                "source": source_of(rule, type_sources, "swrl"),
+                "layer": "swrl",
+                "ruleId": _text(g, rule, ASH.ruleId),
+                "ruleCategory": _text(g, rule, ASH.ruleCategory),
+                "ruleCategoryCode": (
+                    _text(g, category, ASH.categoryCode) if category is not None else ""
+                ),
+                "category": ref(g, category) if category is not None else None,
+                "categoryClass": ref(g, category_class) if category_class is not None else None,
+                "categoryResponsibility": (
+                    _text(g, category, ASH.categoryResponsibility) if category is not None else ""
+                ),
+                "categoryBoundary": (
+                    _text(g, category, ASH.categoryBoundary) if category is not None else ""
+                ),
+                "ruleDefinition": _text(g, rule, ASH.ruleDefinition),
+                "ruleScope": _text(g, rule, ASH.ruleScope),
+                "rulePreconditions": _text(g, rule, ASH.rulePreconditions),
+                "ruleInputData": _text(g, rule, ASH.ruleInputData),
+                "ruleObservations": _text(g, rule, ASH.ruleObservations),
+                "ruleTrigger": _text(g, rule, ASH.ruleTrigger),
+                "ruleSupportingEvidence": _text(g, rule, ASH.ruleSupportingEvidence),
+                "ruleContraryEvidence": _text(g, rule, ASH.ruleContraryEvidence),
+                "ruleVeto": _text(g, rule, ASH.ruleVeto),
+                "ruleStateMachine": _text(g, rule, ASH.ruleStateMachine),
+                "ruleNextActions": _text(g, rule, ASH.ruleNextActions),
+                "ruleInvalidation": _text(g, rule, ASH.ruleInvalidation),
+                "ruleParameters": _text(g, rule, ASH.ruleParameters),
+                "ruleTypicalScenario": _text(g, rule, ASH.ruleTypicalScenario),
+                "ruleCounterExample": _text(g, rule, ASH.ruleCounterExample),
+                "ruleVerification": _text(g, rule, ASH.ruleVerification),
+                "ruleConfidenceBasis": _text(g, rule, ASH.ruleConfidenceBasis),
+                "ruleIf": _text(g, rule, ASH.ruleIf),
+                "ruleThen": _text(g, rule, ASH.ruleThen),
+                "severity": _text(g, rule, ASH.severity),
+                "priority": _text(g, rule, ASH.rulePriority),
+                "status": _text(g, rule, ASH.ruleStatus),
+                "version": _text(g, rule, ASH.ruleVersion),
+                "owner": _text(g, rule, ASH.ruleOwner),
+                "effectiveFrom": _date_text(g, rule, ASH.ruleEffectiveFrom),
+                "ruleBasis": _text(g, rule, ASH.ruleBasis),
+                "appliesTo": refs(g, [item for item in g.objects(rule, ASH.appliesTo) if isinstance(item, URIRef)]),
+                "uses": refs(g, [item for item in g.objects(rule, ASH.ruleUses) if isinstance(item, URIRef)]),
+                "nextRules": refs(g, [item for item in g.objects(rule, ASH.ruleNextRule) if isinstance(item, URIRef)]),
+                "relatedRules": refs(g, [item for item in g.objects(rule, ASH.ruleRelatedRule) if isinstance(item, URIRef)]),
+                "stateMachine": ref(g, state_machine) if state_machine is not None else None,
+                "parameter": ref(g, parameter) if parameter is not None else None,
+                "parameterData": (
+                    {
+                        "name": _text(g, parameter, ASH.parameterName),
+                        "initialRange": _text(g, parameter, ASH.parameterInitialRange),
+                        "status": _text(g, parameter, ASH.parameterStatus),
+                        "version": _text(g, parameter, ASH.parameterVersion),
+                        "calibration": _text(g, parameter, ASH.parameterCalibration),
+                        "note": _text(g, parameter, ASH.parameterNote),
+                    }
+                    if parameter is not None
+                    else None
+                ),
+                "bodyAtoms": [],
+                "headAtoms": [],
+            }
+        )
+    return sorted(out, key=rule_sort_key)
 
 
 def parse_parameter(g: Graph, node: Any) -> dict[str, Any]:
@@ -802,7 +914,9 @@ def build() -> dict[str, Any]:
     data_properties = [item for item in properties if item["kind"] == "dataProperty"]
     individuals = parse_individuals(g, type_sources)
     schemes, concepts = parse_schemes_and_concepts(g, type_sources)
-    rules = parse_rules(g, type_sources)
+    swrl_rules = parse_rules(g, type_sources)
+    decision_rules = parse_decision_rules(g, type_sources)
+    rules = sorted(swrl_rules + decision_rules, key=rule_sort_key)
     services = [parse_service(g, item, type_sources) for item in g.subjects(RDF.type, SERVICE.Service)]
     policies = parse_policies(g, type_sources)
 
@@ -868,6 +982,8 @@ def build() -> dict[str, Any]:
         "concepts": len(concepts),
         "schemes": len(schemes),
         "rules": len(rules),
+        "swrlRules": len(swrl_rules),
+        "decisionRules": len(decision_rules),
         "services": len(services),
         "policies": len(policies),
         "restrictions": restrictions,
@@ -880,7 +996,7 @@ def build() -> dict[str, Any]:
         "meta": {
             "title": "A 股投资决策本体",
             "titleEn": "A-Share Investment Decision Ontology",
-            "version": "1.10.0",
+            "version": "1.11.0",
             "date": "2026-11",
             "namespace": str(ASH),
             "repo": "https://github.com/beiluo/dsh-superagent-demo",
