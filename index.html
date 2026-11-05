@@ -18,7 +18,7 @@
       <span class="sr-only">打开工作区导航</span>
     </button>
 
-    <a class="brand" href="#overview" aria-label="返回总览">
+    <a class="brand" href="#explorer" aria-label="返回本体浏览">
       <span class="brand-mark" aria-hidden="true">A</span>
       <span class="brand-text">
         <strong>ASHARE</strong>
@@ -44,24 +44,13 @@
     <aside class="sidebar" id="sidebar" aria-label="工作区导航">
       <nav class="side-nav">
         <p class="side-label">WORKSPACE / 工作台</p>
-        <a class="side-link is-active" href="#overview" data-view="overview"><span class="side-index">00</span><span>总览</span><span class="side-count">9</span></a>
-        <a class="side-link" href="#agent" data-view="agent"><span class="side-index">01</span><span>Agent</span><span class="side-count">LLM</span></a>
+        <a class="side-link" href="#agent" data-view="agent"><span class="side-index">00</span><span>Agent</span><span class="side-count">LLM</span></a>
 
         <p class="side-label">ONTOLOGY / 本体</p>
-        <a class="side-link" href="#stack" data-view="stack"><span class="side-index">02</span><span>语义栈</span><span class="side-count">07</span></a>
-        <a class="side-link" href="#explorer" data-view="explorer"><span class="side-index">03</span><span>浏览</span><span class="side-count">4.3K</span></a>
-        <a class="side-link" href="#graph" data-view="graph"><span class="side-index">04</span><span>图谱</span><span class="side-count">389</span></a>
-        <a class="side-link" href="#taxonomy" data-view="taxonomy"><span class="side-index">05</span><span>分类</span><span class="side-count">225</span></a>
-
-        <p class="side-label">DECISION / 决策</p>
-        <a class="side-link" href="#short-term" data-view="short-term"><span class="side-index">06</span><span>短线</span><span class="side-count">11</span></a>
-        <a class="side-link" href="#rules" data-view="rules"><span class="side-index">07</span><span>规则</span><span class="side-count">229</span></a>
-        <a class="side-link" href="#services" data-view="services"><span class="side-index">08</span><span>服务</span><span class="side-count">03</span></a>
-        <a class="side-link" href="#policies" data-view="policies"><span class="side-index">09</span><span>政策</span><span class="side-count">07</span></a>
-        <a class="side-link" href="#examples" data-view="examples"><span class="side-index">10</span><span>示例</span><span class="side-count">04</span></a>
-
-        <p class="side-label">REFERENCE / 参考</p>
-        <a class="side-link" href="#method" data-view="method"><span class="side-index">11</span><span>方法</span></a>
+        <a class="side-link is-active" href="#explorer" data-view="explorer"><span class="side-index">01</span><span>浏览</span><span class="side-count">4.3K</span></a>
+        <a class="side-link" href="#graph" data-view="graph"><span class="side-index">02</span><span>图谱</span><span class="side-count">389</span></a>
+        <a class="side-link" href="#taxonomy" data-view="taxonomy"><span class="side-index">03</span><span>分类</span><span class="side-count">225</span></a>
+        <a class="side-link" href="#rules" data-view="rules"><span class="side-index">04</span><span>规则</span><span class="side-count">229</span></a>
       </nav>
 
       <div class="sidebar-foot">
@@ -79,83 +68,7 @@
     </aside>
 
     <main class="workspace" id="main">
-      <!-- ==================================================================
-           Overview dashboard
-      =================================================================== -->
-      <section class="view is-active" id="overview" data-title="总览" aria-labelledby="overview-title">
-        <header class="overview-head">
-          <div class="overview-head-copy">
-            <p class="view-kicker">A-SHARE SEMANTIC RESEARCH TERMINAL · 00</p>
-            <h1 id="overview-title">市场与决策总览</h1>
-            <p class="overview-lede">把公司、证券、行情、风险、规则与政策收在同一个可追溯的研究工作台里。示例公司走本体推理；真实 A 股查询进入 Agent。</p>
-          </div>
-          <dl class="overview-meta" id="overview-meta">
-            <div><dt>SNAPSHOT</dt><dd>2026-11</dd></div>
-            <div><dt>VERSION</dt><dd>v1.11.0</dd></div>
-            <div><dt>COVERAGE</dt><dd>7 layers</dd></div>
-          </dl>
-        </header>
-
-        <noscript><p class="noscript-note">这个工作台需要 JavaScript 加载本体快照；请启用 JavaScript，或直接阅读 <a href="docs/design.md">设计文档</a>。</p></noscript>
-
-        <div class="standard-strip" aria-label="语义标准覆盖">
-          <span class="standard-strip-label">STANDARDS</span>
-          <span>RDF 1.1</span><span>RDFS</span><span>OWL 2 DL</span><span>SKOS</span><span>SWRL</span><span>OWL-S 1.2</span><span>ODRL 2.2</span>
-        </div>
-
-        <div class="overview-grid">
-          <section class="panel panel-span-8" aria-labelledby="monitor-title">
-            <header class="panel-head">
-              <h2 id="monitor-title">DECISION MONITOR <span>/ 决策监控</span></h2>
-              <a href="#examples">全部示例 →</a>
-            </header>
-            <div id="decision-monitor" class="monitor-table"></div>
-          </section>
-
-          <aside class="panel panel-span-4 panel-dark" aria-labelledby="dock-title">
-            <header class="panel-head">
-              <h2 id="dock-title">AGENT <span>/ 本体问答</span></h2>
-              <span class="panel-chip">PUBLIC API</span>
-            </header>
-            <p class="dock-lede">问题先决定查询路径：本体属性、证据链、组合约束或情景模拟，再给出带出处的结论。</p>
-            <ul class="dock-prompts" id="dock-prompts"></ul>
-            <a class="dock-cta" href="#agent">打开 Agent 工作区 →</a>
-            <p class="dock-note">LLM 密钥只在服务端；静态页面不包含 <code>LLM_API_KEY</code>。</p>
-          </aside>
-
-          <section class="panel panel-span-8" aria-labelledby="coverage-title">
-            <header class="panel-head">
-              <h2 id="coverage-title">SEMANTIC COVERAGE <span>/ 语义覆盖</span></h2>
-              <a href="#stack">查看分层 →</a>
-            </header>
-            <div id="coverage-list" class="coverage-list"></div>
-          </section>
-
-          <aside class="panel panel-span-4" aria-labelledby="short-dock-title">
-            <header class="panel-head">
-              <h2 id="short-dock-title">SHORT-TERM <span>/ 短线快照</span></h2>
-              <a href="#short-term">详情 →</a>
-            </header>
-            <div id="short-snapshot" class="short-snapshot"></div>
-          </aside>
-
-          <section class="panel panel-span-7" aria-labelledby="rules-preview-title">
-            <header class="panel-head">
-              <h2 id="rules-preview-title">RULE SIGNALS <span>/ 规则信号</span></h2>
-              <a href="#rules">规则库 →</a>
-            </header>
-            <div id="rule-preview" class="preview-list"></div>
-          </section>
-
-          <aside class="panel panel-span-5" aria-labelledby="policy-preview-title">
-            <header class="panel-head">
-              <h2 id="policy-preview-title">ODRL POLICIES <span>/ 政策</span></h2>
-              <a href="#policies">全部 →</a>
-            </header>
-            <div id="policy-preview" class="preview-list"></div>
-          </aside>
-        </div>
-      </section>
+      <noscript><p class="noscript-note">这个工作台需要 JavaScript 加载本体快照；请启用 JavaScript，或直接阅读 <a href="docs/design.md">设计文档</a>。</p></noscript>
 
     <!-- ==================================================================
          Ontology agent
@@ -163,7 +76,7 @@
     <section class="view" id="agent" data-title="Agent" aria-labelledby="agent-title" hidden>
       <div class="section-head">
         <div>
-          <p class="section-index">01 / ONTOLOGY AGENT</p>
+          <p class="section-index">00 / ONTOLOGY AGENT</p>
           <h2 id="agent-title">让 Agent 用本体回答，而不是猜</h2>
         </div>
         <p class="section-lede">
@@ -232,40 +145,12 @@
     </section>
 
     <!-- ==================================================================
-         Semantic stack
-    =================================================================== -->
-    <section class="view" id="stack" data-title="语义栈" aria-labelledby="stack-title" hidden>
-      <div class="section-head">
-        <div>
-          <p class="section-index">02 / SEMANTIC STACK</p>
-          <h2 id="stack-title">七层语义栈，一条决策链</h2>
-        </div>
-        <p class="section-lede">
-          每一层只回答一个问题：数据如何表达、词汇如何定义、约束如何成立、分类如何组织、规则如何推理、服务如何调用、政策如何治理。
-        </p>
-      </div>
-      <div class="stack-table" aria-label="七层语义栈覆盖">
-        <div class="stack-table-head">
-          <span>层</span>
-          <span>模块</span>
-          <span>职责</span>
-          <span>规模</span>
-          <span>源文件</span>
-          <span aria-hidden="true"></span>
-        </div>
-        <div class="layer-grid" id="layer-grid">
-          <noscript><p>请启用 JavaScript 以查看分层导航，或直接阅读 <a href="docs/design.md">设计文档</a>。</p></noscript>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================================
          Explorer
     =================================================================== -->
     <section class="view" id="explorer" data-title="本体浏览" aria-labelledby="explorer-title" hidden>
       <div class="section-head">
         <div>
-          <p class="section-index">03 / ONTOLOGY EXPLORER</p>
+          <p class="section-index">01 / ONTOLOGY EXPLORER</p>
           <h2 id="explorer-title">把每个 IRI 摊开来看</h2>
         </div>
         <p class="section-lede">
@@ -343,7 +228,7 @@
     <section class="view" id="graph" data-title="本体图谱" aria-labelledby="graph-title" hidden>
       <div class="section-head">
         <div>
-          <p class="section-index">04 / ONTOLOGY GRAPH</p>
+          <p class="section-index">02 / ONTOLOGY GRAPH</p>
           <h2 id="graph-title">把本体当作一张图来看</h2>
         </div>
         <p class="section-lede">
@@ -397,7 +282,7 @@
     <section class="view" id="taxonomy" data-title="SKOS 分类" aria-labelledby="taxonomy-title" hidden>
       <div class="section-head">
         <div>
-          <p class="section-index">05 / SKOS TAXONOMY</p>
+          <p class="section-index">03 / SKOS TAXONOMY</p>
           <h2 id="taxonomy-title">行业、主题与风格，三套概念方案</h2>
         </div>
         <p class="section-lede">
@@ -426,68 +311,12 @@
     </section>
 
     <!-- ==================================================================
-         Short-term & hot money
-    =================================================================== -->
-    <section class="view" id="short-term" data-title="短线" aria-labelledby="short-title" hidden>
-      <div class="section-head">
-        <div>
-          <p class="section-index">06 / SHORT-TERM &amp; HOT MONEY</p>
-          <h2 id="short-title">短周期：先看情绪，再看资金与承接</h2>
-        </div>
-        <p class="section-lede">
-          中长期看基本面，中短期看趋势、资金、题材和筹码。首板、连板、反包、炸板、龙虎榜、北向、两融和主题热度，被放进同一条判断链。
-        </p>
-      </div>
-
-      <div class="short-shell">
-        <div class="short-kpis" id="short-kpis" aria-label="短线样例指标"></div>
-
-        <div class="short-playbook">
-          <article><span>01</span><h3>市场环境</h3><p>指数趋势、成交额、涨跌家数、炸板率与连板高度决定今天能不能做。</p></article>
-          <article><span>02</span><h3>题材主线</h3><p>主题热度、政策/事件催化、龙头高度与板块扩散决定资金往哪里去。</p></article>
-          <article><span>03</span><h3>个股承接</h3><p>首板时间、封单、竞价量比、龙虎榜游资净买与次日溢价决定个股强不强。</p></article>
-          <article><span>04</span><h3>风控退出</h3><p>炸板、断板、量价背离、监管降温和 T+1 流动性决定什么时候退出。</p></article>
-        </div>
-
-        <div class="short-methods">
-          <article><span>DRAGON-TIGER</span><h3>席位不是跟买名单</h3><p>先分营业部/机构，再买一卖一、游资机构是否混合；大游资齐聚可能是接力末端，不是无脑买点。</p></article>
-          <article><span>AUCTION</span><h3>竞价先做预期，再看预期差</h3><p>9:15–9:20 可撤单，9:20–9:25 不可撤单；高开、量能与临近 9:25 的上抢要一起看。</p></article>
-          <article><span>REVIEW</span><h3>复盘和账户诊断</h3><p>先看涨跌停、连板、炸板、主线和阶段；再拿交割单找选股、买入、卖出和回撤问题。</p></article>
-        </div>
-
-        <div class="short-cycle" aria-label="情绪周期六阶段">
-          <span class="short-cycle-label">情绪六阶段</span>
-          <span>启动</span><span>发酵</span><span>高潮</span><span>结束</span><span>反复</span><span>冰点</span>
-        </div>
-
-        <div class="short-voices">
-          <div class="short-voices-head"><span>TRADER VOICES</span><span>原话摘录 · 1,327 条</span></div>
-          <div class="short-voice-list" id="short-voice-list"></div>
-        </div>
-
-        <div class="short-main">
-          <div class="short-rules">
-            <div class="short-rules-head"><span>SHORT-TERM SIGNALS</span><span>R16–R26</span></div>
-            <div id="short-rule-list" class="short-rule-list"></div>
-          </div>
-          <aside class="short-decision" id="short-decision" aria-live="polite"></aside>
-        </div>
-      </div>
-      <p class="short-source">
-        方法论参考 <a href="https://youzi.mdpt.cn/" target="_blank" rel="noopener">游资心法秘籍阁</a> 的公开资料；已索引 50 个技能、821 个章节、20 个主题、1,327 条短原话摘录；只保留短句与来源，不复制全文。
-      </p>
-      <p class="short-note">
-        短线样例使用合成数据；T+1、涨跌停、龙虎榜披露时滞和监管变化都会改变实际结果，不构成投资建议。
-      </p>
-    </section>
-
-    <!-- ==================================================================
          SWRL rules
     =================================================================== -->
     <section class="view" id="rules" data-title="规则库" aria-labelledby="rules-title" hidden>
       <div class="section-head">
         <div>
-          <p class="section-index">07 / RULE LIBRARY</p>
+          <p class="section-index">04 / RULE LIBRARY</p>
           <h2 id="rules-title">规则库 / RULE LIBRARY</h2>
         </div>
         <p class="section-lede">
@@ -536,185 +365,12 @@
       </p>
     </section>
 
-    <!-- ==================================================================
-         OWL-S service
-    =================================================================== -->
-    <section class="view" id="services" data-title="OWL-S 服务" aria-labelledby="services-title" hidden>
-      <div class="section-head">
-        <div>
-          <p class="section-index">08 / OWL-S SERVICE</p>
-          <h2 id="services-title">决策不是一个黑箱，而是一份服务契约</h2>
-        </div>
-        <p class="section-lede">
-          Profile 说明“做什么”，Process Model 说明“怎么做”，Grounding 说明“怎么调用”。七步流程把数据校验、因子、风险、规则、组合、合规与报告串起来。
-        </p>
-      </div>
-
-      <div class="service-shell">
-        <div class="service-contract">
-          <div class="service-badges">
-            <span class="status-badge">profile</span>
-            <span class="status-badge">process</span>
-            <span class="status-badge">grounding</span>
-            <span class="status-badge subtle">示例端点</span>
-          </div>
-          <h3 id="service-name">A 股投资决策服务</h3>
-          <p class="service-description" id="service-description"></p>
-
-          <div class="contract-block">
-            <h4>输入 / INPUTS</h4>
-            <ul class="contract-list" id="service-inputs"></ul>
-          </div>
-          <div class="contract-block">
-            <h4>输出 / OUTPUTS</h4>
-            <ul class="contract-list" id="service-outputs"></ul>
-          </div>
-          <div class="contract-block">
-            <h4>前置条件 / PRECONDITIONS</h4>
-            <ul class="precondition-list" id="service-preconditions"></ul>
-          </div>
-          <p class="service-approval">
-            <span class="approval-dot"></span>
-            服务输出需要人工批准；不直接连接交易通道。
-          </p>
-        </div>
-
-        <div class="process-panel">
-          <div class="process-head">
-            <span>PROCESS MODEL</span>
-            <span id="service-version">v1.11.0</span>
-          </div>
-          <ol class="process-steps" id="service-steps"></ol>
-          <div class="grounding-note">
-            <span class="grounding-label">WSDL GROUNDING</span>
-            <p id="service-grounding"></p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================================
-         ODRL policies
-    =================================================================== -->
-    <section class="view" id="policies" data-title="ODRL 政策" aria-labelledby="policies-title" hidden>
-      <div class="section-head">
-        <div>
-          <p class="section-index">09 / ODRL POLICIES</p>
-          <h2 id="policies-title">权限、禁止、义务，都能被机器检查</h2>
-        </div>
-        <p class="section-lede">
-          ODRL 政策不是一段免责声明。它把“谁能对哪个资产做什么、在什么约束下、违反后怎么办”表达为可校验的规则。
-        </p>
-      </div>
-
-      <div class="policy-shell">
-        <div class="policy-tabs" id="policy-tabs" role="tablist" aria-label="选择 ODRL 政策"></div>
-        <div class="policy-detail" id="policy-detail" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <!-- ==================================================================
-         Example decision
-    =================================================================== -->
-    <section class="view" id="examples" data-title="示例决策" aria-labelledby="examples-title" hidden>
-      <div class="section-head">
-        <div>
-          <p class="section-index">10 / WORKED EXAMPLE</p>
-          <h2 id="examples-title">一条建议的完整来路</h2>
-        </div>
-        <p class="section-lede">
-          从公司、证券、财报、行情、估值，到风险评估、SWRL 信号、ODRL 政策与人工复核。示例数据全部为合成数据。
-        </p>
-      </div>
-
-      <div class="example-shell">
-        <div class="example-nav" id="example-nav" role="tablist" aria-label="选择示例决策"></div>
-        <article class="decision-sheet" id="decision-sheet" aria-live="polite"></article>
-      </div>
-    </section>
-
-    <!-- ==================================================================
-         Method and downloads
-    =================================================================== -->
-    <section class="view" id="method" data-title="方法与产物" aria-labelledby="method-title" hidden>
-      <div class="section-head">
-        <div>
-          <p class="section-index">11 / METHOD &amp; ARTIFACTS</p>
-          <h2 id="method-title">每一层都能落到一个文件</h2>
-        </div>
-        <p class="section-lede">
-          FIBO 给我们的启发不是复用术语，而是模块化、定义优先、可追溯和可演进。W3C 规范给每一层提供明确的语法与语义边界。
-        </p>
-      </div>
-
-      <div class="method-grid">
-        <div class="spec-table-wrap">
-          <table class="spec-table">
-            <thead>
-              <tr><th>层</th><th>规范</th><th>核心构造</th><th>文件</th></tr>
-            </thead>
-            <tbody id="spec-table-body"></tbody>
-          </table>
-        </div>
-        <aside class="download-card">
-          <p class="download-kicker">CANONICAL SOURCE</p>
-          <h3>下载与校验</h3>
-          <ul class="download-list">
-            <li><a href="ontology/a-share.ttl" download><span>Turtle 聚合入口</span><code>a-share.ttl</code></a></li>
-            <li><a href="docs/design.md"><span>设计说明</span><code>design.md</code></a></li>
-            <li><a href="docs/competency-questions.rq" download><span>能力问题</span><code>SPARQL</code></a></li>
-            <li><a href="assets/data/ontology.json" download><span>浏览快照</span><code>JSON</code></a></li>
-          </ul>
-          <div class="validation-card">
-            <span class="validation-dot"></span>
-            <div>
-              <strong>结构校验通过</strong>
-              <p id="validation-text">7 个模块 · OWL RL 闭包可运行 · SPARQL 可解析</p>
-            </div>
-          </div>
-          <p class="download-note">校验脚本：<code>python3 scripts/validate.py</code></p>
-        </aside>
-      </div>
-
-      <div class="principles">
-        <article>
-          <span>01</span>
-          <h3>模块化</h3>
-          <p>七层各有独立文件与 owl:imports 入口，可单独评审、替换或扩展。</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>定义优先</h3>
-          <p>每个类和属性都有中英标签与自然语言定义，先让领域专家读懂，再让推理机使用。</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>可追溯</h3>
-          <p>决策绑定证据、规则版本、服务、政策与合规检查，而不是只留下一个结论。</p>
-        </article>
-      </div>
-
-      <div class="cq-block">
-        <div class="cq-head">
-          <div>
-            <p class="section-index">COMPETENCY QUESTIONS</p>
-            <h3>10 个可验收的问题</h3>
-          </div>
-          <a href="docs/competency-questions.rq" download>SPARQL 查询集 <span>→</span></a>
-        </div>
-        <ol class="cq-list" id="cq-list"></ol>
-      </div>
-
-      <p class="method-disclaimer">
-        本页面与本体中的公司、证券、财务数据、价格、决策、规则阈值和政策均为设计示例，不构成投资建议，不连接真实交易系统。
-      </p>
-    </section>
   </main>
   </div>
 
   <footer class="statusbar" aria-label="终端状态栏">
     <span class="status-primary">ASHARE / SEMANTIC RESEARCH TERMINAL</span>
-    <span id="status-view">00 / 总览</span>
+    <span id="status-view">01 / 本体浏览</span>
     <span id="status-counts">52,810 TRIPLES · 389 CLASSES · 229 RULES</span>
     <span class="status-right">示例数据 · 不构成投资建议</span>
   </footer>

@@ -40,13 +40,6 @@
     odrl: "ODRL",
   };
 
-  const VOICE_TYPE_LABELS = {
-    tactic: "手法",
-    principle: "原则",
-    warning: "风险提醒",
-    observation: "观察",
-  };
-
   const SEVERITY_LABELS = { high: "高", medium: "中", low: "低", info: "规范" };
 
   const GRAPH_CLUSTERS = {
@@ -161,9 +154,7 @@
     ruleSeverity: "all",
     ruleQuery: "",
     ruleId: null,
-    activeView: "overview",
-    policyId: null,
-    exampleId: null,
+    activeView: "explorer",
     graphMode: "overview",
     graphSelected: null,
     graphShowLabels: true,
@@ -193,12 +184,6 @@
     return String(value ?? "");
   };
 
-  const pct = (value) => {
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return String(value ?? "");
-    return `${Math.round(parsed * 100)}%`;
-  };
-
   const keyOf = (entity) => `${entity.kind}:${entity.id}`;
 
   const allEntities = [
@@ -218,12 +203,9 @@
     if (!byId.has(item.id)) byId.set(item.id, item);
   });
 
-  const individualById = new Map(DATA.individuals.map((item) => [item.id, item]));
   const classById = new Map(DATA.classes.map((item) => [item.id, item]));
   const conceptById = new Map(DATA.concepts.map((item) => [item.id, item]));
   const schemeById = new Map(DATA.schemes.map((item) => [item.id, item]));
-  const ruleById = new Map(DATA.rules.map((item) => [item.id, item]));
-  const policyById = new Map(DATA.policies.map((item) => [item.id, item]));
 
   const layerLabel = (layer) => LAYER_LABELS[layer] || layer;
   const typeLabel = (kind) => TYPE_LABELS[kind] || kind;
@@ -239,59 +221,8 @@
     return entity ? labelOf(entity) : value.label || value.id || "";
   };
 
-  const exchangeCodeFor = (security) => {
-    if (!security) return "";
-    const exchange = valueOf(firstFact(security, "listedOn"));
-    const code = exchange ? literalOf(firstFact(exchange, "exchangeCode")) : "";
-    return ({ SSE: "SH", SZSE: "SZ", BSE: "BJ" }[code] || code);
-  };
-
-  const factsOf = (individual, propertyId) =>
-    (individual && individual.facts ? individual.facts : [])
-      .filter((fact) => fact.property && fact.property.id === propertyId)
-      .map((fact) => fact.value);
-
-  const firstFact = (individual, propertyId) => factsOf(individual, propertyId)[0] || null;
-  const literalOf = (value) => (value && value.literal != null ? value.literal : "");
-
   const propertyEntry = (propertyId) =>
     DATA.properties.find((property) => property.id === propertyId) || { label: { zh: propertyId }, id: propertyId };
-
-  const typeRefs = (individual) => (individual ? individual.types || [] : []);
-
-  const isDecision = (individual) =>
-    typeRefs(individual).some((type) => type.id === "InvestmentDecision");
-
-  function decisionSummary(decision) {
-    const company = valueOf(firstFact(decision, "aboutCompany"));
-    const security = valueOf(firstFact(decision, "aboutSecurity"));
-    const recommendation = valueOf(firstFact(decision, "hasRecommendation"));
-    const risk = valueOf(firstFact(decision, "hasRiskAssessment"));
-    const horizon = valueOf(firstFact(decision, "hasHorizon"));
-    const riskLevel = risk ? valueOf(firstFact(risk, "hasRiskLevel")) : null;
-    const confidence = literalOf(firstFact(decision, "confidence"));
-    const target = literalOf(firstFact(decision, "targetPrice"));
-    const stop = literalOf(firstFact(decision, "stopLoss"));
-    const date = literalOf(firstFact(decision, "decisionDate"));
-    const decisionId = literalOf(firstFact(decision, "decisionId"));
-    const securityCode = security ? literalOf(firstFact(security, "securityCode")) : "";
-    const exchangeCode = exchangeCodeFor(security) || "SH";
-    const recommendationLabel = recommendation ? labelOf(recommendation) : "—";
-    return {
-      company: company ? labelOf(company) : labelOf(decision),
-      code: securityCode,
-      exchange: exchangeCode,
-      recommendation: recommendationLabel,
-      signalTone: recommendationLabel === "增持" ? "signal-up" : "signal-hold",
-      confidence: confidence ? Math.round(Number(confidence) * 100) : "—",
-      target: target || "—",
-      stop: stop || "—",
-      riskLevel: riskLevel ? labelOf(riskLevel) : "—",
-      horizon: horizonShort(horizon),
-      date: date || "—",
-      decisionId: decisionId || decision.id,
-    };
-  }
 
   const typeBadge = (kind) => `<span class="entity-type" data-kind="${esc(kind)}">${esc(typeLabel(kind))}</span>`;
 
@@ -393,205 +324,6 @@
       showToast("复制失败，请手动选择 IRI");
     }
     input.remove();
-  }
-
-
-  /* ------------------------------------------------------------------------
-     Hero
-  ------------------------------------------------------------------------ */
-
-  function renderStats() {
-    const stats = DATA.stats;
-    const validation = $("#validation-text");
-    if (validation) {
-      validation.textContent = `${DATA.layers.length} 个模块 · ${number(stats.totalTriples)} 三元组 · ${number(stats.classes)} 类 · OWL RL 闭包可运行`;
-    }
-  }
-
-  function horizonShort(value) {
-    if (!value) return "—";
-    const text = valueLabel(value);
-    const match = text.match(/（(.+?)）/);
-    return match ? match[1] : text;
-  }
-
-  function renderDashboard() {
-    const meta = DATA.meta || {};
-    const metaEl = $("#overview-meta");
-    if (metaEl) {
-      metaEl.innerHTML = `
-        <div><dt>SNAPSHOT</dt><dd>${esc(meta.date || "—")}</dd></div>
-        <div><dt>VERSION</dt><dd>v${esc(meta.version || "—")}</dd></div>
-        <div><dt>COVERAGE</dt><dd>${number(DATA.layers.length)} layers</dd></div>`;
-    }
-
-    const monitor = $("#decision-monitor");
-    if (monitor) {
-      const decisions = DATA.individuals.filter(isDecision);
-      monitor.innerHTML = `<table>
-        <thead><tr><th>日期</th><th>证券</th><th>公司</th><th>建议</th><th>置信度</th><th>目标 / 止损</th><th>风险</th><th>期限</th></tr></thead>
-        <tbody>${decisions.map((decision) => {
-          const item = decisionSummary(decision);
-          return `<tr class="monitor-row" data-decision-id="${esc(decision.id)}" tabindex="0" role="button" aria-label="查看 ${esc(item.company)} 的示例决策">
-            <td class="mono">${esc(item.date)}</td>
-            <td class="mono">${esc(item.code)}.${esc(item.exchange)}</td>
-            <td><span class="monitor-company">${esc(item.company)}</span><span class="monitor-id">${esc(item.decisionId)}</span></td>
-            <td><span class="signal ${esc(item.signalTone)}">${esc(item.recommendation)}</span></td>
-            <td class="mono">${esc(item.confidence)}%</td>
-            <td class="mono">¥${esc(item.target)} / ¥${esc(item.stop)}</td>
-            <td>${esc(item.riskLevel)}</td>
-            <td class="mono">${esc(item.horizon)}</td>
-          </tr>`;
-        }).join("")}</tbody>
-      </table>`;
-      monitor.querySelectorAll("[data-decision-id]").forEach((row) => {
-        const open = () => openExampleView(row.dataset.decisionId);
-        row.addEventListener("click", open);
-        row.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            open();
-          }
-        });
-      });
-    }
-
-    const coverage = $("#coverage-list");
-    if (coverage) {
-      const max = Math.max(...DATA.layers.map((layer) => Number(layer.count) || 0), 1);
-      coverage.innerHTML = DATA.layers.map((layer) => `
-        <a class="coverage-row" href="#stack">
-          <span class="coverage-index mono">${esc(layer.index)}</span>
-          <span class="coverage-name"><strong>${esc(layer.name)}</strong><small>${esc(layer.zh)}</small></span>
-          <span class="coverage-bar"><i style="width:${Math.max(4, (Number(layer.count) / max) * 100).toFixed(1)}%"></i></span>
-          <span class="coverage-count mono">${number(layer.count)}<small>${esc(layer.unit)}</small></span>
-        </a>`).join("");
-    }
-
-    const short = $("#short-snapshot");
-    const facts = shortFacts();
-    if (short && facts) {
-      const cells = [
-        ["换手率", `${facts.turnover}%`, "TURNOVER", "hot"],
-        ["连板高度", `${facts.limitUpDays || "—"} 天`, "STREAK", ""],
-        ["龙虎榜净买", formatAmount(facts.netBuy), "DRAGON-TIGER", "hot"],
-        ["主题热度", facts.heatScore || "—", "THEME HEAT", ""],
-        ["RSI14", facts.rsiValue || "—", "TECHNICAL", ""],
-        ["风险分", facts.riskScore || "—", "RISK", "hot"],
-      ];
-      short.innerHTML = `
-        <div class="short-snapshot-head"><span>${esc(facts.companyLabel)}</span><span class="signal signal-up">${esc(facts.recommendation)}</span></div>
-        <div class="short-snapshot-grid">${cells.map(([label, value, sub, tone]) => `
-          <div class="short-cell"><span>${esc(label)}</span><strong class="${esc(tone)}">${esc(value)}</strong><small>${esc(sub)}</small></div>`).join("")}</div>
-        <p class="short-snapshot-note">示例数据 · T+1 与披露时滞会影响结果</p>`;
-    }
-
-    const rulePreview = $("#rule-preview");
-    if (rulePreview) {
-      const visible = DATA.rules.filter((rule) => rule.severity === "high").slice(0, 6);
-      rulePreview.innerHTML = visible.map((rule) => `
-        <button class="preview-row" type="button" data-rule-preview="${esc(rule.id)}">
-          <span class="mono preview-id">${esc(rule.ruleId)}</span>
-          <span class="preview-title">${esc(labelOf(rule))}</span>
-          <span class="preview-tag severity-${esc(rule.severity)}">${esc(SEVERITY_LABELS[rule.severity] || rule.severity)}</span>
-        </button>`).join("");
-      rulePreview.querySelectorAll("[data-rule-preview]").forEach((button) => {
-        button.addEventListener("click", () => {
-          state.ruleSeverity = "all";
-          state.ruleQuery = "";
-          const search = $("#rule-search");
-          if (search) search.value = "";
-          $$("#rule-filters [data-severity]").forEach((item) => item.classList.toggle("is-active", item.dataset.severity === "all"));
-          renderRules();
-          selectRule(`rule:${button.dataset.rulePreview}`);
-          activateView("rules");
-        });
-      });
-    }
-
-    const policyPreview = $("#policy-preview");
-    if (policyPreview) {
-      policyPreview.innerHTML = DATA.policies.map((policy) => `
-        <button class="preview-row" type="button" data-policy-preview="${esc(policy.id)}">
-          <span class="mono preview-id">${esc(policy.status || "policy")}</span>
-          <span class="preview-title">${esc(labelOf(policy))}</span>
-          <span class="preview-tag">v${esc(policy.version || "—")}</span>
-        </button>`).join("");
-      policyPreview.querySelectorAll("[data-policy-preview]").forEach((button) => {
-        button.addEventListener("click", () => {
-          state.policyId = button.dataset.policyPreview;
-          renderPolicyTabs();
-          renderPolicyDetail();
-          activateView("policies");
-        });
-      });
-    }
-
-    const dock = $("#dock-prompts");
-    if (dock) {
-      const prompts = [
-        "分析华辰智造",
-        "PE 低于 20 且 ROE 高于 15 的公司",
-        "华辰智造的决策证据链",
-      ];
-      dock.innerHTML = prompts.map((prompt) => `<li><button type="button" data-dock-prompt="${esc(prompt)}">${esc(prompt)}</button></li>`).join("");
-      dock.querySelectorAll("[data-dock-prompt]").forEach((button) => {
-        button.addEventListener("click", () => {
-          activateView("agent");
-          window.setTimeout(() => {
-            const input = $("#agent-input");
-            if (!input) return;
-            input.value = button.dataset.dockPrompt;
-            input.dispatchEvent(new Event("input", { bubbles: true }));
-            input.focus();
-          }, 80);
-        });
-      });
-    }
-  }
-
-  function openExampleView(id) {
-    if (!individualById.has(id)) return;
-    state.exampleId = id;
-    renderExampleNav();
-    renderExampleSheet();
-    activateView("examples");
-  }
-
-
-  /* ------------------------------------------------------------------------
-     Semantic layers
-  ------------------------------------------------------------------------ */
-
-  function renderLayers() {
-    const target = $("#layer-grid");
-    if (!target) return;
-    target.innerHTML = DATA.layers
-      .map(
-        (layer) => `
-        <button class="stack-row" type="button" data-layer="${esc(layer.key)}" aria-label="在浏览器中筛选 ${esc(layer.name)} 层">
-          <span class="stack-layer mono">${esc(layer.index)}</span>
-          <span class="stack-module"><strong>${esc(layer.name)}</strong><small>${esc(layer.zh)}</small></span>
-          <span class="stack-duty">${esc(layer.desc)}</span>
-          <span class="stack-count mono">${number(layer.count)}<small>${esc(layer.unit)}</small></span>
-          <span class="stack-file mono">${esc(layer.file.replace("ontology/", ""))}</span>
-          <span class="stack-arrow" aria-hidden="true">→</span>
-        </button>`
-      )
-      .join("");
-
-    target.querySelectorAll("[data-layer]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const layer = card.dataset.layer;
-        const select = $("#layer-filter");
-        if (select) select.value = layer;
-        state.layer = layer;
-        state.filter = "all";
-        syncFilterChips();
-        renderEntityList();
-        activateView("explorer");
-      });
-    });
   }
 
 
@@ -1163,73 +895,7 @@
 
 
   /* ------------------------------------------------------------------------
-     OWL-S service
-  ------------------------------------------------------------------------ */
-
-  function renderService() {
-    const service = DATA.services[0];
-    if (!service) return;
-    const profile = service.profile || {};
-    const name = $("#service-name");
-    if (name) {
-      name.textContent = labelOf(service);
-      const english = document.createElement("span");
-      english.className = "service-en";
-      english.textContent = profile.serviceName || labelEnOf(service) || "";
-      name.appendChild(english);
-    }
-    const description = $("#service-description");
-    if (description) description.textContent = profile.description || service.comment || "";
-    const version = $("#service-version");
-    if (version) version.textContent = `v${service.version || "1.0.0"} · ${service.endpointStatus || "illustrative"}`;
-
-    const inputs = $("#service-inputs");
-    if (inputs) {
-      inputs.innerHTML = (profile.inputs || [])
-        .map((item) => `<li><span>${esc(item.label)}</span><code>${esc((item.parameterType || "").split(/[#/]/).pop())}</code></li>`)
-        .join("");
-    }
-    const outputs = $("#service-outputs");
-    if (outputs) {
-      outputs.innerHTML = (profile.outputs || [])
-        .map((item) => `<li><span>${esc(item.label)}</span><code>${esc((item.parameterType || "").split(/[#/]/).pop())}</code></li>`)
-        .join("");
-    }
-    const preconditions = $("#service-preconditions");
-    if (preconditions) {
-      preconditions.innerHTML = (profile.preconditions || [])
-        .map((item) => `<li>${esc(item.body)}</li>`)
-        .join("");
-    }
-    const steps = $("#service-steps");
-    if (steps) {
-      steps.innerHTML = (service.process?.steps || [])
-        .map((step, index) => {
-          const flow = [...(step.inputs || []).map((item) => `← ${item.label}`), ...(step.outputs || []).map((item) => `→ ${item.label}`)];
-          return `
-            <li class="process-step">
-              <span class="process-num">${String(index + 1).padStart(2, "0")}</span>
-              <div class="process-body">
-                <h4>${esc(step.label.replace(/^\d+\s*/, ""))}</h4>
-                <p>${esc(step.comment)}</p>
-                <div class="process-flow">${flow.map((item) => `<span>${esc(item)}</span>`).join("")}</div>
-              </div>
-            </li>`;
-        })
-        .join("");
-    }
-    const grounding = $("#service-grounding");
-    if (grounding) {
-      const items = service.grounding?.groundings || [];
-      grounding.textContent = items.length
-        ? `${items.length} 个原子流程 · ${items.map((item) => item.operation).filter(Boolean).join(" / ")} · ${items[0]?.document || ""}`
-        : "未提供 grounding。";
-    }
-  }
-
-
-  /* ------------------------------------------------------------------------
-     ODRL policies
+     Policy detail helpers (Explorer)
   ------------------------------------------------------------------------ */
 
   function policyActionHTML(actions) {
@@ -1283,381 +949,6 @@
     (policy.prohibitions || []).forEach((prohibition) => (prohibition.remedy || []).forEach(add));
     return duties;
   }
-
-  function renderPolicyTabs() {
-    const target = $("#policy-tabs");
-    if (!target) return;
-    target.innerHTML = DATA.policies
-      .map(
-        (policy) => `
-        <button class="policy-tab${policy.id === state.policyId ? " is-active" : ""}" type="button" role="tab" aria-selected="${policy.id === state.policyId}" data-policy="${esc(policy.id)}">
-          <span>${esc(policy.conflict || "policy")} · ${esc(policy.status || "")}</span>
-          <strong>${esc(labelOf(policy))}</strong>
-        </button>`
-      )
-      .join("");
-    target.querySelectorAll("[data-policy]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.policyId = button.dataset.policy;
-        renderPolicyTabs();
-        renderPolicyDetail();
-      });
-    });
-  }
-
-  function renderPolicyDetail() {
-    const target = $("#policy-detail");
-    if (!target) return;
-    const policy = policyById.get(state.policyId) || DATA.policies[0];
-    if (!policy) {
-      target.innerHTML = `<p class="policy-empty">暂无政策。</p>`;
-      return;
-    }
-    target.innerHTML = `
-      <div class="policy-head">
-        <div>
-          <h3>${esc(policy.title || labelOf(policy))}</h3>
-          <p>${esc(policy.description || policy.comment || "")}</p>
-        </div>
-        <div class="policy-meta">
-          <span>${esc(policy.uid)}</span>
-          <span>${esc(policy.version ? `v${policy.version}` : "")}</span>
-          <span>${esc(policy.status || "")}</span>
-          <span>复核 ${esc(policy.reviewDate || "—")}</span>
-        </div>
-      </div>
-      <div class="policy-columns">
-        <div class="policy-column permission">
-          <h4>PERMISSIONS / 权限</h4>
-          ${policyRulesHTML(policy.permissions, "permission")}
-        </div>
-        <div class="policy-column prohibition">
-          <h4>PROHIBITIONS / 禁止</h4>
-          ${policyRulesHTML(policy.prohibitions, "prohibition")}
-        </div>
-        <div class="policy-column obligation">
-          <h4>DUTIES / 义务</h4>
-          ${policyRulesHTML(collectPolicyDuties(policy), "duty")}
-        </div>
-      </div>`;
-  }
-
-
-  /* ------------------------------------------------------------------------
-     Worked example
-  ------------------------------------------------------------------------ */
-
-  function renderExampleNav() {
-    const target = $("#example-nav");
-    if (!target) return;
-    const decisions = DATA.individuals.filter(isDecision);
-    target.innerHTML = decisions
-      .map((decision) => {
-        const company = valueOf(firstFact(decision, "aboutCompany"));
-        const rec = valueOf(firstFact(decision, "hasRecommendation"));
-        const date = literalOf(firstFact(decision, "decisionDate"));
-        return `
-          <button class="example-tab${decision.id === state.exampleId ? " is-active" : ""}" type="button" role="tab" aria-selected="${decision.id === state.exampleId}" data-example="${esc(decision.id)}">
-            <span>${esc(date)} · ${esc(rec ? labelOf(rec) : "")}</span>
-            <strong>${esc(company ? labelOf(company) : labelOf(decision))}</strong>
-            <small>${esc(decision.id)}</small>
-          </button>`;
-      })
-      .join("");
-    target.querySelectorAll("[data-example]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.exampleId = button.dataset.example;
-        renderExampleNav();
-        renderExampleSheet();
-      });
-    });
-  }
-
-  function renderExampleSheet() {
-    const target = $("#decision-sheet");
-    if (!target) return;
-    const decision = individualById.get(state.exampleId) || DATA.individuals.find(isDecision);
-    if (!decision) {
-      target.innerHTML = `<p class="policy-empty">暂无示例决策。</p>`;
-      return;
-    }
-    const company = valueOf(firstFact(decision, "aboutCompany"));
-    const security = valueOf(firstFact(decision, "aboutSecurity"));
-    const recommendation = valueOf(firstFact(decision, "hasRecommendation"));
-    const risk = valueOf(firstFact(decision, "hasRiskAssessment"));
-    const horizon = valueOf(firstFact(decision, "hasHorizon"));
-    const riskLevel = risk ? valueOf(firstFact(risk, "hasRiskLevel")) : null;
-    const rationale = valueOf(firstFact(decision, "hasRationale"));
-    const check = valueOf(firstFact(decision, "hasComplianceCheck"));
-    const companyName = company ? literalOf(firstFact(company, "companyName")) || labelOf(company) : labelOf(decision);
-    const securityCode = security ? literalOf(firstFact(security, "securityCode")) : "";
-    const exchangeCode = exchangeCodeFor(security) || "SH";
-    const confidence = literalOf(firstFact(decision, "confidence"));
-    const targetPrice = literalOf(firstFact(decision, "targetPrice"));
-    const stopLoss = literalOf(firstFact(decision, "stopLoss"));
-    const decisionId = literalOf(firstFact(decision, "decisionId"));
-    const date = literalOf(firstFact(decision, "decisionDate"));
-    const rationaleText = rationale ? literalOf(firstFact(rationale, "rationaleText")) : "";
-    const assumption = rationale ? literalOf(firstFact(rationale, "assumption")) : "";
-    const counter = rationale ? literalOf(firstFact(rationale, "counterArgument")) : "";
-    const checkNote = check ? literalOf(firstFact(check, "checkNote")) : "";
-    const evidence = factsOf(decision, "basedOn").map(valueOf).filter(Boolean);
-    const policies = factsOf(decision, "governedBy").map(valueOf).filter(Boolean);
-    const riskFactors = risk ? factsOf(risk, "hasRiskFactor").map(valueOf).filter(Boolean) : [];
-    const recLabel = recommendation ? labelOf(recommendation) : "—";
-    const riskLabel = riskLevel ? labelOf(riskLevel) : "—";
-
-    target.innerHTML = `
-      <div class="sheet-topline">
-        <span>INVESTMENT DECISION / ${esc(decisionId || decision.id)}</span>
-        <span class="sheet-status">示例数据 · 非投资建议</span>
-      </div>
-      <div class="sheet-header">
-        <div>
-          <h2>${esc(company ? labelOf(company) : companyName)}</h2>
-          <p class="sheet-subtitle">${esc(securityCode)}.${esc(exchangeCode)} · ${esc(labelOf(security || decision))} · ${esc(date)}</p>
-        </div>
-        <div class="sheet-signal">
-          <div>
-            <span class="signal-label">建议 / RECOMMENDATION</span>
-            <strong class="signal-value">${esc(recLabel)}</strong>
-          </div>
-          <div class="sheet-confidence">
-            <span>CONFIDENCE</span>
-            <strong>${esc(confidence ? Math.round(Number(confidence) * 100) : "—")}%</strong>
-          </div>
-        </div>
-      </div>
-      <div class="sheet-metrics">
-        <div><span>目标价 TARGET</span><strong>¥${esc(targetPrice || "—")}</strong></div>
-        <div><span>止损价 STOP-LOSS</span><strong>¥${esc(stopLoss || "—")}</strong></div>
-        <div><span>风险等级 RISK</span><strong>${esc(riskLabel)}</strong></div>
-        <div><span>投资期限 HORIZON</span><strong>${esc(horizonShort(horizon))}</strong></div>
-      </div>
-      <div class="sheet-body">
-        <div>
-          <div class="sheet-section">
-            <h3>RATIONALE / 决策理由</h3>
-            <p>${esc(rationaleText || "暂无理由。")}</p>
-            ${assumption ? `<p class="counter"><strong>关键假设：</strong>${esc(assumption)}</p>` : ""}
-            ${counter ? `<p class="counter"><strong>反方观点：</strong>${esc(counter)}</p>` : ""}
-          </div>
-          <div class="sheet-section" style="margin-top:19px">
-            <h3>RISK FACTORS / 风险因子</h3>
-            <div class="relation-chips">${riskFactors.map((factor) => `<span class="relation-chip">${esc(labelOf(factor))}</span>`).join("") || '<span class="policy-empty">未记录</span>'}</div>
-          </div>
-        </div>
-        <div>
-          <div class="sheet-section">
-            <h3>EVIDENCE CHAIN / 证据链</h3>
-            <ul class="evidence-chain">
-              ${evidence
-                .map(
-                  (item) => `<li>${esc(labelOf(item))}<span>${esc(item.id)}</span></li>`
-                )
-                .join("") || "<li>暂无证据</li>"}
-            </ul>
-          </div>
-          <div class="sheet-section" style="margin-top:16px">
-            <h3>COMPLIANCE / 合规检查</h3>
-            <p>${esc(checkNote || "未记录")}</p>
-            <div class="sheet-policy-chips">
-              ${policies.map((policy) => `<span>${esc(labelOf(policy))}</span>`).join("")}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="sheet-footer">
-        <span>${esc(decisionId)} · ${esc(decision.id)}</span>
-        <span class="example-warning">合成示例 · 不构成投资建议</span>
-      </div>`;
-  }
-
-
-  /* ------------------------------------------------------------------------
-     Method table
-  ------------------------------------------------------------------------ */
-
-
-  /* ------------------------------------------------------------------------
-     Short-term / hot-money playbook
-  ------------------------------------------------------------------------ */
-
-  function formatAmount(value) {
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return String(value ?? "");
-    const abs = Math.abs(parsed);
-    if (abs >= 100000000) return `${(parsed / 100000000).toFixed(2)}亿`;
-    if (abs >= 10000) return `${(parsed / 10000).toFixed(0)}万`;
-    return parsed.toLocaleString("zh-CN");
-  }
-
-  function shortFacts() {
-    const decision = individualById.get("decision-youzi-2026");
-    if (!decision) return null;
-    const security = valueOf(firstFact(decision, "aboutSecurity"));
-    const company = valueOf(firstFact(decision, "aboutCompany"));
-    const quote = security ? valueOf(firstFact(security, "hasMarketQuote")) : null;
-    const streak = security ? valueOf(firstFact(security, "hasLimitUpStreak")) : null;
-    const dragonTiger = security ? valueOf(firstFact(security, "hasDragonTigerList")) : null;
-    const risk = valueOf(firstFact(decision, "hasRiskAssessment"));
-    const rec = valueOf(firstFact(decision, "hasRecommendation"));
-    const horizon = valueOf(firstFact(decision, "hasHorizon"));
-    const riskLevel = risk ? valueOf(firstFact(risk, "hasRiskLevel")) : null;
-    const heat = individualById.get("theme-heat-ai");
-    const rsi = individualById.get("tech-rsi-youzi");
-    const rationale = valueOf(firstFact(decision, "hasRationale"));
-    return {
-      decision,
-      security,
-      company,
-      companyLabel: company ? labelOf(company) : "—",
-      rec,
-      horizon,
-      riskLevel,
-      recommendation: rec ? labelOf(rec) : "—",
-      turnover: literalOf(quote ? firstFact(quote, "turnoverRate") : null) || "—",
-      limitUpDays: literalOf(streak ? firstFact(streak, "limitUpDays") : null) || "—",
-      netBuy: literalOf(dragonTiger ? firstFact(dragonTiger, "dragonTigerNetBuy") : null) || "",
-      heatScore: literalOf(heat ? firstFact(heat, "themeHeatScore") : null) || "—",
-      rsiValue: literalOf(rsi ? firstFact(rsi, "rsi14") : null) || "—",
-      riskScore: literalOf(risk ? firstFact(risk, "riskScore") : null) || "—",
-      confidence: literalOf(firstFact(decision, "confidence")),
-      target: literalOf(firstFact(decision, "targetPrice")) || "—",
-      stop: literalOf(firstFact(decision, "stopLoss")) || "—",
-      decisionId: literalOf(firstFact(decision, "decisionId")) || decision.id,
-      rationaleText: rationale ? literalOf(firstFact(rationale, "rationaleText")) : "",
-    };
-  }
-
-  function renderShortTerm() {
-    const decision = individualById.get("decision-youzi-2026");
-    const kpis = $("#short-kpis");
-    const rulesTarget = $("#short-rule-list");
-    const decisionTarget = $("#short-decision");
-    if (!decision || !kpis || !rulesTarget || !decisionTarget) return;
-
-    const facts = shortFacts();
-    if (!facts) return;
-    const {
-      company, rec, horizon, riskLevel, turnover, limitUpDays, netBuy,
-      heatScore, rsiValue, riskScore, confidence, target, stop, decisionId, rationaleText,
-    } = facts;
-
-    kpis.innerHTML = `
-      <div class="short-kpi"><span>换手率</span><strong class="hot">${esc(turnover || "18.4")}%</strong><small>TURNOVER</small></div>
-      <div class="short-kpi"><span>连板高度</span><strong>${esc(limitUpDays || "4")} 天</strong><small>LIMIT-UP STREAK</small></div>
-      <div class="short-kpi"><span>龙虎榜净买</span><strong class="hot">${esc(formatAmount(netBuy || 85000000))}</strong><small>DRAGON-TIGER</small></div>
-      <div class="short-kpi"><span>主题热度</span><strong>${esc(heatScore || "86")}</strong><small>THEME HEAT</small></div>
-      <div class="short-kpi"><span>RSI14</span><strong>${esc(rsiValue || "68")}</strong><small>TECHNICAL</small></div>
-      <div class="short-kpi"><span>风险分</span><strong class="hot">${esc(riskScore || "66")}</strong><small>RISK SCORE</small></div>`;
-
-    const shortRules = DATA.rules.filter((rule) => ["R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23", "R24", "R25", "R26"].includes(rule.ruleId));
-    const voiceTarget = $("#short-voice-list");
-    if (voiceTarget) {
-      const voices = DATA.individuals
-        .filter((item) => item.types.some((type) => type.id === "TraderStatement"))
-        .slice(0, 4);
-      voiceTarget.innerHTML = voices
-        .map((voice) => {
-          const text = literalOf(firstFact(voice, "statementText"));
-          const speaker = literalOf(firstFact(voice, "statementSpeaker"));
-          const type = literalOf(firstFact(voice, "statementType"));
-          return `<article class="short-voice"><p>“${esc(truncate(text, 86))}”</p><footer><strong>${esc(speaker)}</strong><span>${esc(VOICE_TYPE_LABELS[type] || type || "摘录")}</span></footer></article>`;
-        })
-        .join("");
-    }
-
-
-    rulesTarget.innerHTML = shortRules
-      .map(
-        (rule) => `
-        <article class="short-rule">
-          <div class="short-rule-top">
-            <span>${esc(rule.ruleId)}</span>
-            <span class="short-rule-severity">${esc(SEVERITY_LABELS[rule.severity] || rule.severity)}</span>
-          </div>
-          <h3>${esc(labelOf(rule))}</h3>
-          <p>IF ${esc(rule.ruleIf)}</p>
-          <p>THEN ${esc(rule.ruleThen)}</p>
-        </article>`
-      )
-      .join("");
-
-    decisionTarget.innerHTML = `
-      <p class="st-kicker">SHORT-TERM DECISION / ${esc(decisionId)}</p>
-      <h3>${esc(company ? labelOf(company) : "游资科技")}</h3>
-      <div class="st-signal">
-        <strong>${esc(rec ? labelOf(rec) : "增持")}</strong>
-        <span>置信度 ${esc(confidence ? Math.round(Number(confidence) * 100) : "—")}%<br>${esc(horizonShort(horizon))} · ${esc(riskLevel ? labelOf(riskLevel) : "高")}风险</span>
-      </div>
-      <div class="st-metrics">
-        <div><span>目标价</span><strong>¥${esc(target || "21.00")}</strong></div>
-        <div><span>止损价</span><strong>¥${esc(stop || "16.20")}</strong></div>
-        <div><span>风险分</span><strong>${esc(riskScore || "66")}</strong></div>
-        <div><span>龙虎榜净买</span><strong>${esc(formatAmount(netBuy || 85000000))}</strong></div>
-      </div>
-      <p>${esc(truncate(rationaleText, 150))}</p>
-      <button type="button" data-short-open="individual:decision-youzi-2026">在 Explorer 中查看完整决策</button>`;
-  }
-
-  function bindShortTerm() {
-    const decision = $("#short-decision");
-    if (!decision) return;
-    decision.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-short-open]");
-      if (!button) return;
-      const entity = entityByKey.get(button.dataset.shortOpen);
-      if (!entity) return;
-      state.filter = "all";
-      state.layer = "all";
-      state.query = "";
-      const search = $("#ontology-search");
-      if (search) search.value = "";
-      syncFilterChips();
-      renderEntityList();
-      selectEntity(button.dataset.shortOpen, { scroll: false });
-      activateView("explorer");
-    });
-  }
-
-  function renderCompetencyQuestions() {
-    const target = $("#cq-list");
-    if (!target) return;
-    target.innerHTML = (DATA.competencyQuestions || [])
-      .map((item, index) => {
-        const code = String(index + 1).padStart(2, "0");
-        return `<li><span>CQ${esc(code)}</span><p>${esc(item.question)}</p></li>`;
-      })
-      .join("");
-  }
-
-  function renderSpecTable() {
-    const target = $("#spec-table-body");
-    if (!target) return;
-    const rows = [
-      ["RDF", "RDF 1.1 / Turtle 1.1", "triple · IRI · literal · named graph", "rdf/instances.ttl", "https://www.w3.org/TR/rdf11-concepts/"],
-      ["RDFS", "RDF Schema 1.1", "subClassOf · domain · range · label", "rdfs/schema.ttl", "https://www.w3.org/TR/rdf-schema/"],
-      ["OWL 2", "OWL 2 DL / RDF mapping", "restriction · cardinality · hasKey · disjointness", "owl/ontology.ttl", "https://www.w3.org/TR/owl2-overview/"],
-      ["SKOS", "SKOS Reference", "ConceptScheme · prefLabel · broader · related", "skos/taxonomy.ttl", "https://www.w3.org/TR/skos-reference/"],
-      ["SWRL", "SWRL Member Submission", "Imp · body · head · BuiltinAtom", "swrl/rules.ttl", "https://www.w3.org/Submission/SWRL/"],
-      ["OWL-S", "OWL-S 1.2 Member Submission", "Service · Profile · Process · Grounding", "owl-s/service.ttl", "https://www.w3.org/Submission/OWL-S/"],
-      ["ODRL", "ODRL Information Model 2.2", "Policy · Permission · Prohibition · Duty", "odrl/policies.ttl", "https://www.w3.org/TR/odrl-model/"],
-    ];
-    target.innerHTML = rows
-      .map(
-        ([layer, spec, constructs, file, url]) => `
-        <tr>
-          <td>${esc(layer)}</td>
-          <td><a href="${esc(url)}" target="_blank" rel="noreferrer">${esc(spec)}</a></td>
-          <td>${esc(constructs)}</td>
-          <td><code>${esc(file)}</code></td>
-        </tr>`
-      )
-      .join("");
-  }
-
-
 
   /* ------------------------------------------------------------------------
      Ontology graph
@@ -2501,7 +1792,7 @@
   }
 
   function activateView(name, options = {}) {
-    const view = document.getElementById(name) || document.getElementById("overview");
+    const view = document.getElementById(name) || document.getElementById("explorer");
     if (!view || !view.classList.contains("view")) return;
     const changed = state.activeView !== view.id;
     state.activeView = view.id;
@@ -2620,7 +1911,7 @@
         return;
       }
     }
-    activateView("overview", { updateHash: false });
+    activateView("explorer", { updateHash: false });
   }
 
   function bindHash() {
@@ -2635,13 +1926,6 @@
     state.graphMode = window.innerWidth < 700 ? "decision" : "overview";
     state.schemeId = (DATA.schemes.find((scheme) => scheme.id === "scheme-industry") || DATA.schemes[0])?.id || null;
     state.conceptId = (DATA.schemes.find((scheme) => scheme.id === state.schemeId)?.topConcepts?.[0])?.id || null;
-    state.policyId = DATA.policies[0]?.id || null;
-    const decisions = DATA.individuals.filter(isDecision);
-    state.exampleId = decisions[0]?.id || null;
-
-    renderStats();
-    renderDashboard();
-    renderLayers();
     renderTypeCounts();
     renderEntityList();
     renderSchemeTabs();
@@ -2649,19 +1933,10 @@
     if (state.conceptId) renderConceptDetail(conceptById.get(state.conceptId));
     renderRuleCounts();
     renderRules();
-    renderService();
-    renderPolicyTabs();
-    renderPolicyDetail();
-    renderExampleNav();
-    renderExampleSheet();
-    renderShortTerm();
-    renderCompetencyQuestions();
-    renderSpecTable();
     bindGraph();
     renderGraph();
 
     bindExplorer();
-    bindShortTerm();
     bindTaxonomy();
     bindRules();
     bindShell();
